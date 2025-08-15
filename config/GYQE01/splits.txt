@@ -507,9 +507,6 @@ Dolphin/Runtime/runtime.c:
 	.text       start:0x80097970 end:0x8009804C
 	.rodata     start:0x800E7268 end:0x800E7280
 
-Dolphin/Runtime/__mem.c:
-	.init       start:0x8000540C end:0x80005544
-
 Dolphin/Runtime/__init_cpp_exceptions.cpp:
 	.text       start:0x8009804C end:0x800980C8
 	.ctors      start:0x800E6340 end:0x800E6344
@@ -859,3 +856,6 @@ Musyx/chorus_fx.c:
 	.text       start:0x800DF594 end:0x800DFDD4
 	.data       start:0x801177E0 end:0x80117FE0
 	.sdata2     start:0x803CD2E0 end:0x803CD2E8
+
+Dolphin/Runtime/__mem.c:
+	.init       start:0x8000540C end:0x80005544
