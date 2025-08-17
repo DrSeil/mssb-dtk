@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "buildsettings.h": "c",
+        "unknownhomes.h": "c",
+        "mssbtypes.h": "c"
+    }
+}

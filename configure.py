@@ -677,6 +677,15 @@ config.libs = [
                       "-fp_contract off", 
                       "-use_lmw_stmw off"]
     ),
+    {
+        "lib": "game",
+        "mw_version": "GC/2.6",
+        "cflags": cflags_base + ["-O4,p", "-sym on", "-fp_contract off"],
+        "host": False,
+        "objects": [
+            Object(NonMatching, "game/HitBall.c"),
+        ],
+    },
 ]
 
 # Optional callback to adjust link order. This can be used to add, remove, or reorder objects.

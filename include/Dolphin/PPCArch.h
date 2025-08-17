@@ -93,6 +93,10 @@ void PPCDisableSpeculation();
 void PPCSetFpIEEEMode();
 void PPCSetFpNonIEEEMode();
 
+typedef void (*voidfunctionptr)(); // pointer to function returning void
+DECL_SECT(".ctors") extern voidfunctionptr _ctors[];
+DECL_SECT(".dtors") extern voidfunctionptr _dtors[];
+
 #ifdef __cplusplus
 }
 #endif
