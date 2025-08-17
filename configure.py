@@ -680,7 +680,7 @@ config.libs = [
     {
         "lib": "game",
         "mw_version": "GC/2.6",
-        "cflags": cflags_base + ["-O4,p", "-sym on", "-fp_contract off"],
+        "cflags": cflags_base + ["-O4,p", "-sym on", "-fp_contract off", "-inline noauto", "-sdata2 0"],
         "host": False,
         "objects": [
             Object(NonMatching, "game/HitBall.c"),

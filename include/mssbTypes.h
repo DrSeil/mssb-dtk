@@ -3,6 +3,21 @@
 
 #include "types.h"
 
+#define S8_MAX (0x7F)
+#define S8_MIN (-0x80)
+#define U8_MAX (0xFF)
+#define U8_MIN (0)
+
+#define S16_MAX (0x7FFF)
+#define S16_MIN (-0x8000)
+#define U16_MAX (0xFFFF)
+#define U16_MIN (0)
+
+#define S32_MAX (0x7FFFFFFF)
+#define S32_MIN (-0x80000000)
+#define U32_MAX (0xFFFFFFFF)
+#define U32_MIN (0)
+
 // Enum macro to help debug types
 #define E(storage, enumType) storage
 

@@ -21,4 +21,5 @@ file_6C38.c:
 	.text       start:0x00006C38 end:0x0000EE4C
 
 game/HitBall.c:
-	.text       start:0x00012CB4 end:0x00012DDC
+	.text       start:0x000102C8 end:0x00014BB4
+	.rodata     start:0x000006D0 end:0x00000770

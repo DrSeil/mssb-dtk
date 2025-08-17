@@ -3,10 +3,13 @@
 #include "mssbTypes.h"
 
 #define ARRAY_COUNT(x) (sizeof(x) / (*(x)))
-#define OFFSET_OF(structName, field) (&(((structName*)NULL)->field))
+#define OFFSET_OF(structName, field) (size_t)(&(((structName*)NULL)->field))
 
 #define artificial_padding(lastOffset, currentOffset, typeOfLastMember) \
 u8 __##currentOffset##padding[(currentOffset) - (lastOffset) - sizeof(typeOfLastMember)]
+
+#define BATTER_MAX_CHARGE (1.f)
+#define BATTER_MIN_CHARGE (0.f)
 
 typedef struct _VecXZ
 {
@@ -311,7 +314,6 @@ typedef struct _InMemBallType
     /*0x1A68*/ VecXYZ warioStarHitCoords[15];
     /*0x1B1C*/ VecXZ peachDaisyStarHitFielderLoc;
     /*0x1B24*/ VecXZ unused_garlicHitRelated;
-    /*0x1B28*/ f32 _1B28;
     /*0x1B2C*/ VecXYZ diveCatchLocationOffset;
     /*0x1B38*/ VecXYZ fielderActionCatchCoords;
     /*0x1B44*/ s32 collisionCode;
@@ -543,5 +545,10 @@ extern InMemPitcherType inMemPitcher;
 extern InMemBallType inMemBall;
 extern InMemRunnerType inMemRunner[4];
 extern InMemBatterType inMemBatter;
+
+extern s16 hittableFrameInd[2][15];
+extern f32 batContactRange[2][2];
+extern s16 hittableFrameInd[2][15];
+extern f32 batContactRange[2][2];
 
 #endif // !__UNKNOWN_HOMES_H_

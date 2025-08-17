@@ -1,12 +1,34 @@
 #include <types.h>
 #include "game/UnknownHomes.h"
 
-extern s16 hittableFrameInd[2][15];
-extern f32 batContactRange[2][2];
-extern s16 hittableFrameInd[2][15];
-extern f32 batContactRange[2][2];
+void fn_3_124DC()
+{
+    inMemBatter.nonCaptainStarSwingActivated = inMemBatter.noncaptainStarSwing;
+    switch(inMemBatter.noncaptainStarSwing)
+    {
+        case REGULAR_STAR_SWING_POPFLY:
+            inMemBatter.chargeUp = BATTER_MAX_CHARGE;
+            inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_CHARGE;
+            inMemBatter.didNonCaptainStarSwingConnect = true;
+            break;
+        case REGULAR_STAR_SWING_GROUNDER:
+            inMemBatter.chargeUp = BATTER_MAX_CHARGE;
+            inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_CHARGE;
+            inMemBatter.didNonCaptainStarSwingConnect = true;
+            break;
+        case REGULAR_STAR_SWING_LINEDRIVE:
+            inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
+            break;
+        break;
+    }
+}
 
-void CalculateIfHitBall() {
+void calculateHitVariables()
+{
+
+}
+
+void calculateIfHitBall() {
     f32 batterZ;
     f32 offs1, offs2, offs3;
     f32 ballFuturePosition;
@@ -51,4 +73,79 @@ void CalculateIfHitBall() {
     inMemBatter.hitContactPos.z = batterZ;
     inMemBatter.hitContactPos.y = inMemBatter.batPosition.y;
     inMemBatter.contactMadeInd = 1;
+}
+
+void ifBunt(void) {
+    if (inMemBatter.framesBuntHeld < S16_MAX - 1) {
+        inMemBatter.framesBuntHeld++;
+    } else {
+        inMemBatter.framesBuntHeld = S16_MAX;
+    }
+
+    if (inMemBatter.chargeStatus != CHARGE_SWING_STAGE_NONE) {
+        inMemBatter.buntStatus = BUNT_STATUS_NONE;
+        return;
+    } 
+    
+    if (inMemBatter.buntStatus == BUNT_STATUS_STARTING) {
+        if (inMemBatter.framesBuntHeld >= 8) {
+            if ((inMemPitcher.framesUntilUnhittable < 3) && (inMemBall.pitchHangtimeCounter > 0)) {
+                inMemBatter.buntStatus = BUNT_STATUS_RETREATING;
+                inMemBatter.framesBuntHeld = 300;
+            } else {
+                inMemBatter.buntStatus = BUNT_STATUS_SHOWING;
+            }
+        } else {
+            /* If released bunt within 8 frames if it starting */
+            if (!inMemBatter.isBunting) {
+                inMemBatter.buntStatus = BUNT_STATUS_RETREATING;
+                inMemBatter.framesBuntHeld = 300;
+            }
+        }
+        return;
+    }
+    
+    if (inMemBatter.buntStatus == BUNT_STATUS_SHOWING) {
+        inMemBatter.framesBuntHeld = 100;
+        if (!inMemBatter.isBunting) {
+            if (inMemBall.pitchHangtimeCounter > 0) {
+                if (inMemPitcher.framesUntilUnhittable > 15) {
+                    inMemBatter.buntStatus = BUNT_STATUS_7;
+                    inMemBatter.framesBuntHeld = 300;
+                } else {
+                    inMemBatter.buntStatus = BUNT_STATUS_LATE;
+                }
+            } else {
+                inMemBatter.buntStatus = BUNT_STATUS_RETREATING;
+                inMemBatter.framesBuntHeld = 300;
+            }
+        } else {
+            calculateIfHitBall();
+            if (inMemBatter.contactMadeInd) {
+                // issue here
+                inMemBatter.contactMadeInd = true;
+                inMemPitcher.strikeInd = true;
+                inMemBatter.hitGeneralType = inMemBatter.buntStatus = BUNT_STATUS_STRIKE;
+                calculateHitVariables();
+            } else if (inMemBatter.batPosition.z > inMemBall.AtBat_Contact_BallPos.z &&
+                       inMemBall.pitchHangtimeCounter > 1) {
+                inMemBatter.missedBuntStatus = 1;
+                inMemBatter.buntStatus = BUNT_STATUS_STRIKE;
+                inMemPitcher.strikeInd = true;
+                inMemBatter.missSwingOrBunt = DID_SWING_TYPE_BUNT;
+            }
+        }
+        return;
+    }
+    if (inMemBatter.buntStatus == BUNT_STATUS_RETREATING) {
+        if (inMemBatter.framesBuntHeld > 330) {
+            inMemBatter.buntStatus = BUNT_STATUS_NONE;
+        }
+        return;
+    } 
+    
+    if ((inMemBatter.buntStatus == BUNT_STATUS_7) && (inMemBatter.framesBuntHeld > 312)) {
+        inMemBatter.buntStatus = BUNT_STATUS_NONE;
+        return;
+    }
 }
