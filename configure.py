@@ -704,6 +704,7 @@ def link_order_callback(module_id: int, objects: List[str]) -> List[str]:
 # Uncomment to enable the link order callback.
 # config.link_order_callback = link_order_callback
 
+config.rel_strip_partial = False
 
 # Optional extra categories for progress tracking
 # Adjust as desired for your project
