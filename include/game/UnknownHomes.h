@@ -318,7 +318,7 @@ typedef struct _InMemBallType
     /*0x1B38*/ VecXYZ fielderActionCatchCoords;
     /*0x1B44*/ s32 collisionCode;
     /*0x1B48*/ f32 maybeCollisionRelated;
-    /*0x1B4C*/ u32 StaticRandomInt1;
+    /*0x1B4C*/ s32 StaticRandomInt1; /*Signed to match assembly*/
     /*0x1B50*/ u32 StaticRandomInt2;
     /*0x1B54*/ u32 StaticRandomInt1_prePitch;
     /*0x1B58*/ s16 airResistance; // 40
@@ -541,10 +541,236 @@ typedef struct _InMemPitcherType
     /*0x176*/ u8 unused_pitcherIsFielder; // unsure
 }InMemPitcherType; // size: 0x178
 
+
+
+
+typedef struct _GameInitVariables
+{
+    /*0x000*/ u32 _1;
+    /*0x004*/ u16 FrameCountWhileNotAtMainMenu;
+    /*0x006*/ u8 GameMode;
+    /*0x007*/ u8 GameModeSelected;
+    /*0x008*/ bool exhibitionMatchInd;
+    /*0x009*/ E(u8, STADIUM_IDS) StadiumID;
+    /*0x00A*/ u8 miniGameStadiumIndicator;
+    /*0x00B*/ u8 _B;
+    /*0x00C*/ u8 maybeHomeAway;
+    /*0x00D*/ u8 maybeHomeAway2;
+    /*0x00E*/ u8 home_AwaySetting;
+    /*0x00F*/ u8 _F;
+    /*0x010*/ u8 _10;
+    /*0x011*/ bool minigamesEnabled;
+    /*0x012*/ u8 _12;
+    /*0x013*/ u8 _13;
+    /*0x014*/ u8 _14;
+    /*0x015*/ u8 _15;
+    /*0x016*/ u8 _16;
+    /*0x017*/ u8 _17;
+    /*0x018*/ u8 _18;
+    /*0x019*/ u8 _19;
+    /*0x01A*/ u8 _1A;
+    /*0x01B*/ u8 _1B;
+    /*0x01C*/ u8 _1C;
+    /*0x01D*/ u8 _1D;
+    /*0x01E*/ u8 _1E;
+    /*0x01F*/ u8 _1F;
+    /*0x020*/ s16 _20[4];
+    /*0x030*/ s16 challengeMinigame_baseCoinsEarned;
+    /*0x032*/ u8 bJMatchRelated;
+    /*0x033*/ u8 _33;
+    /*0x034*/ u8 humanTeamNumber;
+    /*0x035*/ u8 const_1;
+    /*0x036*/ u8 _36;
+    /*0x037*/ u8 challengeDifficulty;
+    /*0x038*/ u8 _38;
+    /*0x039*/ u8 bJMatchInd;
+    /*0x03A*/ u8 _3A;
+    /*0x03B*/ u8 someChallengeModeFlag;
+    /*0x03C*/ u8 challengeCaptainStarBought[18];
+    /*0x04E*/ u8 _4E;
+    /*0x04F*/ u8 const_0;
+    /*0x050*/ u8 PlayerPorts[2];
+    /*0x052*/ u8 _52;
+    /*0x053*/ u8 _53;
+    /*0x054*/ E(u8, STADIUM_IDS) _54;
+    /*0x055*/ u8 _55;
+    /*0x056*/ u8 _56;
+    /*0x057*/ u8 _57;
+} GameInitVariables; // size: 0x58
+
+typedef struct _InputStruct
+{
+    /*0x000*/ s16 ControlStickAngle;
+    /*0x002*/ s16 ControlStickMagnitude;
+    /*0x004*/ E(s16,CONTROLLER_INPUTS) ControllerInput;
+    /*0x006*/ E(s16,CONTROLLER_INPUTS) newInputOnLatestFrame;
+    /*0x008*/ E(s16,CONTROLLER_INPUTS) pauseRelated_charSwap_stickInput; /*?unsure*/
+    /*0x00A*/ u8 Right_Left;
+    /*0x00B*/ u8 Up_Down;
+    /*0x00C*/ u8 RightTriggerHowFarPressed;
+    /*0x00D*/ u8 LeftTriggerHowFarPressed;
+    /*0x00E*/ s16 _E;
+} InputStruct; // size: 0x10
+
+
+typedef struct _PracticeStruct
+{
+    /*0x000*/ InputStruct inputs[2];
+    /*0x020*/ s32 ptr_commandList;  //Pointer?
+    /*0x024*/ s32 homeAway;
+    /*0x028*/ s32 unused[70];
+    /*0x140*/ s16 totalFrames;
+    /*0x142*/ s16 framesInCurrTransitionState;
+    /*0x144*/ s16 framesSincePracticeMenuDefaultTransition;
+    /*0x146*/ s16 practiceMenu_framesOnCurrMenuScreen;
+    /*0x148*/ s16 frames_sinceMovedTo_FromMenu;
+    /*0x14A*/ s16 _14A;
+    /*0x14C*/ s16 frames_sinceTimeCalled;
+    /*0x14E*/ s16 frames_onPauseScreen;
+    /*0x150*/ s16 frames_onPauseScreen_usedForAllowingCursorToMove;
+    /*0x152*/ s16 frames_countTo60_thenSetHitVarsForFieldingPractice;
+    /*0x154*/ s16 _154;
+    /*0x156*/ s16 _156;
+    /*0x158*/ s16 _158;
+    /*0x15A*/ s16 someCharID1;
+    /*0x15C*/ s16 someCharID2;
+    /*0x15E*/ s16 someCharID3;
+    /*0x160*/ s16 someCharID4;
+    /*0x162*/ s16 framesOnAllInstructions; /*?unsure*/
+    /*0x164*/ s16 _164;
+    /*0x166*/ s16 framesOnCurrInstruction;
+    /*0x168*/ s16 laukituTextChannelIndex;
+    /*0x16A*/ s16 lakituTextIndex;
+    /*0x16C*/ s16 lakituTextIndex_stored;
+    /*0x16E*/ s16 diagramTextChannelIndex;
+    /*0x170*/ s16 diagramTitleTextIndex;
+    /*0x172*/ s16 diagramTitleTextIndex_stored;
+    /*0x174*/ s16 cpuCommandDuration;
+    /*0x176*/ s16 maybeInputResetCountdown;
+    /*0x178*/ s16 maybePreviousInput;
+    /*0x17A*/ s16 _17A;
+    /*0x17C*/ s16 cpu_inputDuration; /*?unsure*/
+    /*0x17E*/ s16 _17E;
+    /*0x180*/ s16 practice_hitHorizontalPower;
+    /*0x182*/ s16 practice_hitVerticalAngle;
+    /*0x184*/ s16 practice_hitHorizontalAngle;
+    /*0x186*/ s16 _186;
+    /*0x188*/ s16 _188;
+    /*0x18A*/ s16 maybeCommandData[4];
+    /*0x192*/ u8 _192;
+    /*0x193*/ u8 practiceType_2;
+    /*0x194*/ u8 practiceLevel;
+    /*0x195*/ E(u8, PRACTICE_STATE) practiceState;
+    /*0x196*/ E(u8, TUTORIAL_STATE) tutorialState;
+    /*0x197*/ u8 _197;
+    /*0x198*/ u8 practiceType_plusone;
+    /*0x199*/ u8 practiceType;
+    /*0x19A*/ u8 subMenuCursor;
+    /*0x19B*/ u8 _19B;
+    /*0x19C*/ u8 _19C;
+    /*0x19D*/ u8 _19D;
+    /*0x19E*/ u8 pauseMenuLoading; /*?unsure*/
+    /*0x19F*/ u8 _19F;
+    /*0x1A0*/ u8 _1A0;
+    /*0x1A1*/ u8 aIEnabled;
+    /*0x1A2*/ u8 practiceBatterHandedness; /*?unsure*/
+    /*0x1A3*/ u8 freePracticeInd_writeOnly;
+    /*0x1A4*/ u8 _1A4;
+    /*0x1A5*/ u8 _1A5;
+    /*0x1A6*/ u8 _1A6;
+    /*0x1A7*/ u8 _1A7;
+    /*0x1A8*/ u8 _1A8;
+    /*0x1A9*/ u8 _1A9;
+    /*0x1AA*/ u8 transitioningIndicator; /*?unsure*/
+    /*0x1AB*/ u8 _1AB;
+    /*0x1AC*/ u8 _1AC;
+    /*0x1AD*/ u8 _1AD;
+    /*0x1AE*/ u8 _1AE;
+    /*0x1AF*/ u8 returnToPracticeMenuState;
+    /*0x1B0*/ u8 _1B0;
+    /*0x1B1*/ u8 _1B1;
+    /*0x1B2*/ u8 _1B2;
+    /*0x1B3*/ u8 _1B3;
+    /*0x1B4*/ u8 _1B4;
+    /*0x1B5*/ u8 _1B5;
+    /*0x1B6*/ u8 _1B6;
+    /*0x1B7*/ u8 _1B7;
+    /*0x1B8*/ u8 _1B8;
+    /*0x1B9*/ u8 _1B9;
+    /*0x1BA*/ u8 _1BA;
+    /*0x1BB*/ u8 _1BB;
+    /*0x1BC*/ u8 _1BC;
+    /*0x1BD*/ u8 _1BD;
+    /*0x1BE*/ u8 _1BE;
+    /*0x1BF*/ u8 _1BF;
+    /*0x1C0*/ u8 _1C0;
+    /*0x1C1*/ u8 _1C1;
+    /*0x1C2*/ s8 instructionNumber; // Must be signed to match assembly
+    /*0x1C3*/ u8 readyToMoveToNextInstruction; /*?unsure*/
+    /*0x1C4*/ u8 practice_runner_countInputForMashing;
+    /*0x1C5*/ u8 practice_fielding_enableSprinting;
+    /*0x1C6*/ u8 _1C6;
+    /*0x1C7*/ u8 _1C7;
+    /*0x1C8*/ u8 guidedPracticeCompletionRelated;
+    /*0x1C9*/ u8 guidedPracticeCompletionRelated2;
+    /*0x1CA*/ u8 guidedPracticeCounter;
+    /*0x1CB*/ u8 _1CB;
+    /*0x1CC*/ u8 currentMessageDoneTyping;
+    /*0x1CD*/ u8 commandIndex;
+    /*0x1CE*/ u8 allInstructionsComplete;
+    /*0x1CF*/ u8 instructionComplete,readyToAdvance;
+    /*0x1D0*/ u8 allowPlayToEndIndicator;
+    /*0x1D1*/ u8 maybeControlFlag1;
+    /*0x1D2*/ u8 textRelatedIndicator;
+    /*0x1D3*/ u8 maybeControlFlag2;
+    /*0x1D4*/ u8 loadingGuidedPractice; /*?unsure*/
+    /*0x1D5*/ u8 _1D5;
+    /*0x1D6*/ u8 practiceLevel_2;
+    /*0x1D7*/ u8 _1D7;
+    /*0x1D8*/ u8 _1D8;
+    /*0x1D9*/ u8 _1D9;
+    /*0x1DA*/ u8 _1DA;
+    /*0x1DB*/ u8 always0; /*?unsure*/
+    /*0x1DC*/ u8 _1DC;
+    /*0x1DD*/ u8 _1DD;
+    /*0x1DE*/ u8 _1DE;
+    /*0x1DF*/ u8 _1DF;
+    /*0x1E0*/ u8 _1E0;
+    /*0x1E1*/ u8 hitVariablesSetIndicator;
+    /*0x1E2*/ u8 _1E2;
+    /*0x1E3*/ u8 aiBuntIndicator; /*?unsure*/
+    /*0x1E4*/ u8 _1E4;
+    /*0x1E5*/ u8 _1E5;
+    /*0x1E6*/ u8 _1E6;
+    /*0x1E7*/ u8 _1E7;
+    /*0x1E8*/ u8 _1E8;
+    /*0x1E9*/ u8 _1E9;
+    /*0x1EA*/ u8 _1EA;
+    /*0x1EB*/ u8 _1EB;
+    /*0x1EC*/ u8 unknown_always0;
+    /*0x1ED*/ u8 _1ED;
+    /*0x1EE*/ u8 _1EE;
+    /*0x1EF*/ u8 maybeRosterID; /*?unsure*/
+
+
+} PracticeStruct; // size: 0x1A2
+
+static const s8 buntPower[5][2] = {
+    { 80, 100 }, // HIT_CONTACT_TYPE_RIGHT_SOUR
+    { 60, 80 },  // HIT_CONTACT_TYPE_RIGHT_NICE
+    { 40, 60 },  // HIT_CONTACT_TYPE_PERFECT
+    { 60, 80 },  // HIT_CONTACT_TYPE_LEFT_NICE
+    { 80, 100 }  // HIT_CONTACT_TYPE_LEFT_SOUR
+};
+
+
 extern InMemPitcherType inMemPitcher;
 extern InMemBallType inMemBall;
 extern InMemRunnerType inMemRunner[4];
 extern InMemBatterType inMemBatter;
+
+extern GameInitVariables gameInitVariables;
+extern PracticeStruct practiceStruct;
 
 extern s16 hittableFrameInd[2][15];
 extern f32 batContactRange[2][2];

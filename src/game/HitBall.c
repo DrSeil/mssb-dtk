@@ -149,3 +149,35 @@ void ifBunt(void) {
         return;
     }
 }
+
+
+// Not confident this is bunt over hit, but Ghidra suggests bunt
+static void calculateBuntHorizontalPower(void) {
+    s32 min_power, max_power, diff, horizontal_power;
+
+    min_power = (u8)buntPower[inMemBatter.contactType][0];
+    max_power = (u8)buntPower[inMemBatter.contactType][1];
+
+    diff = max_power - min_power;
+
+    horizontal_power = inMemBall.StaticRandomInt1 % diff;
+    horizontal_power += min_power;
+    inMemBall.Hit_HorizontalPower = horizontal_power;
+
+    if (gameInitVariables.GameModeSelected == 2) {
+        if (practiceStruct.instructionNumber >= 0) {
+            inMemBall.Hit_HorizontalPower = practiceStruct.practice_hitHorizontalPower;
+        }
+    }
+}
+
+
+void initializeInMemBatter()
+{
+    inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
+    inMemBatter.slapContactSize_raw = 100;
+    inMemBatter.chargeContactSize_raw = 100;
+    inMemBatter.slapHitPower_raw = 100;
+    inMemBatter.chargeHitPower_raw = 100;
+    inMemBatter.batterHand = BATTING_HAND_RIGHT;
+}

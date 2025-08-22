@@ -243,6 +243,68 @@ typedef enum _BALL_RESULT_TYPE {
     BALL_RESULT_TYPE_CAUGHT
 } BALL_RESULT_TYPE;
 
+typedef enum STADIUM_IDS
+{
+    MarioStadium,
+    BowserCastle,
+    WarioPalace,
+    YoshiPark,
+    PeachGarden,
+    DKJungle,
+    ToyField,
+} STADIUM_IDS;
+
+// 0_switchToTopMenu4/switchToSubMenu+loadfield,goTo1/newAB?	0	
+// 1_/checkSomething,delay,goTo2	1	
+// 2_changeScene,goTo3/subMenuControl	2	
+// 3_delay30Frames,goTo4/switchToField,goTo4	3	
+// 4_mainMenuControl/loadPracticeOnField	4	
+// 5_checkSomething,goTo6/returnToTopMenu,goTo6	5	
+// 6_setPracticeConsts,goTo0/returnToTopMenu2,goTo7	6	
+// 7_exitToMenuQuestion/returnToTopMenu3,goTo0	7	
+// 8_exitToMainMenu	8	
+
+typedef enum PRACTICE_STATE {
+SwitchToTopMenu,
+checkSomething,
+ChangeScene,
+Delay30Frames,
+MainMenuControl,
+ReturnToMenu,
+SetPracticeConsts,
+ExitToMenuQuestion,
+ExitToMainMenu,
+} PRACTICE_STATE;
+
+// menu/na	0	
+// givingInstruction	1	
+// transitionToPlayerControl	2	
+// playerHasControl	3	
+
+typedef enum TUTORIAL_STATE {
+    Menu,
+    GivingInstruction,
+    TransitionToPlayerControl,
+    PlayerHasControl,
+} TUTORIAL_STATE;
+
+
+typedef enum CONTROLLER_INPUTS{
+        LEFT = 1,
+    RIGHT = 2,
+    DOWN = 4,
+    UP = 8,
+    Z = 16,
+    RIGHT_TRIGGER = 32,
+    LEFT_TRIGGER = 64,
+    UNKNOWN = 128,
+    A = 256,
+    B = 512,
+    X = 1024,
+    Y = 2048,
+    START = 4096
+} CONTROLLER_INPUTS;
+
 typedef s16 frame_t;
 typedef s16 sAng;
 
