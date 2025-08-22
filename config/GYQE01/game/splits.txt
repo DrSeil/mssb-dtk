@@ -6,6 +6,338 @@ Sections:
 	.data       type:data align:32
 	.bss        type:bss align:32
 
+game/rep_0.c:
+	.rodata     start:0x00000000 end:0x00000008
+
+game/rep_8.c:
+	.rodata     start:0x00000008 end:0x00000010
+
+game/rep_10.c:
+	.rodata     start:0x00000010 end:0x00000060
+
+game/rep_60.c:
+	.rodata     start:0x00000060 end:0x000000D0
+
+game/rep_D0.c:
+	.rodata     start:0x000000D0 end:0x00000140
+
+game/rep_140.c:
+	.text       start:0x00002D6C end:0x000035D4
+	.rodata     start:0x00000140 end:0x000001C0
+
+game/rep_1C0.c:
+	.text       start:0x00003904 end:0x000053E0
+	.rodata     start:0x000001C0 end:0x00000540
+
+game/rep_540.c:
+	.text       start:0x0000A198 end:0x0000DC48
+	.rodata     start:0x00000540 end:0x00000680
+
 game/HitBall.c:
 	.text       start:0x000102C8 end:0x00014BB4
 	.rodata     start:0x00000680 end:0x00000720
+
+game/rep_720.c:
+	.text       start:0x00014BB4 end:0x0001C684
+	.rodata     start:0x00000720 end:0x00000868
+
+game/rep_868.c:
+	.text       start:0x0001DEB8 end:0x0001E154
+	.rodata     start:0x00000868 end:0x000008C8
+
+game/rep_8C8.c:
+	.text       start:0x0001E4B8 end:0x00020A60
+	.rodata     start:0x000008C8 end:0x00000940
+
+game/rep_940.c:
+	.text       start:0x00020CEC end:0x00021768
+	.rodata     start:0x00000940 end:0x000009B0
+
+game/rep_9B0.c:
+	.rodata     start:0x000009B0 end:0x00000A00
+
+game/rep_A00.c:
+	.text       start:0x00024708 end:0x000249E8
+	.rodata     start:0x00000A00 end:0x00000A78
+
+game/rep_A78.c:
+	.rodata     start:0x00000A78 end:0x00000AC8
+
+game/rep_AC8.c:
+	.text       start:0x00025C40 end:0x0005985C
+	.rodata     start:0x00000AC8 end:0x00000CC8
+
+game/rep_CC8.c:
+	.rodata     start:0x00000CC8 end:0x00000D18
+
+game/rep_D18.c:
+	.rodata     start:0x00000D18 end:0x00000D68
+
+game/rep_D68.c:
+	.rodata     start:0x00000D68 end:0x00000DB8
+
+game/rep_DB8.c:
+	.rodata     start:0x00000DB8 end:0x00000E08
+
+game/rep_E08.c:
+	.text       start:0x00060A98 end:0x00060D80
+	.rodata     start:0x00000E08 end:0x00000EA0
+
+game/rep_EA0.c:
+	.text       start:0x000675B8 end:0x000695F8
+	.rodata     start:0x00000EA0 end:0x00000F80
+
+game/rep_F80.c:
+	.rodata     start:0x00000F80 end:0x00000FE0
+
+game/rep_FE0.c:
+	.rodata     start:0x00000FE0 end:0x00001038
+
+game/rep_1038.c:
+	.rodata     start:0x00001038 end:0x00001090
+
+game/rep_1090.c:
+	.rodata     start:0x00001090 end:0x000010E8
+
+game/rep_10E8.c:
+	.text       start:0x0006CD88 end:0x0006D4A0
+	.rodata     start:0x000010E8 end:0x00001188
+
+game/rep_1188.c:
+	.text       start:0x0006D6D4 end:0x0006F4E8
+	.rodata     start:0x00001188 end:0x00001200
+
+game/rep_1200.c:
+	.text       start:0x0006FDA0 end:0x00074AC4
+	.rodata     start:0x00001200 end:0x000012D0
+
+game/rep_12D0.c:
+	.rodata     start:0x000012D0 end:0x00001330
+
+game/rep_1330.c:
+	.text       start:0x0007C4E4 end:0x0007C7AC
+	.rodata     start:0x00001330 end:0x000013B8
+
+game/rep_13B8.c:
+	.text       start:0x00080028 end:0x00089864
+	.rodata     start:0x000013B8 end:0x00001508
+
+game/rep_1508.c:
+	.text       start:0x0008BA60 end:0x00090220
+	.rodata     start:0x00001508 end:0x00001610
+
+game/rep_1610.c:
+	.rodata     start:0x00001610 end:0x00001668
+
+game/rep_1668.c:
+	.rodata     start:0x00001668 end:0x000016B8
+
+game/rep_16B8.c:
+	.text       start:0x00091520 end:0x00097144
+	.rodata     start:0x000016B8 end:0x00001720
+
+game/rep_1720.c:
+	.rodata     start:0x00001720 end:0x00001770
+
+game/rep_1770.c:
+	.text       start:0x00099818 end:0x00099BDC
+	.rodata     start:0x00001770 end:0x000017E0
+
+game/rep_17E0.c:
+	.rodata     start:0x000017E0 end:0x00001838
+
+game/rep_1838.c:
+	.text       start:0x0009EAE4 end:0x000A009C
+	.rodata     start:0x00001838 end:0x000018E8
+
+game/rep_18E8.c:
+	.text       start:0x000A009C end:0x000AC9F8
+	.rodata     start:0x000018E8 end:0x00001A80
+
+game/rep_1A80.c:
+	.rodata     start:0x00001A80 end:0x00001AD0
+
+game/rep_1AD0.c:
+	.rodata     start:0x00001AD0 end:0x00001B20
+
+game/rep_1B20.c:
+	.rodata     start:0x00001B20 end:0x00001B70
+
+game/rep_1B70.c:
+	.rodata     start:0x00001B70 end:0x00001BC8
+
+game/rep_1BC8.c:
+	.rodata     start:0x00001BC8 end:0x00001C18
+
+game/rep_1C18.c:
+	.rodata     start:0x00001C18 end:0x00001C68
+
+game/rep_1C68.c:
+	.rodata     start:0x00001C68 end:0x00001CB8
+
+game/rep_1CB8.c:
+	.text       start:0x000B7E44 end:0x000B7EF0
+	.rodata     start:0x00001CB8 end:0x00001D58
+
+game/rep_1D58.c:
+	.text       start:0x000B8828 end:0x000B8C08
+	.rodata     start:0x00001D58 end:0x00001E08
+
+game/rep_1E08.c:
+	.text       start:0x000BA7F4 end:0x000C0770
+	.rodata     start:0x00001E08 end:0x00001F58
+
+game/rep_1F58.c:
+	.text       start:0x000C095C end:0x000C1930
+	.rodata     start:0x00001F58 end:0x00001FD8
+
+game/rep_1FD8.c:
+	.text       start:0x000C19C8 end:0x000C805C
+	.rodata     start:0x00001FD8 end:0x000021F8
+
+game/rep_21F8.c:
+	.rodata     start:0x000021F8 end:0x00002288
+
+game/rep_2288.c:
+	.rodata     start:0x00002288 end:0x00002308
+
+game/rep_2308.c:
+	.text       start:0x000CABF0 end:0x000CAE00
+	.rodata     start:0x00002308 end:0x00002390
+
+game/rep_2390.c:
+	.rodata     start:0x00002390 end:0x000023E8
+
+game/rep_23E8.c:
+	.rodata     start:0x000023E8 end:0x00002448
+
+game/rep_2448.c:
+	.text       start:0x000CC438 end:0x000D8A10
+	.rodata     start:0x00002448 end:0x000028A8
+
+game/rep_28A8.c:
+	.text       start:0x000DA640 end:0x000DC240
+	.rodata     start:0x000028A8 end:0x00002940
+
+game/rep_2940.c:
+	.rodata     start:0x00002940 end:0x00002998
+
+game/rep_2998.c:
+	.text       start:0x000E2E78 end:0x000E4554
+	.rodata     start:0x00002998 end:0x00002B40
+
+game/rep_2B40.c:
+	.text       start:0x000E5CBC end:0x000E5E14
+	.rodata     start:0x00002B40 end:0x00002BF8
+
+game/rep_2BF8.c:
+	.text       start:0x000E9D30 end:0x000EA340
+	.rodata     start:0x00002BF8 end:0x00002C60
+
+game/rep_2C60.c:
+	.text       start:0x000EE388 end:0x000F466C
+	.rodata     start:0x00002C60 end:0x00002F68
+
+game/rep_2F68.c:
+	.text       start:0x000F85B0 end:0x000FBCD0
+	.rodata     start:0x00002F68 end:0x00003090
+
+game/rep_3090.c:
+	.text       start:0x000FCF24 end:0x001054CC
+	.rodata     start:0x00003090 end:0x000031A0
+
+game/rep_31A0.c:
+	.rodata     start:0x000031A0 end:0x000031F0
+
+game/rep_31F0.c:
+	.text       start:0x00110634 end:0x00112BD8
+	.rodata     start:0x000031F0 end:0x00003290
+
+game/rep_3290.c:
+	.text       start:0x001133C4 end:0x00114FC0
+	.rodata     start:0x00003290 end:0x00003310
+
+game/rep_3310.c:
+	.text       start:0x00116840 end:0x0011B75C
+	.rodata     start:0x00003310 end:0x00003448
+
+game/rep_3448.c:
+	.text       start:0x0011EC28 end:0x001293D0
+	.rodata     start:0x00003448 end:0x000034B0
+
+game/rep_34B0.c:
+	.text       start:0x0012E8FC end:0x00132EDC
+	.rodata     start:0x000034B0 end:0x00003520
+
+game/rep_3520.c:
+	.text       start:0x0013334C end:0x0013C464
+	.rodata     start:0x00003520 end:0x000036D8
+
+game/rep_36D8.c:
+	.text       start:0x0013C7BC end:0x0013F484
+	.rodata     start:0x000036D8 end:0x000037A8
+
+game/rep_37A8.c:
+	.text       start:0x00142DB4 end:0x001453BC
+	.rodata     start:0x000037A8 end:0x00003880
+
+game/rep_3880.c:
+	.text       start:0x0014737C end:0x00157DB8
+	.rodata     start:0x00003880 end:0x00003A48
+
+game/rep_3A48.c:
+	.rodata     start:0x00003A48 end:0x00003A98
+
+game/rep_3A98.c:
+	.rodata     start:0x00003A98 end:0x00003AE8
+
+game/rep_3AE8.c:
+	.text       start:0x0015B79C end:0x0015C230
+	.rodata     start:0x00003AE8 end:0x00003B70
+
+game/rep_3B70.c:
+	.text       start:0x0015C3F8 end:0x0015C5F4
+	.rodata     start:0x00003B70 end:0x00003BD8
+
+game/rep_3BD8.c:
+	.rodata     start:0x00003BD8 end:0x00003C28
+
+game/rep_3C28.c:
+	.rodata     start:0x00003C28 end:0x00003C80
+
+game/rep_3C80.c:
+	.text       start:0x0015F648 end:0x0015F874
+	.rodata     start:0x00003C80 end:0x00003CE0
+
+game/rep_3CE0.c:
+	.text       start:0x0015FB84 end:0x0015FF28
+	.rodata     start:0x00003CE0 end:0x00003D50
+
+game/rep_3D50.c:
+	.rodata     start:0x00003D50 end:0x00003DA8
+
+game/rep_3DA8.c:
+	.rodata     start:0x00003DA8 end:0x00003E00
+
+game/rep_3E00.c:
+	.rodata     start:0x00003E00 end:0x00003E58
+
+game/rep_3E58.c:
+	.text       start:0x001666B0 end:0x00167CC4
+	.rodata     start:0x00003E58 end:0x00003F60
+
+game/rep_3F60.c:
+	.text       start:0x00168414 end:0x001690C0
+	.rodata     start:0x00003F60 end:0x00003FD8
+
+game/rep_3FD8.c:
+	.text       start:0x0016A07C end:0x0016C394
+	.rodata     start:0x00003FD8 end:0x00004090
+
+game/rep_4090.c:
+	.text       start:0x0016C548 end:0x0016D4D8
+	.rodata     start:0x00004090 end:0x00004138
+
+game/rep_4138.c:
+	.text       start:0x0016D810 end:0x0016DFC4
+	.rodata     start:0x00004138 end:0x000041B8

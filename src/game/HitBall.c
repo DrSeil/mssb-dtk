@@ -1,6 +1,5 @@
 #include "game/HitBall.h"
 #include "game/UnknownHomes.h"
-#include "math.h"
 #include "header_rep_data.h"
 
 #define FRAME_COUNT_HOLD_FOR_BUNT 8
@@ -45,6 +44,7 @@ static void starHitSetting_unused(void) {
 
 // .text:0x00010470 size:0x40C mapped:0x8064f504
 void calculateBallVelocityAcceleration(void) {
+    // UNFINISHED
     f32 power = inMemBall.Hit_HorizontalPower / 2.f;
     f32 horizontalAngle = angle4096_toRad(inMemBall.Hit_HorizontalAngle);
     f32 verticalAngle = angle4096_toRad(inMemBall.Hit_VerticalAngle);
