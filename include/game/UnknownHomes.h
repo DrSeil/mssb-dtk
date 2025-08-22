@@ -4,6 +4,9 @@
 #include "mssbTypes.h"
 #include "Dolphin/pad.h"
 
+#define SINF(x) ((f32)sin(x))
+#define COSF(x) ((f32)cos(x))
+
 #define BATTER_MAX_CHARGE (1.f)
 #define BATTER_MIN_CHARGE (0.f)
 

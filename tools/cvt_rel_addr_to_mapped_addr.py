@@ -22,7 +22,7 @@ def get_curr_offset(name:str):
 
 def main():
     symbol_name = argv[1]
-    print(f"{get_curr_offset(symbol_name):x}")
+    print(f"0x{get_curr_offset(symbol_name):x}")
 
 if __name__ == "__main__":
     main()

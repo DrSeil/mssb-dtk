@@ -11,6 +11,7 @@
 #define FRAME_COUNT_BUNT_RETREAT (FRAME_COUNT_BEGIN_RETREATING + 30)
 #define FRAME_COUNT_BUNT_LATE_RETREAT (FRAME_COUNT_BEGIN_RETREATING + 12)
 
+// UNUSED .text:0x000102C8 size:0x1A8 mapped:0x8064f35c
 static void starHitSetting_unused(void) {
     E(u8, CAPTAIN_STAR_TYPE) starType = (s8)inMemBatter.captainStarSwingActivated;
     inMemBall.inAirOrBefore2ndBounceOrLowBallEnergy = false;
@@ -42,12 +43,13 @@ static void starHitSetting_unused(void) {
     }
 }
 
+// .text:0x00010470 size:0x40C mapped:0x8064f504
 void calculateBallVelocityAcceleration(void) {
     f32 power = inMemBall.Hit_HorizontalPower / 2.f;
     f32 horizontalAngle = angle4096_toRad(inMemBall.Hit_HorizontalAngle);
     f32 verticalAngle = angle4096_toRad(inMemBall.Hit_VerticalAngle);
-    f32 s_verticalAngle = sinf(verticalAngle) * cosf(verticalAngle);
-    f32 c_horizontalAngle = cosf(horizontalAngle) *  sinf(horizontalAngle);
+    f32 s_verticalAngle = COSF(verticalAngle) * SINF(verticalAngle);
+    f32 c_horizontalAngle = SINF(horizontalAngle) * COSF(horizontalAngle);
     inMemBall.physicsSubstruct.velocity.x = (c_horizontalAngle * power) / 100.f;
     inMemBall.physicsSubstruct.acceleration.y = inMemBall.hittingAddedGravityFactor;
     inMemBall.physicsSubstruct.velocity.y = (s_verticalAngle * power) / 100.f;
@@ -60,6 +62,7 @@ void calculateBallVelocityAcceleration(void) {
     estimateAndSetFutureCoords(2);
 }
 
+// .text:0x0001087C size:0x7C mapped:0x8064f910
 void calculateBuntHorizontalPower(void) {
    s32 min_power, max_power, diff, horizontal_power;
 
@@ -77,25 +80,32 @@ void calculateBuntHorizontalPower(void) {
     }
 }
 
+// UNUSED .text:0x000108F8 size:0x188 mapped:0x8064f98c
 static void calculateBallHorizontalAngle_unused(void) {
 }
 
+// UNUSED .text:0x00010A80 size:0x280 mapped:0x8064fb14
 void calculateBuntHorizontalAngle(void) {
 }
 
+// .text:0x00010D00 size:0x768 mapped:0x8064fd94
 void calculateHorizontalPower(void) {
 }
 
+// .text:0x00011468 size:0x734 mapped:0x806504fc
 void calculateVerticalAngle(void) {
 }
 
+// .text:0x00011B9C size:0x334 mapped:0x80650c30
 void calculateBallHorizontalAngleHit(void) {
 }
 
+// .text:0x00011ED0 size:0x60C mapped:0x80650f64
 void calculateContactAndHitType(void) {
 }
 
-void fn_3_124DC(void) {
+// UNUSED .text:0x000124DC size:0x78 mapped:0x80650f64
+static void fn_3_124DC(void) {
     inMemBatter.nonCaptainStarSwingActivated = inMemBatter.noncaptainStarSwing;
     switch (inMemBatter.noncaptainStarSwing) {
         case REGULAR_STAR_SWING_POPFLY:
@@ -115,9 +125,11 @@ void fn_3_124DC(void) {
     }
 }
 
+// .text:0x00012554 size:0x760 mapped:0x806515e8
 void calculateHitVariables(void) {
 }
 
+// .text:0x00012CB4 size:0x128 mapped:0x80651d48
 void calculateIfHitBall(void) {
     f32 batterZ;
     f32 ballFuturePosition;
@@ -173,6 +185,7 @@ void calculateIfHitBall(void) {
     inMemBatter.contactMadeInd = true;
 }
 
+// .text:0x00012DDC size:0x22C mapped:0x80651e70
 void ifBunt(void) {
     if (inMemBatter.framesBuntHeld < S16_MAX - 1) {
         inMemBatter.framesBuntHeld++;
@@ -248,36 +261,47 @@ void ifBunt(void) {
     }
 }
 
+// .text:0x00013008 size:0x254 mapped:0x80651e70
 void starSwingSpendStars(void) {
 }
 
+// .text:0x0001325C size:0x3B8 mapped:0x806522f0
 void ifSwing(void) {
 }
 
-void fn_3_13614(void) {
+// UNUSED .text:0x00013614 size:0x188 mapped:0x806526a8
+static void fn_3_13614(void) {
 }
 
+// UNUSED .text:0x0001379C size:0x204 mapped:0x80652830
 static void batterPreSwing_unused(void) {
 }
 
+// .text:0x000139A0 size:0x3F4 mapped:0x80652a34
 void batterInBoxMovement(void) {
 }
 
+// .text:0x00013D94 size:0x528 mapped:0x80652e28
 void batterHumanControlled(void) {
 }
 
+// .text:0x000142BC size:0xCC mapped:0x80653350
 void updateBallHittableZoneStatus(void) {
 }
 
+// .text:0x00014388 size:0xCC mapped:0x8065341c
 void someAnimationIndFunction(void) {
 }
 
+// .text:0x00014454 size:0x270 mapped:0x806534e8
 void setDefaultInMemBatter(void) {
 }
 
+// .text:0x000146C4 size:0x168 mapped:0x80653758
 void setBatterContactConstants(void) {
 }
 
+// .text:0x0001482C size:0x2C mapped:0x806538c0
 void initializeInMemBatter(void) {
     inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
     inMemBatter.slapContactSize_raw = 100;
@@ -287,5 +311,6 @@ void initializeInMemBatter(void) {
     inMemBatter.batterHand = BATTING_HAND_RIGHT;
 }
 
+// .text:0x00014858 size:0x35C mapped:0x806538ec
 void atBat_batter(void) {
 }
