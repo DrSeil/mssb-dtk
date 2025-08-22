@@ -1,33 +1,25 @@
 #ifndef __UNKNOWN_HOMES_H_
 #define __UNKNOWN_HOMES_H_
+
 #include "mssbTypes.h"
-
-#define ARRAY_COUNT(x) (sizeof(x) / (*(x)))
-#define OFFSET_OF(structName, field) (size_t)(&(((structName*)NULL)->field))
-
-#define artificial_padding(lastOffset, currentOffset, typeOfLastMember) \
-u8 __##currentOffset##padding[(currentOffset) - (lastOffset) - sizeof(typeOfLastMember)]
+#include "Dolphin/pad.h"
 
 #define BATTER_MAX_CHARGE (1.f)
 #define BATTER_MIN_CHARGE (0.f)
 
-typedef struct _VecXZ
-{
+typedef struct _VecXZ {
     f32 x, z;
 } VecXZ;
 
-typedef struct _VecXYZ
-{
+typedef struct _VecXYZ {
     f32 x, y, z;
 } VecXYZ;
 
-typedef struct _Orientationf
-{
+typedef struct _Orientationf {
     s16 yaw, pitch, roll;
 } Orientationf;
 
-typedef struct _InMemBatterType
-{
+typedef struct _InMemBatterType {
     /*0x00*/ VecXZ batterPos;
     /*0x08*/ VecXYZ batPosition; // with x offset
     /*0x14*/ u8 _14[0x10];
@@ -112,8 +104,7 @@ typedef struct _InMemBatterType
     /*0xAF*/ E(u8, REGULAR_STAR_SWING) nonCaptainStarSwingActivated;
 } InMemBatterType; // size: 0xb0
 
-typedef struct _InMemRunnerType
-{
+typedef struct _InMemRunnerType {
     /*0x000*/ VecXYZ position;
     /*0x00C*/ VecXYZ positionStored;
     /*0x018*/ VecXYZ velocity;
@@ -150,7 +141,7 @@ typedef struct _InMemRunnerType
     /*0x0C0*/ f32 mashVeloAdjustment;
     /*0x0C4*/ f32 maxMashVeloAdjustment; // 0.02
     /*0x0C8*/ f32 mashPercent;
-    /*0x0CC*/ f32 percentAddedPerMash; // 0.2
+    /*0x0CC*/ f32 percentAddedPerMash;                  // 0.2
     /*0x0D0*/ f32 stamina_MashPercentTakenAwayPerFrame; // 0.2
     /*0x0D4*/ f32 staminaMult;
     /*0x0D8*/ f32 accelerationStaminaEffect;
@@ -206,7 +197,7 @@ typedef struct _InMemRunnerType
     /*0x12D*/ u8 forcedToAdvanceInd; // maybe
     /*0x12E*/ u8 unused_someBaseNum;
     /*0x12F*/ u8 baseOfFailedBodyCheck; // maybe
-    /*0x130*/ u8 tagType; // 1=Running 2=Sliding
+    /*0x130*/ u8 tagType;               // 1=Running 2=Sliding
     /*0x131*/ u8 runnerDidntReachOnError;
     /*0x132*/ u8 isEligibleToScore; // maybe
     /*0x133*/ u8 leadOffStatus;
@@ -233,8 +224,8 @@ typedef struct _InMemRunnerType
     /*0x148*/ u8 turningAroundInd; // maybe
     /*0x149*/ u8 newButtonThisFrame_forMashPurposes;
     /*0x14A*/ u8 framesSinceLastMash;
-    /*0x14B*/ u8 FramesUntilNotSprinting; // 6?
-    /*0x14C*/ u8 someCollisionCheck; // maybe
+    /*0x14B*/ u8 FramesUntilNotSprinting;        // 6?
+    /*0x14C*/ u8 someCollisionCheck;             // maybe
     /*0x14D*/ u8 furthestBaseForcedToGoToOnWalk; // steal related
     /*0x14E*/ u8 stealingStatus;
     /*0x14F*/ u8 framesSinceStealInput;
@@ -242,16 +233,14 @@ typedef struct _InMemRunnerType
     /*0x151*/ u8 _151;
     /*0x152*/ u8 miniGamePlayerNum;
     /*0x153*/ u8 scoredOnGRD; // maybe
-} InMemRunnerType; // size: 0x154
+} InMemRunnerType;            // size: 0x154
 
-typedef struct _CoordAndDist
-{
+typedef struct _CoordAndDist {
     VecXYZ pos;
     f32 dist;
 } CoordAndDist;
 
-typedef struct 
-{
+typedef struct {
     /*0x000*/ VecXYZ startOfWallJumpChecksMaybe[33];
     artificial_padding(0, 0x198, VecXYZ[33]);
     /*0x198*/ VecXYZ velocity;
@@ -265,8 +254,7 @@ typedef struct
     CoordAndDist futureCoordsAndDist[360];
 } pastAndFutureCoordsWallJumpRelated;
 
-typedef struct _matchShorts
-{
+typedef struct _matchShorts {
     /*0x00*/ s16 framesAfterReceivingThrow; // unsure
     /*0x02*/ s16 ballAndFielderOnBaseFrames;
     /*0x04*/ s16 ballOverWallFrames;
@@ -282,8 +270,7 @@ typedef struct _matchShorts
     /*0x1C*/ s16 framesInsidePlant;
 } matchShorts;
 
-typedef struct _InMemBallType
-{
+typedef struct _InMemBallType {
     /*0x0000*/ VecXYZ AtBat_Contact_BallPos;
     /*0x000C*/ VecXYZ offsetWhilePickedUpHistory[4];
     /*0x003C*/ VecXYZ pastCoordinates[27];
@@ -318,7 +305,7 @@ typedef struct _InMemBallType
     /*0x1B38*/ VecXYZ fielderActionCatchCoords;
     /*0x1B44*/ s32 collisionCode;
     /*0x1B48*/ f32 maybeCollisionRelated;
-    /*0x1B4C*/ u32 StaticRandomInt1;
+    /*0x1B4C*/ s32 StaticRandomInt1;
     /*0x1B50*/ u32 StaticRandomInt2;
     /*0x1B54*/ u32 StaticRandomInt1_prePitch;
     /*0x1B58*/ s16 airResistance; // 40
@@ -351,7 +338,7 @@ typedef struct _InMemBallType
     /*0x1B8E*/ s16 fielderWithBallIndexStored;
     /*0x1B90*/ s16 fielderWithBallIndexStored2;
     /*0x1B92*/ s16 fielderWhoGotLastOut; // unsure
-    /*0x1B94*/ s16 throwingFielder; // unsure, Maybe Cut off Related
+    /*0x1B94*/ s16 throwingFielder;      // unsure, Maybe Cut off Related
     /*0x1B96*/ s16 collisionRelated;
     /*0x1B98*/ s16 _1B98; // unused_frameHitGetsAboveY=1.3
     /*0x1B9A*/ sAng Hit_VerticalAngle;
@@ -361,11 +348,11 @@ typedef struct _InMemBallType
     /*0x1BBE*/ u8 ballZoneAwayFromHome;
     /*0x1BBF*/ u8 landingSpotZoneAwayFromHome;
     /*0x1BC0*/ u8 _1BC0; // seeminglyAlways1_ballCollideWallRelated;
-    /*0x1BC1*/ u8 someCollisionVariable; 
-    /*0x1BC2*/ u8 thrownBallHasHitGround; 
-    /*0x1BC3*/ u8 hitClassification1; 
-    /*0x1BC4*/ u8 hitClassification2; 
-    /*0x1BC5*/ u8 hitClassification3; 
+    /*0x1BC1*/ u8 someCollisionVariable;
+    /*0x1BC2*/ u8 thrownBallHasHitGround;
+    /*0x1BC3*/ u8 hitClassification1;
+    /*0x1BC4*/ u8 hitClassification2;
+    /*0x1BC5*/ u8 hitClassification3;
     /*0x1BC6*/ u8 ballInitialHitDoneInd;
     /*0x1BC7*/ u8 howFoulTheBallWillBe;
     /*0x1BC8*/ u8 always0_fairFoulRelated;
@@ -416,14 +403,13 @@ typedef struct _InMemBallType
     /*0x1BF5*/ u8 frameCountdownAfterLeavingPlant;
 } InMemBallType; // size: 0x1BF8
 
-typedef struct _InMemPitcherType
-{
+typedef struct _InMemPitcherType {
     /*0x000*/ VecXYZ ballCurrentPosition;
     /*0x00C*/ VecXYZ ballLastPosition;
     /*0x018*/ VecXYZ ballVelocity;
     /*0x024*/ f32 pitchStartingPosition_AIMaxCurve; // unsure
-    /*0x028*/ f32 eggBallBounceYHeight; // unsure
-    /*0x02C*/ f32 frontOfPlateZ; // unsure
+    /*0x028*/ f32 eggBallBounceYHeight;             // unsure
+    /*0x02C*/ f32 frontOfPlateZ;                    // unsure
     /*0x030*/ VecXYZ _30;
     /*0x03C*/ f32 _3C[6];
     /*0x054*/ VecXZ estimatedEndingPos;
@@ -436,7 +422,7 @@ typedef struct _InMemPitcherType
     /*0x07C*/ f32 strikeZoneLeft;
     /*0x080*/ f32 strikeZoneRight;
     /*0x084*/ f32 beginningOfStrikeCheckZ; // 1.05
-    /*0x088*/ f32 endingOfStrikeCheckZ; // 0.5
+    /*0x088*/ f32 endingOfStrikeCheckZ;    // 0.5
     /*0x08C*/ VecXZ pitcher;
     /*0x094*/ VecXYZ pitchRelease;
     /*0x0A0*/ f32 pitchLinearInterpolateX;
@@ -453,7 +439,7 @@ typedef struct _InMemPitcherType
     /*0x0CC*/ f32 horizontalOffsetParabolaMidpoint;
     /*0x0D0*/ f32 horizontalGlobalParabolicVelo;
     /*0x0D4*/ f32 pitchX_parabolicAdjustment;
-    /*0x0D8*/ f32 pitchXPosition; // unsure
+    /*0x0D8*/ f32 pitchXPosition;  // unsure
     /*0x0DC*/ f32 pitchXPosition2; // unsure
     /*0x0E0*/ f32 pitchChargeUp;
     /*0x0E4*/ f32 pitchChargeUpAnimationProportion; // unsure
@@ -539,16 +525,552 @@ typedef struct _InMemPitcherType
     /*0x174*/ u8 nonCaptainStarPitchTriggeredType;
     /*0x175*/ u8 walkedInRunInd;
     /*0x176*/ u8 unused_pitcherIsFielder; // unsure
-}InMemPitcherType; // size: 0x178
+} InMemPitcherType;                       // size: 0x178
 
 extern InMemPitcherType inMemPitcher;
 extern InMemBallType inMemBall;
 extern InMemRunnerType inMemRunner[4];
 extern InMemBatterType inMemBatter;
 
-extern s16 hittableFrameInd[2][15];
-extern f32 batContactRange[2][2];
-extern s16 hittableFrameInd[2][15];
-extern f32 batContactRange[2][2];
+#define FRAME_COUNT_HIT_WINDOW 15
 
+// 0 is slap, 1 is charge
+extern s16 hittableFrameInd[2][FRAME_COUNT_HIT_WINDOW];
+/*
+= {
+    { // slap
+        false, false, true, true, // frames 0-3
+        true, true, true, true,   // frames 4-7
+        true, true, true, false,  // frames 8-11
+        false, false, false,      // frames 12-14
+    },
+    { // charge/star
+        false, false, false, true, // frames 0-3
+        true, true, true, true,    // frames 4-7
+        true, true, false, false,  // frames 8-11
+        false, false, false,       // frames 12-14
+    },
+};
+*/
+
+// indexed by trimmed bat
+typedef struct _BatNearFarReach {
+    f32 near, far;
+} BatNearFarReach;
+
+extern BatNearFarReach batContactRange[2];
+/*
+= {
+    // full-length bat
+    { -0.85f, 0.15f },
+    // trimmed bat
+    { -0.35f, 0.35f },
+}
+*/
+
+typedef struct _HitFloats {
+    /*0x00*/ f32 minStarHitVelo;
+    /*0x04*/ f32 DKStarAngleDelta;
+    /*0x08*/ f32 DKStarHangtimePercentStart;
+    /*0x0C*/ f32 DKStarHangtimePercentEnd;
+    /*0x10*/ f32 eggVeloMaintainedOnBounce;
+    /*0x14*/ f32 bulletStarEnergyMultiplier;
+    /*0x18*/ f32 garlicSpreadLower;
+    /*0x1C*/ f32 garlicSpreadUpper;
+    /*0x20*/ f32 overChargeLerpBtwnSlapAndChargePower;
+    /*0x24*/ f32 regularBoxSpeedMult;
+    /*0x28*/ f32 centeringBoxSpeedMult;
+    /*0x2C*/ f32 moonshotMult;
+} HitFloats;
+
+extern HitFloats g_hitFloats;
+/*
+ = {
+    0.05f,  // minStarHitVelo
+    0.008f, // DKStarAngleDelta
+    0.25f,  // DKStarHangtimePercentStart
+    0.95f,  // DKStarHangtimePercentEnd
+    0.8f,   // eggVeloMaintainedOnBounce
+    4.f,    // bulletStarEnergyMultiplier
+    0.2f,   // garlicSpreadLower
+    0.3f,   // garlicSpreadUpper
+    0.5f,   // overChargeLerpBtwnSlapAndChargePower
+    1.f,    // regularBoxSpeedMult
+    3.f,    // centeringBoxSpeedMult
+    1.5f    // moonshotMult
+};
+*/
+
+typedef struct _HitShorts {
+    /*0x00*/ s16 frameChargeDownEnds;
+    /*0x02*/ s16 framesUntilChargeIsEnabled;
+    /*0x04*/ s16 _04;
+    /*0x06*/ s16 framesOnGroundBeforeCheckingMinStarVelo;
+    /*0x08*/ s16 fireballStunFrames;
+    /*0x0A*/ s16 unused_alternateFireballStunFrames;
+    /*0x0C*/ s16 NEggBounces;
+    /*0x0E*/ s16 _0C;
+    /*0x10*/ s16 framesBeforeGroundWhenGarlicSplits;
+    /*0x12*/ s16 FrameWhenPeachHitAppearsAgain;
+    /*0x14*/ s16 FrameWhenDaisyHitAppearsAgain; // unsure
+    /*0x16*/ s16 _16;
+    /*0x18*/ s16 _18;
+    /*0x1A*/ s16 regularHitGamePause;
+    /*0x1C*/ s16 captainStarHitGamePause;
+    /*0x1E*/ s16 moonshotGamePause;
+} HitShorts;
+
+extern HitShorts g_hitShorts;
+/*
+= {
+    180, // frameChargeDownEnds
+    12,  // framesUntilChargeIsEnabled
+    6,   // _04
+    3,   // framesOnGroundBeforeCheckingMinStarVelo
+    90,  // fireballStunFrames
+    60,  // unused_alternateFireballStunFrames
+    2,   // NEggBounces
+    30,  // _0C
+    120, // framesBeforeGroundWhenGarlicSplits
+    1,   // FrameWhenPeachHitAppearsAgain
+    1,   // FrameWhenDaisyHitAppearsAgain
+    160, // _16
+    160, // _18
+    1,   // regularHitGamePause
+    50,  // captainStarHitGamePause
+    50   // moonshotGamePause
+};
+*/
+
+extern int RandomInt_Game(int max);
+
+typedef enum _GAME_TYPE {
+    GAME_TYPE_EXHIBITION_GAME = 0,
+    GAME_TYPE_PRACTICE = 2,
+    GAME_TYPE_DEMO = 4,
+    GAME_TYPE_CHALLENGE = 5,
+    GAME_TYPE_TOY_FIELD = 6,
+    GAME_TYPE_MINIGAMES = 7,
+} GAME_TYPE;
+
+typedef enum _STADIUM_ID{
+    STADIUM_ID_MARIO_STADIUM,
+    STADIUM_ID_BOWSERS_CASTLE,
+    STADIUM_ID_WARIO_PALACE,
+    STADIUM_ID_YOHSI_PARK,
+    STADIUM_ID_PEACH_GARDEN,
+    STADIUM_ID_DK_JUNGLE,
+    STADIUM_ID_TOY_FIELD,
+} STADIUM_ID;
+
+typedef struct _GameInitVariables {
+    /*0x00*/ int _00;
+    /*0x04*/ u16 FrameCountWhileNotAtMainMenu;
+    /*0x06*/ u8 _06;          // 1 Menu,2 InGame/Minigame/Practice/etc
+    /*0x07*/ E(u8, GAME_TYPE) GameModeSelected;
+    /*0x08*/ bool exhibitionMatchInd;
+    /*0x09*/ E(u8, STADIUM_ID) StadiumID;
+    /*0x0A*/ u8 miniGameStadiumIndicator;
+    /*0x0B*/ u8 _0B;
+    /*0x0C*/ u8 maybeHomeAway;
+    /*0x0D*/ u8 maybeHomeAway2;
+    /*0x0E*/ u8 home_AwaySetting;
+    artificial_padding(0x0e, 0x11, u8);
+    /*0x11*/ bool minigamesEnabled;
+    artificial_padding(0x11, 0x20, bool);
+    /*0x20*/ s16 _20[4][2];
+    /*0x30*/ s16 challengeMinigame_baseCoinsEarned;
+    /*0x32*/ u8 bJMatchRelated;
+    /*0x33*/ u8 _33;
+    /*0x34*/ u8 humanTeamNumber;
+    /*0x35*/ u8 _35;
+    /*0x36*/ u8 _36;
+    /*0x37*/ u8 challengeDifficulty; // unsure
+    /*0x38*/ u8 _38;
+    /*0x39*/ u8 bJMatchInd;
+    /*0x3A*/ u8 _3A;
+    /*0x3B*/ u8 someChallengeModeFlag;
+    /*0x3C*/ u8 challengeCaptainStarBought[18];
+    /*0x4E*/ u8 _4E;
+    /*0x4F*/ u8 _4F;
+    /*0x50*/ u8 PlayerPorts[2];
+    /*0x52*/ u8 _52;
+    /*0x53*/ u8 _53;
+    /*0x54*/ E(u8, STADIUM_ID) _54;
+    /*0x55*/ u8 _55;
+    /*0x56*/ u8 _56;
+    /*0x57*/ u8 _57;
+} GameInitVariables; // size: 0x58
+
+extern GameInitVariables gameInitVariables;
+
+typedef struct _InputStruct
+{
+    /*0x00*/ sAng controlStickAngle;
+    /*0x02*/ s16 controlStickMagnitude;
+    /*0x04*/ s16 buttonInput; // uses pad defines
+    /*0x06*/ s16 newButtonInput; // pressed this frame
+    /*0x08*/ s16 _08;
+    /*0x0A*/ s8 right_left;
+    /*0x0B*/ s8 up_down;
+    /*0x0C*/ s8 rightTriggerDistance;
+    /*0x0D*/ s8 leftTriggerDistance;
+    /*0x0E*/ s16 _0E; // padding
+} InputStruct; // size: 0x10
+
+typedef enum _PRACTICE_TYPE {
+    PRACTICE_TYPE_PITCHING,
+    PRACTICE_TYPE_BATTING,
+    PRACTICE_TYPE_FIELDING,
+    PRACTICE_TYPE_BASERUNNING,
+    PRACTICE_TYPE_FREEPLAY
+} PRACTICE_TYPE;
+
+typedef enum _PRACTICE_STATE { 
+    PRACTICE_STATE_0,
+    PRACTICE_STATE_1,
+    PRACTICE_STATE_2,
+    PRACTICE_STATE_3,
+    PRACTICE_STATE_4,
+    PRACTICE_STATE_5,
+    PRACTICE_STATE_6,
+    PRACTICE_STATE_7,
+    PRACTICE_STATE_8
+/*
+    0_switchToTopMenu4/switchToSubMenu+loadfield,goTo1/newAB?=0,
+    1_/checkSomething,delay,goTo2=1,
+    2_changeScene,goTo3/subMenuControl=2,
+    3_delay30Frames,goTo4/switchToField,goTo4=3,
+    4_mainMenuControl/loadPracticeOnField=4,
+    5_checkSomething,goTo6/returnToTopMenu,goTo6=5,
+    6_setPracticeConsts,goTo0/returnToTopMenu2,goTo7=6,
+    7_exitToMenuQuestion/returnToTopMenu3,goTo0=7,
+    8_exitToMainMenu=8
+*/
+} PRACTICE_STATE;
+
+typedef enum _TUTORIAL_STATE {
+    TUTORIAL_STATE_0,
+    TUTORIAL_STATE_1,
+    TUTORIAL_STATE_2,
+    TUTORIAL_STATE_3,
+/*
+    menu/na=0,
+    givingInstruction=1,
+    transitionToPlayerControl=2,
+    playerHasControl=3
+*/
+} TUTORIAL_STATE;
+
+typedef struct _PracticeStruct {
+    /*0x000*/ InputStruct inputs[2];
+    /*0x020*/ void* commandList; // unsure
+    /*0x024*/ int homeAway;
+    artificial_padding(0x24, 0x140, int);
+    /*0x140*/ frame_t totalFrames;
+    /*0x142*/ frame_t framesInCurrTransitionState;
+    /*0x144*/ frame_t framesSincePracticeMenuDefaultTransition;
+    /*0x146*/ frame_t practiceMenu_framesOnCurrMenuScreen;
+    /*0x148*/ frame_t frames_sinceMovedToFromMenu;
+    /*0x14A*/ frame_t _14A;
+    /*0x14C*/ frame_t frames_sinceTimeCalled;
+    /*0x14E*/ frame_t frames_onPauseScreen;
+    /*0x150*/ frame_t frames_onPauseScreen2; // used For Allowing Cursor To Move
+    /*0x152*/ frame_t _152; // count To 60 then Set Hit Vars For Fielding Practice
+    /*0x154*/ frame_t _154;
+    /*0x156*/ frame_t _156;
+    /*0x158*/ frame_t _158;
+    /*0x15A*/ frame_t someCharID1;
+    /*0x15C*/ frame_t someCharID2;
+    /*0x15E*/ frame_t someCharID3;
+    /*0x160*/ frame_t someCharID4;
+    /*0x162*/ frame_t framesOnAllInstructions; // unsure
+    /*0x164*/ frame_t _164;
+    /*0x166*/ frame_t framesOnCurrInstruction;
+    /*0x168*/ frame_t laukituTextChannelIndex;
+    /*0x16A*/ frame_t lakituTextIndex;
+    /*0x16C*/ frame_t lakituTextIndex_stored;
+    /*0x16E*/ frame_t diagramTextChannelIndex;
+    /*0x170*/ frame_t diagramTitleTextIndex;
+    /*0x172*/ frame_t diagramTitleTextIndex_stored;
+    /*0x174*/ frame_t cpuCommandDuration;
+    /*0x176*/ frame_t maybeInputResetCountdown;
+    /*0x178*/ frame_t maybePreviousInput;
+    /*0x17A*/ frame_t _17A;
+    /*0x17C*/ frame_t cpu_inputDuration;
+    /*0x17E*/ frame_t _17E;
+    /*0x180*/ frame_t practice_hitHorizontalPower;
+    /*0x182*/ frame_t practice_hitVerticalAngle;
+    /*0x184*/ frame_t practice_hitHorizontalAngle;
+    /*0x186*/ frame_t _186;
+    /*0x188*/ frame_t _188;
+    /*0x18A*/ s16 maybeCommandData[4]; // unsure
+    /*0x192*/ u8 _192;
+    /*0x193*/ E(u8, PRACTICE_TYPE) practiceType_2;
+    /*0x194*/ u8 practiceLevel;
+    /*0x195*/ E(u8, PRACTICE_STATE) practiceState;
+    /*0x196*/ E(u8, TUTORIAL_STATE) tutorialState;
+    /*0x197*/ u8 _197;
+    /*0x198*/ E(u8, PRACTICE_TYPE) practiceType_1;
+    /*0x199*/ E(u8, PRACTICE_TYPE) practiceType;
+    /*0x19A*/ u8 subMenuCursor;
+    artificial_padding(0x19a, 0x19e, u8);
+    /*0x19E*/ u8 pauseMenuLoading; // unsure
+    artificial_padding(0x19e, 0x1a1, u8);
+    /*0x1A1*/ u8 aIEnabled;
+    /*0x1A2*/ u8 practiceBatterHandedness; // unsure
+    /*0x1A3*/ u8 freePracticeInd_writeOnly;
+    artificial_padding(0x1a3, 0x1aa, u8);
+    /*0x1AA*/ u8 transitioningIndicator; // unsure
+    artificial_padding(0x1aa, 0x1af, u8);
+    /*0x1AF*/ u8 returnToPracticeMenuState;
+    artificial_padding(0x1af, 0x1c2, u8);
+    /*0x1C2*/ s8 instructionNumber;
+    /*0x1C3*/ u8 readyToMoveToNextInstruction; // unsure
+    /*0x1C4*/ u8 practice_runner_countInputForMashing;
+    /*0x1C5*/ u8 practice_fielding_enableSprinting;
+    /*0x1C6*/ u8 _1C6;
+    /*0x1C7*/ u8 _1C7;
+    /*0x1C8*/ u8 guidedPracticeCompletionRelated;
+    /*0x1C9*/ u8 guidedPracticeCompletionRelated2;
+    /*0x1CA*/ u8 guidedPracticeCounter;
+    /*0x1CB*/ u8 _1CB;
+    /*0x1CC*/ u8 currentMessageDoneTyping;
+    /*0x1CD*/ u8 commandIndex;
+    /*0x1CE*/ u8 allInstructionsComplete;
+    /*0x1CF*/ u8 instructionComplete_readyToAdvance;
+    /*0x1D0*/ u8 allowPlayToEndIndicator;
+    /*0x1D1*/ u8 maybeControlFlag1;
+    /*0x1D2*/ u8 textRelatedIndicator;
+    /*0x1D3*/ u8 maybeControlFlag2;
+    /*0x1D4*/ u8 loadingGuidedPractice; // unsure
+    /*0x1D5*/ u8 _1D5;
+    /*0x1D6*/ u8 practiceLevel_2;
+    artificial_padding(0x1d6, 0x1e1, u8);
+    /*0x1E1*/ u8 hitVariablesSetIndicator;
+    /*0x1E2*/ u8 _1E2;
+    /*0x1E3*/ u8 aiBuntIndicator; // unsure
+    artificial_padding(0x1e3, 0x1ef, u8);
+    /*0x1EF*/ u8 rosterID; // unsure
+} PracticeStruct; // size: 0x1f0
+
+extern PracticeStruct practiceStruct;
+
+extern u8 buntPower[5][2]; 
+
+extern f32 s_ballCurveData[2][3];
+/*
+ = 
+{
+    {
+        0.5f, 0.001f, 0.003f
+    },
+    {
+        0.25f, 0.006f, 0.008f
+    }
+}
+*/
+
+extern void estimateAndSetFutureCoords(int);
+extern f32 angle4096_toRad(int angle);
+
+extern const f32 contactQual; // = 100.f;
+
+#define ANG4K_DEG(v) (s16)((v) * (360.f / 4096.f))
+#define ANG4K_RAD(v) (s16)((v) * ((2.f * PI) / 4096.f))
+
+typedef enum _FIELDING_ABILITY {
+    FIELDING_ABILITY_WALL_SPLAT,
+    FIELDING_ABILITY_WALL_JUMP,
+    FIELDING_ABILITY_WALL_CLAMBER,
+    FIELDING_ABILITY_SLIDING_CATCH,
+    FIELDING_ABILITY_LASER,
+    FIELDING_ABILITY_QUICK_THROW,
+    FIELDING_ABILITY_SUPER_JUMP,
+    FIELDING_ABILITY_MAGICAL_CATCH,
+    FIELDING_ABILITY_TONGUE_CATCH,
+    FIELDING_ABILITY_SUCTION,
+    FIELDING_ABILITY_SUPER_CATCH,
+    FIELDING_ABILITY_BALL_DASH,
+    FIELDING_ABILITY_BODY_CHECK,
+    FIELDING_ABILITY_SUPER_CURVE,
+} FIELDING_ABILITY;
+
+typedef enum _GAME_STATUS {
+    GAME_STATUS_DEFAULT,
+    GAME_STATUS_AT_BAT,
+    GAME_STATUS_LIVE_BALL,
+    GAME_STATUS_INNING_TRANSITION,
+    GAME_STATUS_LOAD_GAME,
+    GAME_STATUS_GAME_START_MOVIE,
+    GAME_STATUS_TRANSITION_TO_MINIGAME_START,
+    GAME_STATUS_TRANSITION_PREPARE_NEXT_PLAY,
+    GAME_STATUS_TRANSITION,
+    GAME_STATUS_END_OF_GAME, // unsure
+    GAME_STATUS_0xA,
+    GAME_STATUS_PAUSED,
+    GAME_STATUS_0xC,
+    GAME_STATUS_HOW_TO_PLAY_SCREEN,
+    GAME_STATUS_MVP_END_GAME,
+    GAME_STATUS_TRANSITION_MINIGAME_POSTGAME,
+    GAME_STATUS_0x10,
+    GAME_STATUS_0x11,
+    GAME_STATUS_0x12,
+    GAME_STATUS_HOMERUN_END,
+    GAME_STATUS_HOMERUN_LAP,
+    GAME_STATUS_BATTER_CELEBRATION, // post replay
+    GAME_STATUS_STAR_CHANCE_VS,
+    GAME_STATUS_CHAMPIONSHIP,
+    GAME_STATUS_0x18,
+    GAME_STATUS_MINIGAME_NEW_ROUND, // unsure
+    GAME_STATUS_TRANSITION_MINIGAME_TO_BATTING, // unsure
+    GAME_STATUS_0x1B,
+    GAME_STATUS_MINIGAME_SELECT,
+    GAME_STATUS_TOY_STADIUM_LOAD,
+    GAME_STATUS_TOY_STADIUM_CHARACTER_SELECT,
+    GAME_STATUS_0x1F,
+    GAME_STATUS_0x20,
+    GAME_STATUS_MINIGAME_READY,
+    GAME_STATUS_MINIGAME_POST_MENU,
+} GAME_STATUS;
+
+typedef enum _SCENE_ID {
+    SCENE_ID_0,
+    SCENE_ID_AT_BAT,
+    SCENE_ID_LIVE_BALL,
+    SCENE_ID_REPLAY_AT_BAT,
+    SCENE_ID_REPLAY_LIVE_BALL,
+} SCENE_ID;
+
+typedef enum _SECONDARY_GAME_MODE {
+    SECONDARY_GAME_MODE_NONE, // also exhibition
+    SECONDARY_GAME_MODE_TOY_FIELD,
+    SECONDARY_GAME_MODE_MINI_GAME_MENU,
+    SECONDARY_GAME_MODE_BOBOMB_DERBY,
+    SECONDARY_GAME_MODE_WALLBALL,
+    SECONDARY_GAME_MODE_BARREL_BATTER,
+    SECONDARY_GAME_MODE_CHAINCHOMP_SPRINT,
+    SECONDARY_GAME_MODE_PIRANHA_PANIC,
+    SECONDARY_GAME_MODE_STAR_DASH,
+    SECONDARY_GAME_MODE_0x9,
+    SECONDARY_GAME_MODE_PRACTICE_MENU,
+    SECONDARY_GAME_MODE_PRACTICE_PITCHING,
+    SECONDARY_GAME_MODE_PRACTICE_BATTING,
+    SECONDARY_GAME_MODE_PRACTICE_FIELDING,
+    SECONDARY_GAME_MODE_PRACTICE_BASERUNNING,
+    SECONDARY_GAME_MODE_FREE_BAT_AND_RUNNING,
+    SECONDARY_GAME_MODE_FREE_FIELDING,
+    SECONDARY_GAME_MODE_RETURN_TO_MENU,
+    SECONDARY_GAME_MODE_LOAD_PRACTICE_SCREEN,
+} SECONDARY_GAME_MODE;
+
+typedef enum _TRANSITION_CALCULATION_TYPE {
+    TRANSITION_CALCULATION_TYPE_0,
+    TRANSITION_CALCULATION_TYPE_1,
+    TRANSITION_CALCULATION_TYPE_2,
+    TRANSITION_CALCULATION_TYPE_3,
+    TRANSITION_CALCULATION_TYPE_4,
+    TRANSITION_CALCULATION_TYPE_5,
+    TRANSITION_CALCULATION_TYPE_6,
+    TRANSITION_CALCULATION_TYPE_7,
+    TRANSITION_CALCULATION_TYPE_8,
+    TRANSITION_CALCULATION_TYPE_9,
+    TRANSITION_CALCULATION_TYPE_10,
+    TRANSITION_CALCULATION_TYPE_11,
+} TRANSITION_CALCULATION_TYPE;
+
+typedef enum _WIN_TYPE{
+    WIN_TYPE_0,
+    WIN_TYPE_1,
+    WIN_TYPE_2,
+    WIN_TYPE_3,
+    WIN_TYPE_4,
+    WIN_TYPE_5,
+    WIN_TYPE_6,
+} WIN_TYPE;
+
+extern bool checkFieldingStat(int, int, E(int, FIELDING_ABILITY));
+
+typedef struct _LogoInfoStruct{
+    int ID;
+    int variationID;
+    int captain; // unsure
+} LogoInfoStruct; // size: 0xC
+
+typedef struct _GameControlsStruct {
+    /*0x000*/ s16 homeTeamInd[2];
+    /*0x004*/ int teamBatting;
+    /*0x008*/ int teamFielding;
+    /*0x00C*/ int homeTeamBattingInd_fieldingTeam;
+    /*0x010*/ int awayTeamBattingInd_battingTeam;
+    /*0x014*/ u32 AIDifficulty0Special3Weak[2];
+    artificial_padding(0x14, 0x24, u32[2]);
+    /*0x024*/ LogoInfoStruct logo[2];
+    /*0x03C*/ int battingOrderAndPositionMapping[2][10][2]; // first Pair Is Pitcher
+    /*0x0DC*/ int currentBatterPerTeam[2];
+    /*0x0E4*/ u32 runnerAIInd[2];
+    /*0x0EC*/ u32 teams[2]; // vague name, unsure
+    /*0x0F4*/ u32 Team_CaptainRosterLoc[2];
+    /*0x0FC*/ s16 FrameCountOfCurrentPitch;
+    /*0x0FE*/ s16 FrameCountOfCurrentAtBat_Copy;
+    /*0x100*/ s16 CountdownUntilFade;
+    /*0x102*/ s16 _102;
+    /*0x104*/ s16 framePlayEnd;
+    /*0x106*/ s16 _106;
+    /*0x108*/ s16 _108;
+    /*0x10A*/ s16 bOD_framesInLiveBallScene;
+    /*0x10C*/ s16 frameCountdownAtBeginningOfAtBatLockout;
+    /*0x10E*/ s16 scoreBook_teamDisplayed;
+    /*0x110*/ s16 scoreBook_batter_pitcherStatsDisplayed;
+    /*0x112*/ s16 scoreBook_scrollIndex;
+    /*0x114*/ s16 _114;
+    /*0x116*/ s16 scoreBook_logoFadeDirectionLeft_Right;
+    /*0x118*/ s16 _118;
+    /*0x11A*/ s16 _11A;
+    /*0x11C*/ s16 _11C;
+    /*0x11E*/ E(u8, GAME_STATUS) gameStatus;
+    /*0x11F*/ E(u8, GAME_STATUS) gameStatus_prev;
+    /*0x120*/ E(u8, SCENE_ID) sceneID;
+    /*0x121*/ E(u8, SECONDARY_GAME_MODE) secondaryGameMode;
+    /*0x122*/ u8 framesOfExitingToMenu;
+    /*0x123*/ u8 _123;
+    /*0x124*/ u8 _124;
+    /*0x125*/ E(u8, TRANSITION_CALCULATION_TYPE) _125;
+    /*0x126*/ u8 homeRunWordAnimationCompletedInd;
+    /*0x127*/ u8 EventTriggers_EndOfGame;
+    /*0x128*/ u8 _128;
+    /*0x129*/ u8 EventTriggers_GameHasStarted; // unsure
+    /*0x12A*/ u8 playBatterWalkupAnimation;
+    /*0x12B*/ u8 pre_PostMiniGameInd; // unsure
+    /*0x12C*/ u8 minigameLastTurnSuccessInd; // unsure
+    /*0x12D*/ u8 hudElementLoadingInd;
+    /*0x12E*/ u8 hudLoadingRelated; // unsure
+    /*0x12F*/ _12F;
+    /*0x130*/ E(u8, WIN_TYPE) winType;
+    artificial_padding(0x130, 0x135, u8);
+    /*0x135*/ u8 _135;
+    /*0x136*/ u8 _136;
+    /*0x137*/ u8 playOverFadeOutStarted;
+    /*0x138*/ u8 playOver;
+    /*0x139*/ u8 playOverInd;
+    /*0x13A*/ u8 walkOffWinInd; //unsure
+    /*0x13B*/ u8 gameOverInd;
+    /*0x13C*/ u8 scoutFlag_VsScreenInd;
+    artificial_padding(0x13C, 0x142, u8);
+    /*0x142*/ u8 teamAIInd[2];
+    /*0x144*/ u8 autoFielding[2];
+    /*0x146*/ u8 batterHandedness[2];
+    /*0x148*/ u8 battingAIInd[2]; // unsure
+    /*0x14A*/ u8 TeamStars[2];
+    /*0x14C*/ u8 IsStarChance;
+    /*0x14D*/ u8 stadiumStarObtained;
+    /*0x14E*/ u8 PauseSimulationFrameCount;
+    /*0x14F*/ u8 freeFieldingPracticeInd;
+    /*0x150*/ frame_t frame_exitMenuShowing;
+    /*0x152*/ frame_t frames_memoryCardWriteOnMVP; // unsure
+    /*0x154*/ u8 endGameStage;
+    /*0x155*/ u8 rosterLoc_skippingCap; // unsure
+} GameControlsStruct; // size: 0x158
+
+extern GameControlsStruct gameControls;
 #endif // !__UNKNOWN_HOMES_H_

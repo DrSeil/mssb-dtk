@@ -3,6 +3,13 @@
 
 #include "types.h"
 
+#define ARRAY_COUNT(x) (sizeof(x) / (*(x)))
+#define OFFSET_OF(structName, field) (size_t)(&(((structName*)NULL)->field))
+
+// used to pad structs when there are unused variables/still filling out the struct
+#define artificial_padding(lastOffset, currentOffset, typeOfLastMember) \
+u8 __##currentOffset##padding[(currentOffset) - (lastOffset) - sizeof(typeOfLastMember)]
+
 #define S8_MAX (0x7F)
 #define S8_MIN (-0x80)
 #define U8_MAX (0xFF)

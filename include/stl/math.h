@@ -38,9 +38,13 @@ extern int __float_huge[];
 extern int __double_huge[];
 
 f64 cos(f64);
-f32 cosf(f32);
+inline f32 cosf(f32 v) {
+    return (f32)cos((f64)v);
+}
 f64 sin(f64);
-f32 sinf(f32);
+inline f32 sinf(f32 v) {
+    return (f32)sin((f64)v);
+}
 f64 tan(f64);
 f32 tanf(f32);
 

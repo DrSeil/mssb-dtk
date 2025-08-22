@@ -243,6 +243,10 @@ cflags_rel = [
     *cflags_base,
     "-sdata 0",
     "-sdata2 0",
+    "-O4,p",
+    "-sym on",
+    "-fp_contract off",
+    "-inline noauto"
 ]
 
 config.linker_version = "GC/1.3.2"
@@ -294,7 +298,8 @@ def TRKLib(lib_name, objects, flags = cflags_base, extra_cflags=[]):
 def Rel(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.3.2",
+        # "progress_category": lib_name,
+        "mw_version": "GC/2.6",
         "cflags": cflags_rel,
         "host": True,
         "objects": objects,
@@ -677,15 +682,12 @@ config.libs = [
                       "-fp_contract off", 
                       "-use_lmw_stmw off"]
     ),
-    {
-        "lib": "game",
-        "mw_version": "GC/2.6",
-        "cflags": cflags_base + ["-O4,p", "-sym on", "-fp_contract off", "-inline noauto", "-sdata2 0"],
-        "host": False,
-        "objects": [
+    Rel(
+        "game",
+        [
             Object(NonMatching, "game/HitBall.c"),
-        ],
-    },
+        ]
+    )
 ]
 
 # Optional callback to adjust link order. This can be used to add, remove, or reorder objects.
@@ -712,7 +714,9 @@ config.progress_categories = [
     # ProgressCategory("game", "Game Code"),
     # ProgressCategory("sdk", "SDK Code"),
 ]
-config.progress_each_module = args.verbose
+# config.progress_each_module = args.verbose
+config.progress_each_module = True
+config.progress_modules = False
 # Optional extra arguments to `objdiff-cli report generate`
 config.progress_report_args = [
     # Marks relocations as mismatching if the target value is different

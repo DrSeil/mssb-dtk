@@ -22,4 +22,4 @@ file_6C38.c:
 
 game/HitBall.c:
 	.text       start:0x000102C8 end:0x00014BB4
-	.rodata     start:0x000006D0 end:0x00000770
+	.rodata     start:0x00000680 end:0x00000720
