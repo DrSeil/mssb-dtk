@@ -3,6 +3,7 @@
 
 #include "mssbTypes.h"
 #include "Dolphin/pad.h"
+#include "math.h"
 
 #define SINF(x) ((f32)sin(x))
 #define COSF(x) ((f32)cos(x))
