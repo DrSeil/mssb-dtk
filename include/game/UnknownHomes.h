@@ -651,8 +651,6 @@ extern HitShorts g_hitShorts;
 };
 */
 
-extern int RandomInt_Game(int max);
-
 typedef enum _GAME_TYPE {
     GAME_TYPE_EXHIBITION_GAME = 0,
     GAME_TYPE_PRACTICE = 2,
@@ -878,9 +876,6 @@ extern f32 s_ballCurveData[2][3];
     }
 }
 */
-
-extern void estimateAndSetFutureCoords(int);
-extern f32 angle4096_toRad(int angle);
 
 extern const f32 contactQual; // = 100.f;
 

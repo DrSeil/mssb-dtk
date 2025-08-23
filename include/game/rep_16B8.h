@@ -1,0 +1,50 @@
+#ifndef __GAME_rep_16B8_H_
+#define __GAME_rep_16B8_H_
+
+#include "mssbTypes.h"
+
+void fn_3_91520(void);
+void fn_3_91A60(void);
+void fn_3_91AC8(void);
+void fn_3_91B50(void);
+void fn_3_91B9C(void);
+void fn_3_91C70(void);
+void fn_3_91CCC(void);
+void fn_3_91D1C(void);
+void fn_3_91E4C(void);
+void fn_3_91FC4(void);
+void fn_3_92CD8(void);
+void fn_3_933CC(void);
+void fn_3_93544(void);
+void fn_3_93688(void);
+void fn_3_93960(void);
+void fn_3_93D5C(void);
+void fn_3_9413C(void);
+void fn_3_94194(void);
+void fn_3_94708(void);
+void fn_3_94760(void);
+void fn_3_948B8(void);
+void fn_3_94930(void);
+void fn_3_9497C(void);
+void fn_3_94BC4(void);
+void fn_3_94E68(void);
+void fn_3_95000(void);
+void fn_3_95098(void);
+void fn_3_95124(void);
+void fn_3_951B4(void);
+void fn_3_952DC(void);
+void fn_3_9538C(void);
+void fn_3_953FC(void);
+void fn_3_954C4(void);
+void fn_3_9551C(void);
+void fn_3_95568(void);
+void fn_3_955CC(void);
+void fn_3_95620(void);
+void fn_3_95970(void);
+void fn_3_959BC(void);
+void fn_3_9669C(void);
+void fn_3_96914(void);
+void fn_3_9698C(void);
+void fn_3_96CA4(void);
+
+#endif // !__GAME_rep_16B8_H_

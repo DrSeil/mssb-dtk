@@ -1,6 +1,9 @@
 #include "game/HitBall.h"
-#include "game/UnknownHomes.h"
 #include "header_rep_data.h"
+
+#include "game/UnknownHomes.h"
+#include "game/rep_1838.h"
+#include "game/rep_540.h"
 
 #define FRAME_COUNT_HOLD_FOR_BUNT 8
 // acts more like a flag than an actual timer

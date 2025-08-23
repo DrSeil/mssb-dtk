@@ -1,7 +1,7 @@
 #ifndef __GAME_HitBall_H_
 #define __GAME_HitBall_H_
 
-#include "types.h"
+#include "mssbTypes.h"
 
 void calculateBallVelocityAcceleration(void);
 void calculateBuntHorizontalPower(void);
