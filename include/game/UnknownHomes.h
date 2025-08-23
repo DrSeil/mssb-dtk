@@ -10,6 +10,8 @@
 
 #define BATTER_MAX_CHARGE (1.f)
 #define BATTER_MIN_CHARGE (0.f)
+#define PLAYERS_PER_TEAM (9)
+#define TEAMS_PER_GAME (2)
 
 typedef struct _VecXZ {
     f32 x, z;
@@ -536,6 +538,9 @@ extern InMemBallType inMemBall;
 extern InMemRunnerType inMemRunner[4];
 extern InMemBatterType inMemBatter;
 
+extern VecXYZ maybeInitialBatPos;
+extern f32 charSizeMultipliers[NUM_CHOOSABLE_CHARACTERS][2];
+
 #define FRAME_COUNT_HIT_WINDOW 15
 
 // 0 is slap, 1 is charge
@@ -657,7 +662,7 @@ typedef enum _GAME_TYPE {
     GAME_TYPE_MINIGAMES = 7,
 } GAME_TYPE;
 
-typedef enum _STADIUM_ID{
+typedef enum _STADIUM_ID {
     STADIUM_ID_MARIO_STADIUM,
     STADIUM_ID_BOWSERS_CASTLE,
     STADIUM_ID_WARIO_PALACE,
@@ -670,7 +675,7 @@ typedef enum _STADIUM_ID{
 typedef struct _GameInitVariables {
     /*0x00*/ int _00;
     /*0x04*/ u16 FrameCountWhileNotAtMainMenu;
-    /*0x06*/ u8 _06;          // 1 Menu,2 InGame/Minigame/Practice/etc
+    /*0x06*/ u8 _06; // 1 Menu,2 InGame/Minigame/Practice/etc
     /*0x07*/ E(u8, GAME_TYPE) GameModeSelected;
     /*0x08*/ bool exhibitionMatchInd;
     /*0x09*/ E(u8, STADIUM_ID) StadiumID;
@@ -708,11 +713,10 @@ typedef struct _GameInitVariables {
 
 extern GameInitVariables gameInitVariables;
 
-typedef struct _InputStruct
-{
+typedef struct _InputStruct {
     /*0x00*/ sAng controlStickAngle;
     /*0x02*/ s16 controlStickMagnitude;
-    /*0x04*/ s16 buttonInput; // uses pad defines
+    /*0x04*/ s16 buttonInput;    // uses pad defines
     /*0x06*/ s16 newButtonInput; // pressed this frame
     /*0x08*/ s16 _08;
     /*0x0A*/ s8 right_left;
@@ -720,7 +724,7 @@ typedef struct _InputStruct
     /*0x0C*/ s8 rightTriggerDistance;
     /*0x0D*/ s8 leftTriggerDistance;
     /*0x0E*/ s16 _0E; // padding
-} InputStruct; // size: 0x10
+} InputStruct;        // size: 0x10
 
 typedef enum _PRACTICE_TYPE {
     PRACTICE_TYPE_PITCHING,
@@ -730,7 +734,7 @@ typedef enum _PRACTICE_TYPE {
     PRACTICE_TYPE_FREEPLAY
 } PRACTICE_TYPE;
 
-typedef enum _PRACTICE_STATE { 
+typedef enum _PRACTICE_STATE {
     PRACTICE_STATE_0,
     PRACTICE_STATE_1,
     PRACTICE_STATE_2,
@@ -740,17 +744,17 @@ typedef enum _PRACTICE_STATE {
     PRACTICE_STATE_6,
     PRACTICE_STATE_7,
     PRACTICE_STATE_8
-/*
-    0_switchToTopMenu4/switchToSubMenu+loadfield,goTo1/newAB?=0,
-    1_/checkSomething,delay,goTo2=1,
-    2_changeScene,goTo3/subMenuControl=2,
-    3_delay30Frames,goTo4/switchToField,goTo4=3,
-    4_mainMenuControl/loadPracticeOnField=4,
-    5_checkSomething,goTo6/returnToTopMenu,goTo6=5,
-    6_setPracticeConsts,goTo0/returnToTopMenu2,goTo7=6,
-    7_exitToMenuQuestion/returnToTopMenu3,goTo0=7,
-    8_exitToMainMenu=8
-*/
+    /*
+        0_switchToTopMenu4/switchToSubMenu+loadfield,goTo1/newAB?=0,
+        1_/checkSomething,delay,goTo2=1,
+        2_changeScene,goTo3/subMenuControl=2,
+        3_delay30Frames,goTo4/switchToField,goTo4=3,
+        4_mainMenuControl/loadPracticeOnField=4,
+        5_checkSomething,goTo6/returnToTopMenu,goTo6=5,
+        6_setPracticeConsts,goTo0/returnToTopMenu2,goTo7=6,
+        7_exitToMenuQuestion/returnToTopMenu3,goTo0=7,
+        8_exitToMainMenu=8
+    */
 } PRACTICE_STATE;
 
 typedef enum _TUTORIAL_STATE {
@@ -758,12 +762,12 @@ typedef enum _TUTORIAL_STATE {
     TUTORIAL_STATE_1,
     TUTORIAL_STATE_2,
     TUTORIAL_STATE_3,
-/*
-    menu/na=0,
-    givingInstruction=1,
-    transitionToPlayerControl=2,
-    playerHasControl=3
-*/
+    /*
+        menu/na=0,
+        givingInstruction=1,
+        transitionToPlayerControl=2,
+        playerHasControl=3
+    */
 } TUTORIAL_STATE;
 
 typedef struct _PracticeStruct {
@@ -780,7 +784,7 @@ typedef struct _PracticeStruct {
     /*0x14C*/ frame_t frames_sinceTimeCalled;
     /*0x14E*/ frame_t frames_onPauseScreen;
     /*0x150*/ frame_t frames_onPauseScreen2; // used For Allowing Cursor To Move
-    /*0x152*/ frame_t _152; // count To 60 then Set Hit Vars For Fielding Practice
+    /*0x152*/ frame_t _152;                  // count To 60 then Set Hit Vars For Fielding Practice
     /*0x154*/ frame_t _154;
     /*0x156*/ frame_t _156;
     /*0x158*/ frame_t _158;
@@ -856,15 +860,15 @@ typedef struct _PracticeStruct {
     /*0x1E3*/ u8 aiBuntIndicator; // unsure
     artificial_padding(0x1e3, 0x1ef, u8);
     /*0x1EF*/ u8 rosterID; // unsure
-} PracticeStruct; // size: 0x1f0
+} PracticeStruct;          // size: 0x1f0
 
 extern PracticeStruct practiceStruct;
 
-extern u8 buntPower[5][2]; 
+extern u8 buntPower[5][2];
 
 extern f32 s_ballCurveData[2][3];
 /*
- = 
+ =
 {
     {
         0.5f, 0.001f, 0.003f
@@ -926,7 +930,7 @@ typedef enum _GAME_STATUS {
     GAME_STATUS_STAR_CHANCE_VS,
     GAME_STATUS_CHAMPIONSHIP,
     GAME_STATUS_0x18,
-    GAME_STATUS_MINIGAME_NEW_ROUND, // unsure
+    GAME_STATUS_MINIGAME_NEW_ROUND,             // unsure
     GAME_STATUS_TRANSITION_MINIGAME_TO_BATTING, // unsure
     GAME_STATUS_0x1B,
     GAME_STATUS_MINIGAME_SELECT,
@@ -983,7 +987,7 @@ typedef enum _TRANSITION_CALCULATION_TYPE {
     TRANSITION_CALCULATION_TYPE_11,
 } TRANSITION_CALCULATION_TYPE;
 
-typedef enum _WIN_TYPE{
+typedef enum _WIN_TYPE {
     WIN_TYPE_0,
     WIN_TYPE_1,
     WIN_TYPE_2,
@@ -995,10 +999,10 @@ typedef enum _WIN_TYPE{
 
 extern bool checkFieldingStat(int, int, E(int, FIELDING_ABILITY));
 
-typedef struct _LogoInfoStruct{
+typedef struct _LogoInfoStruct {
     int ID;
     int variationID;
-    int captain; // unsure
+    int captain;  // unsure
 } LogoInfoStruct; // size: 0xC
 
 typedef struct _GameControlsStruct {
@@ -1045,7 +1049,7 @@ typedef struct _GameControlsStruct {
     /*0x128*/ u8 _128;
     /*0x129*/ u8 EventTriggers_GameHasStarted; // unsure
     /*0x12A*/ u8 playBatterWalkupAnimation;
-    /*0x12B*/ u8 pre_PostMiniGameInd; // unsure
+    /*0x12B*/ u8 pre_PostMiniGameInd;        // unsure
     /*0x12C*/ u8 minigameLastTurnSuccessInd; // unsure
     /*0x12D*/ u8 hudElementLoadingInd;
     /*0x12E*/ u8 hudLoadingRelated; // unsure
@@ -1057,7 +1061,7 @@ typedef struct _GameControlsStruct {
     /*0x137*/ u8 playOverFadeOutStarted;
     /*0x138*/ u8 playOver;
     /*0x139*/ u8 playOverInd;
-    /*0x13A*/ u8 walkOffWinInd; //unsure
+    /*0x13A*/ u8 walkOffWinInd; // unsure
     /*0x13B*/ u8 gameOverInd;
     /*0x13C*/ u8 scoutFlag_VsScreenInd;
     artificial_padding(0x13C, 0x142, u8);
@@ -1074,7 +1078,175 @@ typedef struct _GameControlsStruct {
     /*0x152*/ frame_t frames_memoryCardWriteOnMVP; // unsure
     /*0x154*/ u8 endGameStage;
     /*0x155*/ u8 rosterLoc_skippingCap; // unsure
-} GameControlsStruct; // size: 0x158
+} GameControlsStruct;                   // size: 0x158
 
 extern GameControlsStruct gameControls;
+
+typedef enum _CHALLENGE_CAPTAIN {
+    CHALLENGE_CAPTAIN_MARIO,
+    CHALLENGE_CAPTAIN_PEACH,
+    CHALLENGE_CAPTAIN_WARIO,
+    CHALLENGE_CAPTAIN_DK,
+    CHALLENGE_CAPTAIN_YOSHI,
+    CHALLENGE_CAPTAIN_BOWSER,
+} CHALLENGE_CAPTAIN;
+
+typedef enum _CHARACTER_VARIANT_CLASSIFICATION {
+    CHARACTER_VARIANT_CLASSIFICATION_PRIMARY_CAPTAIN,
+    CHARACTER_VARIANT_CLASSIFICATION_SECONDARY_CAPTAIN,
+    CHARACTER_VARIANT_CLASSIFICATION_UNIQUE_NON_CAPTAIN,
+    CHARACTER_VARIANT_CLASSIFICATION_PRIMARY_VARIANT,
+    CHARACTER_VARIANT_CLASSIFICATION_SECONDARY_VARIANT,
+} CHARACTER_VARIANT_CLASSIFICATION;
+
+typedef enum _STAR_MISSION_TRACKING {
+    STAR_MISSION_TRACKING_NOT_COMPLETED = 0,
+    STAR_MISSION_TRACKING_TRACK1_COMPLETION = 1,
+    STAR_MISSION_TRACKING_COMPLETED_SAVED = 254,
+    STAR_MISSION_TRACKING_COMPLETED_CONDITIONALLY = 255,
+} STAR_MISSION_TRACKING;
+
+typedef enum _CHALLENGE_RECRUITMENT_CD {
+    CHALLENGE_RECRUITMENT_CD_NOT_RECRUITED,
+    CHALLENGE_RECRUITMENT_CD_RECRUITED,
+    CHALLENGE_RECRUITMENT_CD_ON_BJ_TEAM,
+} CHALLENGE_RECRUITMENT_CD;
+
+typedef enum _FIELDING_ABILITIES {
+    FIELDING_ABILITIES_WALL_SPLAT = 0x1,
+    FIELDING_ABILITIES_WALL_JUMP = 0x2,
+    FIELDING_ABILITIES_CLAMBER = 0x4,
+    FIELDING_ABILITIES_SLIDING_CATCH = 0x8,
+    FIELDING_ABILITIES_LASER = 0x10,
+    FIELDING_ABILITIES_QUICK_THROW = 0x20,
+    FIELDING_ABILITIES_SUPER_JUMP = 0x40,
+    FIELDING_ABILITIES_MAGICAL_CATCH = 0x80,
+    FIELDING_ABILITIES_TONGUE_CATCH = 0x100,
+    FIELDING_ABILITIES_SUCTION = 0x200,
+    FIELDING_ABILITIES_SUPER_CATCH = 0x400,
+    FIELDING_ABILITIES_BALL_DASH = 0x800,
+    FIELDING_ABILITIES_BODY_CHECK = 0x1000,
+    FIELDING_ABILITIES_SUPER_CURVE = 0x2000,
+    FIELDING_ABILITIES_UNASSIGNED = 0x4000,
+    FIELDING_ABILITIES_UNASSIGNED2 = 0x8000,
+} FIELDING_ABILITIES;
+
+typedef struct _starMissionTrackingPair {
+    /*0x000*/ E(u8, STAR_MISSION_TRACKING) starMissionStatus;
+    /*0x001*/ u8 shownOnPauseMenu;
+} starMissionTrackingPair;
+
+typedef struct _ChallengeTrackingStruct {
+    /*0x000*/ void* scoutFlagPointer;
+    /*0x004*/ E(u8, CHALLENGE_CAPTAIN) challengeCaptain; // Created by retype action
+    /*0x005*/ E(u8, CHARACTER_VARIANT_CLASSIFICATION) variantClassification;
+    /*0x006*/ u8 scoutFlagsAchieved;
+    /*0x007*/ u8 _7;
+    /*0x008*/ u8 _8;
+    /*0x009*/ starMissionTrackingPair inGameMissionTracker[10];
+    /*0x01D*/ starMissionTrackingPair saveFileMissionTracker[10];
+    /*0x031*/ E(u8, CHALLENGE_RECRUITMENT_CD) _31;
+    /*0x032*/ u8 _32;
+    /*0x033*/ u8 _33;
+} ChallengeTrackingStruct; // size: 0x34
+
+typedef struct _StatTable {
+    /*0x000*/ u8 CurveBallSpeed;
+    /*0x001*/ u8 FastBallSpeed;
+    /*0x002*/ u8 cursedBall;
+    /*0x003*/ u8 Curve;
+    /*0x004*/ u8 curveControl;
+    /*0x005*/ u8 UnusedBytes[27];
+    /*0x020*/ E(u32, FIELDING_ABILITIES) FieldingStats;
+    /*0x024*/ s16 CharID;
+    /*0x026*/ u8 FieldingArm;
+    /*0x027*/ u8 BattingStance;
+    /*0x028*/ u8 SlapContactSize;
+    /*0x029*/ u8 ChargeContactSize;
+    /*0x02A*/ u8 SlapHitPower;
+    /*0x02B*/ u8 ChargeHitPower;
+    /*0x02C*/ u8 BuntingContactSize;
+    /*0x02D*/ u8 HitTrajectoryPushPull;
+    /*0x02E*/ u8 HitTrajectoryHighLow;
+    /*0x02F*/ u8 Speed;
+    /*0x030*/ u8 ThrowingArm;
+    /*0x031*/ E(u8, CHARACTER_CLASS) CharacterClass;
+    /*0x032*/ u8 Weight;
+    /*0x033*/ u8 Captain;
+    /*0x034*/ u8 CaptainStarHitPitch;
+    /*0x035*/ u8 NonCaptainStarSwing;
+    /*0x036*/ u8 NonCaptainStarPitch;
+    /*0x037*/ u8 BattingStatBar;
+    /*0x038*/ u8 PitchingStatBar;
+    /*0x039*/ u8 RunningStatBar;
+    /*0x03A*/ u8 FieldingStatBar;
+} StatTable; // size: 0x3B
+
+typedef struct _ChemistryTable {
+    /*0x000*/ u8 Mario;
+    /*0x001*/ u8 Luigi;
+    /*0x002*/ u8 DK;
+    /*0x003*/ u8 Diddy;
+    /*0x004*/ u8 Peach;
+    /*0x005*/ u8 Daisy;
+    /*0x006*/ u8 Yoshi;
+    /*0x007*/ u8 BabyMario;
+    /*0x008*/ u8 BabyLuigi;
+    /*0x009*/ u8 Bowser;
+    /*0x00A*/ u8 Wario;
+    /*0x00B*/ u8 Waluigi;
+    /*0x00C*/ u8 RedKoopa;
+    /*0x00D*/ u8 RedToad;
+    /*0x00E*/ u8 Boo;
+    /*0x00F*/ u8 Toadette;
+    /*0x010*/ u8 RedShyGuy;
+    /*0x011*/ u8 Birdo;
+    /*0x012*/ u8 Monty;
+    /*0x013*/ u8 BowserJr;
+    /*0x014*/ u8 RedParatroopa;
+    /*0x015*/ u8 BluePianta;
+    /*0x016*/ u8 RedPianta;
+    /*0x017*/ u8 YellowPianta;
+    /*0x018*/ u8 BlueNoki;
+    /*0x019*/ u8 RedNoki;
+    /*0x01A*/ u8 GreenNoki;
+    /*0x01B*/ u8 HammerBro;
+    /*0x01C*/ u8 Toadsworth;
+    /*0x01D*/ u8 BlueToad;
+    /*0x01E*/ u8 YellowToad;
+    /*0x01F*/ u8 GreenToad;
+    /*0x020*/ u8 PurpleToad;
+    /*0x021*/ u8 BlueMagikoopa;
+    /*0x022*/ u8 RedMagikoopa;
+    /*0x023*/ u8 GreenMagikoopa;
+    /*0x024*/ u8 YellowMagikoopa;
+    /*0x025*/ u8 KingBoo;
+    /*0x026*/ u8 Petey;
+    /*0x027*/ u8 Dixie;
+    /*0x028*/ u8 Goomba;
+    /*0x029*/ u8 Paragoomba;
+    /*0x02A*/ u8 GreenKoopa;
+    /*0x02B*/ u8 GreenParatroopa;
+    /*0x02C*/ u8 BlueShyGuy;
+    /*0x02D*/ u8 YellowShyGuy;
+    /*0x02E*/ u8 GreenShyGuy;
+    /*0x02F*/ u8 BlackShyGuy;
+    /*0x030*/ u8 GrayDryBones;
+    /*0x031*/ u8 GreenDryBones;
+    /*0x032*/ u8 RedDryBones;
+    /*0x033*/ u8 BlueDryBones;
+    /*0x034*/ u8 FireBro;
+    /*0x035*/ u8 BoomerangBro;
+} ChemistryTable; // size: 0x36
+
+typedef struct _CharacterStats {
+
+    /*0x000*/ StatTable stats;
+    /*0x03B*/ ChemistryTable chemistry;
+    /*0x071*/ u8 BytesAfterChemistry[3];
+    /*0x074*/ s16 UnusedShorts[22];
+} CharacterStats;
+
+extern CharacterStats inMemRoster[TEAMS_PER_GAME][PLAYERS_PER_TEAM];
+
 #endif // !__UNKNOWN_HOMES_H_

@@ -298,7 +298,9 @@ void setDefaultInMemBatter(void) {
 }
 
 // .text:0x000146C4 size:0x168 mapped:0x80653758
-void setBatterContactConstants(void) {
+void setBatterContactConstants(void)
+{
+  
 }
 
 // .text:0x0001482C size:0x2C mapped:0x806538c0
