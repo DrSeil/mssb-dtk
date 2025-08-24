@@ -49,8 +49,8 @@ static void starHitSetting_unused(void) {
 void calculateBallVelocityAcceleration(void) {
     // UNFINISHED
     f32 power = inMemBall.Hit_HorizontalPower / 2.f;
-    f32 horizontalAngle = angle4096_toRad(inMemBall.Hit_HorizontalAngle);
-    f32 verticalAngle = angle4096_toRad(inMemBall.Hit_VerticalAngle);
+    f32 horizontalAngle = shortAngleToRad_Capped(inMemBall.Hit_HorizontalAngle);
+    f32 verticalAngle = shortAngleToRad_Capped(inMemBall.Hit_VerticalAngle);
     f32 s_verticalAngle = COSF(verticalAngle) * SINF(verticalAngle);
     f32 c_horizontalAngle = SINF(horizontalAngle) * COSF(horizontalAngle);
     inMemBall.physicsSubstruct.velocity.x = (c_horizontalAngle * power) / 100.f;

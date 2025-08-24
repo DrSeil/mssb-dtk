@@ -141,6 +141,24 @@ static inline f32 dolsqrtf(f32 x)
 	return x;
 }
 
+static inline f32 dolsqrtf2(f32 x) {
+    static const f64 _half = .5;
+    static const f64 _three = 3.0;
+    vf32 y;
+    if (x > 0.0f) {
+
+        f64 guess = __frsqrte((f64)x);                        // returns an approximation to
+        guess = _half * guess * (_three - guess * guess * x); // now have 12 sig bits
+        guess = _half * guess * (_three - guess * guess * x); // now have 24 sig bits
+        guess = _half * guess * (_three - guess * guess * x); // now have 32 sig bits
+        y = (f32)(x * guess);
+        return y;
+    } else if (x < 0.) {
+        return NAN;
+    }
+    return x;
+}
+
 static inline f32 scaleValue(f32 scale, f32 value) { return scale * value; }
 
 #endif

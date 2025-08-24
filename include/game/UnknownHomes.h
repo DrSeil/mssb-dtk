@@ -7,6 +7,7 @@
 
 #define SINF(x) ((f32)sin(x))
 #define COSF(x) ((f32)cos(x))
+#define ABS(x) ((x) < 0 ? -(x) : (x))
 
 #define BATTER_MAX_CHARGE (1.f)
 #define BATTER_MIN_CHARGE (0.f)
@@ -312,7 +313,7 @@ typedef struct _InMemBallType {
     /*0x1B44*/ s32 collisionCode;
     /*0x1B48*/ f32 maybeCollisionRelated;
     /*0x1B4C*/ s32 StaticRandomInt1;
-    /*0x1B50*/ u32 StaticRandomInt2;
+    /*0x1B50*/ s32 StaticRandomInt2;
     /*0x1B54*/ u32 StaticRandomInt1_prePitch;
     /*0x1B58*/ s16 airResistance; // 40
     /*0x1B5A*/ s16 _1B58;
@@ -320,7 +321,7 @@ typedef struct _InMemBallType {
     /*0x1B5E*/ s16 hangtimeOfHit;
     /*0x1B60*/ s16 framesUntilBallHitsGround;
     /*0x1B62*/ s16 framesUntilThrowReachesDest;
-    /*0x1B64*/ u16 totalFramesAtPlay;
+    /*0x1B64*/ s16 totalFramesAtPlay;
     /*0x1B66*/ s16 framesSinceHit; // +100 For Pickoff
     /*0x1B68*/ s16 pitchHangtimeCounter;
     /*0x1B6A*/ s16 postPitchResultCounter;
@@ -1243,5 +1244,19 @@ typedef struct _CharacterStats {
 } CharacterStats;
 
 extern CharacterStats inMemRoster[TEAMS_PER_GAME][PLAYERS_PER_TEAM];
+
+typedef struct _UnkSimulationRelatedStruct
+{
+    /*0x00*/ u32 _00; // frameCountRelated
+    /*0x04*/ u8 _04; // loadingStateRelated?
+    /*0x05*/ u8 _05; // highLevelSimulationIndicator
+    /*0x06*/ u8 _06; // highLevelSimulationSomething
+    /*0x07*/ u8 _07;
+    /*0x08*/ u8 _08; // endDemo?
+    /*0x09*/ u8 _09;
+    // padding 2 bytes
+} UnkSimulationRelatedStruct; // size: 0xC
+
+extern UnkSimulationRelatedStruct unkSimulationRelatedStruct;
 
 #endif // !__UNKNOWN_HOMES_H_
