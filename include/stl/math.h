@@ -9,6 +9,7 @@ extern "C" {
 #endif // ifdef __cplusplus
 
 #define SQUARE(v)                      ((v) * (v))
+#define SQ(v) SQUARE(v)
 #define IS_WITHIN_CIRCLE(x, z, radius) ((SQUARE(x) + SQUARE(z)) < SQUARE(radius))
 #define VECTOR_SQUARE_MAG(v)           (SQUARE(v.x) + SQUARE(v.y) + SQUARE(v.z))
 
@@ -141,22 +142,23 @@ static inline f32 dolsqrtf(f32 x)
 	return x;
 }
 
-static inline f32 dolsqrtf2(f32 x) {
-    static const f64 _half = .5;
-    static const f64 _three = 3.0;
-    vf32 y;
-    if (x > 0.0f) {
+extern inline float dolsqrtf2(float x) {
+    static const double _half = .5;
+    static const double _three = 3.0;
 
-        f64 guess = __frsqrte((f64)x);                        // returns an approximation to
-        guess = _half * guess * (_three - guess * guess * x); // now have 12 sig bits
-        guess = _half * guess * (_three - guess * guess * x); // now have 24 sig bits
-        guess = _half * guess * (_three - guess * guess * x); // now have 32 sig bits
-        y = (f32)(x * guess);
-        return y;
-    } else if (x < 0.) {
+    if (x > 0.0f) {
+        double xd = (double)x;
+        double guess = __frsqrte(xd);                          /* returns an approximation to    */
+        guess = _half * guess * (_three - guess * guess * xd); /* now have 12 sig bits            */
+        guess = _half * guess * (_three - guess * guess * xd); /* now have 24 sig bits            */
+        guess = _half * guess * (_three - guess * guess * xd); /* now have 32 sig bits            */
+        return (float)(xd * guess);
+    } else if (x < 0.0)
         return NAN;
-    }
-    return x;
+    else if (isnan(x))
+        return NAN;
+    else
+        return x;
 }
 
 static inline f32 scaleValue(f32 scale, f32 value) { return scale * value; }

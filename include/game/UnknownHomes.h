@@ -7,12 +7,14 @@
 
 #define SINF(x) ((f32)sin(x))
 #define COSF(x) ((f32)cos(x))
+#define ATAN2F(y, x) ((f32)atan2((y), (x)))
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
 #define BATTER_MAX_CHARGE (1.f)
 #define BATTER_MIN_CHARGE (0.f)
 #define PLAYERS_PER_TEAM (9)
 #define TEAMS_PER_GAME (2)
+
 
 typedef struct _VecXZ {
     f32 x, z;
@@ -1258,5 +1260,7 @@ typedef struct _UnkSimulationRelatedStruct
 } UnkSimulationRelatedStruct; // size: 0xC
 
 extern UnkSimulationRelatedStruct unkSimulationRelatedStruct;
+
+extern f32 vecDotProduct(VecXYZ* a, VecXYZ* b);
 
 #endif // !__UNKNOWN_HOMES_H_

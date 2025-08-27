@@ -57,7 +57,7 @@ inline int __fpclassifyd(f64 x)
 
 #define isinf(x)    ((fpclassify(x) == 2))
 #define isfinite(x) ((fpclassify(x) > 2))
-
+#define isnan(x) ((fpclassify(x) == 1))
 #ifdef __cplusplus
 };
 #endif // ifdef __cplusplus

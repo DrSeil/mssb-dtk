@@ -201,7 +201,7 @@ s16 fn_3_9FB8C(f32 x, f32 y) {
             return ANG_270;
         }
     }
-    v = (((f32)atan2(y, x)) * (f32)ANG_180 / PI);
+    v = ATAN2F(y, x) * (f32)ANG_180 / PI;
     if (v < 0) {
         v = v + ANG_360;
     }
@@ -210,10 +210,10 @@ s16 fn_3_9FB8C(f32 x, f32 y) {
 
 // .text:0x0009FB40 size:0x4C mapped:0x806DEBD4
 f32 game_atan2(f32 x, f32 y) {
-   if (x == 0.f && y == 0.f) {
-        return 0;
+    if (x == 0.f && y == 0.f) {
+        return 0.f;
     }
-    return atan2(y, x);
+    return ATAN2F(y, x);
 }
 
 // .text:0x0009FAA4 size:0x9C mapped:0x806DEB38
@@ -227,7 +227,7 @@ f32 fn_3_9FAA4(f32 x, f32 y) {
         }
     }
 
-    v = ((f32)atan2(y, x)) * (f32)ANG_180 / PI;
+    v = ATAN2F(y, x) * (f32)ANG_180 / PI;
     if (v < 0.f)
     {
         v = v + (f32)ANG_360;
@@ -258,42 +258,107 @@ void getComponentsFromRad(f32 v, f32* x, f32* y) {
 }
 
 // .text:0x0009F79C size:0x1C8 mapped:0x806DE830
-void fn_3_9F79C(f32 a, f32 b, f32 c, f32* x, f32* y) {
-    f32 v = game_atan2(b, c);
-    a += v;
-    {
-        f32 c_ = COSF(a);
-        f32 s = SINF(b);
-        *x = dolsqrtf2(a * a + b * b);
-    }
+void fn_3_9F79C(f32 a, f32 x, f32 y, f32* outX, f32* outY) {
+    f32 c, s, v, mag;
+    mag = game_atan2(x, y);
+    getComponentsFromRad(mag + a, &c, &s);
+    v = dolsqrtf2(x * x + y * y);
+    *outX = c * v;
+    *outY = s * v;
 }
 
 // .text:0x0009F658 size:0x144 mapped:0x806DE6EC
-void fn_3_9F658(void) {
-    return;
+void normalizeVector(VecXYZ* out, VecXYZ* v) {
+    f32 mag = 1.f / dolsqrtf2(v->x * v->x + v->y * v->y + v->z * v->z);
+    out->x = v->x * (mag);
+    out->y = v->y * (mag);
+    out->z = v->z * (mag);
 }
 
 // .text:0x0009F5B8 size:0xA0 mapped:0x806DE64C
-void fn_3_9F5B8(void) {
-    return;
+bool calculateLineIntersection(VecXZ* out, VecXZ* a, VecXZ* b) {
+    f32 param;
+    // Calculate the magnitude of the cross product of the direction vectors
+    f32 cross_mag = ((a[1].x - a[0].x) * (b[1].z - b[0].z)) - ((a[1].z - a[0].z) * (b[1].x - b[0].x));
+
+    // If the magnitude is near zero, the lines are parallel or coincident
+    if (cross_mag >= -0.01f && cross_mag <= 0.01f) {
+        return false;
+    }
+
+    // Calculate the parameter for the intersection point along the first segment
+    param = ((a[0].z - b[0].z) * (b[1].x - b[0].x) - (a[0].x - b[0].x) * (b[1].z - b[0].z)) / cross_mag;
+
+    // Compute the intersection point
+    out->x = param * (a[1].x - a[0].x) + a[0].x;
+    out->z = param * (a[1].z - a[0].z) + a[0].z;
+
+    return true;
 }
 
 // .text:0x0009EFD0 size:0x5E8 mapped:0x806DE064
-void fn_3_9EFD0(void) {
-    return;
+f32 fn_3_9EFD0(VecXYZ* l_start, VecXYZ* l_end, VecXYZ* point, VecXYZ* outClosest) {
+    // r6 = r31
+    // r5 = r30
+    // r4 = r29
+    // r3 = r28
+    VecXYZ ab;
+    VecXYZ bp;
+    VecXYZ proj;
+    f32 abLen, v2, distA, distB, dist;
+    
+    ab.x = l_end->x - l_start->x;
+    ab.y = l_end->y - l_start->y;
+    ab.z = l_end->z - l_start->z;
+    bp.x = point->x - l_start->x;
+    bp.y = point->y - l_start->y;
+    bp.z = point->z - l_start->z;
+    abLen = dolsqrtf2(ab.x * ab.x + ab.y * ab.y + ab.z * ab.z);
+    if (abLen <= 0 || (v2 = vecDotProduct(&ab, &bp) / (SQ(ab.x) + SQ(ab.y) + SQ(ab.z)), v2 < 0.f) || v2 > 1.f) {
+        distA = dolsqrtf2((SQ(point->x - l_start->x) + SQ(point->y - l_start->y) + SQ(point->z - l_start->z)));
+        distB = dolsqrtf2(SQ(point->x - l_end->x) + SQ(point->y - l_end->y) + SQ(point->z - l_end->z));
+        if (distA < distB) {
+            if (outClosest != NULL) {
+                outClosest->x = l_start->x;
+                outClosest->y = l_start->y;
+                outClosest->z = l_start->z;
+            }
+            return -distA;
+        } else {
+            if (outClosest != NULL) {
+                outClosest->x = l_end->x;
+                outClosest->y = l_end->y;
+                outClosest->z = l_end->z;
+            }
+            return -distB;
+        }
+    }
+    proj.x = ab.x * v2;
+    proj.y = ab.y * v2;
+    proj.z = ab.z * v2;
+    ab.x = proj.x - bp.x;
+    ab.y = proj.y - bp.y;
+    ab.z = proj.z - bp.z;
+
+    dist = dolsqrtf2(SQ(ab.x) + SQ(ab.y) + SQ(ab.z));
+    if (outClosest != NULL)
+    {
+        outClosest->x = l_start->x + proj.x;
+        outClosest->y = l_start->y + proj.y;
+        outClosest->z = l_start->z + proj.z;
+    }
+    return dist;
 }
 
 // UNUSED .text:0x0009EFAC size:0x24 mapped:0x806DE040
 static u8 static_clamp(int v, int min, int max) {
-    if (v > max)
-    {
+    if (v > max) {
         return max;
-    }
-    else if (v < min)
-    {
+    } else if (v < min) {
         return min;
+    } else {
+        return v;
     }
-    return v;
 }
 
 // .text:0x0009EEB8 size:0xF4 mapped:0x806DDF4C
@@ -348,7 +413,7 @@ int fn_3_9EE24(int max) {
 // .text:0x0009ED1C size:0x108 mapped:0x806DDDB0
 int fn_3_9ED1C(int min, int max) {
     int diff = max - min + 1;
-    return RandomInt_Game(diff);
+    return RandomInt_Game(diff) + min;
 }
 
 // .text:0x0009EBCC size:0x150 mapped:0x806DDC60
@@ -358,5 +423,5 @@ f32 fn_3_9EBCC(f32 a, f32 b) {
 
 // .text:0x0009EAE4 size:0xE8 mapped:0x806DDB78
 f32 fn_3_9EAE4(f32 a, f32 b) {
-    return RandomInt_Game((int)((b - a) * 1000.f) + 1) * (1.f / 1000.f) + a;
+    return fn_3_9EE24((int)((b - a) * 1000.f) + 1) * (1.f / 1000.f) + a;
 }
