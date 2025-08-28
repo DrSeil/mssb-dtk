@@ -245,7 +245,6 @@ cflags_rel = [
     "-sdata2 0",
     "-O4,p",
     "-sym on",
-    "-fp_contract off",
     "-inline noauto",
     "-pool off",
     "-requireprotos",

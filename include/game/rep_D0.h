@@ -46,7 +46,7 @@ typedef struct _CollisionTriangle{
 typedef struct _TriangleGroup {
     /*0x00*/ u8 _0;
     /*0x01*/ bool isTriangleList;
-    /*0x02*/ s16 count;
+    /*0x02*/ u16 count;
     /*0x04*/ CollisionTriangle tris[];
 } TriangleGroup; // size: at least 4, expandable
 
