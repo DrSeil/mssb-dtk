@@ -950,7 +950,7 @@ extern PracticeStruct practiceStruct;
 
 extern u8 buntPower[5][2];
 
-extern f32 s_ballCurveData[2][3];
+extern VecXYZ s_ballCurveData[2];
 /*
  =
 {
@@ -1078,7 +1078,7 @@ typedef enum _WIN_TYPE {
     WIN_TYPE_6,
 } WIN_TYPE;
 
-extern bool checkFieldingStat(int, int, E(int, FIELDING_ABILITY));
+extern BOOL checkFieldingStat(int, int, E(int, FIELDING_ABILITY));
 
 typedef struct _LogoInfoStruct {
     int ID;

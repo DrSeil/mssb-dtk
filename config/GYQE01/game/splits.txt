@@ -18,6 +18,7 @@ game/rep_10.c:
 game/rep_60.c:
 	.text       start:0x0000065C end:0x000008D4
 	.rodata     start:0x00000060 end:0x000000D0
+	.data       start:0x000001D0 end:0x000001F8
 
 game/rep_D0.c:
 	.text       start:0x00000914 end:0x000014A4
@@ -263,6 +264,7 @@ game/rep_2BF8.c:
 game/sta_c5.c:
 	.text       start:0x000EE100 end:0x000F8444
 	.rodata     start:0x00002C60 end:0x00002F68
+	.bss        start:0x0000AEE8 end:0x0000B570
 
 game/sta_c4.c:
 	.text       start:0x000F8524 end:0x000FBCD0

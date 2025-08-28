@@ -92,7 +92,7 @@ void fn_3_B9124(void) {
 }
 
 // .text:0x000B916C size:0x5C mapped:0x806F8200
-void fn_3_B916C(void) {
+int processStadiumObjectFunction(void) {
     return;
 }
 
@@ -180,4 +180,3 @@ void fn_3_B9D68(void) {
 void fn_3_B9FB8(void) {
     return;
 }
-

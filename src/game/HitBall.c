@@ -51,16 +51,86 @@ void calculateBallVelocityAcceleration(void) {
     f32 power = inMemBall.Hit_HorizontalPower / 2.f;
     f32 horizontalAngle = shortAngleToRad_Capped(inMemBall.Hit_HorizontalAngle);
     f32 verticalAngle = shortAngleToRad_Capped(inMemBall.Hit_VerticalAngle);
-    f32 s_verticalAngle = COSF(verticalAngle) * SINF(verticalAngle);
-    f32 c_horizontalAngle = SINF(horizontalAngle) * COSF(horizontalAngle);
-    inMemBall.physicsSubstruct.velocity.x = (c_horizontalAngle * power) / 100.f;
-    inMemBall.physicsSubstruct.acceleration.y = inMemBall.hittingAddedGravityFactor;
-    inMemBall.physicsSubstruct.velocity.y = (s_verticalAngle * power) / 100.f;
+    f32 s_verticalAngle = SINF(verticalAngle);
+    f32 c_verticalAngle = COSF(verticalAngle) * power;
+    f32 c_horizontalAngle =  COSF(horizontalAngle);
+    f32 s_horizontalAngle = SINF(horizontalAngle);
+    
+    horizontalAngle = c_horizontalAngle * c_verticalAngle;
+    verticalAngle = s_horizontalAngle * c_verticalAngle;
+    inMemBall.physicsSubstruct.velocity.x = (verticalAngle) / 100.f;
+    inMemBall.physicsSubstruct.velocity.y = (power * s_verticalAngle) / 100.f;
+    inMemBall.physicsSubstruct.velocity.z = horizontalAngle / 100.f;
+    
+    
     inMemBall.physicsSubstruct.acceleration.x = 0.f;
+    inMemBall.physicsSubstruct.acceleration.y = inMemBall.hittingAddedGravityFactor;
     inMemBall.physicsSubstruct.acceleration.z = 0.f;
-    if (!inMemBatter.isBunting && (inMemBall.Hit_HorizontalAngle < 0x900 || inMemBall.Hit_HorizontalAngle > 0xf00) &&
+    
+    if (!inMemBatter.isBunting && (inMemBall.Hit_HorizontalAngle <= 0x900 || inMemBall.Hit_HorizontalAngle >= 0xf00) &&
         inMemBall.currentStarSwing != CAPTAIN_STAR_TYPE_DK && inMemBall.currentStarSwing != CAPTAIN_STAR_TYPE_DIDDY) {
-        bool hasSuperCurve = checkFieldingStat(gameControls.teamBatting, inMemBatter.rosterID, FIELDING_ABILITY_SUPER_CURVE);
+
+        f32 contactQual, v1, v2;
+        int hit_vert, hit_hor;
+
+        BOOL hasSuperCurve = checkFieldingStat(gameControls.teamBatting, inMemBatter.rosterID, FIELDING_ABILITY_SUPER_CURVE);
+        if (inMemBatter.nonCaptainStarSwingActivated == REGULAR_STAR_SWING_LINEDRIVE) {
+            hasSuperCurve = true;
+        }
+
+        power = 1.f;
+        contactQual = inMemBatter.contactQualityAbsolute;
+        if (contactQual > 100.f) {
+            contactQual = 200.f - contactQual;
+        }
+        hit_vert = inMemBall.Hit_VerticalAngle;
+        power -= s_ballCurveData[hasSuperCurve].x * (1.f - 0.01f * contactQual);
+
+        if (hit_vert > 0x180 && hit_vert <= 0x400) {
+            int t = hit_vert - 0x180;
+            contactQual = t;
+            if (t > (f32)0x200) {
+                contactQual = (f32)0x200;
+            }
+            power = power * (1.f - contactQual * (8 / (f32)0x1000)); // unsure about this constant
+        }
+
+        hit_hor = inMemBall.Hit_HorizontalAngle;
+
+        if (hit_hor > 0xc00 || hit_hor < 0x100) {
+            hit_hor = 0x100;
+        } else if (hit_hor > 0x700) {
+            hit_hor = 0x700;
+        }
+
+        if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
+            hit_hor = 0x800 - hit_hor;
+        }
+
+        if (hit_hor < 0x460) {
+            contactQual = (0x460 - hit_hor) / 864.f;
+        } else {
+            contactQual = (0x460 - hit_hor) / 672.f;
+        }
+
+        power = power * contactQual;
+
+        if (power < 0.f) {
+            horizontalAngle = c_horizontalAngle;
+            verticalAngle = -s_horizontalAngle;
+            power = -power;
+        } else if (contactQual > 0.f) {
+            verticalAngle = s_horizontalAngle;
+            horizontalAngle = -c_horizontalAngle;
+        }
+        inMemBall.physicsSubstruct.acceleration.z = horizontalAngle * power * s_ballCurveData[hasSuperCurve].z;
+        inMemBall.physicsSubstruct.acceleration.x = verticalAngle * power * s_ballCurveData[hasSuperCurve].y;
+        if (inMemBall.physicsSubstruct.acceleration.z > 0.f) {
+            inMemBall.physicsSubstruct.acceleration.z = -inMemBall.physicsSubstruct.acceleration.z;
+        }
+        if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
+            inMemBall.physicsSubstruct.acceleration.x = -inMemBall.physicsSubstruct.acceleration.x;
+        }
     }
     estimateAndSetFutureCoords(2);
 }
@@ -274,6 +344,41 @@ void ifSwing(void) {
 
 // UNUSED .text:0x00013614 size:0x188 mapped:0x806526a8
 static void fn_3_13614(void) {
+    // TODO: pitcher enum and define for charging floats
+    if (inMemBatter.swingInd) {
+        inMemBatter.chargeStatus = CHARGE_SWING_STAGE_SWING;
+    } else {
+        if (inMemBatter.chargeStatus == CHARGE_SWING_STAGE_CHARGEUP) {
+            inMemBatter.chargeFrames++;
+            inMemBatter.chargeDown = 0.f;
+            if (inMemBatter.chargeFrames >= inMemBatter.frameFullyCharged) {
+                if (inMemBatter.chargeFrames <= inMemBatter.frameChargeDownBegins) {
+                    inMemBatter.chargeDown = 1.f;
+                } else {
+                    int diff = inMemBatter.chargeFrames - inMemBatter.frameChargeDownBegins;
+                    if (diff > g_hitShorts.frameChargeDownEnds) {
+                        inMemBatter.chargeDown = 0.f;
+                    } else {
+                        inMemBatter.chargeDown = 1.f - (f32)(diff) / (f32)(g_hitShorts.frameChargeDownEnds -
+                                                                           inMemBatter.frameChargeDownBegins);
+                        if (inMemBatter.chargeDown < 0.f) {
+                            inMemBatter.chargeDown = 0.f;
+                        }
+                    }
+                }
+                inMemBatter.isFullyCharged = true;
+            }
+            if (inMemPitcher.pitcherActionState >= 4) {
+                inMemBatter.chargeStatus = CHARGE_SWING_STAGE_RELEASE;
+            }
+        }
+
+        inMemBatter.chargeUp = (f32)inMemBatter.chargeFrames / (f32)inMemBatter.frameFullyCharged;
+
+        if (inMemBatter.chargeUp > 1.f) {
+            inMemBatter.chargeUp = 1.f;
+        }
+    }
 }
 
 // UNUSED .text:0x0001379C size:0x204 mapped:0x80652830
