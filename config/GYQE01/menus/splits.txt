@@ -5,3 +5,262 @@ Sections:
 	.rodata     type:rodata align:8
 	.data       type:data align:8
 	.bss        type:bss align:8
+
+menus/rep_0010.c:
+	.rodata     start:0x00000010 end:0x00000060
+
+menus/rep_0060.c:
+	.rodata     start:0x00000060 end:0x000000B0
+
+menus/rep_00B0.c:
+	.rodata     start:0x000000B0 end:0x00000100
+
+menus/rep_0100.c:
+	.rodata     start:0x00000100 end:0x00000150
+
+menus/rep_0150.c:
+	.rodata     start:0x00000150 end:0x000001A0
+
+menus/rep_01A0.c:
+	.text       start:0x00000A70 end:0x00000D08
+	.rodata     start:0x000001A0 end:0x00000200
+
+menus/rep_0200.c:
+	.text       start:0x0000121C end:0x00001254
+	.rodata     start:0x00000200 end:0x00000278
+
+menus/rep_0278.c:
+	.rodata     start:0x00000278 end:0x000002C8
+
+menus/rep_02C8.c:
+	.rodata     start:0x000002C8 end:0x00000318
+
+menus/rep_0318.c:
+	.text       start:0x00012238 end:0x00016870
+	.rodata     start:0x00000318 end:0x00000568
+
+menus/rep_0568.c:
+	.text       start:0x00016A98 end:0x000194BC
+	.rodata     start:0x00000568 end:0x000005F0
+
+menus/rep_05F0.c:
+	.rodata     start:0x000005F0 end:0x00000640
+
+menus/rep_0640.c:
+	.rodata     start:0x00000640 end:0x00000690
+
+menus/rep_0690.c:
+	.rodata     start:0x00000690 end:0x000006E0
+
+menus/rep_06E0.c:
+	.rodata     start:0x000006E0 end:0x00000730
+
+menus/rep_0730.c:
+	.text       start:0x0001A4C8 end:0x0001B1BC
+	.rodata     start:0x00000730 end:0x00000788
+
+menus/rep_0788.c:
+	.text       start:0x0001D440 end:0x00033E70
+	.rodata     start:0x00000788 end:0x000007F0
+
+menus/rep_07F0.c:
+	.rodata     start:0x000007F0 end:0x00000840
+
+menus/rep_0840.c:
+	.text       start:0x0003BD88 end:0x0003C03C
+	.rodata     start:0x00000840 end:0x00000898
+
+menus/rep_0898.c:
+	.rodata     start:0x00000898 end:0x000008E8
+
+menus/rep_08E8.c:
+	.text       start:0x00046C88 end:0x0004B1AC
+	.rodata     start:0x000008E8 end:0x000009B8
+
+menus/rep_09B8.c:
+	.rodata     start:0x000009B8 end:0x00000A08
+
+menus/rep_0A08.c:
+	.rodata     start:0x00000A08 end:0x00000A58
+
+menus/rep_0A58.c:
+	.text       start:0x00054BB0 end:0x0005597C
+	.rodata     start:0x00000A58 end:0x00000AB0
+
+menus/rep_0AB0.c:
+	.rodata     start:0x00000AB0 end:0x00000B08
+
+menus/shared/auto_0005979C.c:
+	.text       start:0x0005979C end:0x00059CF8
+
+menus/shared/auto_0005E104.c:
+	.text       start:0x0005E104 end:0x0005E84C
+
+menus/rep_0B08.c:
+	.text       start:0x0006832C end:0x00071EC4
+	.rodata     start:0x00000B08 end:0x00000C50
+
+menus/rep_0C50.c:
+	.rodata     start:0x00000C50 end:0x00000CA0
+
+menus/rep_0CA0.c:
+	.rodata     start:0x00000CA0 end:0x00000CF0
+
+menus/rep_0CF0.c:
+	.rodata     start:0x00000CF0 end:0x00000D40
+
+menus/rep_0D40.c:
+	.rodata     start:0x00000D40 end:0x00000D90
+
+menus/rep_0D90.c:
+	.rodata     start:0x00000D90 end:0x00000DE0
+
+menus/rep_0DE0.c:
+	.text       start:0x0008563C end:0x0008782C
+	.rodata     start:0x00000DE0 end:0x00000F10
+
+menus/rep_0F10.c:
+	.rodata     start:0x00000F10 end:0x00000F60
+
+menus/rep_0F60.c:
+	.text       start:0x0008ACE0 end:0x0008E6A4
+	.rodata     start:0x00000F60 end:0x00000FD8
+
+menus/rep_0FD8.c:
+	.rodata     start:0x00000FD8 end:0x00001028
+
+menus/rep_1028.c:
+	.rodata     start:0x00001028 end:0x000010C0
+
+menus/shared/auto_0008F0F4.c:
+	.text       start:0x0008F0F4 end:0x0008F27C
+
+menus/shared/auto_0008F27C.c:
+	.text       start:0x0008F27C end:0x0008F3D4
+
+menus/shared/auto_0008F3D4.c:
+	.text       start:0x0008F3D4 end:0x0008F528
+
+menus/shared/auto_0008F528.c:
+	.text       start:0x0008F528 end:0x0008F640
+
+menus/shared/auto_0008F7B0.c:
+	.text       start:0x0008F7B0 end:0x0008F838
+
+menus/shared/auto_0008F838.c:
+	.text       start:0x0008F838 end:0x0008F8C0
+
+menus/shared/auto_0008F8C0.c:
+	.text       start:0x0008F8C0 end:0x0008F948
+
+menus/shared/auto_0008F948.c:
+	.text       start:0x0008F948 end:0x0008F9D0
+
+menus/shared/auto_0008F9D0.c:
+	.text       start:0x0008F9D0 end:0x0008FA58
+
+menus/shared/auto_0008FA58.c:
+	.text       start:0x0008FA58 end:0x0008FAE0
+
+menus/shared/auto_0008FAE0.c:
+	.text       start:0x0008FAE0 end:0x0008FB68
+
+menus/shared/auto_0008FB68.c:
+	.text       start:0x0008FB68 end:0x0008FBF8
+
+menus/shared/auto_0008FBF8.c:
+	.text       start:0x0008FBF8 end:0x0008FC88
+
+menus/shared/auto_0008FC88.c:
+	.text       start:0x0008FC88 end:0x0008FD14
+
+menus/shared/auto_0008FDB0.c:
+	.text       start:0x0008FDB0 end:0x0008FE9C
+
+menus/shared/auto_0008FE9C.c:
+	.text       start:0x0008FE9C end:0x0009007C
+
+menus/shared/auto_0009007C.c:
+	.text       start:0x0009007C end:0x0009033C
+
+menus/shared/auto_0009033C.c:
+	.text       start:0x0009033C end:0x000903A8
+
+menus/shared/auto_000903A8.c:
+	.text       start:0x000903A8 end:0x00090428
+
+menus/shared/auto_00090428.c:
+	.text       start:0x00090428 end:0x000904A8
+
+menus/shared/auto_000904A8.c:
+	.text       start:0x000904A8 end:0x00090538
+
+menus/shared/auto_00090538.c:
+	.text       start:0x00090538 end:0x0009061C
+
+menus/shared/auto_00090698.c:
+	.text       start:0x00090698 end:0x00090718
+
+menus/shared/auto_00090718.c:
+	.text       start:0x00090718 end:0x000907F4
+
+menus/shared/auto_00090888.c:
+	.text       start:0x00090888 end:0x000908FC
+
+menus/shared/auto_0009094C.c:
+	.text       start:0x0009094C end:0x000909F4
+
+menus/shared/auto_00090A2C.c:
+	.text       start:0x00090A2C end:0x00090AB0
+
+menus/shared/auto_00090ABC.c:
+	.text       start:0x00090ABC end:0x00090BD0
+
+menus/shared/auto_00090C4C.c:
+	.text       start:0x00090C4C end:0x00090CD0
+
+menus/shared/auto_00090CD0.c:
+	.text       start:0x00090CD0 end:0x00090DAC
+
+menus/shared/auto_00090DE4.c:
+	.text       start:0x00090DE4 end:0x00090E98
+
+menus/shared/auto_00090EC4.c:
+	.text       start:0x00090EC4 end:0x00091058
+
+menus/shared/auto_00091058.c:
+	.text       start:0x00091058 end:0x000911E0
+
+menus/shared/auto_00091218.c:
+	.text       start:0x00091218 end:0x0009129C
+
+menus/shared/auto_000912A8.c:
+	.text       start:0x000912A8 end:0x00091450
+
+menus/shared/auto_00091488.c:
+	.text       start:0x00091488 end:0x0009150C
+
+menus/shared/auto_00091518.c:
+	.text       start:0x00091518 end:0x000916C0
+
+menus/shared/auto_000916F8.c:
+	.text       start:0x000916F8 end:0x0009177C
+
+menus/shared/auto_00091788.c:
+	.text       start:0x00091788 end:0x000918A4
+
+menus/shared/auto_000919CC.c:
+	.text       start:0x000919CC end:0x00091AE4
+
+menus/shared/auto_00091C4C.c:
+	.text       start:0x00091C4C end:0x00091D74
+
+menus/shared/auto_00091D74.c:
+	.text       start:0x00091D74 end:0x00092394
+
+menus/rep_10C0.c:
+	.text       start:0x000927C8 end:0x00094854
+	.rodata     start:0x000010C0 end:0x000011C0
+
+menus/rep_11C0.c:
+	.rodata     start:0x000011C0 end:0x00001210
