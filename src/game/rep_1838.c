@@ -101,17 +101,7 @@ f32 fn_3_9FDD8(f32 ang) {
 
 // .text:0x0009FD6C size:0x6C mapped:0x806DEE00
 s16 fn_3_9FD6C(s16 ang) {
-    if (ang < 0) {
-        while (ang < 0) {
-            ang += ANG_360;
-        }
-    }
- 
-    if (ang >= ANG_360) {
-        while (ang >= ANG_360) {
-            ang -= ANG_360;
-        }
-    }
+    ang = fn_3_9FE6C(ang);
  
     if (ang > ANG_180) {
         ang -= ANG_360;
