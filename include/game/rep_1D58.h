@@ -21,7 +21,7 @@ void fn_3_B8C08(void);
 void fn_3_B902C(void);
 void fn_3_B908C(void);
 void fn_3_B9124(void);
-int processStadiumObjectFunction(void);
+int processStadiumObjectFunction(int, void*, int, void*);
 void fn_3_B91C8(void);
 void fn_3_B939C(void);
 void fn_3_B93C4(void);

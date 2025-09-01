@@ -21,7 +21,7 @@ game/rep_60.c:
 	.data       start:0x000001D0 end:0x000001F8
 
 game/rep_D0.c:
-	.text       start:0x00000914 end:0x000014A4
+	.text       start:0x000008D4 end:0x000014A4
 	.rodata     start:0x000000D0 end:0x00000140
 
 game/rep_140.c:
@@ -29,7 +29,7 @@ game/rep_140.c:
 	.rodata     start:0x00000140 end:0x000001C0
 
 game/rep_1C0.c:
-	.text       start:0x00003904 end:0x00005E60
+	.text       start:0x000035D4 end:0x00006424
 	.rodata     start:0x000001C0 end:0x00000540
 
 game/rep_540.c:

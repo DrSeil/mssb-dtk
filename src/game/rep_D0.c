@@ -12,7 +12,7 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
                                    BOOL useBallCoords) {
     VecSrcDst p;
     Vec v;
-    BALL_COLLISION_TYPE ret;
+    BALL_COLLISION_TYPE ret = 0;
     if (collisionCheckType) {
         if (useBallCoords && (gameInitVariables.StadiumID == STADIUM_ID_WARIO_PALACE ||
                               gameInitVariables.StadiumID == STADIUM_ID_YOHSI_PARK ||
@@ -26,10 +26,10 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
         }
         ret = checkStatiumHazardCollisions(&p, outCollision, &v);
         if (ret) {
-            if (collisionCheckType != 2 || ret & BALL_COLLISION_TYPE_FOUL) {
+            if (collisionCheckType == 2 && (ret & BALL_COLLISION_TYPE_FOUL)) {
                 ret = BALL_COLLISION_TYPE_NONE;
             } else {
-                processStadiumObjectFunction();
+                ret = processStadiumObjectFunction(gameInitVariables.StadiumID, ((int**)&v)[0], ret, outCollision);
             }
         }
     }
@@ -55,25 +55,13 @@ BALL_COLLISION_TYPE didCollideWithBoundingBoxes(VecSrcDst* inVec, CollisionStruc
 bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGroup* _triangleGroup) {
     #define O_GROUP ((TriangleGroup*)_triangleGroup)
     #define O_TRI ((CollisionTriangle*)_triangleGroup)
-    // r25 = ret
-    // r30 = 0x44(r1) = tri[02]
-    // r31 = 0x38(r1) = tri[01]
-    // 0x2c(r1) = tri[00]
-    // r28 = 0x20(r1) = cross
-    // r29 = 0x14(r1) = dist_v3v2
-    // 0x8(r1) = dist_v2v1
-    // r24 = O_GROUP
-    // r23 = collisionData
+    
     Vec tri[3];
     Vec dist[3]; 
     u32 remainingTriangles;
     u32 didVecPassTriangle;
     u32 isBackwardsTriangle;
-    // Vec cross;
-    // Vec *tri[01] = &tri[01];
-    // Vec *&tri[02] = &tri[02];
-    // Vec *pDist_v3v2 = &dist_v3v2;
-    // Vec *&tri[03] = &cross;
+    
     bool ret = false;
     f32 d;
     while (true) {
@@ -81,24 +69,24 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
         remainingTriangles = O_GROUP->count;
         if (remainingTriangles == 0) break;
 
+        isList = O_GROUP->isTriangleList;
         // this should be reassigned to r24? but they're different types?
         // i hope it's not a union
-        isList = O_GROUP->isTriangleList;
         O_TRI = O_GROUP->tris;
         if (!isList) {
-            // groups of 3 verts to make up a triangle
+            // grou of 3 verts to make up a triangle
             do {
-                PSMTXMultVec(collisionData->mtx1, &O_TRI[0].trianglePoint, &tri[00]);
-                PSMTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
-                PSMTXMultVec(collisionData->mtx1, &O_TRI[2].trianglePoint, &tri[02]);
+                MTXMultVec(collisionData->mtx1, &O_TRI[0].trianglePoint, &tri[00]);
+                MTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
+                MTXMultVec(collisionData->mtx1, &O_TRI[2].trianglePoint, &tri[02]);
                 didVecPassTriangle = tri[00].x * tri[01].y - tri[01].x * tri[00].y >= 0;
                 didVecPassTriangle &= tri[01].x * tri[02].y - tri[02].x * tri[01].y  >= 0;
                 didVecPassTriangle &= tri[02].x * tri[00].y - tri[00].x * tri[02].y  >= 0;
                 if (didVecPassTriangle) {
-                    PSVECSubtract(&tri[01], &tri[00], &dist[0]);
-                    PSVECSubtract(&tri[02], &tri[01], &dist[1]);
-                    PSVECCrossProduct(&dist[0], &dist[1], &dist[2]);
-                    d = -PSVECDotProduct(&dist[2], &tri[00]) / dist[2].z;
+                    VECSubtract(&tri[01], &tri[00], &dist[0]);
+                    VECSubtract(&tri[02], &tri[01], &dist[1]);
+                    VECCrossProduct(&dist[0], &dist[1], &dist[2]);
+                    d = -VECDotProduct(&dist[2], &tri[00]) / dist[2].z;
                     if (d >= 0.f && collisionData->collisionDistance > d) {
                         collisionData->collisionDistance = d;
                         ret = true;
@@ -111,11 +99,11 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
         } else {
             // the first 3 verts describe a triangle, after that each new vert replaces the oldest vert to make a triangle fan
             isBackwardsTriangle = false;
-            PSMTXMultVec(collisionData->mtx1, &O_TRI[0].trianglePoint, &tri[00]);
-            PSMTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
+            MTXMultVec(collisionData->mtx1, &O_TRI[0].trianglePoint, &tri[00]);
+            MTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
             O_TRI += 2;
             do {
-                PSMTXMultVec(collisionData->mtx1, &O_TRI->trianglePoint, &tri[02]);
+                MTXMultVec(collisionData->mtx1, &O_TRI->trianglePoint, &tri[02]);
                 dist[0].x = tri[00].x * tri[01].y - tri[01].x * tri[00].y;
                 dist[0].y = tri[01].x * tri[02].y - tri[02].x * tri[01].y;
                 dist[0].z = tri[02].x * tri[00].y - tri[00].x * tri[02].y;
@@ -127,10 +115,10 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
                 }
 
                 if (didVecPassTriangle) {
-                    PSVECSubtract(&tri[01], &tri[00], &dist[0]);
-                    PSVECSubtract(&tri[02], &tri[01], &dist[1]);
-                    PSVECCrossProduct(&dist[0], &dist[1], &dist[2]);
-                    d = -PSVECDotProduct(&dist[2], &tri[00]) / dist[2].z;
+                    VECSubtract(&tri[01], &tri[00], &dist[0]);
+                    VECSubtract(&tri[02], &tri[01], &dist[1]);
+                    VECCrossProduct(&dist[0], &dist[1], &dist[2]);
+                    d = -VECDotProduct(&dist[2], &tri[00]) / dist[2].z;
                     if (d >= 0.f && collisionData->collisionDistance > d) {
                         collisionData->collisionDistance = d;
                         collisionData->collisionType = O_TRI[0].collisionType;

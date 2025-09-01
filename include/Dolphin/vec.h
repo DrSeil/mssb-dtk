@@ -19,6 +19,16 @@ typedef struct SVec {
 	s16 z;
 } SVec;
 
+#define VECAdd PSVECAdd
+#define VECSubtract PSVECSubtract
+#define VECScale PSVECScale
+#define VECNormalize PSVECNormalize
+#define VECMag PSVECMag
+#define VECCrossProduct PSVECCrossProduct
+#define VECDotProduct PSVECDotProduct
+#define VECSquareDistance PSVECSquareDistance
+#define VECDistance PSVECDistance
+
 void PSVECAdd(const Vec*, const Vec*, Vec*);
 void PSVECSubtract(const Vec*, const Vec*, Vec*);
 void PSVECScale(const Vec*, float, Vec*);
@@ -32,15 +42,5 @@ f32 PSVECDistance(const Vec *, const Vec *);
 #ifdef __cplusplus
 }
 #endif
-
-//  lfs     f1,0(r3)
-//  lfs     f0,4(r3)
-//  fmuls   f1,f1,f1
-//  lfs     f2,8(r3)
-//  fmuls   f0,f0,f0
-//  fmuls   f2,f2,f2
-//  fadds   f0,f1,f0
-//  fadds   f1,f2,f0
-//  blr
 
 #endif

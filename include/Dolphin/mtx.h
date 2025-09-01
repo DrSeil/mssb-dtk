@@ -50,6 +50,11 @@ void PSMTXQuat(Mtx mtx, const Quaternion* quat);
 ////////////////////////////////////////////
 
 //// PAIRED SINGLE MATRIX VEC FUNCTIONS ////
+
+#define MTXMultVec PSMTXMultVec
+#define MTXMultVecSR PSMTXMultVecSR
+#define MTXMultVecArraySR PSMTXMultVecArraySR
+
 void PSMTXMultVec(const Mtx, const Vec*, Vec*);
 void PSMTXMultVecSR(const Mtx, const Vec*, Vec*);
 void PSMTXMultVecArraySR(const Mtx, f32*, f32*, f32*);

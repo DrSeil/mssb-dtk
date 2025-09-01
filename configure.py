@@ -888,6 +888,7 @@ def link_order_callback(module_id: int, objects: List[str]) -> List[str]:
 # Uncomment to enable the link order callback.
 # config.link_order_callback = link_order_callback
 
+# the rels don't strip their unused functions/data
 config.rel_strip_partial = False
 
 # Optional extra categories for progress tracking
