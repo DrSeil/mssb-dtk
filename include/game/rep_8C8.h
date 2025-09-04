@@ -12,7 +12,7 @@ void fn_3_1F1CC(void);
 void fn_3_1F350(void);
 void fn_3_1F478(void);
 void fn_3_1F998(void);
-void fn_3_1FD8C(void);
+void batterAIControlled(void);
 void fn_3_1FF48(void);
 void fn_3_20064(void);
 void fn_3_20188(void);

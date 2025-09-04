@@ -3,13 +3,6 @@
 #include "game/UnknownHomes.h"
 #include "Dolphin/rand.h"
 
-#define MAX_ANGLE (0x1000)
-
-#define ANG_90 (MAX_ANGLE / 4)
-#define ANG_180 (MAX_ANGLE / 2)
-#define ANG_270 (ANG_90 * 3)
-#define ANG_360 (MAX_ANGLE)
-
 // .text:0x000A0018 size:0x84 mapped:0x806DF0AC
 f32 shortAngleToRad_Capped(s16 ang) {
     f32 v = shortAngleToRad(ang);
@@ -23,12 +16,12 @@ f32 shortAngleToRad_Capped(s16 ang) {
 f32 shortAngleToRad(s16 ang) {
     f32 v;
     if (ang < 0) {
-        ang += ANG_360;
+        ang += SANG_ANG_360;
     }
-    if (ang >= ANG_360) {
-        ang -= ANG_360;
+    if (ang >= SANG_ANG_360) {
+        ang -= SANG_ANG_360;
     }
-    return PI * (f32)(ang * 2) / (f32)ANG_360;
+    return PI * (f32)(ang * 2) / (f32)SANG_ANG_360;
 }
 
 // .text:0x0009FF60 size:0x4C mapped:0x806DEFF4
@@ -36,14 +29,14 @@ s16 radToShortAngle(f32 v) {
     if (v < 0) {
         v = v + TAU;
     }
-    return v * (f32)ANG_180 / PI; // implicit conversion to s16
+    return v * (f32)SANG_ANG_180 / PI; // implicit conversion to s16
 }
 
 // .text:0x0009FF04 size:0x5C mapped:0x806DEF98
 s16 fn_3_9FF04(f32 v) {
     s16 ret = radToShortAngle(v);
-    if (ret >= ANG_180) {
-        ret -= ANG_360;
+    if (ret >= SANG_ANG_180) {
+        ret -= SANG_ANG_360;
     }
     return ret; // implicit conversion to s16
 }
@@ -64,15 +57,15 @@ f32 fn_3_9FEA8(f32 v) {
 }
 
 // .text:0x0009FE6C size:0x3C mapped:0x806DEF00
-s16 fn_3_9FE6C(s16 ang) {
+s16 fn_3_9FE6C_normalizeAngle(s16 ang) {
     if (ang < 0) {
         while (ang < 0) {
-            ang += ANG_360;
+            ang += SANG_ANG_360;
         }
     }
-    if (ang >= ANG_360) {
-        while (ang >= ANG_360) {
-            ang -= ANG_360;
+    if (ang >= SANG_ANG_360) {
+        while (ang >= SANG_ANG_360) {
+            ang -= SANG_ANG_360;
         }
     }
     return ang;
@@ -83,15 +76,15 @@ f32 fn_3_9FDD8(f32 ang) {
     f32 v;
     if (ang < 0) {
         while (ang < 0) {
-            ang += (f32)ANG_360;
+            ang += (f32)SANG_ANG_360;
         }
     }
-    if (ang >= (f32)ANG_360) {
-        while (ang >= (f32)ANG_360) {
-            ang -= (f32)ANG_360;
+    if (ang >= (f32)SANG_ANG_360) {
+        while (ang >= (f32)SANG_ANG_360) {
+            ang -= (f32)SANG_ANG_360;
         }
     }
-    v = PI * (f32)(ang * 2) / (f32)ANG_360;
+    v = PI * (f32)(ang * 2) / (f32)SANG_ANG_360;
     if (v > PI) {
         v = -(TAU - v);
     }
@@ -101,15 +94,15 @@ f32 fn_3_9FDD8(f32 ang) {
 
 // .text:0x0009FD6C size:0x6C mapped:0x806DEE00
 s16 fn_3_9FD6C(s16 ang) {
-    ang = fn_3_9FE6C(ang);
+    ang = fn_3_9FE6C_normalizeAngle(ang);
  
-    if (ang > ANG_180) {
-        ang -= ANG_360;
-        if (ang <= -ANG_90) {
-            ang = -ANG_90 + 1;
+    if (ang > SANG_ANG_180) {
+        ang -= SANG_ANG_360;
+        if (ang <= -SANG_ANG_90) {
+            ang = -SANG_ANG_90 + 1;
         }
-    } else if (ang >= ANG_90) {
-        ang = ANG_90 - 1;
+    } else if (ang >= SANG_ANG_90) {
+        ang = SANG_ANG_90 - 1;
     }
 
     return ang;
@@ -117,14 +110,14 @@ s16 fn_3_9FD6C(s16 ang) {
 
 // .text:0x0009FD28 size:0x44 mapped:0x806DEDBC
 s16 fn_3_9FD28(s16 ang) {
-    if (ang < -ANG_180) {
-        while (ang < -ANG_180) {
-            ang += ANG_360;
+    if (ang < -SANG_ANG_180) {
+        while (ang < -SANG_ANG_180) {
+            ang += SANG_ANG_360;
         }
     }
-    if (ang > ANG_180 - 1) {
-        while (ang > ANG_180 - 1) {
-            ang -= ANG_360;
+    if (ang > SANG_ANG_180 - 1) {
+        while (ang > SANG_ANG_180 - 1) {
+            ang -= SANG_ANG_360;
         }
     }
     return ang;
@@ -134,8 +127,8 @@ s16 fn_3_9FD28(s16 ang) {
 s16 fn_3_9FCF8(s16 a, s16 b) {
     int diff = a - b;
     diff = (s16)ABS(diff);
-    if (diff > ANG_180) {
-        return ANG_360 - diff;
+    if (diff > SANG_ANG_180) {
+        return SANG_ANG_360 - diff;
     }
     return diff;
 }
@@ -143,18 +136,18 @@ s16 fn_3_9FCF8(s16 a, s16 b) {
 // .text:0x0009FCA4 size:0x54 mapped:0x806DED38
 s16 fn_3_9FCA4(s16 a, s16 b) {
     s16 diff;
-    if (a > ANG_180) {
-        a = a - ANG_360;
+    if (a > SANG_ANG_180) {
+        a = a - SANG_ANG_360;
     }
-    if (b > ANG_180) {
-        b = b - ANG_360;
+    if (b > SANG_ANG_180) {
+        b = b - SANG_ANG_360;
     }
     diff = a - b;
-    if (diff > ANG_180) {
-        diff -= ANG_360;
+    if (diff > SANG_ANG_180) {
+        diff -= SANG_ANG_360;
     }
-    if (diff < -ANG_180) {
-        diff += ANG_360;
+    if (diff < -SANG_ANG_180) {
+        diff += SANG_ANG_360;
     }
     return diff;
 }
@@ -171,10 +164,10 @@ s16 fn_3_9FC1C(f32 x, f32 y) {
         diff = diff + TAU;
     }
 
-    ang = (diff * (f32)ANG_180 / PI);
+    ang = (diff * (f32)SANG_ANG_180 / PI);
 
-    if ((s16)ang >= ANG_180) {
-        ang = ang - ANG_360;
+    if ((s16)ang >= SANG_ANG_180) {
+        ang = ang - SANG_ANG_360;
     }
     ang = (s16)ang;
 
@@ -186,14 +179,14 @@ s16 fn_3_9FB8C(f32 x, f32 y) {
     s16 v;
     if (x == 0) {
         if (y >= 0.f) {
-            return ANG_90;
+            return SANG_ANG_90;
         } else {
-            return ANG_270;
+            return SANG_ANG_270;
         }
     }
-    v = ATAN2F(y, x) * (f32)ANG_180 / PI;
+    v = ATAN2F(y, x) * (f32)SANG_ANG_180 / PI;
     if (v < 0) {
-        v = v + ANG_360;
+        v = v + SANG_ANG_360;
     }
     return v;
 }
@@ -211,16 +204,16 @@ f32 fn_3_9FAA4(f32 x, f32 y) {
     f32 v;
     if (x == 0) {
         if (y >= 0.f) {
-            return (f32)ANG_90;
+            return (f32)SANG_ANG_90;
         } else {
-            return (f32)ANG_270;
+            return (f32)SANG_ANG_270;
         }
     }
 
-    v = ATAN2F(y, x) * (f32)ANG_180 / PI;
+    v = ATAN2F(y, x) * (f32)SANG_ANG_180 / PI;
     if (v < 0.f)
     {
-        v = v + (f32)ANG_360;
+        v = v + (f32)SANG_ANG_360;
     }
     return v;
 }
@@ -229,12 +222,12 @@ f32 fn_3_9FAA4(f32 x, f32 y) {
 void fn_3_9F9C8(s16 ang, f32* x, f32* y) {
     f32 v;
     if (ang < 0) {
-        ang = ang + ANG_360;
+        ang = ang + SANG_ANG_360;
     }
-    if (ang >= ANG_360) {
-        ang -= ANG_360;
+    if (ang >= SANG_ANG_360) {
+        ang -= SANG_ANG_360;
     }
-    v = PI * (ang * 2) / (f32)ANG_360;
+    v = PI * (ang * 2) / (f32)SANG_ANG_360;
     if (v > PI) {
         v = -(TAU - v);
     }

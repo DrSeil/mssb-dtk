@@ -538,7 +538,7 @@ typedef struct _InMemPitcherType {
 
 extern InMemPitcherType inMemPitcher;
 extern InMemBallType inMemBall;
-extern InMemRunnerType inMemRunner[4];
+extern InMemRunnerType inMemRunners[4];
 extern InMemBatterType inMemBatter;
 
 extern VecXYZ maybeInitialBatPos;
@@ -2475,5 +2475,8 @@ typedef struct _BatterReachStruct
 
 extern BatterReachStruct BatterHitbox[54];
 
+extern u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(s8);
+
+extern u8 swingSoundFrame[2][2];
 
 #endif // !__UNKNOWN_HOMES_H_

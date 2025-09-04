@@ -4,6 +4,12 @@
 #include "game/UnknownHomes.h"
 #include "game/rep_1838.h"
 #include "game/rep_540.h"
+#include "game/rep_1188.h"
+#include "game/rep_8C8.h"
+
+// probably in data
+extern f32 lbl_3_data_4C88[3];
+
 
 #define FRAME_COUNT_HOLD_FOR_BUNT 8
 // acts more like a flag than an actual timer
@@ -53,27 +59,27 @@ void calculateBallVelocityAcceleration(void) {
     f32 verticalAngle = shortAngleToRad_Capped(inMemBall.Hit_VerticalAngle);
     f32 s_verticalAngle = SINF(verticalAngle);
     f32 c_verticalAngle = COSF(verticalAngle) * power;
-    f32 c_horizontalAngle =  COSF(horizontalAngle);
+    f32 c_horizontalAngle = COSF(horizontalAngle);
     f32 s_horizontalAngle = SINF(horizontalAngle);
-    
+
     horizontalAngle = c_horizontalAngle * c_verticalAngle;
     verticalAngle = s_horizontalAngle * c_verticalAngle;
     inMemBall.physicsSubstruct.velocity.x = (verticalAngle) / 100.f;
     inMemBall.physicsSubstruct.velocity.y = (power * s_verticalAngle) / 100.f;
     inMemBall.physicsSubstruct.velocity.z = horizontalAngle / 100.f;
-    
-    
+
     inMemBall.physicsSubstruct.acceleration.x = 0.f;
     inMemBall.physicsSubstruct.acceleration.y = inMemBall.hittingAddedGravityFactor;
     inMemBall.physicsSubstruct.acceleration.z = 0.f;
-    
+
     if (!inMemBatter.isBunting && (inMemBall.Hit_HorizontalAngle <= 0x900 || inMemBall.Hit_HorizontalAngle >= 0xf00) &&
         inMemBall.currentStarSwing != CAPTAIN_STAR_TYPE_DK && inMemBall.currentStarSwing != CAPTAIN_STAR_TYPE_DIDDY) {
 
         f32 contactQual, v1, v2;
         int hit_vert, hit_hor;
 
-        BOOL hasSuperCurve = checkFieldingStat(gameControls.teamBatting, inMemBatter.rosterID, FIELDING_ABILITY_SUPER_CURVE);
+        BOOL hasSuperCurve =
+            checkFieldingStat(gameControls.teamBatting, inMemBatter.rosterID, FIELDING_ABILITY_SUPER_CURVE);
         if (inMemBatter.nonCaptainStarSwingActivated == REGULAR_STAR_SWING_LINEDRIVE) {
             hasSuperCurve = true;
         }
@@ -137,14 +143,12 @@ void calculateBallVelocityAcceleration(void) {
 
 // .text:0x0001087C size:0x7C mapped:0x8064f910
 void calculateBuntHorizontalPower(void) {
-   s32 min_power, max_power, diff, horizontal_power;
+    s32 min_power = buntPower[inMemBatter.contactType][0];
+    s32 max_power = buntPower[inMemBatter.contactType][1];
 
-    min_power = (u8)buntPower[inMemBatter.contactType][0];
-    max_power = (u8)buntPower[inMemBatter.contactType][1];
+    s32 diff = max_power - min_power;
 
-    diff = max_power - min_power;
-
-    horizontal_power = inMemBall.StaticRandomInt1 % diff;
+    s32 horizontal_power = inMemBall.StaticRandomInt1 % diff;
     horizontal_power += min_power;
     inMemBall.Hit_HorizontalPower = horizontal_power;
 
@@ -153,8 +157,40 @@ void calculateBuntHorizontalPower(void) {
     }
 }
 
+extern s16 buntVerticalAngles[5][2][2][2];
 // UNUSED .text:0x000108F8 size:0x188 mapped:0x8064f98c
-static void calculateBallHorizontalAngle_unused(void) {
+static void calculateBuntVerticalAngle_unused(void) {
+    // TODO this needs better variable names, probably better function name too
+    int rng, ang0Low, ang0High, ang1Low, ang1High, contactLow, contactHigh, contact;
+    rng = 0;
+    if (inMemBall.StaticRandomInt1 % 2) {
+        rng = 1;
+    }
+
+    contact = inMemBatter.contactType;
+    ang0Low = buntVerticalAngles [contact][0][rng][0];
+    ang0High = buntVerticalAngles[contact][0][rng][1];
+    ang1Low =  buntVerticalAngles[contact][1][rng][0];
+    ang1High = buntVerticalAngles[contact][1][rng][1];
+
+    contactLow = ang0Low + ((inMemBatter.slapContactSize_raw * (ang1Low - ang0Low)) / 100);
+    contactHigh = ang0High + ((inMemBatter.slapContactSize_raw * (ang1High - ang0High)) / 100);
+
+    inMemBall.Hit_VerticalAngle = contactLow + (inMemBall.StaticRandomInt1 % (contactHigh - contactLow));
+
+    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0) {
+        inMemBall.Hit_VerticalAngle = practiceStruct.practice_hitVerticalAngle;
+    }
+
+    if (inMemBall.Hit_VerticalAngle > SANG_ANG_90) {
+        inMemBall.Hit_VerticalAngle = SANG_ANG_180 - inMemBall.Hit_VerticalAngle;
+        inMemBall.Hit_HorizontalAngle = fn_3_9FE6C_normalizeAngle(SANG_ANG_180 + inMemBall.Hit_HorizontalAngle);
+    } else if (inMemBall.Hit_VerticalAngle < -SANG_ANG_90) {
+        inMemBall.Hit_VerticalAngle = SANG_ANG_360 + inMemBall.Hit_VerticalAngle;
+        inMemBall.Hit_HorizontalAngle = fn_3_9FE6C_normalizeAngle(SANG_ANG_180 + inMemBall.Hit_HorizontalAngle);
+    } else if (inMemBall.Hit_VerticalAngle < 0) {
+        inMemBall.Hit_VerticalAngle = SANG_ANG_360 + inMemBall.Hit_VerticalAngle;
+    }
 }
 
 // UNUSED .text:0x00010A80 size:0x280 mapped:0x8064fb14
@@ -395,6 +431,24 @@ void batterHumanControlled(void) {
 
 // .text:0x000142BC size:0xCC mapped:0x80653350
 void updateBallHittableZoneStatus(void) {
+    int frameCounter;
+    BOOL isCharged;
+    inMemBatter.predictedPitchXWhenBallReachesBatter =
+        inMemPitcher.pitchRelease.x + ((inMemPitcher.ballCurrentPosition.x - inMemPitcher.pitchRelease.x) *
+                                       (inMemBatter.batPosition.z - inMemPitcher.pitchRelease.z)) /
+                                          (inMemPitcher.ballCurrentPosition.z - inMemPitcher.pitchRelease.z);
+    isCharged = inMemBatter.isBallInHittableZone = BALL_HITTABLE_IN_AIR;
+    if (inMemBatter.chargeStatus != CHARGE_SWING_STAGE_NONE) {
+        isCharged = true;
+    }
+    frameCounter = inMemPitcher.pitchTotalTimeCounter;
+    if (inMemPitcher.pitchTotalTimeCounter > 0 && inMemPitcher.framesUntilBallReachesBatterZ < 15) {
+        if (hittableFrameInd[isCharged][inMemPitcher.framesUntilBallReachesBatterZ + 1]) {
+            inMemBatter.isBallInHittableZone = BALL_HITTABLE_HITTABLE;
+        } else if (inMemPitcher.framesUntilBallReachesBatterZ < swingSoundFrame[0][1]) {
+            inMemBatter.isBallInHittableZone = BALL_HITTABLE_UNHITTABLE;
+        }
+    }
 }
 
 // .text:0x00014388 size:0xCC mapped:0x8065341c
@@ -406,9 +460,59 @@ void setDefaultInMemBatter(void) {
 }
 
 // .text:0x000146C4 size:0x168 mapped:0x80653758
-void setBatterContactConstants(void)
-{
-  
+void setBatterContactConstants(void) {
+    setInMemBatterConstants(gameControls.battingOrderAndPositionMapping
+                                [gameControls.homeTeamBattingInd_fieldingTeam]
+                                [gameControls.currentBatterPerTeam[gameControls.homeTeamBattingInd_fieldingTeam]][0]);
+    // 1. Get the current batter's character ID first.
+    // 2. Declare local pointers to influence register allocation.
+    // The order can matter.
+    // Assuming BatterHitboxType
+    inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
+    inMemBatter.batPosition2.x = maybeInitialBatPos.x;
+    inMemBatter.batPosition2.y = maybeInitialBatPos.y;
+    inMemBatter.batPosition2.z = maybeInitialBatPos.z;
+    // 3. Set simple properties
+
+    // possible inline
+    {
+        BatterReachStruct* hitbox = &BatterHitbox[inMemBatter.charID];
+        inMemBatter._8C = 0;
+        inMemBatter.swingInd = 0;
+        inMemBatter._95 = 0;
+        inMemBatter._9C = 0;
+        inMemBatter.framesSinceStartOfSwing = 0;
+        inMemBatter.batterIsBeingCentredInd = 0;
+        // 4. Use local pointers for position calculations
+        inMemBatter.batPosition2.x = maybeInitialBatPos.x;
+        inMemBatter.batPosition2.y = maybeInitialBatPos.y;
+        inMemBatter.batPosition2.z = maybeInitialBatPos.z;
+        inMemBatter.batPosition2.y = hitbox->PitchingHeight * charSizeMultipliers[inMemBatter.charID][0];
+
+        // 5. Clamp the position
+        if (inMemBatter.batPosition2.x < hitbox->HorizontalRangeNear) {
+            inMemBatter.batPosition2.x = hitbox->HorizontalRangeNear;
+        }
+        if (inMemBatter.batPosition2.x > hitbox->HorizontalRangeFar) {
+            inMemBatter.batPosition2.x = hitbox->HorizontalRangeFar;
+        }
+        if (inMemBatter.batPosition2.z < hitbox->VerticalRangeFront) {
+            inMemBatter.batPosition2.z = hitbox->VerticalRangeFront;
+        }
+        if (inMemBatter.batPosition2.z > hitbox->VerticalRangeBack) {
+            inMemBatter.batPosition2.z = hitbox->VerticalRangeBack;
+        }
+
+        // 6. Set final derived positions
+        inMemBatter.batterPos.x = inMemBatter.batPosition2.x + hitbox->batOffsetFromBatterX;
+        inMemBatter.batterPos.z = inMemBatter.batPosition2.z + hitbox->batOffsetFromBatterZ;
+
+        if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
+            inMemBatter.batterPos.x = -inMemBatter.batterPos.x;
+        }
+
+        gameControls.frameCountdownAtBeginningOfAtBatLockout = 0;
+    }
 }
 
 // .text:0x0001482C size:0x2C mapped:0x806538c0
@@ -423,4 +527,85 @@ void initializeInMemBatter(void) {
 
 // .text:0x00014858 size:0x35C mapped:0x806538ec
 void atBat_batter(void) {
+    f32* p;
+    if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(
+            minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.minigamesRosterIDOfCurrentPlayer])) {
+        inMemBatter.aiControlledInd = false;
+    }
+
+    if (gameControls.frameCountdownAtBeginningOfAtBatLockout == 0 && inMemBatter.beginningOfABAnimationOccuring == 0) {
+        BOOL chargeSwung; // = FALSE;
+        inMemBatter.isBallInHittableZone = chargeSwung = 0;
+        inMemBatter.predictedPitchXWhenBallReachesBatter =
+            inMemPitcher.pitchRelease.x + ((inMemPitcher.ballCurrentPosition.x - inMemPitcher.pitchRelease.x) *
+                                           (inMemBatter.batPosition.z - inMemPitcher.pitchRelease.z)) /
+                                              (inMemPitcher.ballCurrentPosition.z - inMemPitcher.pitchRelease.z);
+        if (inMemBatter.chargeStatus != CHARGE_SWING_STAGE_NONE) {
+            chargeSwung = TRUE;
+        }
+        if (inMemPitcher.pitchTotalTimeCounter > 0 && inMemPitcher.framesUntilBallReachesBatterZ < 15) {
+            if (hittableFrameInd[chargeSwung][inMemPitcher.framesUntilBallReachesBatterZ + 1]) {
+                inMemBatter.isBallInHittableZone = BALL_HITTABLE_HITTABLE;
+            } else if (inMemPitcher.framesUntilBallReachesBatterZ < swingSoundFrame[0][1]) {
+                inMemBatter.isBallInHittableZone = BALL_HITTABLE_UNHITTABLE;
+            }
+        }
+        if (inMemBatter.aiControlledInd) {
+            batterAIControlled();
+        } else {
+            batterHumanControlled();
+        }
+        p = lbl_3_data_4C88;
+        if (inMemBatter.chargeStatus != CHARGE_SWING_STAGE_NONE) {
+            if (inMemBatter.swingInd) {
+                inMemBatter.chargeStatus = CHARGE_SWING_STAGE_SWING;
+            } else {
+                if (inMemBatter.chargeStatus == CHARGE_SWING_STAGE_CHARGEUP) {
+
+                    inMemBatter.chargeFrames++;
+                    inMemBatter.chargeDown = 0.f;
+                    if (inMemBatter.chargeFrames >= inMemBatter.frameFullyCharged) {
+                        if (inMemBatter.chargeFrames <= inMemBatter.frameChargeDownBegins) {
+                            inMemBatter.chargeDown = 1.f;
+                        } else {
+                            int d1 = (inMemBatter.chargeFrames - inMemBatter.frameChargeDownBegins);
+                            if (d1 > g_hitShorts.frameChargeDownEnds) {
+                                inMemBatter.chargeDown = 0.f;
+                            } else {
+                                int d2 = g_hitShorts.frameChargeDownEnds - inMemBatter.frameChargeDownBegins;
+
+                                inMemBatter.chargeDown = 1.f - (f32)d1 / (f32)(d2);
+                                if (inMemBatter.chargeDown < 0.f) {
+                                    inMemBatter.chargeDown = 0.f;
+                                }
+                            }
+                        }
+                        inMemBatter.isFullyCharged = true;
+                    }
+
+                    if (inMemPitcher.pitcherActionState >= 4) {
+                        inMemBatter.chargeStatus = CHARGE_SWING_STAGE_RELEASE;
+                    }
+                }
+                inMemBatter.chargeUp = (f32)inMemBatter.chargeFrames / (f32)inMemBatter.frameFullyCharged;
+                if (inMemBatter.chargeUp > 1.f) {
+                    inMemBatter.chargeUp = 1.f;
+                }
+            }
+        }
+        if (inMemBatter.missedBuntStatus == 1) {
+            inMemBatter.missedBuntStatus = 2;
+        }
+
+        inMemBatter.batPosition.x = inMemBatter.batPosition2.x - p[2];
+        inMemBatter.batPosition.y = inMemBatter.batPosition2.y;
+        inMemBatter.batPosition.z = inMemBatter.batPosition2.z;
+        if (inMemBatter.buntStatus) {
+            ifBunt();
+        } else {
+            ifSwing();
+        }
+        inMemRunners[0].position.x = inMemBatter.batterPos.x;
+        inMemRunners[0].position.z = inMemBatter.batterPos.z;
+    }
 }

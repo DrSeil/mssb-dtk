@@ -47,7 +47,7 @@ void fn_3_1F998(void) {
 }
 
 // .text:0x0001FD8C size:0x1BC mapped:0x8065EE20
-void fn_3_1FD8C(void) {
+void batterAIControlled(void) {
     return;
 }
 
@@ -70,4 +70,3 @@ void fn_3_20188(void) {
 void fn_3_20224(void) {
     return;
 }
-
