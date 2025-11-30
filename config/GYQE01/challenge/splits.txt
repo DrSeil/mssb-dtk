@@ -13,45 +13,53 @@ challenge/rep_0010.c:
 challenge/rep_00B0.c:
 	.text       start:0x000019AC end:0x00004DD8
 	.rodata     start:0x000000B0 end:0x00000138
+	.bss        start:0x00000060 end:0x000000C0
 
 challenge/rep_0138.c:
 	.text       start:0x00004E98 end:0x000085A8
 	.rodata     start:0x00000138 end:0x00000250
+	.bss        start:0x000000C0 end:0x00002FA8
 
 challenge/rep_0250.c:
-	.text       start:0x00008CD4 end:0x000096A4
+	.text       start:0x00008CD4 end:0x00009EA0
 	.rodata     start:0x00000250 end:0x000002A8
+	.bss        start:0x00002FA8 end:0x00002FD8
 
 challenge/rep_02A8.c:
-	.text       start:0x0000A464 end:0x0000C188
+	.text       start:0x0000A2E4 end:0x0000C2A4
 	.rodata     start:0x000002A8 end:0x00000610
 	.data       start:0x00000FC0 end:0x0000196C
+	.bss        start:0x00002FD8 end:0x00003070
 
 challenge/rep_0610.c:
-	.text       start:0x0000C5AC end:0x00017B5C
+	.text       start:0x0000C5AC end:0x00017EFC
 	.rodata     start:0x00000610 end:0x000074A0
 	.data       start:0x00001E18 end:0x00002390
+	.bss        start:0x00003070 end:0x000069F0
 
 challenge/rep_74A0.c:
-	.text       start:0x000182C0 end:0x0001D450
+	.text       start:0x000182C0 end:0x0001D590
 	.rodata     start:0x000074A0 end:0x00007730
+	.bss        start:0x000069F0 end:0x00006BD8
 
 challenge/rep_7730.c:
-	.text       start:0x0001D694 end:0x00026928
+	.text       start:0x0001D694 end:0x00026AF8
 	.rodata     start:0x00007730 end:0x00007920
+	.bss        start:0x00006BD8 end:0x00047050
 
 challenge/rep_7920.c:
 	.text       start:0x00026B7C end:0x00026D28
 	.rodata     start:0x00007920 end:0x00007978
+	.bss        start:0x00047050 end:0x00047058
 
 challenge/rep_7978.c:
 	.text       start:0x00026D28 end:0x00027560
 	.rodata     start:0x00007978 end:0x00007A28
 
 challenge/rep_7A28.c:
-	.text       start:0x00027594 end:0x000282F4
+	.text       start:0x00027560 end:0x000282F4
 	.rodata     start:0x00007A28 end:0x00007BA0
-	.data       start:0x00010910 end:0x000112D8
+	.data       start:0x000108E8 end:0x000112D8
 
 challenge/rep_7BA0.c:
 	.rodata     start:0x00007BA0 end:0x00007BF0
@@ -59,4 +67,5 @@ challenge/rep_7BA0.c:
 challenge/rep_7BF0.c:
 	.text       start:0x0002858C end:0x00029C5C
 	.rodata     start:0x00007BF0 end:0x00007E3C
-	.data       start:0x0001135C end:0x00011934
+	.data       start:0x00011300 end:0x00011934
+	.bss        start:0x00047068 end:0x000472B0
