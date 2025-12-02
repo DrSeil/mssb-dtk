@@ -2,7 +2,7 @@
 #define __GAME_rep_1838_H_
 
 #include "mssbTypes.h"
-#include "game/UnknownHomes.h"
+#include "game/UnknownHomes_Game.h"
 
 #define SANG_MAX_ANGLE (0x1000)
 

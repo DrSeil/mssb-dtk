@@ -1,7 +1,8 @@
 #include "game/HitBall.h"
 #include "header_rep_data.h"
 
-#include "game/UnknownHomes.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_static.h"
 #include "game/rep_1838.h"
 #include "game/rep_540.h"
 #include "game/rep_1188.h"
@@ -53,20 +54,23 @@ static void starHitSetting_unused(void) {
 
 // .text:0x00010470 size:0x40C mapped:0x8064f504
 void calculateBallVelocityAcceleration(void) {
-    // UNFINISHED
-    f32 power = inMemBall.Hit_HorizontalPower / 2.f;
-    f32 horizontalAngle = shortAngleToRad_Capped(inMemBall.Hit_HorizontalAngle);
-    f32 verticalAngle = shortAngleToRad_Capped(inMemBall.Hit_VerticalAngle);
-    f32 s_verticalAngle = SINF(verticalAngle);
-    f32 c_verticalAngle = COSF(verticalAngle) * power;
-    f32 c_horizontalAngle = COSF(horizontalAngle);
-    f32 s_horizontalAngle = SINF(horizontalAngle);
+    f32 s_verticalAngle, power, s_horizontalAngle, c_horizontalAngle, c_verticalAngle, verticalAngle, horizontalAngle,
+        tmp_horizontalAngle, tmp_verticalAngle;
 
-    horizontalAngle = c_horizontalAngle * c_verticalAngle;
+    power = inMemBall.Hit_HorizontalPower / 2.f;
+    tmp_horizontalAngle = shortAngleToRad_Capped(inMemBall.Hit_HorizontalAngle);
+    tmp_verticalAngle = shortAngleToRad_Capped(inMemBall.Hit_VerticalAngle);
+    s_verticalAngle = SINF(tmp_verticalAngle);
+    c_verticalAngle = COSF(tmp_verticalAngle) * power;
+    s_horizontalAngle = COSF(tmp_horizontalAngle);
+    c_horizontalAngle = SINF(tmp_horizontalAngle);
+
     verticalAngle = s_horizontalAngle * c_verticalAngle;
+    horizontalAngle = c_horizontalAngle * c_verticalAngle;
+    
     inMemBall.physicsSubstruct.velocity.x = (verticalAngle) / 100.f;
     inMemBall.physicsSubstruct.velocity.y = (power * s_verticalAngle) / 100.f;
-    inMemBall.physicsSubstruct.velocity.z = horizontalAngle / 100.f;
+    inMemBall.physicsSubstruct.velocity.z = (horizontalAngle) / 100.f;
 
     inMemBall.physicsSubstruct.acceleration.x = 0.f;
     inMemBall.physicsSubstruct.acceleration.y = inMemBall.hittingAddedGravityFactor;
@@ -89,16 +93,21 @@ void calculateBallVelocityAcceleration(void) {
         if (contactQual > 100.f) {
             contactQual = 200.f - contactQual;
         }
-        hit_vert = inMemBall.Hit_VerticalAngle;
-        power -= s_ballCurveData[hasSuperCurve].x * (1.f - 0.01f * contactQual);
+        contactQual *= 0.01f;
 
+        contactQual = (1.0f - contactQual) * s_ballCurveData[hasSuperCurve].x;
+        power -= contactQual;
+        
+        hit_vert = inMemBall.Hit_VerticalAngle;
         if (hit_vert > 0x180 && hit_vert <= 0x400) {
             int t = hit_vert - 0x180;
             contactQual = t;
             if (t > (f32)0x200) {
                 contactQual = (f32)0x200;
             }
-            power = power * (1.f - contactQual * (8 / (f32)0x1000)); // unsure about this constant
+            
+            contactQual *= (2.f / (f32)SANG_ANG_90); // 45 degrees
+            power *= (1.f - contactQual);
         }
 
         hit_hor = inMemBall.Hit_HorizontalAngle;
@@ -119,21 +128,24 @@ void calculateBallVelocityAcceleration(void) {
             contactQual = (0x460 - hit_hor) / 672.f;
         }
 
-        power = power * contactQual;
+        power *= contactQual;
 
         if (power < 0.f) {
-            horizontalAngle = c_horizontalAngle;
-            verticalAngle = -s_horizontalAngle;
+            verticalAngle = -c_horizontalAngle;
+            horizontalAngle = s_horizontalAngle;
             power = -power;
         } else if (contactQual > 0.f) {
-            verticalAngle = s_horizontalAngle;
-            horizontalAngle = -c_horizontalAngle;
+            verticalAngle = c_horizontalAngle;
+            horizontalAngle = -s_horizontalAngle;
         }
-        inMemBall.physicsSubstruct.acceleration.z = horizontalAngle * power * s_ballCurveData[hasSuperCurve].z;
+
         inMemBall.physicsSubstruct.acceleration.x = verticalAngle * power * s_ballCurveData[hasSuperCurve].y;
+        inMemBall.physicsSubstruct.acceleration.z = horizontalAngle * power * s_ballCurveData[hasSuperCurve].z;
+
         if (inMemBall.physicsSubstruct.acceleration.z > 0.f) {
             inMemBall.physicsSubstruct.acceleration.z = -inMemBall.physicsSubstruct.acceleration.z;
         }
+
         if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
             inMemBall.physicsSubstruct.acceleration.x = -inMemBall.physicsSubstruct.acceleration.x;
         }
@@ -173,8 +185,8 @@ static void calculateBuntVerticalAngle_unused(void) {
     ang1Low =  buntVerticalAngles[contact][1][rng][0];
     ang1High = buntVerticalAngles[contact][1][rng][1];
 
-    contactLow = ang0Low + ((inMemBatter.slapContactSize_raw * (ang1Low - ang0Low)) / 100);
-    contactHigh = ang0High + ((inMemBatter.slapContactSize_raw * (ang1High - ang0High)) / 100);
+    contactLow = ang0Low + ((inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] * (ang1Low - ang0Low)) / 100);
+    contactHigh = ang0High + ((inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] * (ang1High - ang0High)) / 100);
 
     inMemBall.Hit_VerticalAngle = contactLow + (inMemBall.StaticRandomInt1 % (contactHigh - contactLow));
 
@@ -195,6 +207,26 @@ static void calculateBuntVerticalAngle_unused(void) {
 
 // UNUSED .text:0x00010A80 size:0x280 mapped:0x8064fb14
 void calculateBuntHorizontalAngle(void) {
+    int r29;
+    int s;
+    InputStruct* inputs = &lbl_3_common_bss_32848[gameControls.teams[gameControls.teamBatting]];
+    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0) {
+        inputs = &practiceStruct.inputs[gameControls.teamBatting];
+    } else if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(0)) {
+    }
+
+    if ((inMemBatter.batterHand == BATTING_HAND_RIGHT && r29 != 0) ||
+        (inMemBatter.batterHand != BATTING_HAND_RIGHT && r29 == 0)) {
+        if (s <= 0x800) {
+            s = 0x800 - s;
+        }else{
+            s = 0x1800 - s;
+        }
+    }
+    inMemBall.Hit_HorizontalAngle = fn_3_9FE6C_normalizeAngle(s);
+    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0) {
+        inMemBall.Hit_HorizontalAngle = practiceStruct.practice_hitHorizontalAngle;
+    }
 }
 
 // .text:0x00010D00 size:0x768 mapped:0x8064fd94
@@ -242,8 +274,8 @@ void calculateHitVariables(void) {
 void calculateIfHitBall(void) {
     f32 batterZ;
     f32 ballFuturePosition;
-    f32 ballX;
-    f32 ballZ;
+    f32 dX;
+    f32 dZ;
     /* If HBP or pitch got to catcher. */
     if (inMemPitcher.pitchDidntResultInLiveBallInd) {
         return;
@@ -271,12 +303,12 @@ void calculateIfHitBall(void) {
         // if that's true, it should be
         // ballFuturePosition = ((ballX - contactX) / (ballZ - contactZ)) * (batterZ - contactZ) + contactX;
 
-        f32 product;
-        ballX = inMemBall.pastCoordinates[2].x;
-        ballZ = inMemBall.pastCoordinates[2].z;
-        product = (inMemBall.AtBat_Contact_BallPos.x - ballX) *
-                  ((inMemBall.AtBat_Contact_BallPos.z - batterZ) / (inMemBall.AtBat_Contact_BallPos.z - ballZ));
-        ballFuturePosition = product + ballX;
+        dZ = inMemBall.AtBat_Contact_BallPos.z;
+        dZ -= inMemBall.pastCoordinates[2].z;
+        dZ = (inMemBall.AtBat_Contact_BallPos.z - batterZ) / dZ;
+        dX = inMemBall.AtBat_Contact_BallPos.x - inMemBall.pastCoordinates[2].x;
+        dX *= dZ;
+        ballFuturePosition = dX + inMemBall.pastCoordinates[2].x;
     }
 
     if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
@@ -452,11 +484,114 @@ void updateBallHittableZoneStatus(void) {
 }
 
 // .text:0x00014388 size:0xCC mapped:0x8065341c
-void someAnimationIndFunction(void) {
+int someAnimationIndFunction(void) {
+    int r = gameControls.battingOrderAndPositionMapping
+                [gameControls.homeTeamBattingInd_fieldingTeam]
+                [gameControls.currentBatterPerTeam[gameControls.homeTeamBattingInd_fieldingTeam]][0];
+    int r2;
+    int p2 = 9;
+    if (gameInitVariables.minigamesEnabled) {
+        p2 = minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.minigamesRosterIDOfCurrentPlayer];
+        r2 = inMemRoster[0][p2].stats.CharID;
+    } else {
+        r2 = inMemRoster[gameControls.teamBatting][r].stats.CharID;
+    }
+    if (fn_8001C67C_animation(r2, p2) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
+
+extern u8 lbl_3_data_7690[NUM_CHOOSABLE_CHARACTERS][2];
+extern s16 lbl_3_data_5CD4[4];
 
 // .text:0x00014454 size:0x270 mapped:0x806534e8
 void setDefaultInMemBatter(void) {
+    int i;
+    inMemBatter.frameSwung = -1;
+    inMemBatter.framesBuntHeld = 0;
+    inMemBatter.isBunting = false;
+    inMemBatter.buntStatus = BUNT_STATUS_NONE;
+    inMemBatter.missedBuntStatus = 0;
+    inMemBatter.contactMadeInd = 0;
+    inMemBatter.hitByPitch = 0;
+    inMemBatter.hitTrajectory = HIT_TRAJECTORY_0;
+    inMemBatter.displayContactSprite = 0;
+    inMemBatter._98 = 0;
+    inMemBatter.missSwingOrBunt = DID_SWING_TYPE_NONE;
+    inMemBatter._9C = 0;
+    inMemBatter.chargeUp = 0.0f;
+    inMemBatter.chargeDown = 0.0f;
+    inMemBatter.frameFullyCharged = lbl_3_data_7690[inMemBatter.charID][0];
+    inMemBatter.frameChargeDownBegins = lbl_3_data_7690[inMemBatter.charID][1];
+    inMemBatter.chargeFrames = 0;
+    inMemBatter._76 = 0;
+    inMemBatter.chargeStatus = CHARGE_SWING_STAGE_NONE;
+    inMemBatter.countUpUntilChargeEnables = 0;
+    inMemBatter.isFullyCharged = false;
+    inMemBatter.didNonCaptainStarSwingConnect = false;
+    inMemBatter.isStarSwing = false;
+    inMemBatter.captainStarSwingActivated = CAPTAIN_STAR_TYPE_NONE;
+    inMemBatter.lightFireballStunID = 0;
+    inMemBatter.starSwing_starsHaveBeenSpent = 0;
+    inMemBatter.moonShotInd = false;
+    inMemBatter.invisibleBallForPeachStarHit = 0;
+    inMemBatter.inputDirection = STICK_SIDEWAYS_INPUT_NONE;
+    inMemBatter.hitType = HIT_TYPE_SLAP_NONE;
+    inMemBatter.isBallInHittableZone = BALL_HITTABLE_NONE;
+    inMemBatter.swingMissThatWasHittable = 0;
+    inMemBatter.nonCaptainStarSwingActivated = 0;
+    inMemBatter.frameDelay[0] = lbl_3_data_5CD4[0];
+    inMemBatter.frameDelay[1] = lbl_3_data_5CD4[1];
+    
+    if (minigameStruct.GameMode_MiniGame == MINI_GAME_ID_BARREL_BATTER) {
+        inMemBatter.frameDelay[0] = lbl_3_data_5CD4[2];
+        inMemBatter.frameDelay[1] = lbl_3_data_5CD4[3];
+    }
+    
+    inMemBatter.batPosition.x = inMemBatter.batPosition2.x - lbl_3_data_4C88[2];
+    inMemBatter.batPosition.y = inMemBatter.batPosition2.y;
+    inMemBatter.batPosition.z = inMemBatter.batPosition2.z;
+    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE) {
+        inMemBatter.aiControlledInd = practiceStruct.practiceBatterHandedness;
+    } else if (gameInitVariables.minigamesEnabled) {
+        inMemBatter.aiControlledInd =
+            minigameStruct.minigameControlStruct[0].battingHandedness[minigameStruct.minigamesRosterIDOfCurrentPlayer];
+    } else {
+        inMemBatter.aiControlledInd = gameControls.batterHandedness[gameControls.homeTeamBattingInd_fieldingTeam];
+    }
+    if (inMemBatter.aiControlledInd != 0) {
+        inMemBatter.easyBatting = false;
+    }
+
+    for (i = 0; i < 2; i++) {
+        int contactSize = inMemBatter.contactSize_raw[i];
+        int power = inMemBatter.hitPower_raw[i];
+        
+        if (power > 100) {
+            power = 100;
+        }
+        if (power <= 1) {
+            power = 1;
+        }
+        if (contactSize > 100) {
+            contactSize = 100;
+        }
+        if (contactSize <= 1) {
+            contactSize = 1;
+        }
+
+        inMemBatter.contactSize_capped[i] = contactSize;
+        inMemBatter.hitPower_capped[i] = power;
+    }
+    
+    if (gameControls.pre_PostMiniGameInd != 0) {
+        inMemBatter.swingInd = 0;
+        inMemBatter.framesSinceStartOfSwing = 0;
+    }
+    
+    lbl_3_common_bss_34C58._2B = 0;
 }
 
 // .text:0x000146C4 size:0x168 mapped:0x80653758
@@ -518,10 +653,10 @@ void setBatterContactConstants(void) {
 // .text:0x0001482C size:0x2C mapped:0x806538c0
 void initializeInMemBatter(void) {
     inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
-    inMemBatter.slapContactSize_raw = 100;
-    inMemBatter.chargeContactSize_raw = 100;
-    inMemBatter.slapHitPower_raw = 100;
-    inMemBatter.chargeHitPower_raw = 100;
+    inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] = 100;
+    inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_CHARGE] = 100;
+    inMemBatter.hitPower_raw[BAT_CONTACT_TYPE_SLAP] = 100;
+    inMemBatter.hitPower_raw[BAT_CONTACT_TYPE_CHARGE] = 100;
     inMemBatter.batterHand = BATTING_HAND_RIGHT;
 }
 

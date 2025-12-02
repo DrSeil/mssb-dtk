@@ -1,6 +1,6 @@
 #include "game/rep_1838.h"
 #include "header_rep_data.h"
-#include "game/UnknownHomes.h"
+#include "game/UnknownHomes_Game.h"
 #include "Dolphin/rand.h"
 
 // .text:0x000A0018 size:0x84 mapped:0x806DF0AC

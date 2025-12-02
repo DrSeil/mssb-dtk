@@ -1,7 +1,7 @@
 #include "game/rep_1188.h"
 #include "header_rep_data.h"
 
-#include "game/UnknownHomes.h"
+#include "game/UnknownHomes_Game.h"
 extern u8 aILevel[4];
 // .text:0x0006D6D4 size:0x290 mapped:0x806AC768
 void fn_3_6D6D4(void) {
@@ -37,10 +37,10 @@ void setInMemBatterConstants(int rosterID)
     
     inMemBatter.rosterID = rosterID;
     inMemBatter.charID = char_stats->stats.CharID;
-    inMemBatter.slapContactSize_raw = char_stats->stats.SlapContactSize;
-    inMemBatter.chargeContactSize_raw = char_stats->stats.ChargeContactSize;
-    inMemBatter.slapHitPower_raw = char_stats->stats.SlapHitPower;
-    inMemBatter.chargeHitPower_raw = char_stats->stats.ChargeHitPower;
+    inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] = char_stats->stats.SlapContactSize;
+    inMemBatter.contactSize_raw[BAT_CONTACT_TYPE_CHARGE] = char_stats->stats.ChargeContactSize;
+    inMemBatter.hitPower_raw[BAT_CONTACT_TYPE_SLAP] = char_stats->stats.SlapHitPower;
+    inMemBatter.hitPower_raw[BAT_CONTACT_TYPE_CHARGE] = char_stats->stats.ChargeHitPower;
     inMemBatter.buntingContactSize = char_stats->stats.BuntingContactSize;
     inMemBatter.trajectoryPushPull = char_stats->stats.HitTrajectoryPushPull;
     inMemBatter.trajectoryHighLow = char_stats->stats.HitTrajectoryHighLow;

@@ -18,7 +18,7 @@ void ifSwing(void);
 void batterInBoxMovement(void);
 void batterHumanControlled(void);
 void updateBallHittableZoneStatus(void);
-void someAnimationIndFunction(void);
+int someAnimationIndFunction(void);
 void setDefaultInMemBatter(void);
 void setBatterContactConstants(void);
 void initializeInMemBatter(void);

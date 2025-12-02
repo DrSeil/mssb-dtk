@@ -1,5 +1,5 @@
-#ifndef __UNKNOWN_HOMES_H_
-#define __UNKNOWN_HOMES_H_
+#ifndef __UNKNOWN_HOMES_GAME_H_
+#define __UNKNOWN_HOMES_GAME_H_
 
 #include "mssbTypes.h"
 #include "Dolphin/pad.h"
@@ -59,14 +59,10 @@ typedef struct _InMemBatterType {
     /*0x79*/ u8 aiLevel;
     /*0x7A*/ u8 easyBatting;
     /*0x7B*/ E(u8, BATTING_HAND) batterHand;
-    /*0x7C*/ u8 slapHitPower_raw;
-    /*0x7D*/ u8 chargeHitPower_raw;
-    /*0x7E*/ u8 slapContactSize_raw;
-    /*0x7F*/ u8 chargeContactSize_raw;
-    /*0x80*/ u8 slapHitPower_capped;
-    /*0x81*/ u8 chargeHitPower_capped;
-    /*0x82*/ u8 slapContactSize_capped;
-    /*0x83*/ u8 chargeContactSize_capped;
+    /*0x7C*/ u8 hitPower_raw[2];
+    /*0x7E*/ u8 contactSize_raw[2];
+    /*0x80*/ u8 hitPower_capped[2];
+    /*0x82*/ u8 contactSize_capped[2];
     /*0x84*/ u8 buntingContactSize;
     /*0x85*/ u8 trajectoryPushPull;
     /*0x85*/ u8 trajectoryHighLow;
@@ -88,7 +84,7 @@ typedef struct _InMemBatterType {
     /*0x96*/ u8 _96;
     /*0x97*/ u8 displayContactSprite; // displays nice/perfect on screen
     /*0x98*/ u8 _98;
-    /*0x98*/ E(u8, DID_SWING_TYPE) missSwingOrBunt;
+    /*0x99*/ E(u8, DID_SWING_TYPE) missSwingOrBunt;
     /*0x9A*/ u8 noSwingAnimationInd;
     /*0x9B*/ u8 Stored_Frame_SwingContact_SinceMiss;
     /*0x9C*/ u8 _9C;
@@ -107,7 +103,7 @@ typedef struct _InMemBatterType {
     /*0xA9*/ E(u8, STICK_SIDEWAYS_INPUT) inputDirection;
     /*0xAA*/ u8 chemLinksOnBase;
     /*0xAB*/ u8 runnersOnBase;
-    /*0xAC*/ E(u8, HIT_TYPE) hitType;
+    /*0xAC*/ E(s8, HIT_TYPE) hitType;
     /*0xAD*/ E(u8, BALL_HITTABLE) isBallInHittableZone;
     /*0xAE*/ u8 swingMissThatWasHittable;
     /*0xAF*/ E(u8, REGULAR_STAR_SWING) nonCaptainStarSwingActivated;
@@ -1134,7 +1130,7 @@ typedef struct _GameControlsStruct {
     /*0x12C*/ u8 minigameLastTurnSuccessInd; // unsure
     /*0x12D*/ u8 hudElementLoadingInd;
     /*0x12E*/ u8 hudLoadingRelated; // unsure
-    /*0x12F*/ _12F;
+    /*0x12F*/ u8 _12F;
     /*0x130*/ E(u8, WIN_TYPE) winType;
     artificial_padding(0x130, 0x135, u8);
     /*0x135*/ u8 _135;
@@ -2478,5 +2474,36 @@ extern BatterReachStruct BatterHitbox[54];
 extern u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(s8);
 
 extern u8 swingSoundFrame[2][2];
+
+extern struct {
+    /* 0x00 */ u32 _00;
+    /* 0x04 */ u32 _04;
+    /* 0x08 */ u32 _08;
+    /* 0x08 */ u32 _0C;
+    /* 0x10 */ u32 _10;
+    /* 0x14 */ u32 _14;
+    /* 0x18 */ u32 _18;
+    /* 0x1C */ u32 _1C; // written to after sndFXStartEx
+    /* 0x20 */ s16 _20;
+    /* 0x22 */ s16 _22;
+    /* 0x24 */ s16 _24;
+    /* 0x26 */ u8 _26;
+    /* 0x27 */ u8 _27;
+    /* 0x28 */ u8 _28;
+    /* 0x29 */ u8 _29;
+    /* 0x2a */ u8 _2A;
+    /* 0x2b */ u8 _2B;
+    /* 0x2c */ u8 _2C;
+    /* 0x2d */ u8 _2D;
+    /* 0x2e */ u8 _2E;
+    /* 0x2f */ u8 _2F;
+    /* 0x30 */ u8 _30;
+    /* 0x31 */ u8 _31;
+    /* 0x32 */ u8 _32;
+    /* 0x33 */ u8 _33;
+    /* 0x34 */ u8 _34;
+} lbl_3_common_bss_34C58; // size: 0x38
+
+extern InputStruct lbl_3_common_bss_32848[];
 
 #endif // !__UNKNOWN_HOMES_H_

@@ -7,7 +7,10 @@ Sections:
 	.bss        type:bss align:32
 
 game/rep_0.c:
+	.text       start:0x00000000 end:0x00000464
 	.rodata     start:0x00000000 end:0x00000008
+	.data       start:0x00000000 end:0x00000118
+	.bss        start:0x00000000 end:0x00000018
 
 game/rep_8.c:
 	.rodata     start:0x00000008 end:0x00000010
@@ -23,19 +26,22 @@ game/rep_60.c:
 game/rep_D0.c:
 	.text       start:0x000008D4 end:0x000014A4
 	.rodata     start:0x000000D0 end:0x00000140
+	.data       start:0x000001F8 end:0x00000228
 
 game/rep_140.c:
 	.text       start:0x000014A4 end:0x000035D4
 	.rodata     start:0x00000140 end:0x000001C0
 
 game/rep_1C0.c:
-	.text       start:0x000035D4 end:0x00006424
+	.text       start:0x000035D4 end:0x00006530
 	.rodata     start:0x000001C0 end:0x00000540
+	.data       start:0x0000023C end:0x00000A18
 	.bss        start:0x00000018 end:0x00000030
 
 game/rep_540.c:
 	.text       start:0x00006530 end:0x0000FF4C
 	.rodata     start:0x00000540 end:0x00000680
+	.data       start:0x00000A18 end:0x00000A38
 
 game/HitBall.c:
 	.text       start:0x000102C8 end:0x00014BB4
@@ -75,7 +81,7 @@ game/rep_A78.c:
 game/rep_AC8.c:
 	.text       start:0x000251E4 end:0x0005985C
 	.rodata     start:0x00000AC8 end:0x00000CC8
-	.data       start:0x00003D28 end:0x00003D60
+	.data       start:0x00003C40 end:0x00003D60
 	.bss        start:0x000000C8 end:0x00000200
 
 game/rep_CC8.c:
