@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+
+#ifndef _TYPES_H
 typedef signed char s8;
 typedef unsigned char u8;
 typedef signed short s16;
@@ -23,14 +25,14 @@ typedef double f64;
 #define NULL 0
 #endif
 
-#ifndef bool8
-typedef unsigned char bool8;
-#endif
 #ifndef __cplusplus
-typedef unsigned long bool;
 #define FALSE 0
 #define TRUE 1
 #endif
+#endif
+
+typedef unsigned long bool32;
+typedef unsigned char bool8;
 
 #define SND_STUDIO_MAXNUM 8
 
@@ -244,7 +246,7 @@ typedef struct SND_EMITTER {
 s32 sndInit(u8 voices, u8 music, u8 sfx, u8 studios, u32 flags, u32 aramSize);
 void sndQuit(void);
 
-bool sndIsInstalled();
+bool32 sndIsInstalled();
 u32 sndIsIdle();
 SND_PLAYBACKINFO* sndGetPlayBackInfo();
 
@@ -324,8 +326,8 @@ typedef struct SND_AUX_REVERBHI {
 } SND_AUX_REVERBHI;
 
 void sndAuxCallbackReverbHI(u8 reason, SND_AUX_INFO* info, void* user);
-bool sndAuxCallbackPrepareReverbHI(SND_AUX_REVERBHI* rev);
-bool sndAuxCallbackShutdownReverbHI(SND_AUX_REVERBHI* rev);
+bool32 sndAuxCallbackPrepareReverbHI(SND_AUX_REVERBHI* rev);
+bool32 sndAuxCallbackShutdownReverbHI(SND_AUX_REVERBHI* rev);
 
 typedef struct SND_AUX_DELAY {
   u32 currentSize[3];
@@ -345,10 +347,10 @@ typedef struct SND_AUX_DELAY {
 typedef void (*SND_AUX_CALLBACK)(u8 reason, SND_AUX_INFO* info, void* user);
 
 void sndAuxCallbackDelay(u8 reason, SND_AUX_INFO* info, void* user);
-bool sndAuxCallbackUpdateSettingsDelay(SND_AUX_DELAY* delay);
-bool sndAuxCallbackPrepareDelay(SND_AUX_DELAY* rev);
-bool sndAuxCallbackShutdownDelay(SND_AUX_DELAY* rev);
-bool sndAuxCallbackUpdateSettingsReverbHI(SND_AUX_REVERBHI* rev);
+bool32 sndAuxCallbackUpdateSettingsDelay(SND_AUX_DELAY* delay);
+bool32 sndAuxCallbackPrepareDelay(SND_AUX_DELAY* rev);
+bool32 sndAuxCallbackShutdownDelay(SND_AUX_DELAY* rev);
+bool32 sndAuxCallbackUpdateSettingsReverbHI(SND_AUX_REVERBHI* rev);
 
 typedef struct _SND_REVSTD_DELAYLINE {
   s32 inPoint;
@@ -383,9 +385,9 @@ typedef struct SND_AUX_REVERBSTD {
 } SND_AUX_REVERBSTD;
 
 void sndAuxCallbackReverbSTD(u8 reason, SND_AUX_INFO* info, void* user);
-bool sndAuxCallbackPrepareReverbSTD(SND_AUX_REVERBSTD* rev);
-bool sndAuxCallbackShutdownReverbSTD(SND_AUX_REVERBSTD* rev);
-bool sndAuxCallbackUpdateSettingsReverbSTD(SND_AUX_REVERBSTD* rev);
+bool32 sndAuxCallbackPrepareReverbSTD(SND_AUX_REVERBSTD* rev);
+bool32 sndAuxCallbackShutdownReverbSTD(SND_AUX_REVERBSTD* rev);
+bool32 sndAuxCallbackUpdateSettingsReverbSTD(SND_AUX_REVERBSTD* rev);
 
 #define sndFXStart(fid, vol, pan) sndFXStartEx(fid, vol, pan, SND_STUDIO_DEFAULT)
 SND_VOICEID sndFXStartEx(SND_FXID fid, u8 vol, u8 pan, u8 studio);
@@ -393,9 +395,9 @@ SND_VOICEID sndFXStartPara(SND_FXID fid, u8 vol, u8 pan, u8 studio, u8 numPara, 
 SND_VOICEID sndFXStartParaInfo(SND_FXID fid, u8 vol, u8 pan, u8 studio,
                                SND_PARAMETER_INFO* paraInfo);
 SND_VOICEID sndFXCheck(SND_VOICEID vid);
-bool sndFXKeyOff(SND_VOICEID vid);
-bool sndFXCtrl(SND_VOICEID vid, u8 ctrl, u8 value);
-bool sndFXCtrl14(SND_VOICEID vid, u8 ctrl, u16 value);
+bool32 sndFXKeyOff(SND_VOICEID vid);
+bool32 sndFXCtrl(SND_VOICEID vid, u8 ctrl, u8 value);
+bool32 sndFXCtrl14(SND_VOICEID vid, u8 ctrl, u16 value);
 #define _SND_CHORUS_NUM_BLOCKS 3
 typedef struct _SND_CHORUS_SRCINFO {
   s32* dest;
@@ -436,9 +438,9 @@ typedef struct SND_AUX_CHORUS {
 } SND_AUX_CHORUS;
 
 void sndAuxCallbackChorus(u8 reason, SND_AUX_INFO* info, void* user);
-bool sndAuxCallbackPrepareChorus(SND_AUX_CHORUS* ch);
-bool sndAuxCallbackShutdownChorus(SND_AUX_CHORUS* ch);
-bool sndAuxCallbackUpdateSettingsChorus(SND_AUX_CHORUS* ch);
+bool32 sndAuxCallbackPrepareChorus(SND_AUX_CHORUS* ch);
+bool32 sndAuxCallbackShutdownChorus(SND_AUX_CHORUS* ch);
+bool32 sndAuxCallbackUpdateSettingsChorus(SND_AUX_CHORUS* ch);
 
 #define SND_CROSSFADE_STOP 0x0       // Stop old song after fadedown
 #define SND_CROSSFADE_PAUSE 0x1      // Pause old song after fadedown

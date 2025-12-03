@@ -20,9 +20,9 @@ extern u32 synthFlags;
 
 u32 vidGetInternalId(SND_VOICEID id);
 void synthKeyStateUpdate(SYNTH_VOICE* svoice);
-bool synthFXSetCtrl(SND_VOICEID vid, u8 ctrl, u8 value);
-bool synthFXSetCtrl14(SND_VOICEID vid, u8 ctrl, u16 value);
-bool synthSendKeyOff(SND_VOICEID vid);
+bool32 synthFXSetCtrl(SND_VOICEID vid, u8 ctrl, u8 value);
+bool32 synthFXSetCtrl14(SND_VOICEID vid, u8 ctrl, u16 value);
+bool32 synthSendKeyOff(SND_VOICEID vid);
 SND_VOICEID synthFXStart(u16 fid, u8, u8 vol, u8 pan, u8 studio, u32 itd);
 void synthVolume(u8 volume, u16 time, u8 vGroup, u8 seqMode, u32 seqId);
 u32 synthStartSound(u16 id, u8 prio, u8 max,
@@ -31,7 +31,7 @@ u32 synthStartSound(u16 id, u8 prio, u8 max,
 #endif
                     u8 key, u8 vol, u8 panning, u8 midi, u8 midiSet, u8 section, u16 step,
                     u16 trackid, u8 vGroup, s16 prioOffset, u8 studio, u32 itd);
-bool synthIsFadeOutActive(u8 vGroup);
+bool32 synthIsFadeOutActive(u8 vGroup);
 
 /* TODO: Move this where it belongs */
 void hwSetAUXProcessingCallbacks(u8 studio, SND_AUX_CALLBACK auxA, void* userA,
@@ -50,7 +50,7 @@ void synthActivateStudio(u8 studio, u32 isMaster, SND_STUDIO_TYPE type);
 void synthDeactivateStudio(u8 studio);
 u8 synthFXGetMaxVoices(u16 fid);
 void synthPauseVolume(u8 volume, u16 time, u8 vGroup);
-bool dataRemoveFX(u16 gid);
+bool32 dataRemoveFX(u16 gid);
 void voiceUnblock(u32 voice);
 void voiceRemovePriority(const SYNTH_VOICE* svoice);
 #ifdef __cplusplus

@@ -13,7 +13,7 @@
 
 f32 fn_3_9EAE4(f32 a, f32 b);
 f32 fn_3_9EBCC(f32 a, f32 b);
-int fn_3_9ED1C(int min, int max);
+int fn_3_9ED1C_randBetween(int min, int max);
 int fn_3_9EE24(int max);
 int RandomInt_Game(int max);
 // void static_clamp(void);

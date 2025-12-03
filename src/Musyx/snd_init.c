@@ -32,7 +32,7 @@ long DoInit(u32 mixFrq, u32 numVoices, u32 flags, u32 aramBase, u32 aramSize)
 static s32 DoInit(u32 mixFrq, u32 aramSize, u32 numVoices, u32 flags)
 #endif
 {
-  bool ret;
+  bool32 ret;
 
   MUSY_DEBUG("\nMusyX software initialization...\nBuild Date: %s %s\n\n", "Dec 17 2003", "20:32:41");
   ret = FALSE;
@@ -124,7 +124,7 @@ void sndSetMaxVoices(u8 music, u8 sfx) {
 }
 
 /**/
-bool sndIsInstalled() { return sndActive; }
+bool32 sndIsInstalled() { return sndActive; }
 
 /**/
 SND_PLAYBACKINFO* sndGetPlayBackInfo() {

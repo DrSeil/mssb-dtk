@@ -33,9 +33,9 @@
 
 
 */
-bool sndFXCtrl(SND_VOICEID vid, u8 ctrl, u8 value)
+bool32 sndFXCtrl(SND_VOICEID vid, u8 ctrl, u8 value)
 {
-    bool ret;
+    bool32 ret;
 
     hwDisableIrq();
     ret = synthFXSetCtrl(vid, ctrl, value);
@@ -49,9 +49,9 @@ bool sndFXCtrl(SND_VOICEID vid, u8 ctrl, u8 value)
 
 
 */
-bool sndFXCtrl14(SND_VOICEID vid, u8 ctrl, u16 value)
+bool32 sndFXCtrl14(SND_VOICEID vid, u8 ctrl, u16 value)
 {
-    bool ret;
+    bool32 ret;
 
     hwDisableIrq();
     ret = synthFXSetCtrl14(vid, ctrl, value);
@@ -65,9 +65,9 @@ bool sndFXCtrl14(SND_VOICEID vid, u8 ctrl, u16 value)
 
 
 */
-bool sndFXKeyOff(SND_VOICEID vid)
+bool32 sndFXKeyOff(SND_VOICEID vid)
 {
-    bool ret;
+    bool32 ret;
 
     hwDisableIrq();
     ret = synthSendKeyOff(vid);
@@ -194,7 +194,7 @@ SND_VOICEID sndFXCheck(SND_VOICEID vid)
 }
 
 /**/
-bool sndReadFlag(unsigned char num)
+bool32 sndReadFlag(unsigned char num)
 {
     return synthGlobalVariable[num & 0xf];
 }

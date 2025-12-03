@@ -4,6 +4,9 @@
 #include "BuildSettings.h"
 
 typedef int BOOL;
+#ifndef __cplusplus
+typedef unsigned char bool;
+#endif
 typedef unsigned int uint;
 
 typedef signed char s8;

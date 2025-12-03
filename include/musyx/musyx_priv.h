@@ -1114,8 +1114,8 @@ void inpInit(SYNTH_VOICE* svoice);
 void hwSetSRCType(u32 v, u8 salSRCType);
 void hwSetITDMode(u32 v, u8 mode);
 void hwSetPolyPhaseFilter(u32 v, u8 salCoefSel);
-bool hwAddInput(u8 studio, SND_STUDIO_INPUT* in_desc);
-bool hwRemoveInput(u8 studio, SND_STUDIO_INPUT* in_desc);
+bool32 hwAddInput(u8 studio, SND_STUDIO_INPUT* in_desc);
+bool32 hwRemoveInput(u8 studio, SND_STUDIO_INPUT* in_desc);
 void hwChangeStudio(u32 v, u8 studio);
 void hwDisableHRTF();
 void hwStart(u32 v, u8 studio);
@@ -1155,7 +1155,7 @@ u32 vidMakeNew(SYNTH_VOICE* svoice, u32 isMaster);
 u32 vidMakeRoot(SYNTH_VOICE* svoice);
 
 u32 adsrHandleLowPrecision(ADSR_VARS* adsr, u16* adsr_start, u16* adsr_delta);
-bool adsrRelease(ADSR_VARS* adsr);
+bool32 adsrRelease(ADSR_VARS* adsr);
 
 #ifdef __cplusplus
 }

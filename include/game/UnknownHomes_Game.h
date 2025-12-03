@@ -793,11 +793,27 @@ typedef struct _GameInitOptions
 
 extern GameInitOptions gameInitOptions;
 
+typedef enum {
+    INPUT_BUTTON_LEFT = PAD_BUTTON_LEFT,
+    INPUT_BUTTON_RIGHT = PAD_BUTTON_RIGHT,
+    INPUT_BUTTON_DOWN = PAD_BUTTON_DOWN,
+    INPUT_BUTTON_UP = PAD_BUTTON_UP,
+    INPUT_TRIGGER_Z = PAD_TRIGGER_Z,
+    INPUT_TRIGGER_R = PAD_TRIGGER_R,
+    INPUT_TRIGGER_L = PAD_TRIGGER_L,
+    INPUT_BUTTON_A = PAD_BUTTON_A,
+    INPUT_BUTTON_B = PAD_BUTTON_B,
+    INPUT_BUTTON_X = PAD_BUTTON_X,
+    INPUT_BUTTON_Y = PAD_BUTTON_Y,
+    INPUT_BUTTON_MENU = PAD_BUTTON_MENU,
+    INPUT_BUTTON_START = PAD_BUTTON_START,
+} INPUT_BUTTON;
+
 typedef struct _InputStruct {
     /*0x00*/ sAng controlStickAngle;
     /*0x02*/ s16 controlStickMagnitude;
-    /*0x04*/ s16 buttonInput;    // uses pad defines
-    /*0x06*/ s16 newButtonInput; // pressed this frame
+    /*0x04*/ E(u16, INPUT_BUTTON) buttonInput;
+    /*0x06*/ E(s16, INPUT_BUTTON) newButtonInput; // pressed this frame
     /*0x08*/ s16 _08;
     /*0x0A*/ s8 right_left;
     /*0x0B*/ s8 up_down;
@@ -1095,7 +1111,7 @@ typedef struct _GameControlsStruct {
     /*0x0DC*/ int currentBatterPerTeam[2];
     /*0x0E4*/ u32 runnerAIInd[2];
     /*0x0EC*/ u32 teams[2]; // vague name, unsure
-    /*0x0F4*/ u32 Team_CaptainRosterLoc[2];
+    /*0x0F4*/ s32 Team_CaptainRosterLoc[2];
     /*0x0FC*/ s16 FrameCountOfCurrentPitch;
     /*0x0FE*/ s16 FrameCountOfCurrentAtBat_Copy;
     /*0x100*/ s16 CountdownUntilFade;
@@ -1956,7 +1972,7 @@ typedef struct _MiniGameStruct
     /*0x1902*/ u8 _1902;
     /*0x1903*/ u8 _1903;
     /*0x1904*/ u8 minigamePlayerSelectedOrder;
-    /*0x1905*/ s8 minigamesRosterIDOfCurrentPlayer;
+    /*0x1905*/ s8 rosterID;
     /*0x1906*/ u8 miniGameNumberOfParticipants;
     /*0x1907*/ u8 _1907;
     /*0x1908*/ u8 _1908;
@@ -2233,7 +2249,7 @@ typedef struct _MiniGameStruct
     /*0x1A46*/ u8 _1A46[2];
     /*0x1A48*/ f32 wallBallSomeXPos;
     /*0x1A4C*/ f32 wallBallSomeZPos;
-    /*0x1A50*/ f32 wallBallWaitingLocations[4];
+    /*0x1A50*/ f32 wallBallWaitingLocations[8];
     /*0x1A70*/ s16 wallBallPitcherRotationCounter;
     /*0x1A72*/ s16 postBallStoppedCounter;
     /*0x1A74*/ s16 wallBallPitchPower;
@@ -2268,7 +2284,7 @@ typedef struct _MiniGameStruct
     /*0x1AC9*/ u8 barrelBatter_BODPitchSelectionType;
     /*0x1ACA*/ u8 minigamePitchSpeedAdjustment;
     /*0x1ACB*/ u8 bOD_HRStreak;
-    /*0x1ACC*/ u8 bODCharacterHRStreakTracker[4];
+    /*0x1ACC*/ u8 bODCharacterHRStreakTracker[8];
     /*0x1AD4*/ u8 bODRelated3;
     /*0x1AD5*/ u8 bOD_KingBombInd;
     /*0x1AD6*/ u8 bODAngleIndexBasedOnHitPower;
@@ -2451,6 +2467,7 @@ typedef struct _MiniGameStruct
     /*0x1D79*/ u8 _1D79;
     /*0x1D7A*/ u8 _1D7A;
     /*0x1D7B*/ u8 _1D7B;
+    /*0x1D7C*/ InputStruct _1D7C[4];
 } MiniGameStruct; // size: 0x1D7C
 
 
@@ -2471,9 +2488,9 @@ typedef struct _BatterReachStruct
 
 extern BatterReachStruct BatterHitbox[54];
 
-extern u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(s8);
+extern u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8);
 
-extern u8 swingSoundFrame[2][2];
+extern u8 swingSoundFrame[2][4];
 
 extern struct {
     /* 0x00 */ u32 _00;
@@ -2504,6 +2521,118 @@ extern struct {
     /* 0x34 */ u8 _34;
 } lbl_3_common_bss_34C58; // size: 0x38
 
-extern InputStruct lbl_3_common_bss_32848[];
+extern InputStruct inMemControls[];
+
+typedef struct {
+    /* 0x0 */ s16 _00;
+    /* 0x2 */ u8 _02;
+    /* 0x3 */ u8 _03;
+    /* 0x4 */ u8 _04;
+    /* 0x5 */ u8 _05;
+    /* 0x6 */ u8 _06;
+    /* 0x7 */ u8 _07;
+    /* 0x8 */ u8 _08;
+} lbl_3_common_bss_32718_struct;
+
+extern lbl_3_common_bss_32718_struct lbl_3_common_bss_32718;
+
+extern struct {
+    /* 0x0 */ u8 moonShotCost;
+    /* 0x1 */ u8 captainStarCost;
+    /* 0x2 */ u8 nonCaptain_CaptainStarCost;
+    /* 0x3 */ u8 regularStarCost;
+} starPowerCosts;
+
+typedef struct {
+    /* 0x00 */ f32 aIDifficultyMultiplierArray[2];
+    /* 0x08 */ f32 batterAIBoxPosXVelo;
+    /* 0x0C */ f32 batterAIBoxPosZVelo;
+    /* 0x10 */ f32 _10;
+    /* 0x14 */ f32 _14;
+    /* 0x18 */ f32 _18;
+    /* 0x1C */ f32 _1C;
+    /* 0x20 */ f32 boxHorizontalPoint;
+    /* 0x24 */ f32 boxVerticalPoint;
+    /* 0x28 */ f32 batterAIDesiredXPosInBox;
+    /* 0x2C */ f32 batterAIDesiredZPosInBox;
+    /* 0x30 */ f32 batterAITrackBallPoorlyOffset;
+    /* 0x34 */ f32 aIMoundLocationX;
+    /* 0x38 */ f32 aiPitchCurveEndingX;
+    /* 0x3C */ f32 _3C;
+    /* 0x40 */ u16 AIFrameToBeginPitch;
+    /* 0x42 */ u16 _42;
+    /* 0x44 */ u16 _44;
+    /* 0x46 */ u8 _46;
+    /* 0x47 */ u8 _47;
+    /* 0x48 */ u8 _48;
+    /* 0x49 */ u8 _49;
+    /* 0x4A */ u8 aIPitchType;
+    /* 0x4B */ u8 aiPitchCurveType;
+    /* 0x4C */ u8 aiPitchDirectionInput;
+    /* 0x4D */ u8 pitchAIDelayCurveStart;
+    /* 0x4E */ u8 nStarPitchesThrownThisAB;
+    /* 0x4F */ u8 aIPerfectCharge;
+    /* 0x50 */ u8 aIMoundLocationIndex;
+    /* 0x51 */ u8 aIPitchDesiredEndingLocIndex;
+    /* 0x52 */ u8 aIPitcherPickOffInd;
+    /* 0x53 */ u8 always0_AIPickoffRelated;
+    /* 0x54 */ u8 pitcherAIPitchDownTheMiddleInd;
+    /* 0x55 */ u8 aIBatterDifficulty;
+    /* 0x56 */ u8 batterAIPotentialSwingTypeForCurrentPitch;
+    /* 0x57 */ u8 batterAIBuntPossibility;
+    /* 0x58 */ u8 batterAIBuntInd;
+    /* 0x59 */ u8 _59;
+    /* 0x5A */ u8 batterAIInd9PrincessStarHit;
+    /* 0x5B */ u8 batterAISwingInd;
+    /* 0x5C */ u8 batterAI_GuessedPitchLocZone; // unsure
+    /* 0x5D */ u8 batterAIZPosition; // unsure
+    /* 0x5E */ u8 batterAIPitchGuessed;
+    /* 0x5F */ u8 batterAISwingEarly1OrLate2;
+    /* 0x60 */ u8 batterAIInd8_FrameBtwn10And16;
+    /* 0x61 */ u8 batterAILeftRightInput; // unsure
+    /* 0x62 */ u8 batterAIUpDownInput; // unsure
+    /* 0x63 */ u8 frameToStartSwing;
+    /* 0x64 */ u8 someNotAISwingInd; // unsure
+    /* 0x65 */ u8 aISwingDecisionRelated_noSwingOverride; // unsure
+    /* 0x66 */ s8 batterAIABStrat;
+    /* 0x67 */ u8 _67;
+    /* 0x68 */ u8 aIBatterTrackingCode;
+    /* 0x69 */ u8 aIDesiredFrameToSwing;
+    /* 0x6A */ u8 batterAIInd10_relatedToBoxPosPrePitch;
+    /* 0x6B */ u8 _6B;
+    /* 0x6C */ u8 lastPitchFramesUntilPitchGetsToBatter;
+    /* 0x6D */ u8 lastPitchType;
+    /* 0x6E */ u8 lastPitchBallLocZone;
+    /* 0x6F */ u8 lastPitchMoundZone;
+    /* 0x70 */ u8 _70;
+    /* 0x71 */ u8 starRelated[2]; // star related
+    /* 0x73 */ u8 _73;
+    /* 0x74 */ u8 _74;
+    /* 0x75 */ u8 batterAIStealIndicator;
+    /* 0x76 */ u8 batterAIStealingStartFrame;
+    /* 0x77 */ u8 _77;
+    /* 0x78 */ u8 _78;
+    /* 0x79 */ u8 _79[3];
+    /* 0x7C */ u8 _7C[4];
+    /* 0x80 */ u8 _80[28];
+    /* 0x9C */ u8 _9C[8];
+    /* 0xA4 */ u8 _A4[8];
+    /* 0xAC */ u8 _AC[8];
+    /* 0xB4 */ u8 _B4;
+    /* 0xB5 */ u8 _B5;
+    /* 0xB6 */ u8 _B6;
+    /* 0xB7 */ u8 _B7;
+    /* 0xB8 */ u8 _B8;
+    /* 0xB9 */ u8 _B9;
+    /* 0xBA */ u8 _BA;
+    /* 0xBB */ u8 _BB;
+} AIStruct; // size 0xBC
+
+extern AIStruct aiStruct;
+
+extern BOOL getAnimRelatedCoordinates(int, int, VecXYZ*);
+extern void fn_3_6C854(int, int);
+extern void fn_3_C0CE8(int, f32, f32, f32);
+extern void playSoundEffect(int);
 
 #endif // !__UNKNOWN_HOMES_H_

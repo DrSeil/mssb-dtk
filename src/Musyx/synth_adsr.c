@@ -66,7 +66,7 @@ u32 adsrRelease(ADSR_VARS* adsr) {
 
 u32 adsrHandle(ADSR_VARS* adsr, u16* adsr_start, u16* adsr_delta) {
   s32 old_volume; // r29
-  bool VoiceDone; // r28
+  bool32 VoiceDone; // r28
   s32 vDelta;     // r27
 }
 u32 adsrHandleLowPrecision(ADSR_VARS* adsr, u16* adsr_start, u16* adsr_delta) {

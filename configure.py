@@ -694,7 +694,7 @@ config.libs = [
             Object(NonMatching, "game/rep_140.c"),
             Object(NonMatching, "game/rep_1C0.c"),
             Object(NonMatching, "game/rep_540.c"),
-            Object(NonMatching, "game/HitBall.c"),
+            Object(NonMatching, "game/HitBall.c", extra_cflags=["-inline deferred", "-fp_contract on"]),
             Object(NonMatching, "game/rep_720.c"),
             Object(NonMatching, "game/rep_868.c"),
             Object(NonMatching, "game/rep_8C8.c"),

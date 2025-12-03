@@ -1538,10 +1538,10 @@ static void InitTrackEventsSection(u8 secIndex)
     }
 }
 
-static bool HandleTrackEvents(u8 secIndex, u32 deltaTime)
+static bool32 HandleTrackEvents(u8 secIndex, u32 deltaTime)
 {
     SEQ_EVENT *ev;        // r29
-    bool loopFlag;        // r1+0x10
+    bool32 loopFlag;        // r1+0x10
     SEQ_SECTION *section; // r31
 
     section = &cseq->section[secIndex];

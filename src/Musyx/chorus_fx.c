@@ -599,7 +599,7 @@ void sndAuxCallbackChorus(u8 reason, SND_AUX_INFO* info, void* user) {
   }
 }
 
-bool sndAuxCallbackUpdateSettingsChorus(SND_AUX_CHORUS* ch) {
+bool32 sndAuxCallbackUpdateSettingsChorus(SND_AUX_CHORUS* ch) {
   ch->work.currentPosHi = 0x140 - ((ch->baseDelay - 5) << 5);
   ch->work.currentPosLo = 0;
   ch->work.currentPosHi = (ch->work.currentPosHi + (ch->work.currentLast - 1) * 0xa0) % 0x1e0;
@@ -609,7 +609,7 @@ bool sndAuxCallbackUpdateSettingsChorus(SND_AUX_CHORUS* ch) {
   return TRUE;
 }
 
-bool sndAuxCallbackPrepareChorus(SND_AUX_CHORUS* chorus) {
+bool32 sndAuxCallbackPrepareChorus(SND_AUX_CHORUS* chorus) {
   u32 i;
   s32* lastLeft;
   s32* lastRight;
@@ -647,7 +647,7 @@ bool sndAuxCallbackPrepareChorus(SND_AUX_CHORUS* chorus) {
   return FALSE;
 }
 
-bool sndAuxCallbackShutdownChorus(SND_AUX_CHORUS* ch) {
+bool32 sndAuxCallbackShutdownChorus(SND_AUX_CHORUS* ch) {
   salFree(ch->work.lastLeft[0]);
   return TRUE;
 }

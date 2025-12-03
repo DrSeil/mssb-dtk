@@ -423,11 +423,11 @@ void hwDeactivateStudio(u8 studio) { salDeactivateStudio(studio); }
 
 void hwChangeStudioMix(u8 studio, u32 isMaster) { dspStudio[studio].isMaster = isMaster; }
 
-bool hwIsStudioActive(u8 studio) { return dspStudio[studio].state == 1; }
+bool32 hwIsStudioActive(u8 studio) { return dspStudio[studio].state == 1; }
 
-bool hwAddInput(u8 studio, SND_STUDIO_INPUT *in_desc) { return salAddStudioInput(&dspStudio[studio], in_desc); }
+bool32 hwAddInput(u8 studio, SND_STUDIO_INPUT *in_desc) { return salAddStudioInput(&dspStudio[studio], in_desc); }
 
-bool hwRemoveInput(u8 studio, SND_STUDIO_INPUT *in_desc) { return salRemoveStudioInput(&dspStudio[studio], in_desc); }
+bool32 hwRemoveInput(u8 studio, SND_STUDIO_INPUT *in_desc) { return salRemoveStudioInput(&dspStudio[studio], in_desc); }
 
 void hwChangeStudio(u32 v, u8 studio) { salReconnectVoice(&dspVoice[v], studio); }
 
@@ -577,4 +577,4 @@ u32 hwGetVirtualSampleID(u32 v)
   return dspVoice[v].virtualSampleID;
 }
 
-bool hwVoiceInStartup(u32 v) { return dspVoice[v].state == 1; }
+bool32 hwVoiceInStartup(u32 v) { return dspVoice[v].state == 1; }

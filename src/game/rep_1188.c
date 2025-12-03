@@ -29,7 +29,7 @@ void setInMemBatterConstants(int rosterID)
             char_stats = inMemRoster[gameControls.teamBatting];
         }
     } else if (gameInitVariables.minigamesEnabled) {
-        rosterID = minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.minigamesRosterIDOfCurrentPlayer];
+        rosterID = minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.rosterID];
         char_stats = &inMemRoster[0][rosterID];
     } else {
         inMemBatter.easyBatting = gameInitOptions.controlOptions[gameInitVariables.PlayerPorts[gameControls.teamBatting] % 4].easyBatting;

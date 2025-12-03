@@ -3,6 +3,7 @@
 
 #include "mssbTypes.h"
 
+void batterPreSwing_unused(void);
 void calculateBallVelocityAcceleration(void);
 void calculateBuntHorizontalPower(void);
 void calculateBuntHorizontalAngle(void);

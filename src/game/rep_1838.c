@@ -394,7 +394,7 @@ int fn_3_9EE24(int max) {
 }
 
 // .text:0x0009ED1C size:0x108 mapped:0x806DDDB0
-int fn_3_9ED1C(int min, int max) {
+int fn_3_9ED1C_randBetween(int min, int max) {
     int diff = max - min + 1;
     return RandomInt_Game(diff) + min;
 }

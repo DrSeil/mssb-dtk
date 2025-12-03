@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-bool hwIsStudioActive(u8 studio);
+bool32 hwIsStudioActive(u8 studio);
 void* hwGetStreamPlayBuffer(u8 hwStreamHandle);
 s32 hwInit(u32* frq, u16 numVoices, u16 numStudios, u32 flags); /* extern */
 void hwInitSamplePlayback(u32 v, u16 smpID, void* newsmp, u32 set_defadsr, u32 prio,
@@ -21,7 +21,7 @@ void hwExitStream(u8 id);
 void hwSaveSample(void* header, void* data);
 void hwRemoveSample(void *header, void *data, void *aramWrite);
 u32 hwGetVirtualSampleState(u32 voice);
-bool hwVoiceInStartup(u32 v);
+bool32 hwVoiceInStartup(u32 v);
 void hwBreak(s32 vid);
 u32 hwGetPos(u32 v);
 void hwInitSampleMem(u32 baseAddr, u32 length);

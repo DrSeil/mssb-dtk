@@ -23,7 +23,7 @@ static void DLcreate(_SND_REVHI_DELAYLINE *delayline, s32 length)
 
 static void DLdelete(_SND_REVHI_DELAYLINE *delayline) { salFree(delayline->inputs); }
 
-bool ReverbHICreate(_SND_REVHI_WORK *rev, f32 coloration, f32 time, f32 mix, f32 damping, f32 preDelay, f32 crosstalk)
+bool32 ReverbHICreate(_SND_REVHI_WORK *rev, f32 coloration, f32 time, f32 mix, f32 damping, f32 preDelay, f32 crosstalk)
 {
   static int lens[] = {1789, 1999, 2333, 433, 149, 47, 73, 67};
   unsigned char i; // r31
@@ -89,7 +89,7 @@ bool ReverbHICreate(_SND_REVHI_WORK *rev, f32 coloration, f32 time, f32 mix, f32
   return TRUE;
 }
 
-bool ReverbHIModify(struct _SND_REVHI_WORK *rv, float coloration, float time, float mix,
+bool32 ReverbHIModify(struct _SND_REVHI_WORK *rv, float coloration, float time, float mix,
                     float damping, float preDelay, float crosstalk)
 {
   u8 i; // r30

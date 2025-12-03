@@ -89,7 +89,7 @@ static u32 do_voice_portamento(u8 key, u8 midi, u8 midiSet, u32 isMaster, u32* r
   u32 id;                     // r27
   SYNTH_VOICE* sv;            // r31
   SYNTH_VOICE* last_sv;       // r28
-  bool legatoVoiceIsStarting; // r26
+  bool32 legatoVoiceIsStarting; // r26
 
   legatoVoiceIsStarting = FALSE;
   vid = SND_ID_ERROR;
@@ -585,7 +585,7 @@ static void ZeroOffsetHandler(u32 i) {
   f32 auxb;         // f24
   f32 f;            // f27
   f32 voiceVol;     // f28
-  bool volUpdate;   // r30
+  bool32 volUpdate;   // r30
   f32 lfo;          // f23
   f32 scale;        // f31
   f32 mscale;       // f22
@@ -997,7 +997,7 @@ int synthCheckFXRealloc(unsigned short fid) {
 }
 #endif
 
-bool synthFXSetCtrl(u32 vid, u8 ctrl, u8 value) {
+bool32 synthFXSetCtrl(u32 vid, u8 ctrl, u8 value) {
   u32 i;   // r31
   u32 ret; // r29
 
@@ -1023,7 +1023,7 @@ bool synthFXSetCtrl(u32 vid, u8 ctrl, u8 value) {
   return ret;
 }
 
-bool synthFXSetCtrl14(u32 vid, u8 ctrl, u16 value) {
+bool32 synthFXSetCtrl14(u32 vid, u8 ctrl, u16 value) {
   u32 i;   // r31
   u32 ret; // r29
 
@@ -1057,7 +1057,7 @@ void synthFXCloneMidiSetup(SYNTH_VOICE* dest, SYNTH_VOICE* src) {
   inpFXCopyCtrl(SND_MIDICTRL_DOPPLER, dest, src);
 }
 
-static bool synthFXVolume(u32 vid, u8 vol) {
+static bool32 synthFXVolume(u32 vid, u8 vol) {
   u32 i;   // r31
   u32 ret; // r29
 

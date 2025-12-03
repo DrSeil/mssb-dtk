@@ -1,6 +1,6 @@
 #include <musyx/seq.h>
 
-BOOL sndSeqGetValid(s32 unk)
+bool32 sndSeqGetValid(s32 unk)
 {
     s32 id = seqGetPrivateId(unk);
     return ((-1 - id) | (id + 1)) < 0;
@@ -13,7 +13,7 @@ void sndSeqStop(s32 unk)
     hwEnableIrq();
 }
 
-BOOL sndSeqLoop(s32 unk, BOOL b)
+bool32 sndSeqLoop(s32 unk, bool32 b)
 {
     s32 id = seqGetPrivateId(unk);
     if (id != 0xffffffff && !(id & 0x80000000))

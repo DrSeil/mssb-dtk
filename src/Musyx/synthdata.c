@@ -16,7 +16,7 @@ static u16 dataMacTotal;
 static FX_GROUP dataFXGroups[128];
 static u16 dataFXGroupNum;
 
-bool dataInsertKeymap(u16 cid, void *keymapdata)
+bool32 dataInsertKeymap(u16 cid, void *keymapdata)
 {
   long i; // r31
   long j; // r29
@@ -69,7 +69,7 @@ bool dataInsertKeymap(u16 cid, void *keymapdata)
   return 1;
 }
 
-bool dataRemoveKeymap(u16 sid)
+bool32 dataRemoveKeymap(u16 sid)
 {
   long i; // r31
   long j; // r30
@@ -94,7 +94,7 @@ bool dataRemoveKeymap(u16 sid)
   return 0;
 }
 
-bool dataInsertLayer(u16 cid, void *layerdata, u16 size)
+bool32 dataInsertLayer(u16 cid, void *layerdata, u16 size)
 {
   long i; // r31
   long j; // r29
@@ -151,7 +151,7 @@ bool dataInsertLayer(u16 cid, void *layerdata, u16 size)
   return 1;
 }
 
-bool dataRemoveLayer(u16 sid)
+bool32 dataRemoveLayer(u16 sid)
 {
   long i; // r31
   long j; // r30
@@ -176,7 +176,7 @@ bool dataRemoveLayer(u16 sid)
   return 0;
 }
 
-bool dataInsertCurve(u16 cid, void *curvedata)
+bool32 dataInsertCurve(u16 cid, void *curvedata)
 {
   long i; // r31
   long j; // r29
@@ -230,7 +230,7 @@ bool dataInsertCurve(u16 cid, void *curvedata)
   return 1;
 }
 
-bool dataRemoveCurve(u16 sid)
+bool32 dataRemoveCurve(u16 sid)
 {
   long i; // r31
   long j; // r30
@@ -255,7 +255,7 @@ bool dataRemoveCurve(u16 sid)
   return 0;
 }
 
-bool dataInsertSDir(SDIR_DATA *sdir, void *smp_data)
+bool32 dataInsertSDir(SDIR_DATA *sdir, void *smp_data)
 {
   s32 i;        // r31
   SDIR_DATA *s; // r25
@@ -313,7 +313,7 @@ bool dataInsertSDir(SDIR_DATA *sdir, void *smp_data)
   return 1;
 }
 
-bool dataRemoveSDir(struct SDIR_DATA *sdir)
+bool32 dataRemoveSDir(struct SDIR_DATA *sdir)
 {
   long i;          // r28
   long j;          // r30
@@ -389,7 +389,7 @@ bool dataRemoveSDir(struct SDIR_DATA *sdir)
   return FALSE;
 }
 
-bool dataAddSampleReference(u16 sid)
+bool32 dataAddSampleReference(u16 sid)
 {
   u32 i;                 // r29
   SAMPLE_HEADER *header; // r1+0xC
@@ -422,7 +422,7 @@ done:
   return TRUE;
 }
 
-bool dataRemoveSampleReference(u16 sid)
+bool32 dataRemoveSampleReference(u16 sid)
 {
   u32 i;           // r30
   SDIR_DATA *sdir; // r31
@@ -447,7 +447,7 @@ bool dataRemoveSampleReference(u16 sid)
   return FALSE;
 }
 
-bool dataInsertFX(u16 gid, struct FX_TAB *fx, u16 fxNum)
+bool32 dataInsertFX(u16 gid, struct FX_TAB *fx, u16 fxNum)
 {
   long i; // r31
 
@@ -474,7 +474,7 @@ bool dataInsertFX(u16 gid, struct FX_TAB *fx, u16 fxNum)
   return FALSE;
 }
 
-bool dataRemoveFX(u16 gid)
+bool32 dataRemoveFX(u16 gid)
 {
   long i; // r31
   long j; // r30
@@ -498,7 +498,7 @@ bool dataRemoveFX(u16 gid)
   return FALSE;
 }
 
-bool dataInsertMacro(u16 mid, void *macroaddr)
+bool32 dataInsertMacro(u16 mid, void *macroaddr)
 {
   long main; // r28
   long pos;  // r29
@@ -564,7 +564,7 @@ bool dataInsertMacro(u16 mid, void *macroaddr)
   return FALSE;
 }
 
-bool dataRemoveMacro(u16 mid)
+bool32 dataRemoveMacro(u16 mid)
 {
   s32 main; // r29
   s32 base; // r28

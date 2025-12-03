@@ -207,7 +207,7 @@ static void CheckRoomStatus()
     }
 }
 
-bool sndAddRoom(SND_ROOM *room, SND_FVECTOR *pos, void (*activateReverb)(u8 studio, void *user),
+bool32 sndAddRoom(SND_ROOM *room, SND_FVECTOR *pos, void (*activateReverb)(u8 studio, void *user),
                 void (*deActivateReverb)(u8 studio))
 {
     if (sndActive)
@@ -234,7 +234,7 @@ bool sndAddRoom(SND_ROOM *room, SND_FVECTOR *pos, void (*activateReverb)(u8 stud
     return FALSE;
 }
 
-bool sndRemoveRoom(SND_ROOM *room)
+bool32 sndRemoveRoom(SND_ROOM *room)
 {
     if (sndActive)
     {
@@ -274,7 +274,7 @@ bool sndRemoveRoom(SND_ROOM *room)
     return FALSE;
 }
 
-bool sndUpdateRoom(SND_ROOM *room, SND_FVECTOR *pos)
+bool32 sndUpdateRoom(SND_ROOM *room, SND_FVECTOR *pos)
 {
 
     if (sndActive)
@@ -379,7 +379,7 @@ static void CheckDoorStatus()
     }
 }
 
-bool sndAddDoor(SND_DOOR *door, SND_ROOM *a, SND_ROOM *b, SND_FVECTOR *pos, f32 dampen, f32 open,
+bool32 sndAddDoor(SND_DOOR *door, SND_ROOM *a, SND_ROOM *b, SND_FVECTOR *pos, f32 dampen, f32 open,
                 unsigned char fxVol, s16 filterCoef[4], u32 flags)
 {
 
@@ -403,7 +403,7 @@ bool sndAddDoor(SND_DOOR *door, SND_ROOM *a, SND_ROOM *b, SND_FVECTOR *pos, f32 
     return 1;
 }
 
-bool sndRemoveDoor(SND_DOOR *door)
+bool32 sndRemoveDoor(SND_DOOR *door)
 {
     hwDisableIrq();
     if (door->prev != NULL)
@@ -608,7 +608,7 @@ static void EmitterShutdown(SND_EMITTER *em)
     }
 }
 
-bool sndUpdateEmitter(SND_EMITTER *em, SND_FVECTOR *pos, SND_FVECTOR *dir, u8 maxVol,
+bool32 sndUpdateEmitter(SND_EMITTER *em, SND_FVECTOR *pos, SND_FVECTOR *dir, u8 maxVol,
                       SND_ROOM *room)
 {
     u32 id; // r29
@@ -653,7 +653,7 @@ bool sndUpdateEmitter(SND_EMITTER *em, SND_FVECTOR *pos, SND_FVECTOR *dir, u8 ma
     return FALSE;
 }
 
-bool sndCheckEmitter(SND_EMITTER *em)
+bool32 sndCheckEmitter(SND_EMITTER *em)
 {
     if (sndActive)
     {
@@ -1143,7 +1143,7 @@ void AddRunningEmitter(SND_EMITTER *em, f32 vol)
     runList[runListNum++].vol = vol;
 }
 
-bool AddStartingEmitter(SND_EMITTER *em, f32 vol, f32 xPan, f32 yPan, f32 zPan, f32 pitch)
+bool32 AddStartingEmitter(SND_EMITTER *em, f32 vol, f32 xPan, f32 yPan, f32 zPan, f32 pitch)
 {
     long i;         // r30
     START_LIST *sl; // r29

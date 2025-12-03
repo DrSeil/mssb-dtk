@@ -12,7 +12,7 @@
 
 #include "musyx/musyx_priv.h"
 
-extern bool ReverbHICreate(_SND_REVHI_WORK* rev, f32 coloration, f32 time, f32 mix, f32 damping,
+extern bool32 ReverbHICreate(_SND_REVHI_WORK* rev, f32 coloration, f32 time, f32 mix, f32 damping,
                            f32 preDelay, f32 crosstalk);
 extern void ReverbHIFree(_SND_REVHI_WORK* rev);
 extern void ReverbHIModify(_SND_REVHI_WORK* rev, f32 coloration, f32 time, f32 mix, f32 damping,
@@ -36,7 +36,7 @@ void sndAuxCallbackReverbHI(u8 reason, SND_AUX_INFO* info, void* user) {
   }
 }
 
-bool sndAuxCallbackUpdateSettingsReverbHI(SND_AUX_REVERBHI* rev) {
+bool32 sndAuxCallbackUpdateSettingsReverbHI(SND_AUX_REVERBHI* rev) {
   rev->tempDisableFX = TRUE;
   ReverbHIModify(&rev->rv, rev->coloration, rev->time, rev->mix, rev->damping, rev->preDelay,
                  rev->crosstalk);
@@ -44,13 +44,13 @@ bool sndAuxCallbackUpdateSettingsReverbHI(SND_AUX_REVERBHI* rev) {
   return TRUE;
 }
 
-bool sndAuxCallbackPrepareReverbHI(SND_AUX_REVERBHI* rev) {
+bool32 sndAuxCallbackPrepareReverbHI(SND_AUX_REVERBHI* rev) {
   rev->tempDisableFX = FALSE;
   return ReverbHICreate(&rev->rv, rev->coloration, rev->time, rev->mix, rev->damping, rev->preDelay,
                         rev->crosstalk);
 }
 
-bool sndAuxCallbackShutdownReverbHI(SND_AUX_REVERBHI* rev) {
+bool32 sndAuxCallbackShutdownReverbHI(SND_AUX_REVERBHI* rev) {
   ReverbHIFree(&rev->rv);
   return TRUE;
 }
