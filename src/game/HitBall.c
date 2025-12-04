@@ -736,10 +736,20 @@ void calculateHorizontalPower(void) {
     if (inMemBatter.captainStarSwingActivated) {
         power = 100.0f;
     } else if (charged > 0.0f) {
-        power = inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_CHARGE] -
-                (f32)(inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_CHARGE] -
-                      inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_SLAP]) *
-                    g_hitFloats.overChargeLerpBtwnSlapAndChargePower * (1.0f - inMemBatter.chargeDown);
+        // issue here
+        // lbl_3_rodata_6E8 is 1.0f
+        // lbl_3_rodata_710 is int->float
+        f32 v;
+        f32 v2;
+        f32 v3;
+        f32 power1;
+        f32 power2;
+
+        power = inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_CHARGE];
+        v = (inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_CHARGE] - inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_SLAP]);
+        power1 = v * g_hitFloats.overChargeLerpBtwnSlapAndChargePower;
+        power1 = power1 * (1.0f - inMemBatter.chargeDown);
+        power -= power1;
     } else {
         power = (f32)inMemBatter.hitPower_capped[BAT_CONTACT_TYPE_SLAP];
     }
@@ -764,19 +774,16 @@ void calculateHorizontalPower(void) {
     if (inMemBatter.hitType >= 0) {
         power = power * lbl_3_data_5B34[inMemBatter.hitType][1 - inMemBatter.easyBatting] / 100.0f;
     }
-
+    
     power = calcedDistance * (power / 100.0f * (lbl_3_data_5AF0[1] - lbl_3_data_5AF0[0]) + lbl_3_data_5AF0[0]);
-
+    
     if (minigameStruct.GameMode_MiniGame == MINI_GAME_ID_BOBOMB_DERBY) {
         if (inMemBatter.contactType == HIT_CONTACT_TYPE_PERFECT && inMemBatter.isFullyCharged) {
-            int r;
+            inMemBall.Hit_VerticalAngle = lbl_3_data_5488[inMemBatter.contactType][4][0] + inMemBall.StaticRandomInt1 % (lbl_3_data_5488[inMemBatter.contactType][4][1] - lbl_3_data_5488[inMemBatter.contactType][4][0]);
+            
+            inMemBall.bODQualifyingHitInd = 1;
             minigameStruct.bODAngleIndexBasedOnHitPower = 0;
             power *= lbl_3_data_21438._08;
-            inMemBall.bODQualifyingHitInd = 1;
-            inMemBall.Hit_VerticalAngle =
-                lbl_3_data_5488[inMemBatter.contactType][4][0] +
-                (inMemBall.StaticRandomInt1 %
-                 (lbl_3_data_5488[inMemBatter.contactType][4][1] - lbl_3_data_5488[inMemBatter.contactType][4][0]));
 
             for (; minigameStruct.bODAngleIndexBasedOnHitPower < 5; minigameStruct.bODAngleIndexBasedOnHitPower++) {
                 if (power < lbl_3_data_21410[minigameStruct.bODAngleIndexBasedOnHitPower]) {
@@ -785,7 +792,7 @@ void calculateHorizontalPower(void) {
             }
             inMemBall.Hit_VerticalAngle =
                 fn_3_9ED1C_randBetween(lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][0],
-                                       lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][1]);
+                           lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][1]);
             lbl_3_common_bss_32718._08 = 2;
         } else {
             inMemBall.Hit_VerticalAngle = fn_3_9ED1C_randBetween(lbl_3_data_2141C[0][0], lbl_3_data_2141C[0][1]);
@@ -793,7 +800,7 @@ void calculateHorizontalPower(void) {
         }
     }
 
-    inMemBall.hittingAddedGravityFactor = contactArray->addedGravity * 1e-5f;
+    inMemBall.hittingAddedGravityFactor  = contactArray->addedGravity * 1e-5f;
 
     if (inMemBatter.captainStarSwingActivated == CAPTAIN_STAR_TYPE_NONE) {
         int ballAngle1 = inMemBall.Hit_HorizontalAngle;
@@ -806,7 +813,7 @@ void calculateHorizontalPower(void) {
         } else {
             ballAngle = ballAngle1 - 0x200;
         }
-
+        
         if (inMemBatter.batterHand != BATTING_HAND_RIGHT) {
             ballAngle = 0x400 - ballAngle;
         }
