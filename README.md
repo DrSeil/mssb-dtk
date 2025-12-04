@@ -1,5 +1,5 @@
 Mario Superstar Baseball
-[![Build Status]][actions] [![Code Progress]][progress] [![Data Progress]][progress]
+[![Build Status]][actions] [![Code Progress]][progress] [![Game Code Progress]][progress] [![Data Progress]][progress]
 <!--
 [![Build Status]][actions] ![Progress] ![DOL Progress] ![RELs Progress] [![Discord Badge]][discord]
 -->
@@ -11,10 +11,11 @@ Mario Superstar Baseball
 decomp.dev progress badges
 See https://decomp.dev/api for an API overview.
 -->
-[Code Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=code&label=Code
+[Code Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=code&label=Total%20Code
 [Data Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=data&label=Data
 [progress]: https://decomp.dev/roeming/mssb-dtk
-
+[Game Code Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=code&category=game&label=Game%20Code
+[progress]: https://decomp.dev/roeming/mssb-dtk
 <!---
 DOL progress URL:
 https://progress.decomp.club/data/[project]/[version]/dol/?mode=shield&measure=code
