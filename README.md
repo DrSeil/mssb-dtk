@@ -4,17 +4,16 @@ Mario Superstar Baseball
 -->
 =============
 
+[Build Status]: https://github.com/roeming/mssb-dtk/actions/workflows/build.yml/badge.svg
+[actions]: https://github.com/roeming/mssb-dtk/actions/workflows/build.yml
 <!--
-Replace with your repository's URL.
-[Build Status]: https://github.com/zeldaret/tww/actions/workflows/build.yml/badge.svg
-[actions]: https://github.com/zeldaret/tww/actions/workflows/build.yml
+decomp.dev progress badges
+See https://decomp.dev/api for an API overview.
 -->
-<!---
-Code progress URL:
-https://progress.decomp.club/data/[project]/[version]/all/?mode=shield&measure=code
-URL encoded then appended to: https://img.shields.io/endpoint?label=Code&url=
-[Progress]: https://img.shields.io/endpoint?label=Code&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Ftww%2FGZLE01%2Fall%2F%3Fmode%3Dshield%26measure%3Dcode
--->
+[Code Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=code&label=Code
+[Data Progress]: https://decomp.dev/roeming/mssb-dtk.svg?mode=shield&measure=data&label=Data
+[progress]: https://decomp.dev/roeming/mssb-dtk
+
 <!---
 DOL progress URL:
 https://progress.decomp.club/data/[project]/[version]/dol/?mode=shield&measure=code
