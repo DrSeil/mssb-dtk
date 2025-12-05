@@ -222,12 +222,12 @@ f32 fn_3_9FAA4(f32 x, f32 y) {
 void fn_3_9F9C8(s16 ang, f32* x, f32* y) {
     f32 v;
     if (ang < 0) {
-        ang = ang + SANG_ANG_360;
+        ang += SANG_ANG_360;
     }
     if (ang >= SANG_ANG_360) {
         ang -= SANG_ANG_360;
     }
-    v = PI * (ang * 2) / (f32)SANG_ANG_360;
+    v = (ang * 2) * PI / (f32)SANG_ANG_360;
     if (v > PI) {
         v = -(TAU - v);
     }
@@ -367,44 +367,47 @@ int RandomInt_Game(int max) {
     ret = inMemBall.StaticRandomInt1 % absmax;
     ret = ABS(ret);
     if (max < 0) {
-        ret = -ret;
+        return -ret;
+    } else {
+        return ret;
     }
-    
-    return ret;
 }
 
 // .text:0x0009EE24 size:0x94 mapped:0x806DDEB8
 int fn_3_9EE24(int max) {
-    int ret;
-    int absmax = ABS(max);
-    
-    if (absmax <= 1) {
+    int absMax;
+    int ret, r2;
+    absMax = ABS(max);
+
+    if (absMax <= 1) {
         return 0;
     }
-    unkSimulationRelatedStruct._00 = ((u8)inMemBall.StaticRandomInt2) + unkSimulationRelatedStruct._00 +
-                                     gameInitVariables.FrameCountWhileNotAtMainMenu +
-                                     (gameInitVariables.FrameCountWhileNotAtMainMenu >> 1) -
-                                     inMemBall.StaticRandomInt1 + unkSimulationRelatedStruct._00 / absmax;
-    ret = unkSimulationRelatedStruct._00 % absmax;
-    ret = ABS(ret);
+    ret = unkSimulationRelatedStruct._00 + gameInitVariables.FrameCountWhileNotAtMainMenu +
+          (gameInitVariables.FrameCountWhileNotAtMainMenu >> 1) - inMemBall.StaticRandomInt1 +
+          ((u8)inMemBall.StaticRandomInt2) + (unkSimulationRelatedStruct._00 / absMax);
+    unkSimulationRelatedStruct._00 = ret;
+    ret %= (u32)absMax;
+    r2 = ABS(ret);
+
     if (max < 0) {
-        ret = -ret;
+        return -r2;
+    } else {
+        return r2;
     }
-    return ret;
 }
 
 // .text:0x0009ED1C size:0x108 mapped:0x806DDDB0
-int fn_3_9ED1C_randBetween(int min, int max) {
+int RandomInt_Game_Range(int min, int max) {
     int diff = max - min + 1;
     return RandomInt_Game(diff) + min;
 }
 
 // .text:0x0009EBCC size:0x150 mapped:0x806DDC60
-f32 fn_3_9EBCC(f32 a, f32 b) {
+f32 RandomF32_Game_Range(f32 a, f32 b) {
     return RandomInt_Game((int)((b - a) * 1000.f) + 1) * (1.f / 1000.f) + a;
 }
 
 // .text:0x0009EAE4 size:0xE8 mapped:0x806DDB78
-f32 fn_3_9EAE4(f32 a, f32 b) {
+f32 RandomF32_UNK_Range(f32 a, f32 b) {
     return fn_3_9EE24((int)((b - a) * 1000.f) + 1) * (1.f / 1000.f) + a;
 }

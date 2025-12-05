@@ -142,7 +142,7 @@ static inline f32 dolsqrtf(f32 x)
 	return x;
 }
 
-extern inline float dolsqrtf2(float x) {
+static inline float dolsqrtf2(float x) {
     static const double _half = .5;
     static const double _three = 3.0;
 

@@ -813,7 +813,7 @@ typedef struct _InputStruct {
     /*0x00*/ sAng controlStickAngle;
     /*0x02*/ s16 controlStickMagnitude;
     /*0x04*/ E(u16, INPUT_BUTTON) buttonInput;
-    /*0x06*/ E(s16, INPUT_BUTTON) newButtonInput; // pressed this frame
+    /*0x06*/ E(u16, INPUT_BUTTON) newButtonInput; // pressed this frame
     /*0x08*/ s16 _08;
     /*0x0A*/ s8 right_left;
     /*0x0B*/ s8 up_down;
@@ -875,7 +875,7 @@ typedef struct _PracticeStruct {
     /*0x142*/ frame_t framesInCurrTransitionState;
     /*0x144*/ frame_t framesSincePracticeMenuDefaultTransition;
     /*0x146*/ frame_t practiceMenu_framesOnCurrMenuScreen;
-    /*0x148*/ frame_t frames_sinceMovedToFromMenu;
+    /*0x148*/ u16 frames_sinceMovedToFromMenu;
     /*0x14A*/ frame_t _14A;
     /*0x14C*/ frame_t frames_sinceTimeCalled;
     /*0x14E*/ frame_t frames_onPauseScreen;

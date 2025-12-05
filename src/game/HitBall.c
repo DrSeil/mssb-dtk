@@ -288,8 +288,135 @@ void updateBallHittableZoneStatus(void) {
     }
 }
 
+extern u8 lbl_800E8754[];
+
 // .text:0x00013D94 size:0x528 mapped:0x80652e28
 void batterHumanControlled(void) {
+    InputStruct* inputs;
+    BOOL r27 = FALSE;
+    BOOL r26 = FALSE;
+    BOOL r25 = FALSE;
+    inputs = &inMemControls[gameControls.teams[gameControls.teamBatting]];
+    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0) {
+        inputs = &practiceStruct.inputs[gameControls.teamBatting];
+        if (practiceStruct._1C6 != 0 && inMemPitcher.framesUntilBallReachesBatterZ == swingSoundFrame[0][1]) {
+            r26 = TRUE;
+        }
+    } else if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(
+                   minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.rosterID])) {
+        inputs = &minigameStruct._1D7C[minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.rosterID]];
+    } else if (gameInitVariables.minigamesEnabled) {
+        inputs = &inMemControls[minigameStruct.minigameControlStruct[0].characterIndex[minigameStruct.rosterID]];
+    }
+    if (gameControls.frameCountdownAtBeginningOfAtBatLockout == 0 &&
+        (gameInitVariables.GameModeSelected != GAME_TYPE_PRACTICE || practiceStruct.instructionNumber >= 0 ||
+         practiceStruct.frames_sinceMovedToFromMenu >= 60)) {
+        batterInBoxMovement();
+        if (!inMemBatter.swingInd && !inMemBatter.isBunting && inMemPitcher.strikeZoneProcessNumber == 0 &&
+            ((inMemBall.pitchHangtimeCounter <= 0 || inMemBatter.countUpUntilChargeEnables != 0) &&
+             inMemBatter.buntStatus == BUNT_STATUS_NONE)) {
+
+            if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0 &&
+                practiceStruct._1C6 != 0) {
+                if (practiceStruct._1C6 == 2) {
+                    if (r26) {
+                        practiceStruct._1C6 = 0;
+                        goto _270;
+                    } else {
+                        goto _228;
+                    }
+                }
+            } else if ((inputs->buttonInput & INPUT_BUTTON_A)) {
+            _228:
+                inMemBatter.countUpUntilChargeEnables++;
+                if (inMemBatter.countUpUntilChargeEnables >= g_hitShorts.framesUntilChargeIsEnabled) {
+                    if (inMemBatter.chargeStatus == CHARGE_SWING_STAGE_NONE) {
+                        inMemBatter.chargeStatus = CHARGE_SWING_STAGE_CHARGEUP;
+                    }
+                    inMemBatter.countUpUntilChargeEnables = g_hitShorts.framesUntilChargeIsEnabled;
+                }
+            } else {
+            _270:
+                if (inMemBatter.countUpUntilChargeEnables) {
+                    r27 = TRUE;
+                    inMemBatter.countUpUntilChargeEnables = 0;
+                } else {
+                    inMemBatter.chargeStatus = CHARGE_SWING_STAGE_NONE;
+                }
+            }
+            
+        }
+
+        if (!inMemBatter.swingInd && inMemPitcher.pitcherActionState != 4 && inMemPitcher.pitcherActionState != 5 &&
+            inMemBatter._9C == 0) {
+            if (inMemBatter.buntStatus == BUNT_STATUS_NONE) {
+                if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0 &&
+                    practiceStruct._1C6 != 0 && r26) {
+                    r27 = TRUE;
+                    if (practiceStruct._1C6 == 3) {
+                        r25 = TRUE;
+                    }
+                    practiceStruct._1C6 = 0;
+                }
+                if (inputs->newButtonInput & INPUT_BUTTON_A) {
+                    if (inMemBatter.chargeStatus == CHARGE_SWING_STAGE_NONE &&
+                        inMemBatter.countUpUntilChargeEnables == 0) {
+                        r27 = TRUE;
+                    }
+                } else if (!(inputs->buttonInput & INPUT_BUTTON_A)) {
+                    if (inMemBatter.chargeStatus) {
+                        r27 = TRUE;
+                    }
+                }
+                if (r27) {
+                    inMemBatter.swingInd = 1;
+                    inMemBatter.framesSinceStartOfSwing = 0;
+                    inMemBatter.isStarSwing = FALSE;
+                    if (!gameInitVariables.minigamesEnabled) {
+                        if (inputs->buttonInput & PAD_TRIGGER_R ||
+                            (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE &&
+                             practiceStruct.instructionNumber >= 0 && r25)) {
+                            if (lbl_800E8754[4] || gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE) {
+                                inMemBatter.isStarSwing = TRUE;
+                                inMemBatter.chargeUp = 0.0f;
+                                inMemBatter.chargeDown = 0.0f;
+                            }
+                        }
+                    }
+                    if (inMemBatter.chargeStatus) {
+                        inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_CHARGE;
+                        if (inMemBatter.chargeUp >= 1.0f) {
+                            // do nothing
+                        } else {
+                            sndFXKeyOff(lbl_3_common_bss_34C58._1C);
+                        }
+                    } else {
+                        inMemBatter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
+                    }
+                }
+            }
+
+            if (!inMemBatter.swingInd && inMemBatter.chargeStatus == CHARGE_SWING_STAGE_NONE &&
+                inMemBatter.buntStatus != BUNT_STATUS_STRIKE && inMemBatter.buntStatus != BUNT_STATUS_6) {
+                BOOL b = FALSE;
+                if (inputs->buttonInput & INPUT_BUTTON_B) {
+                    b = TRUE;
+                }
+                if (b) {
+                    inMemBatter.isBunting = TRUE;
+                    if (inMemBatter.buntStatus == BUNT_STATUS_NONE) {
+                        inMemBatter.buntStatus = BUNT_STATUS_STARTING;
+                        inMemBatter.framesBuntHeld = 0;
+                        inMemBatter.chargeStatus = CHARGE_SWING_STAGE_NONE;
+                    }
+                } else {
+                    inMemBatter.isBunting = FALSE;
+                    inMemBatter.hitGeneralType = inMemBatter._8C;
+                }
+            }
+        }
+    }
+    return;
 }
 
 // .text:0x000139A0 size:0x3F4 mapped:0x80652a34
@@ -791,11 +918,11 @@ void calculateHorizontalPower(void) {
                 }
             }
             inMemBall.Hit_VerticalAngle =
-                fn_3_9ED1C_randBetween(lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][0],
+                RandomInt_Game_Range(lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][0],
                            lbl_3_data_2141C[minigameStruct.bODAngleIndexBasedOnHitPower + 1][1]);
             lbl_3_common_bss_32718._08 = 2;
         } else {
-            inMemBall.Hit_VerticalAngle = fn_3_9ED1C_randBetween(lbl_3_data_2141C[0][0], lbl_3_data_2141C[0][1]);
+            inMemBall.Hit_VerticalAngle = RandomInt_Game_Range(lbl_3_data_2141C[0][0], lbl_3_data_2141C[0][1]);
             power *= 0.7f;
         }
     }

@@ -11,9 +11,9 @@
 #define SANG_ANG_270 (SANG_ANG_90 * 3)
 #define SANG_ANG_360 (SANG_MAX_ANGLE)
 
-f32 fn_3_9EAE4(f32 a, f32 b);
-f32 fn_3_9EBCC(f32 a, f32 b);
-int fn_3_9ED1C_randBetween(int min, int max);
+f32 RandomF32_UNK_Range(f32 a, f32 b);
+f32 RandomF32_Game_Range(f32 a, f32 b);
+int RandomInt_Game_Range(int min, int max);
 int fn_3_9EE24(int max);
 int RandomInt_Game(int max);
 // void static_clamp(void);
