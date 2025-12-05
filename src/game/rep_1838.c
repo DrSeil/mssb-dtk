@@ -2,6 +2,7 @@
 #include "header_rep_data.h"
 #include "game/UnknownHomes_Game.h"
 #include "Dolphin/rand.h"
+#include "static/UnknownHomes_Static.h"
 
 // .text:0x000A0018 size:0x84 mapped:0x806DF0AC
 f32 shortAngleToRad_Capped(s16 ang) {
@@ -91,11 +92,10 @@ f32 fn_3_9FDD8(f32 ang) {
     return v;
 }
 
-
 // .text:0x0009FD6C size:0x6C mapped:0x806DEE00
 s16 fn_3_9FD6C(s16 ang) {
     ang = fn_3_9FE6C_normalizeAngle(ang);
- 
+
     if (ang > SANG_ANG_180) {
         ang -= SANG_ANG_360;
         if (ang <= -SANG_ANG_90) {
@@ -211,8 +211,7 @@ f32 fn_3_9FAA4(f32 x, f32 y) {
     }
 
     v = ATAN2F(y, x) * (f32)SANG_ANG_180 / PI;
-    if (v < 0.f)
-    {
+    if (v < 0.f) {
         v = v + (f32)SANG_ANG_360;
     }
     return v;
@@ -289,7 +288,7 @@ f32 fn_3_9EFD0(VecXYZ* l_start, VecXYZ* l_end, VecXYZ* point, VecXYZ* outClosest
     VecXYZ bp;
     VecXYZ proj;
     f32 abLen, v2, distA, distB, dist;
-    
+
     ab.x = l_end->x - l_start->x;
     ab.y = l_end->y - l_start->y;
     ab.z = l_end->z - l_start->z;
@@ -324,8 +323,7 @@ f32 fn_3_9EFD0(VecXYZ* l_start, VecXYZ* l_end, VecXYZ* point, VecXYZ* outClosest
     ab.z = proj.z - bp.z;
 
     dist = dolsqrtf2(SQ(ab.x) + SQ(ab.y) + SQ(ab.z));
-    if (outClosest != NULL)
-    {
+    if (outClosest != NULL) {
         outClosest->x = l_start->x + proj.x;
         outClosest->y = l_start->y + proj.y;
         outClosest->z = l_start->z + proj.z;
@@ -348,23 +346,23 @@ static u8 static_clamp(int v, int min, int max) {
 int RandomInt_Game(int max) {
     int ret;
     int absmax = ABS(max);
-    
+
     if (absmax <= 1) {
         return 0;
     }
 
-    inMemBall.StaticRandomInt1 = inMemBall.StaticRandomInt1 - ((u8)inMemBall.StaticRandomInt2) +
-                                 inMemBall.StaticRandomInt2 / absmax + inMemBall.totalFramesAtPlay;
+    g_Ball.StaticRandomInt1 = g_Ball.StaticRandomInt1 - ((u8)g_Ball.StaticRandomInt2) +
+                              g_Ball.StaticRandomInt2 / absmax + g_Ball.totalFramesAtPlay;
 
-    if (gameInitVariables.GameModeSelected == GAME_TYPE_PRACTICE && practiceStruct.instructionNumber >= 0) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
         return 0;
     }
 
-    if (gameInitVariables.GameModeSelected == GAME_TYPE_MINIGAMES) {
-        inMemBall.StaticRandomInt1 += rand();
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES) {
+        g_Ball.StaticRandomInt1 += rand();
     }
 
-    ret = inMemBall.StaticRandomInt1 % absmax;
+    ret = g_Ball.StaticRandomInt1 % absmax;
     ret = ABS(ret);
     if (max < 0) {
         return -ret;
@@ -382,9 +380,9 @@ int fn_3_9EE24(int max) {
     if (absMax <= 1) {
         return 0;
     }
-    ret = unkSimulationRelatedStruct._00 + gameInitVariables.FrameCountWhileNotAtMainMenu +
-          (gameInitVariables.FrameCountWhileNotAtMainMenu >> 1) - inMemBall.StaticRandomInt1 +
-          ((u8)inMemBall.StaticRandomInt2) + (unkSimulationRelatedStruct._00 / absMax);
+    ret = unkSimulationRelatedStruct._00 + g_d_GameSettings.FrameCountWhileNotAtMainMenu +
+          (g_d_GameSettings.FrameCountWhileNotAtMainMenu >> 1) - g_Ball.StaticRandomInt1 +
+          ((u8)g_Ball.StaticRandomInt2) + (unkSimulationRelatedStruct._00 / absMax);
     unkSimulationRelatedStruct._00 = ret;
     ret %= (u32)absMax;
     r2 = ABS(ret);

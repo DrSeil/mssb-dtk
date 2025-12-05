@@ -2,10 +2,8 @@
 #include "header_rep_data.h"
 #include "Dolphin/stl.h"
 #include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 #include "game/rep_1D58.h"
-
-
-
 
 // .text:0x00000914 size:0x158 mapped:0x8063F9A8
 BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollision, int collisionCheckType,
@@ -14,11 +12,11 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
     Vec v;
     BALL_COLLISION_TYPE ret = 0;
     if (collisionCheckType) {
-        if (useBallCoords && (gameInitVariables.StadiumID == STADIUM_ID_WARIO_PALACE ||
-                              gameInitVariables.StadiumID == STADIUM_ID_YOHSI_PARK ||
-                              gameInitVariables.StadiumID == STADIUM_ID_DK_JUNGLE)) {
-            memcpy(&p.src, &inMemBall.AtBat_Contact_BallPos, sizeof(p.src));
-            memcpy(&p.dst, &inMemBall.pastCoordinates[4], sizeof(p.dst));
+        if (useBallCoords && (g_d_GameSettings.StadiumID == STADIUM_ID_WARIO_PALACE ||
+                              g_d_GameSettings.StadiumID == STADIUM_ID_YOHSI_PARK ||
+                              g_d_GameSettings.StadiumID == STADIUM_ID_DK_JUNGLE)) {
+            memcpy(&p.src, &g_Ball.AtBat_Contact_BallPos, sizeof(p.src));
+            memcpy(&p.dst, &g_Ball.pastCoordinates[4], sizeof(p.dst));
             p.src.y *= -1.f;
             p.dst.y *= -1.f;
         } else {
@@ -29,7 +27,7 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
             if (collisionCheckType == 2 && (ret & BALL_COLLISION_TYPE_FOUL)) {
                 ret = BALL_COLLISION_TYPE_NONE;
             } else {
-                ret = processStadiumObjectFunction(gameInitVariables.StadiumID, ((int**)&v)[0], ret, outCollision);
+                ret = processStadiumObjectFunction(g_d_GameSettings.StadiumID, ((int**)&v)[0], ret, outCollision);
             }
         }
     }
@@ -53,21 +51,22 @@ BALL_COLLISION_TYPE didCollideWithBoundingBoxes(VecSrcDst* inVec, CollisionStruc
 
 // .text:0x000010E0 size:0x3C4 mapped:0x80640174
 bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGroup* _triangleGroup) {
-    #define O_GROUP ((TriangleGroup*)_triangleGroup)
-    #define O_TRI ((CollisionTriangle*)_triangleGroup)
-    
+#define O_GROUP ((TriangleGroup*)_triangleGroup)
+#define O_TRI ((CollisionTriangle*)_triangleGroup)
+
     Vec tri[3];
-    Vec dist[3]; 
+    Vec dist[3];
     u32 remainingTriangles;
     u32 didVecPassTriangle;
     u32 isBackwardsTriangle;
-    
+
     bool ret = false;
     f32 d;
     while (true) {
         bool isList;
         remainingTriangles = O_GROUP->count;
-        if (remainingTriangles == 0) break;
+        if (remainingTriangles == 0)
+            break;
 
         isList = O_GROUP->isTriangleList;
         // this should be reassigned to r24? but they're different types?
@@ -80,8 +79,8 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
                 MTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
                 MTXMultVec(collisionData->mtx1, &O_TRI[2].trianglePoint, &tri[02]);
                 didVecPassTriangle = tri[00].x * tri[01].y - tri[01].x * tri[00].y >= 0;
-                didVecPassTriangle &= tri[01].x * tri[02].y - tri[02].x * tri[01].y  >= 0;
-                didVecPassTriangle &= tri[02].x * tri[00].y - tri[00].x * tri[02].y  >= 0;
+                didVecPassTriangle &= tri[01].x * tri[02].y - tri[02].x * tri[01].y >= 0;
+                didVecPassTriangle &= tri[02].x * tri[00].y - tri[00].x * tri[02].y >= 0;
                 if (didVecPassTriangle) {
                     VECSubtract(&tri[01], &tri[00], &dist[0]);
                     VECSubtract(&tri[02], &tri[01], &dist[1]);
@@ -97,7 +96,8 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
                 O_TRI += 3;
             } while (--remainingTriangles);
         } else {
-            // the first 3 verts describe a triangle, after that each new vert replaces the oldest vert to make a triangle fan
+            // the first 3 verts describe a triangle, after that each new vert replaces the oldest vert to make a
+            // triangle fan
             isBackwardsTriangle = false;
             MTXMultVec(collisionData->mtx1, &O_TRI[0].trianglePoint, &tri[00]);
             MTXMultVec(collisionData->mtx1, &O_TRI[1].trianglePoint, &tri[01]);
@@ -138,7 +138,6 @@ bool checkTriangleCollisions(TriangleCollisionStruct* collisionData, TriangleGro
                 O_TRI++;
             } while (--remainingTriangles);
         }
-        
     }
 
     return ret;

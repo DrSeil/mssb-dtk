@@ -249,6 +249,25 @@ typedef enum _BALL_RESULT_TYPE {
 typedef s16 frame_t;
 typedef s16 sAng;
 
+typedef enum _GAME_TYPE {
+    GAME_TYPE_EXHIBITION_GAME = 0,
+    GAME_TYPE_PRACTICE = 2,
+    GAME_TYPE_DEMO = 4,
+    GAME_TYPE_CHALLENGE = 5,
+    GAME_TYPE_TOY_FIELD = 6,
+    GAME_TYPE_MINIGAMES = 7,
+} GAME_TYPE;
+
+typedef enum _STADIUM_ID {
+    STADIUM_ID_MARIO_STADIUM,
+    STADIUM_ID_BOWSERS_CASTLE,
+    STADIUM_ID_WARIO_PALACE,
+    STADIUM_ID_YOHSI_PARK,
+    STADIUM_ID_PEACH_GARDEN,
+    STADIUM_ID_DK_JUNGLE,
+    STADIUM_ID_TOY_FIELD,
+} STADIUM_ID;
+
 #ifndef __cplusplus
 typedef u8 bool;
 #define true TRUE

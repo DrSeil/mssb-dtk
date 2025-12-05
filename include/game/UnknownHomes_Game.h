@@ -15,7 +15,6 @@
 #define PLAYERS_PER_TEAM (9)
 #define TEAMS_PER_GAME (2)
 
-
 typedef struct _VecXZ {
     f32 x, z;
 } VecXZ;
@@ -532,10 +531,10 @@ typedef struct _InMemPitcherType {
     /*0x176*/ u8 unused_pitcherIsFielder; // unsure
 } InMemPitcherType;                       // size: 0x178
 
-extern InMemPitcherType inMemPitcher;
-extern InMemBallType inMemBall;
-extern InMemRunnerType inMemRunners[4];
-extern InMemBatterType inMemBatter;
+extern InMemPitcherType g_Pitcher;
+extern InMemBallType g_Ball;
+extern InMemRunnerType g_Runners[4];
+extern InMemBatterType g_Batter;
 
 extern VecXYZ maybeInitialBatPos;
 extern f32 charSizeMultipliers[NUM_CHOOSABLE_CHARACTERS][2];
@@ -650,68 +649,7 @@ extern HitShorts g_hitShorts;
 };
 */
 
-typedef enum _GAME_TYPE {
-    GAME_TYPE_EXHIBITION_GAME = 0,
-    GAME_TYPE_PRACTICE = 2,
-    GAME_TYPE_DEMO = 4,
-    GAME_TYPE_CHALLENGE = 5,
-    GAME_TYPE_TOY_FIELD = 6,
-    GAME_TYPE_MINIGAMES = 7,
-} GAME_TYPE;
-
-typedef enum _STADIUM_ID {
-    STADIUM_ID_MARIO_STADIUM,
-    STADIUM_ID_BOWSERS_CASTLE,
-    STADIUM_ID_WARIO_PALACE,
-    STADIUM_ID_YOHSI_PARK,
-    STADIUM_ID_PEACH_GARDEN,
-    STADIUM_ID_DK_JUNGLE,
-    STADIUM_ID_TOY_FIELD,
-} STADIUM_ID;
-
-typedef struct _GameInitVariables {
-    /*0x00*/ int _00;
-    /*0x04*/ u16 FrameCountWhileNotAtMainMenu;
-    /*0x06*/ u8 _06; // 1 Menu,2 InGame/Minigame/Practice/etc
-    /*0x07*/ E(u8, GAME_TYPE) GameModeSelected;
-    /*0x08*/ bool exhibitionMatchInd;
-    /*0x09*/ E(u8, STADIUM_ID) StadiumID;
-    /*0x0A*/ u8 miniGameStadiumIndicator;
-    /*0x0B*/ u8 _0B;
-    /*0x0C*/ u8 maybeHomeAway;
-    /*0x0D*/ u8 maybeHomeAway2;
-    /*0x0E*/ u8 home_AwaySetting;
-    artificial_padding(0x0e, 0x11, u8);
-    /*0x11*/ bool minigamesEnabled;
-    artificial_padding(0x11, 0x20, bool);
-    /*0x20*/ s16 _20[4][2];
-    /*0x30*/ s16 challengeMinigame_baseCoinsEarned;
-    /*0x32*/ u8 bJMatchRelated;
-    /*0x33*/ u8 _33;
-    /*0x34*/ u8 humanTeamNumber;
-    /*0x35*/ u8 _35;
-    /*0x36*/ u8 _36;
-    /*0x37*/ u8 challengeDifficulty; // unsure
-    /*0x38*/ u8 _38;
-    /*0x39*/ u8 bJMatchInd;
-    /*0x3A*/ u8 _3A;
-    /*0x3B*/ u8 someChallengeModeFlag;
-    /*0x3C*/ u8 challengeCaptainStarBought[18];
-    /*0x4E*/ u8 _4E;
-    /*0x4F*/ u8 _4F;
-    /*0x50*/ u8 PlayerPorts[2];
-    /*0x52*/ u8 _52;
-    /*0x53*/ u8 _53;
-    /*0x54*/ E(u8, STADIUM_ID) _54;
-    /*0x55*/ u8 _55;
-    /*0x56*/ u8 _56;
-    /*0x57*/ u8 _57;
-} GameInitVariables; // size: 0x58
-
-extern GameInitVariables gameInitVariables;
-
-typedef struct _GameControlOptions
-{
+typedef struct _GameControlOptions {
     /*0x000*/ bool autoRunning;
     /*0x001*/ bool autoFielding;
     /*0x002*/ bool dropSpot;
@@ -721,9 +659,7 @@ typedef struct _GameControlOptions
     /*0x006*/ bool _6;
 } GameControlOptions; // size: 0x7
 
-
-typedef struct _GameInitOptions
-{
+typedef struct _GameInitOptions {
     /*0x000*/ u8 inningSetting;
     /*0x001*/ u8 _1;
     /*0x002*/ u8 _2;
@@ -958,7 +894,7 @@ typedef struct _PracticeStruct {
     /*0x1EF*/ u8 rosterID; // unsure
 } PracticeStruct;          // size: 0x1f0
 
-extern PracticeStruct practiceStruct;
+extern PracticeStruct g_Practice;
 
 extern u8 buntPower[5][2];
 
@@ -1173,9 +1109,9 @@ typedef struct _GameControlsStruct {
     /*0x155*/ u8 rosterLoc_skippingCap; // unsure
     /*0x156*/ u8 _156;
     /*0x157*/ u8 _157;
-} GameControlsStruct;                   // size: 0x158
+} GameControlsStruct; // size: 0x158
 
-extern GameControlsStruct gameControls;
+extern GameControlsStruct g_GameLogic;
 
 typedef enum _CHALLENGE_CAPTAIN {
     CHALLENGE_CAPTAIN_MARIO,
@@ -1345,12 +1281,11 @@ typedef struct _CharacterStats {
 
 extern CharacterStats inMemRoster[TEAMS_PER_GAME][PLAYERS_PER_TEAM];
 
-typedef struct _UnkSimulationRelatedStruct
-{
+typedef struct _UnkSimulationRelatedStruct {
     /*0x00*/ u32 _00; // frameCountRelated
-    /*0x04*/ u8 _04; // loadingStateRelated?
-    /*0x05*/ u8 _05; // highLevelSimulationIndicator
-    /*0x06*/ u8 _06; // highLevelSimulationSomething
+    /*0x04*/ u8 _04;  // loadingStateRelated?
+    /*0x05*/ u8 _05;  // highLevelSimulationIndicator
+    /*0x06*/ u8 _06;  // highLevelSimulationSomething
     /*0x07*/ u8 _07;
     /*0x08*/ u8 _08; // endDemo?
     /*0x09*/ u8 _09;
@@ -1363,8 +1298,7 @@ extern f32 vecDotProduct(VecXYZ* a, VecXYZ* b);
 
 extern ChallengeTrackingStruct starMissionCompletionTracker[54];
 
-typedef struct _SomeStarDashStruct
-{
+typedef struct _SomeStarDashStruct {
     /*0x000*/ s16 _0[2];
     /*0x004*/ u8 _4[6];
     /*0x00A*/ u8 _pad_A[2]; // 2 bytes of padding for f32 alignment
@@ -1372,8 +1306,7 @@ typedef struct _SomeStarDashStruct
     /*0x00E*/ u8 pad[24];
 } SomeStarDashStruct; // size: 0x28
 
-typedef struct _UnkStarDashFloatStruct
-{
+typedef struct _UnkStarDashFloatStruct {
     /*0x000*/ f32 _0;
     /*0x004*/ f32 _4;
     /*0x008*/ f32 _8;
@@ -1385,8 +1318,7 @@ typedef struct _UnkStarDashFloatStruct
     /*0x020*/ s16 _20;
 } UnkStarDashFloatStruct; // size: 0x22
 
-typedef struct _MaybeWallBallStruct
-{
+typedef struct _MaybeWallBallStruct {
     /*0x000*/ f32 _0; // start of wall ball struct?
     /*0x004*/ f32 _4;
     /*0x008*/ f32 zPositionOfSomeWall;
@@ -1403,8 +1335,7 @@ typedef struct _MaybeWallBallStruct
     /*0x02A*/ u8 coinRelated[26];
 } MaybeWallBallStruct; // size: 0x44
 
-typedef struct _BB_barrelStruct
-{
+typedef struct _BB_barrelStruct {
     /*0x000*/ VecXYZ currentPos;
     /*0x00C*/ VecXYZ desiredPos;
     /*0x018*/ VecXYZ posAtStartOfTurn;
@@ -1418,8 +1349,7 @@ typedef struct _BB_barrelStruct
     /*0x033*/ u8 pad;
 } BB_barrelStruct; // size: 0x34
 
-typedef struct _UnkStructMinigame
-{
+typedef struct _UnkStructMinigame {
     /*0x000*/ VecXYZ _0;
     /*0x00C*/ VecXYZ _C;
     /*0x018*/ s32 _18;
@@ -1432,8 +1362,7 @@ typedef struct _UnkStructMinigame
     /*0x05C*/ VecXYZ _5C;
 } UnkStructMinigame; // size: 0x68
 
-typedef struct _MiniGameControlStruct
-{
+typedef struct _MiniGameControlStruct {
     /*0x000*/ s8 characterIndex[4];
     /*0x004*/ u8 _4;
     /*0x005*/ u8 _5;
@@ -1449,29 +1378,27 @@ typedef struct _MiniGameControlStruct
     /*0x015*/ u8 _15;
 } MiniGameControlStruct; // size: 0x16
 
-/*foul	1	
-caught	2	
-groundRuleDouble	4	
+/*foul	1
+caught	2
+groundRuleDouble	4
 homerun	6	*/
-typedef enum _TOY_FIELD_RESULT
-{
+typedef enum _TOY_FIELD_RESULT {
     TOY_FIELD_RESULT_FOUL = 1,
     TOY_FIELD_RESULT_CAUGHT = 2,
     TOY_FIELD_RESULT_GROUND_RULE_DOUBLE = 4,
     TOY_FIELD_RESULT_HOMERUN = 6
 } TOY_FIELD_RESULT;
 
-/*None	0	
-BobOmbDerby	1	
-WallBall	2	
-BarrelBatter	3	
-ChainChompSprint	4	
-PiranhaPanic	5	
-StarDash	6	
+/*None	0
+BobOmbDerby	1
+WallBall	2
+BarrelBatter	3
+ChainChompSprint	4
+PiranhaPanic	5
+StarDash	6
 MarioGrandPrix	7	*/
 
-typedef enum _MINI_GAME_ID
-{
+typedef enum _MINI_GAME_ID {
     MINI_GAME_ID_NONE = 0,
     MINI_GAME_ID_BOBOMB_DERBY = 1,
     MINI_GAME_ID_WALLBALL = 2,
@@ -1482,31 +1409,28 @@ typedef enum _MINI_GAME_ID
     MINI_GAME_ID_MARIO_GRAND_PRIX = 7
 } MINI_GAME_ID;
 
-/*multiplayer/ChallengeEasy	0	
-ChallengeNormal	1	
-challengeHard	2	
+/*multiplayer/ChallengeEasy	0
+ChallengeNormal	1
+challengeHard	2
 soloNonChallenge	3	*/
-typedef enum _MINIGAME_DIFFICULTY
-{
+typedef enum _MINIGAME_DIFFICULTY {
     MINIGAME_DIFFICULTY_MULTIPLAYER_CHALLENGE_EASY = 0,
     MINIGAME_DIFFICULTY_MULTIPLAYER_CHALLENGE_NORMAL = 1,
     MINIGAME_DIFFICULTY_MULTIPLAYER_CHALLENGE_HARD = 2,
     MINIGAME_DIFFICULTY_SOLO_NON_CHALLENGE = 3
 } MINIGAME_DIFFICULTY;
 
-/*calculateNewWalls	0	
-dropInNewWalls	1	
+/*calculateNewWalls	0
+dropInNewWalls	1
 pitchOrWaitingForPitch	2	*/
 
-typedef enum _WALL_BALL_GAME_STATE
-{
+typedef enum _WALL_BALL_GAME_STATE {
     WALL_BALL_GAME_STATE_CALCULATE_NEW_WALLS = 0,
     WALL_BALL_GAME_STATE_DROP_IN_NEW_WALLS = 1,
     WALL_BALL_GAME_STATE_PITCH_OR_WAITING_FOR_PITCH = 2
 } WALL_BALL_GAME_STATE;
 
-typedef struct _MiniGameStruct
-{
+typedef struct _MiniGameStruct {
     /*0x000*/ u8 _0;
     /*0x001*/ u8 _1;
     /*0x002*/ u8 _2;
@@ -1589,7 +1513,7 @@ typedef struct _MiniGameStruct
     /*0x0BC*/ f32 _BC;
     /*0x0C0*/ f32 _C0;
     /*0x0C4*/ s32 _C4;
-    
+
     /*0x0CA*/ SomeStarDashStruct _CA;
     /*0x0F2*/ SomeStarDashStruct _F2;
     /*0x11A*/ SomeStarDashStruct _11A;
@@ -2225,7 +2149,7 @@ typedef struct _MiniGameStruct
     /*0x1A26*/ s16 pointsReqToWin_challenge;
     /*0x1A28*/ s16 someGraphicFrameCountdown;
     /*0x1A2A*/ E(u8, MINI_GAME_ID) GameMode_MiniGame;
-    /*0x1A2B*/ E(u8,MINIGAME_DIFFICULTY) soloMinigameDifficulty;
+    /*0x1A2B*/ E(u8, MINIGAME_DIFFICULTY) soloMinigameDifficulty;
     /*0x1A2C*/ u8 _1A2C;
     /*0x1A2D*/ u8 miniGameTurnCounter;
     /*0x1A2E*/ u8 bB_pitchesRemainingInTurn;
@@ -2259,7 +2183,7 @@ typedef struct _MiniGameStruct
     /*0x1A7C*/ u8 wallBallSpecialWallPos;
     /*0x1A7D*/ u8 _1A7D;
     /*0x1A7E*/ u8 wallBallRotatePitchersInd;
-    /*0x1A7F*/ E(u8,WALL_BALL_GAME_STATE) wallBallGameState;
+    /*0x1A7F*/ E(u8, WALL_BALL_GAME_STATE) wallBallGameState;
     /*0x1A80*/ u8 _1A80;
     /*0x1A81*/ bool ballStoppedBreakingWallsInd;
     /*0x1A82*/ u8 wallIndexTracker[7];
@@ -2470,11 +2394,9 @@ typedef struct _MiniGameStruct
     /*0x1D7C*/ InputStruct _1D7C[4];
 } MiniGameStruct; // size: 0x1D7C
 
+extern MiniGameStruct g_Minigame;
 
-extern MiniGameStruct minigameStruct;
-
-typedef struct _BatterReachStruct
-{
+typedef struct _BatterReachStruct {
     /*0x000*/ f32 HorizontalRangeNear;
     /*0x004*/ f32 HorizontalRangeFar;
     /*0x008*/ f32 VerticalRangeFront;
@@ -2521,7 +2443,7 @@ extern struct {
     /* 0x34 */ u8 _34;
 } lbl_3_common_bss_34C58; // size: 0x38
 
-extern InputStruct inMemControls[];
+extern InputStruct g_Controls[];
 
 typedef struct {
     /* 0x0 */ s16 _00;
@@ -2534,7 +2456,7 @@ typedef struct {
     /* 0x8 */ u8 _08;
 } lbl_3_common_bss_32718_struct;
 
-extern lbl_3_common_bss_32718_struct lbl_3_common_bss_32718;
+extern lbl_3_common_bss_32718_struct g_UnkSound_32718;
 
 extern struct {
     /* 0x0 */ u8 moonShotCost;
@@ -2585,14 +2507,14 @@ typedef struct {
     /* 0x5A */ u8 batterAIInd9PrincessStarHit;
     /* 0x5B */ u8 batterAISwingInd;
     /* 0x5C */ u8 batterAI_GuessedPitchLocZone; // unsure
-    /* 0x5D */ u8 batterAIZPosition; // unsure
+    /* 0x5D */ u8 batterAIZPosition;            // unsure
     /* 0x5E */ u8 batterAIPitchGuessed;
     /* 0x5F */ u8 batterAISwingEarly1OrLate2;
     /* 0x60 */ u8 batterAIInd8_FrameBtwn10And16;
     /* 0x61 */ u8 batterAILeftRightInput; // unsure
-    /* 0x62 */ u8 batterAIUpDownInput; // unsure
+    /* 0x62 */ u8 batterAIUpDownInput;    // unsure
     /* 0x63 */ u8 frameToStartSwing;
-    /* 0x64 */ u8 someNotAISwingInd; // unsure
+    /* 0x64 */ u8 someNotAISwingInd;                      // unsure
     /* 0x65 */ u8 aISwingDecisionRelated_noSwingOverride; // unsure
     /* 0x66 */ s8 batterAIABStrat;
     /* 0x67 */ u8 _67;
@@ -2628,7 +2550,7 @@ typedef struct {
     /* 0xBB */ u8 _BB;
 } AIStruct; // size 0xBC
 
-extern AIStruct aiStruct;
+extern AIStruct g_AiLogic;
 
 extern BOOL getAnimRelatedCoordinates(int, int, VecXYZ*);
 extern void fn_3_6C854(int, int);
