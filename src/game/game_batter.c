@@ -1,4 +1,4 @@
-#include "game/HitBall.h"
+#include "game/game_batter.h"
 #include "header_rep_data.h"
 
 #include "game/UnknownHomes_Game.h"
