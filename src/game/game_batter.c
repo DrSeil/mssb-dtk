@@ -47,6 +47,12 @@ extern f32 lbl_3_data_5AF8[3][5];
 extern u8 lbl_3_data_7690[NUM_CHOOSABLE_CHARACTERS][2];
 extern s16 lbl_3_data_5CD4[4];
 extern s16 buntVerticalAngles[5][2][2][2];
+int lbl_3_bss_34;
+extern struct {
+    u8 _00[0x28];
+    u8 _28;
+} lbl_80366158;
+extern u8 lbl_800E8754[];
 
 #define FRAME_COUNT_HOLD_FOR_BUNT 8
 // acts more like a flag than an actual timer
@@ -55,6 +61,9 @@ extern s16 buntVerticalAngles[5][2][2][2];
 #define FRAME_COUNT_BEGIN_RETREATING 300
 #define FRAME_COUNT_BUNT_RETREAT (FRAME_COUNT_BEGIN_RETREATING + 30)
 #define FRAME_COUNT_BUNT_LATE_RETREAT (FRAME_COUNT_BEGIN_RETREATING + 12)
+
+// UNUSED .text:0x000108F8 size:0x188 mapped:0x8064f98c
+static void calculateBuntVerticalAngle_unused(void);
 
 // .text:0x00014858 size:0x35C mapped:0x806538ec
 void atBat_batter(void) {
@@ -287,7 +296,6 @@ void updateBallHittableZoneStatus(void) {
     }
 }
 
-extern u8 lbl_800E8754[];
 
 // .text:0x00013D94 size:0x528 mapped:0x80652e28
 void batterHumanControlled(void) {
@@ -296,7 +304,7 @@ void batterHumanControlled(void) {
     BOOL r26 = FALSE;
     BOOL r25 = FALSE;
     inputs = &g_Controls[g_GameLogic.teams[g_GameLogic.teamBatting]];
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         inputs = &g_Practice.inputs[g_GameLogic.teamBatting];
         if (g_Practice._1C6 != 0 && g_Pitcher.framesUntilBallReachesBatterZ == swingSoundFrame[0][1]) {
             r26 = TRUE;
@@ -316,8 +324,7 @@ void batterHumanControlled(void) {
              g_Batter.buntStatus == BUNT_STATUS_NONE)) {
 
             // I couldn't match this without goto, this was the best I could do
-            if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0 &&
-                g_Practice._1C6 != 0) {
+            if (ACTIVE_TUTORIAL && g_Practice._1C6 != 0) {
                 if (g_Practice._1C6 == 2) {
                     if (r26) {
                         g_Practice._1C6 = 0;
@@ -349,8 +356,7 @@ void batterHumanControlled(void) {
         if (!g_Batter.swingInd && g_Pitcher.pitcherActionState != 4 && g_Pitcher.pitcherActionState != 5 &&
             g_Batter._9C == 0) {
             if (g_Batter.buntStatus == BUNT_STATUS_NONE) {
-                if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0 &&
-                    g_Practice._1C6 != 0 && r26) {
+                if (ACTIVE_TUTORIAL && g_Practice._1C6 != 0 && r26) {
                     r27 = TRUE;
                     if (g_Practice._1C6 == 3) {
                         r25 = TRUE;
@@ -371,9 +377,7 @@ void batterHumanControlled(void) {
                     g_Batter.framesSinceStartOfSwing = 0;
                     g_Batter.isStarSwing = FALSE;
                     if (!g_d_GameSettings.minigamesEnabled) {
-                        if (inputs->buttonInput & PAD_TRIGGER_R ||
-                            (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE &&
-                             g_Practice.instructionNumber >= 0 && r25)) {
+                        if (inputs->buttonInput & PAD_TRIGGER_R || (ACTIVE_TUTORIAL && r25)) {
                             if (lbl_800E8754[4] || g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE) {
                                 g_Batter.isStarSwing = TRUE;
                                 g_Batter.chargeUp = 0.0f;
@@ -419,6 +423,98 @@ void batterHumanControlled(void) {
 
 // .text:0x000139A0 size:0x3F4 mapped:0x80652a34
 void batterInBoxMovement(void) {
+    f32 moveSpeedMult;
+    s8 left_right, up_down;
+    BatterReachStruct* hitbox;
+    InputStruct* inputs;
+    
+    inputs = &g_Controls[g_GameLogic.teams[g_GameLogic.teamBatting]];
+    hitbox = &BatterHitbox[g_Batter.charID];
+    moveSpeedMult = g_hitFloats.regularBoxSpeedMult;
+
+    if (g_Minigame.GameMode_MiniGame == MINI_GAME_ID_BOBOMB_DERBY ||
+        g_Minigame.GameMode_MiniGame == MINI_GAME_ID_BARREL_BATTER) {
+        return;
+    } else if (g_Pitcher.pitcherActionState == PITCHER_ACTION_STATE_HIT) {
+        g_Batter.batterIsBeingCentredInd = 0;
+    } else if (g_Batter.swingInd && g_Batter.hitGeneralType == BAT_CONTACT_TYPE_CHARGE) {
+        g_Batter.batterIsBeingCentredInd = 0;
+    } else {
+        if (ACTIVE_TUTORIAL) {
+            inputs = &g_Practice.inputs[g_GameLogic.teamBatting];
+        } else if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(
+                       g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
+            inputs = &g_Minigame._1D7C[g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID]];
+        } else if (g_d_GameSettings.minigamesEnabled) {
+            inputs = &g_Controls[g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID]];
+        }
+
+        if (g_Batter.framesSinceStartOfSwing > 0) {
+            g_Batter.batterIsBeingCentredInd = 0;
+            moveSpeedMult = 0.0f;
+        } else if (inputs->buttonInput & INPUT_TRIGGER_L) {
+            g_Batter.batterIsBeingCentredInd = 1;
+        }
+
+        left_right = inputs->right_left;
+        up_down = inputs->up_down;
+        if (g_Batter.batterIsBeingCentredInd) {
+            f32 newSpeed = hitbox->BoxMoveSpeed * g_hitFloats.centeringBoxSpeedMult;
+            if (g_Batter.batPosition2.x < -newSpeed) {
+                g_Batter.batPosition2.x += newSpeed;
+            } else if (g_Batter.batPosition2.x > newSpeed) {
+                g_Batter.batPosition2.x -= newSpeed;
+            } else {
+                g_Batter.batterIsBeingCentredInd = 0;
+                g_Batter.batPosition2.x = 0.0f;
+            }
+        } else {
+            f32 newSpeed;
+            if (inputs->buttonInput & INPUT_BUTTON_LEFT) {
+                newSpeed = -hitbox->BoxMoveSpeed;
+            } else if (inputs->buttonInput & INPUT_BUTTON_RIGHT) {
+                newSpeed = hitbox->BoxMoveSpeed;
+            } else {
+                newSpeed = hitbox->BoxMoveSpeed * (left_right / 72.0f);
+            }
+            if (g_Batter.batterHand != BATTING_HAND_RIGHT) {
+                newSpeed = -newSpeed;
+            }
+
+            newSpeed *= moveSpeedMult;
+            g_Batter.batPosition2.x += newSpeed;
+
+            if (g_Batter.batPosition2.x < hitbox->HorizontalRangeNear) {
+                g_Batter.batPosition2.x = hitbox->HorizontalRangeNear;
+            }
+            if (g_Batter.batPosition2.x > hitbox->HorizontalRangeFar) {
+                g_Batter.batPosition2.x = hitbox->HorizontalRangeFar;
+            }
+
+            if (inputs->buttonInput & INPUT_BUTTON_UP) {
+                newSpeed = hitbox->BoxMoveSpeed;
+            } else if (inputs->buttonInput & INPUT_BUTTON_DOWN) {
+                newSpeed = -hitbox->BoxMoveSpeed;
+            } else {
+                newSpeed = hitbox->BoxMoveSpeed * (up_down / 72.0f);
+            }
+
+            newSpeed *= moveSpeedMult;
+            g_Batter.batPosition2.z += newSpeed;
+
+            if (g_Batter.batPosition2.z < hitbox->VerticalRangeFront) {
+                g_Batter.batPosition2.z = hitbox->VerticalRangeFront;
+            }
+            if (g_Batter.batPosition2.z > hitbox->VerticalRangeBack) {
+                g_Batter.batPosition2.z = hitbox->VerticalRangeBack;
+            }
+        }
+        g_Batter.batterPos.x = g_Batter.batPosition2.x + hitbox->batOffsetFromBatterX;
+        g_Batter.batterPos.z = g_Batter.batPosition2.z + hitbox->batOffsetFromBatterZ;
+        if (g_Batter.batterHand != BATTING_HAND_RIGHT) {
+            g_Batter.batterPos.x = -g_Batter.batterPos.x;
+        }
+    }
 }
 
 // UNUSED .text:0x0001379C size:0x204 mapped:0x80652830
@@ -514,11 +610,7 @@ static void fn_3_13614(void) {
         }
     }
 }
-int lbl_3_bss_34;
-extern struct {
-    u8 _00[0x28];
-    u8 _28;
-} lbl_80366158;
+
 // .text:0x0001325C size:0x3B8 mapped:0x806522f0
 void ifSwing(void) {
     if (g_Batter.swingInd) {
@@ -791,6 +883,89 @@ void calculateIfHitBall(void) {
 
 // .text:0x00012554 size:0x760 mapped:0x806515e8
 void calculateHitVariables(void) {
+    if (g_Batter.isStarSwing) {
+        if (g_Batter.isBunting) {
+            g_Batter.hitGeneralType = BAT_CONTACT_TYPE_BUNT;
+            g_Batter.moonShotInd = FALSE;
+        } else if (g_GameLogic.TeamStars[g_GameLogic.teamBatting] != 0) {
+            if (g_Batter.isFullyCharged && g_Batter.contactMadeInd &&
+                g_GameLogic.TeamStars[g_GameLogic.teamBatting] >= starPowerCosts.moonShotCost) {
+                g_Batter.hitGeneralType = BAT_CONTACT_TYPE_STAR;
+                g_Batter.moonShotInd = TRUE;
+            } else if (!g_Batter.captainStarHitPitch) {
+                if (g_GameLogic.TeamStars[g_GameLogic.teamBatting] >= starPowerCosts.regularStarCost &&
+                    g_Batter.noncaptainStarSwing) {
+                    g_Batter.nonCaptainStarSwingActivated = g_Batter.noncaptainStarSwing;
+                    switch (g_Batter.nonCaptainStarSwingActivated) {
+                        case REGULAR_STAR_SWING_POPFLY:
+                            g_Batter.hitGeneralType = BAT_CONTACT_TYPE_CHARGE;
+                            g_Batter.didNonCaptainStarSwingConnect = TRUE;
+                            g_Batter.chargeUp = BATTER_MAX_CHARGE;
+                            break;
+                        case REGULAR_STAR_SWING_GROUNDER:
+                            g_Batter.hitGeneralType = BAT_CONTACT_TYPE_CHARGE;
+                            g_Batter.didNonCaptainStarSwingConnect = TRUE;
+                            g_Batter.chargeUp = BATTER_MAX_CHARGE;
+                            break;
+                        case REGULAR_STAR_SWING_LINEDRIVE:
+                            g_Batter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
+                            break;
+                    }
+                } else {
+                    g_Batter.isStarSwing = FALSE;
+                }
+            } else if (g_GameLogic.Team_CaptainRosterLoc[g_GameLogic.teamBatting] != g_Batter.rosterID) {
+                if (g_GameLogic.TeamStars[g_GameLogic.teamBatting] >= starPowerCosts.nonCaptain_CaptainStarCost) {
+                    g_Batter.hitGeneralType = BAT_CONTACT_TYPE_STAR;
+                } else{
+                    g_Batter.isStarSwing = FALSE;
+                }
+            } else {
+                if (g_GameLogic.TeamStars[g_GameLogic.teamBatting] >= starPowerCosts.captainStarCost) {
+                    g_Batter.hitGeneralType = BAT_CONTACT_TYPE_STAR;
+                } else {
+                    g_Batter.isStarSwing = FALSE;
+                }
+            }
+            if (g_Batter.hitGeneralType == BAT_CONTACT_TYPE_STAR || g_Batter.didNonCaptainStarSwingConnect) {
+                playSoundEffect(0x19e);
+                g_Batter.captainStarSwingActivated = g_Batter.captainStarHitPitch;
+                g_Batter.lightFireballStunID = 0;
+            }
+        }
+    }
+    calculateContactAndHitType();
+    if (g_GameLogic.secondaryGameMode == SECONDARY_GAME_MODE_PRACTICE_BASERUNNING) {
+        if (g_Practice._1EE) {
+            playSoundEffect(0x153);
+            g_Ball.maybeBuntInd = 1;
+        } else {
+            playSoundEffect(0x183);
+            g_Ball.maybeBuntInd = 0;
+        }
+        g_Batter.captainStarSwingActivated = CAPTAIN_STAR_TYPE_NONE;
+    } else if (g_Batter.isBunting) {
+        calculateBuntHorizontalAngle();
+        calculateBuntVerticalAngle_unused();
+        calculateBuntHorizontalPower();
+        g_Ball.maybeBuntInd = 1;
+        g_Batter.captainStarSwingActivated = CAPTAIN_STAR_TYPE_NONE;
+        lbl_3_common_bss_34C58._2B = 1;
+    } else {
+        calculateBallHorizontalAngleHit();
+        calculateVerticalAngle();
+        calculateHorizontalPower();
+        if (g_Batter._95) {
+            g_Ball.Hit_HorizontalPower /= 2;
+        } else if (!g_Batter.captainStarSwingActivated && g_Batter.contactType >= HIT_CONTACT_TYPE_RIGHT_NICE &&
+                   g_Batter.contactType <= HIT_CONTACT_TYPE_LEFT_NICE && g_Batter.chargeUp >= BATTER_MAX_CHARGE) {
+            g_Ball.inAirOrBefore2ndBounceOrLowBallEnergy = TRUE;
+            g_Ball.ballEnergy = g_Ball.Hit_HorizontalPower;
+            g_Ball.hardHitIndicator = TRUE;
+        }
+        lbl_3_common_bss_34C58._2B = 1;
+    }
+    calculateBallVelocityAcceleration();
 }
 
 // UNUSED .text:0x000124DC size:0x78 mapped:0x80650f64
@@ -810,16 +985,95 @@ static void fn_3_124DC(void) {
         case REGULAR_STAR_SWING_LINEDRIVE:
             g_Batter.hitGeneralType = BAT_CONTACT_TYPE_SLAP;
             break;
-            break;
     }
 }
 
 // .text:0x00011ED0 size:0x60C mapped:0x80650f64
 void calculateContactAndHitType(void) {
+
 }
+
+extern s16 lbl_3_data_4D94[3][2][15][2];
+extern s16 lbl_3_data_4EFC[3][2][15][2];
+extern s16 lbl_3_data_5064[3][2][15][2];
 
 // .text:0x00011B9C size:0x334 mapped:0x80650c30
 void calculateBallHorizontalAngleHit(void) {
+    int angleRangeLower, angleRangeUpper, angleRange, horizAngle;
+    BOOL isCharge = TRUE;
+    InputStruct* inputs = &g_Controls[g_GameLogic.teams[g_GameLogic.teamBatting]];
+
+    if (ACTIVE_TUTORIAL) {
+        inputs = &g_Practice.inputs[g_GameLogic.teamBatting];
+    } else if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(
+                   g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
+        inputs = &g_Minigame._1D7C[g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID]];
+    } else if (g_d_GameSettings.minigamesEnabled) {
+        inputs = &g_Controls[g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID]];
+    }
+
+    if (g_Batter.hitGeneralType == BAT_CONTACT_TYPE_SLAP) {
+        isCharge = FALSE;
+    }
+
+    if (!g_Batter.aiControlledInd) {
+        if (inputs->buttonInput & INPUT_BUTTON_RIGHT) {
+            if (g_Batter.batterHand == BATTING_HAND_RIGHT) {
+                g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_AWAY;
+            } else {
+                g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_TOWARDS;
+            }
+        } else if (inputs->buttonInput & INPUT_BUTTON_LEFT) {
+            if (g_Batter.batterHand == BATTING_HAND_RIGHT) {
+                g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_TOWARDS;
+            } else {
+                g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_AWAY;
+            }
+        }
+    } else if (g_AiLogic.batterAILeftRightInput == 0) {
+        g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_TOWARDS;
+    } else if (g_AiLogic.batterAILeftRightInput == 2) {
+        g_Batter.inputDirection = STICK_SIDEWAYS_INPUT_AWAY;
+    }
+
+    angleRangeLower = lbl_3_data_4D94[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][0];
+    angleRangeUpper = lbl_3_data_4D94[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][1];
+
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_TOY_FIELD) {
+        angleRangeLower = lbl_3_data_5064[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][0];
+        angleRangeUpper = lbl_3_data_5064[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][1];
+    } else if (g_Minigame.GameMode_MiniGame == MINI_GAME_ID_BARREL_BATTER) {
+        angleRangeLower = lbl_3_data_4EFC[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][0];
+        angleRangeUpper = lbl_3_data_4EFC[g_Batter.inputDirection][isCharge][g_Batter.framesSinceStartOfSwing][1];
+    }
+    
+    angleRange = angleRangeUpper - angleRangeLower;
+
+    if (angleRange < 0) {
+        horizAngle = angleRangeLower + (g_Ball.StaticRandomInt1 % -angleRange);
+    } else if (angleRange > 0) {
+        horizAngle = angleRangeLower + (g_Ball.StaticRandomInt1 % angleRange);
+    } else {
+        horizAngle = angleRangeLower;
+    }
+
+    horizAngle += 0x400;
+
+    if (g_Batter.batterHand != BATTING_HAND_RIGHT) {
+        if (horizAngle <= 0x800) {
+            horizAngle = 0x800 - horizAngle;
+        } else {
+            horizAngle = 0x1800 - horizAngle;
+        }
+    }
+
+    if (ACTIVE_TUTORIAL) {
+        g_Ball.Hit_HorizontalAngle = g_Practice.practice_hitHorizontalAngle;
+    } else if (g_d_GameSettings.GameModeSelected != GAME_TYPE_PRACTICE ||
+               g_Practice.practiceType_2 != PRACTICE_TYPE_FIELDING) {
+        g_Ball.Hit_HorizontalAngle = fn_3_9FE6C_normalizeAngle(horizAngle);
+    }
+    
 }
 
 // .text:0x00011468 size:0x734 mapped:0x806504fc
@@ -963,7 +1217,7 @@ void calculateHorizontalPower(void) {
         power *= g_hitFloats.moonshotMult;
     }
 
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         g_Ball.Hit_HorizontalPower = g_Practice.practice_hitHorizontalPower;
     } else if (g_d_GameSettings.GameModeSelected != GAME_TYPE_PRACTICE ||
                g_Practice.practiceType_2 != PRACTICE_TYPE_FIELDING) {
@@ -981,7 +1235,7 @@ void calculateBuntHorizontalAngle(void) {
     u8 contact;
 
     inputs = &g_Controls[g_GameLogic.teams[g_GameLogic.teamBatting]];
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         inputs = &g_Practice.inputs[g_GameLogic.teamBatting];
     } else if (minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(
                    g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
@@ -1028,7 +1282,7 @@ void calculateBuntHorizontalAngle(void) {
     }
 
     g_Ball.Hit_HorizontalAngle = fn_3_9FE6C_normalizeAngle(horizAngle);
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         g_Ball.Hit_HorizontalAngle = g_Practice.practice_hitHorizontalAngle;
     }
 }
@@ -1050,10 +1304,10 @@ static void calculateBuntVerticalAngle_unused(void) {
 
     contactLow = ang0Low + ((g_Batter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] * (ang1Low - ang0Low)) / 100);
     contactHigh = ang0High + ((g_Batter.contactSize_raw[BAT_CONTACT_TYPE_SLAP] * (ang1High - ang0High)) / 100);
-
+    
     g_Ball.Hit_VerticalAngle = contactLow + (g_Ball.StaticRandomInt1 % (contactHigh - contactLow));
 
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         g_Ball.Hit_VerticalAngle = g_Practice.practice_hitVerticalAngle;
     }
 
@@ -1079,7 +1333,7 @@ void calculateBuntHorizontalPower(void) {
     horizontal_power += min_power;
     g_Ball.Hit_HorizontalPower = horizontal_power;
 
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0) {
+    if (ACTIVE_TUTORIAL) {
         g_Ball.Hit_HorizontalPower = g_Practice.practice_hitHorizontalPower;
     }
 }

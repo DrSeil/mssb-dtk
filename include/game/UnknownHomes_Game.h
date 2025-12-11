@@ -407,6 +407,18 @@ typedef struct _InMemBallType {
     /*0x1BF5*/ u8 frameCountdownAfterLeavingPlant;
 } InMemBallType; // size: 0x1BF8
 
+typedef enum {
+    /* 0x0 */ PITCHER_ACTION_STATE_NONE,
+    /* 0x0 */ PITCHER_ACTION_STATE_TRANSITION = PITCHER_ACTION_STATE_NONE,
+    /* 0x1 */ PITCHER_ACTION_STATE_PRE_PITCH,
+    /* 0x2 */ PITCHER_ACTION_STATE_WINDUP,
+    /* 0x3 */ PITCHER_ACTION_STATE_IN_AIR,
+    /* 0x4 */ PITCHER_ACTION_STATE_NO_CONTACT,
+    /* 0x5 */ PITCHER_ACTION_STATE_HIT,
+    /* 0x6 */ PITCHER_ACTION_STATE_POST_HIT,
+    /* 0x7 */ PITCHER_ACTION_STATE_HIT_BY_PITCH,
+} PITCHER_ACTION_STATE;
+
 typedef struct _InMemPitcherType {
     /*0x000*/ VecXYZ ballCurrentPosition;
     /*0x00C*/ VecXYZ ballLastPosition;
@@ -472,7 +484,7 @@ typedef struct _InMemPitcherType {
     /*0x138*/ s16 framesSinceFirstEggBounce;
     /*0x13A*/ s16 ballBouncePeakZ;
     /*0x13C*/ s16 warioWaluStarHasPlayedSound;
-    /*0x13E*/ u8 pitcherActionState;
+    /*0x13E*/ E(u8, PITCHER_ACTION_STATE) pitcherActionState;
     /*0x13F*/ u8 AIInd; // unsure
     /*0x140*/ u8 aiLevel;
     /*0x141*/ u8 handedness;
@@ -890,11 +902,14 @@ typedef struct _PracticeStruct {
     /*0x1E1*/ u8 hitVariablesSetIndicator;
     /*0x1E2*/ u8 _1E2;
     /*0x1E3*/ u8 aiBuntIndicator; // unsure
-    artificial_padding(0x1e3, 0x1ef, u8);
+    artificial_padding(0x1e3, 0x1ee, u8);
+    /*0x1EE*/ u8 _1EE;
     /*0x1EF*/ u8 rosterID; // unsure
 } PracticeStruct;          // size: 0x1f0
 
 extern PracticeStruct g_Practice;
+
+#define ACTIVE_TUTORIAL (g_d_GameSettings.GameModeSelected == GAME_TYPE_PRACTICE && g_Practice.instructionNumber >= 0)
 
 extern u8 buntPower[5][2];
 
