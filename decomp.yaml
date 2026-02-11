@@ -1,0 +1,7 @@
+platform: gc
+versions:
+  - name: usa
+    paths:
+      build_dir: build/GYQE01/game/obj/game
+      nonmatchings: /home/michael/Desktop/mssb-dtk
+tools: {}
