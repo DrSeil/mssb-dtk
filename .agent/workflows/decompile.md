@@ -6,7 +6,8 @@ Use this workflow to decompile a specific function. The goal is to reach a 100% 
 
 ### Step 1: Initialization
 1.  Run `./decomp.sh <function_name>` to identify the source file, module, and target assembly.
-2.  Note the `objdiff` command suggested by the tool.
+2.  Run `python3 tools/kappa_context.py --function <function_name>` to gather detailed context (signatures, symbols, and ASM).
+3.  Note the `objdiff` command suggested by the tool.
 
 ### Step 2: Initial Implementation
 1.  Open the identified source file.

@@ -3,6 +3,7 @@ import subprocess
 import sys
 import argparse
 import os
+import re
 
 def run_objdiff(unit, symbol):
     cmd = [
@@ -47,16 +48,19 @@ def analyze_diff(left_sym, right_sym):
     if not right_sym:
         return "Symbol not found in your compiled object. Check naming and visibility."
 
-    left_insts = left_sym.get("instructions", [])
-    right_insts = right_sym.get("instructions", [])
+    left_inst_entries = left_sym.get("instructions", [])
+    right_inst_entries = right_sym.get("instructions", [])
     
     feedback = []
     
-    max_len = max(len(left_insts), len(right_insts))
+    max_len = max(len(left_inst_entries), len(right_inst_entries))
     
     for i in range(max_len):
-        l = left_insts[i] if i < len(left_insts) else None
-        r = right_insts[i] if i < len(right_insts) else None
+        l_entry = left_inst_entries[i] if i < len(left_inst_entries) else None
+        r_entry = right_inst_entries[i] if i < len(right_inst_entries) else None
+        
+        l = l_entry.get("instruction", {}) if l_entry else None
+        r = r_entry.get("instruction", {}) if r_entry else None
         
         if l and r:
             l_fmt = l.get("formatted", "")
@@ -93,20 +97,129 @@ def analyze_diff(left_sym, right_sym):
     
     return "\n".join(feedback)
 
+def parse_symbols(symbol_file):
+    symbols = {}
+    if not os.path.exists(symbol_file):
+        return symbols
+    with open(symbol_file, 'r') as f:
+        for line in f:
+            match = re.match(r'(\w+)\s*=\s*(.*?):0x([0-9a-fA-F]+);', line)
+            if match:
+                name, section, addr = match.groups()
+                symbols[name] = {'section': section, 'addr': int(addr, 16)}
+    return symbols
+
+def parse_splits(splits_file):
+    splits = []
+    current_file = None
+    if not os.path.exists(splits_file):
+        return splits
+    with open(splits_file, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line.endswith(':'):
+                current_file = line[:-1]
+            elif line.startswith('.') or 'start:' in line:
+                match = re.match(r'(\.?\w+)\s+start:0x([0-9a-fA-F]+)\s+end:0x([0-9a-fA-F]+)', line)
+                if match and current_file:
+                    section, start, end = match.groups()
+                    splits.append({
+                        'file': current_file,
+                        'section': section,
+                        'start': int(start, 16),
+                        'end': int(end, 16)
+                    })
+    return splits
+
+def find_file_for_address(splits, addr):
+    for entry in splits:
+        if entry['start'] <= addr < entry['end']:
+            return entry['file']
+    return None
+
+def find_unit_for_symbol(symbol_name):
+    base_dir = "."
+    config_base = os.path.join(base_dir, "config/GYQE01")
+    
+    found_symbol = None
+    module = None
+    
+    # Check main symbols first
+    symbols = parse_symbols(os.path.join(config_base, 'symbols.txt'))
+    if symbol_name in symbols:
+        found_symbol = symbols[symbol_name]
+        module = ""
+    else:
+        # Check modules
+        for m in ['game', 'menus', 'challenge']:
+            sys_file = os.path.join(config_base, m, 'symbols.txt')
+            symbols = parse_symbols(sys_file)
+            if symbol_name in symbols:
+                found_symbol = symbols[symbol_name]
+                module = m
+                break
+                
+    if not found_symbol:
+        return None
+
+    addr = found_symbol['addr']
+    found_file = None
+    
+    if module == "":
+        splits = parse_splits(os.path.join(config_base, 'splits.txt'))
+        found_file = find_file_for_address(splits, addr)
+    else:
+        splits = parse_splits(os.path.join(config_base, module, 'splits.txt'))
+        found_file = find_file_for_address(splits, addr)
+
+    if not found_file:
+        return None
+
+    # Map to build/GYQE01/<module>/obj/
+    if module:
+        obj_path = os.path.join(f"build/GYQE01/{module}/obj", os.path.splitext(found_file)[0] + ".o")
+    else:
+        obj_path = os.path.join("build/GYQE01/obj", os.path.splitext(found_file)[0] + ".o")
+        
+    # Look for unit name in objdiff.json
+    unit_name = None
+    if os.path.exists("objdiff.json"):
+        try:
+            with open("objdiff.json", 'r') as f:
+                config = json.load(f)
+                for unit in config.get('units', []):
+                    if unit.get('target_path') == obj_path:
+                        return unit.get('name')
+        except Exception:
+            pass
+    return None
+
 def main():
     parser = argparse.ArgumentParser(description="Analyze objdiff output for feedback.")
-    parser.add_argument("unit", help="objdiff unit name")
-    parser.add_argument("symbol", help="Symbol name to diff")
+    parser.add_argument("args", nargs="+", help="Symbol name (and optionally unit name)")
     
-    args = parser.parse_args()
+    parsed_args = parser.parse_args()
     
-    data = run_objdiff(args.unit, args.symbol)
+    if len(parsed_args.args) == 1:
+        symbol = parsed_args.args[0]
+        unit = find_unit_for_symbol(symbol)
+        if not unit:
+            print(f"Error: Could not find unit for symbol {symbol}", file=sys.stderr)
+            sys.exit(1)
+    elif len(parsed_args.args) == 2:
+        unit = parsed_args.args[0]
+        symbol = parsed_args.args[1]
+    else:
+        parser.print_help()
+        sys.exit(1)
+        
+    data = run_objdiff(unit, symbol)
     if not data:
         sys.exit(1)
         
-    left_sym, right_sym = get_symbol_data(data, args.symbol)
+    left_sym, right_sym = get_symbol_data(data, symbol)
     
-    print(f"Feedback for {args.symbol} in {args.unit}:")
+    print(f"Feedback for {symbol} in {unit}:")
     print("-" * 40)
     print(analyze_diff(left_sym, right_sym))
 

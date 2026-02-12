@@ -1,11 +1,22 @@
 #!/bin/bash
 
+M2C=0
+if [ "$1" == "--m2c" ]; then
+    M2C=1
+    shift
+fi
+
 if [ -z "$1" ]; then
-    echo "Usage: ./decomp.sh <function_name>"
+    echo "Usage: ./decomp.sh [--m2c] <function_name>"
     exit 1
 fi
 
 FUNC=$1
+
+if [ $M2C -eq 1 ]; then
+    python3 tools/m2c_helper.py "$FUNC"
+    exit 0
+fi
 
 # Run the helper to find the source and ASM
 RESULT=$(python3 tools/decomp_helper.py "$FUNC")
