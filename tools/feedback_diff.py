@@ -42,6 +42,48 @@ def get_symbol_data(data, symbol_name):
                 
     return left_sym, right_sym
 
+def normalize_arg(part, sym_base, inst_index):
+    """Extract a normalized argument from an instruction part.
+
+    For branch destinations, convert absolute object-file addresses to
+    instruction-index targets so that functions at different positions
+    in their object files compare correctly.
+    """
+    arg = part.get("arg")
+    if not arg:
+        return None
+    if "branch_dest" in arg:
+        dest = int(arg["branch_dest"])
+        # Convert absolute address to instruction index within the function
+        target_index = (dest - sym_base) // 4
+        return f"branch_idx:{target_index}"
+    if "opaque" in arg:
+        return arg["opaque"]
+    if "signed" in arg:
+        return arg["signed"]
+    if "unsigned" in arg:
+        return arg["unsigned"]
+    return str(arg)
+
+def get_normalized_args(parts, sym_base, inst_index):
+    """Extract normalized args from instruction parts, handling branch targets."""
+    args = []
+    for p in parts:
+        if p.get("opcode") or p.get("separator") or p.get("basic"):
+            continue
+        norm = normalize_arg(p, sym_base, inst_index)
+        if norm is not None:
+            args.append(norm)
+    return args
+
+def get_opcode(inst):
+    """Extract the opcode/mnemonic from instruction parts."""
+    for p in inst.get("parts", []):
+        op = p.get("opcode")
+        if op:
+            return op.get("mnemonic", ""), op.get("opcode", 0)
+    return "", 0
+
 def analyze_diff(left_sym, right_sym):
     if not left_sym:
         return "Target symbol not found in original object."
@@ -50,41 +92,42 @@ def analyze_diff(left_sym, right_sym):
 
     left_inst_entries = left_sym.get("instructions", [])
     right_inst_entries = right_sym.get("instructions", [])
-    
+
+    # Get symbol base addresses for branch target normalization
+    l_base = int(left_sym.get("address", 0))
+    r_base = int(right_sym.get("address", 0))
+
     feedback = []
-    
+
     max_len = max(len(left_inst_entries), len(right_inst_entries))
-    
+
     for i in range(max_len):
         l_entry = left_inst_entries[i] if i < len(left_inst_entries) else None
         r_entry = right_inst_entries[i] if i < len(right_inst_entries) else None
-        
+
         l = l_entry.get("instruction", {}) if l_entry else None
         r = r_entry.get("instruction", {}) if r_entry else None
-        
+
         if l and r:
-            l_fmt = l.get("formatted", "")
-            r_fmt = r.get("formatted", "")
-            
-            if l_fmt != r_fmt:
-                # Basic check for diff
+            l_mnemonic, l_opcode = get_opcode(l)
+            r_mnemonic, r_opcode = get_opcode(r)
+
+            l_parts = l.get("parts", [])
+            r_parts = r.get("parts", [])
+
+            l_args = get_normalized_args(l_parts, l_base, i)
+            r_args = get_normalized_args(r_parts, r_base, i)
+
+            if l_mnemonic != r_mnemonic:
                 feedback.append(f"Line {i}: Mismatch")
-                feedback.append(f"  Target: {l_fmt}")
-                feedback.append(f"  Current: {r_fmt}")
-                
-                # Try to be smarter about the mismatch
-                l_parts = l.get("parts", [])
-                r_parts = r.get("parts", [])
-                
-                if l.get("opcode") != r.get("opcode"):
-                    feedback.append("  -> Instruction mnemonic mismatch.")
-                else:
-                    # Check for register swaps etc in parts
-                    l_args = [p.get("opaque", p.get("signed", p.get("unsigned", ""))) for p in l_parts if not p.get("opcode") and not p.get("separator")]
-                    r_args = [p.get("opaque", p.get("signed", p.get("unsigned", ""))) for p in r_parts if not p.get("opcode") and not p.get("separator")]
-                    
-                    if l_args != r_args:
-                        feedback.append(f"  -> Operand mismatch. Target args: {l_args}, Your args: {r_args}")
+                feedback.append(f"  Target: {l.get('formatted', '')}")
+                feedback.append(f"  Current: {r.get('formatted', '')}")
+                feedback.append("  -> Instruction mnemonic mismatch.")
+            elif l_args != r_args:
+                feedback.append(f"Line {i}: Mismatch")
+                feedback.append(f"  Target: {l.get('formatted', '')}")
+                feedback.append(f"  Current: {r.get('formatted', '')}")
+                feedback.append(f"  -> Operand mismatch. Target args: {l_args}, Your args: {r_args}")
         elif l:
             feedback.append(f"Line {i}: Missing instruction in your code.")
             feedback.append(f"  Target: {l.get('formatted', '')}")
@@ -94,7 +137,7 @@ def analyze_diff(left_sym, right_sym):
 
     if not feedback:
         return "MATCH! Standardized assembly is identical."
-    
+
     return "\n".join(feedback)
 
 def parse_symbols(symbol_file):
