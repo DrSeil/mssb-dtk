@@ -1,0 +1,34 @@
+# permuter_settings.toml
+
+# Compiler settings
+# We use wibo to run the Windows compiler on Linux
+compiler_command = "build/tools/wibo build/compilers/GC/1.3.2/mwcceppc.exe"
+
+# Default flags from configure.py
+# These will be supplemented by the wrapper script if needed
+default_compiler_flags = [
+    "-proc gekko",
+    "-nodefaults",
+    "-Cpp_exceptions off",
+    "-RTTI off",
+    "-fp hard",
+    "-fp_contract on",
+    "-O4,p",
+    "-maxerrors 1",
+    "-enum int",
+    "-inline auto",
+    "-str reuse,readonly",
+    "-nosyspath",
+    "-use_lmw_stmw on",
+    "-sdata 8",
+    "-sdata2 8",
+    "-i include",
+    "-i include/stl",
+    "-DNDEBUG=1"
+]
+
+# Permuter settings
+[permuter]
+# Adjust these based on preference
+# See decomp-permuter README/help for more options
+# default_diff_flags = ["--short"]
