@@ -35,4 +35,7 @@ compile_commands.json
 *.exe
 report.json
 
+nonmatching/**
+
+
 docs/ghidra_annotations.json
