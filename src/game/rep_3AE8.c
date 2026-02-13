@@ -17,8 +17,8 @@ void fn_3_15C000(void) {
 }
 
 // .text:0x0015C014 size:0x10 mapped:0x8079B0A8
-void fn_3_15C014(void) {
-    return;
+u32 fn_3_15C014(void) {
+    return lbl_3_data_2709C.value;
 }
 
 // .text:0x0015C024 size:0x20C mapped:0x8079B0B8

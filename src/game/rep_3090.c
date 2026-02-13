@@ -232,8 +232,9 @@ void fn_3_10698C(void) {
 }
 
 // .text:0x001069B0 size:0x10 mapped:0x80745A44
-void fn_3_1069B0(void) {
-    return;
+void* fn_3_1069B0(void* base, s32 index) {
+    s32* offsetTable = (s32*)base;
+    return (u8*)base + offsetTable[index];
 }
 
 // .text:0x001069C0 size:0x1E0 mapped:0x80745A54

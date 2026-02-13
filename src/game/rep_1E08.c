@@ -117,8 +117,8 @@ void fn_3_BD758(void) {
 }
 
 // .text:0x000BD7D0 size:0x8 mapped:0x806FC864
-void fn_3_BD7D0(void) {
-    return;
+BOOL fn_3_BD7D0(void) {
+    return TRUE;
 }
 
 // .text:0x000BD7D8 size:0x4 mapped:0x806FC86C
@@ -235,4 +235,3 @@ void fn_3_BFDA4(void) {
 void fn_3_C0134(void) {
     return;
 }
-

@@ -49,7 +49,7 @@ void fn_3_1060D8(void);
 void fn_3_10617C(void);
 void fn_3_106270(void);
 void fn_3_10698C(void);
-void fn_3_1069B0(void);
+void* fn_3_1069B0(void* base, s32 index);
 void fn_3_1069C0(void);
 void fn_3_106BA0(void);
 

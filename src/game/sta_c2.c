@@ -217,8 +217,8 @@ void fn_3_D0528(void) {
 }
 
 // .text:0x000D052C size:0x8 mapped:0x8070F5C0
-void fn_3_D052C(void) {
-    return;
+s32 fn_3_D052C(void) {
+    return 0;
 }
 
 // .text:0x000D0534 size:0x320 mapped:0x8070F5C8

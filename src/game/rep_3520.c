@@ -32,8 +32,8 @@ void fn_3_134658(void) {
 }
 
 // .text:0x00134908 size:0x10 mapped:0x8077399C
-void fn_3_134908(void) {
-    return;
+s32 fn_3_134908(UnknownObj_134908* a, UnknownObj_134908* b) {
+    return b->value - a->value;
 }
 
 // .text:0x00134918 size:0x24 mapped:0x807739AC

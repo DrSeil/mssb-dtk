@@ -46,7 +46,7 @@ void fn_3_D0280(void);
 void fn_3_D0284(void);
 void fn_3_D0490(void);
 void fn_3_D0528(void);
-void fn_3_D052C(void);
+s32 fn_3_D052C(void);
 void fn_3_D0534(void);
 void fn_3_D0854(void);
 void fn_3_D0918(void);
