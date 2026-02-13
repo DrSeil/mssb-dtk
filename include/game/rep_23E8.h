@@ -2,6 +2,7 @@
 #define __GAME_rep_23E8_H_
 
 #include "mssbTypes.h"
+#include "game/rep_1E08.h"
 
 void fn_3_CB738(void);
 void fn_3_CB7D4(void);

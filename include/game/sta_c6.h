@@ -3,6 +3,9 @@
 
 #include "mssbTypes.h"
 
+extern u8 lbl_3_data_1963F;
+extern u8 lbl_3_data_19640;
+
 void fn_3_E59B4(void);
 void fn_3_E5A1C(void);
 void fn_3_E5A84(void);

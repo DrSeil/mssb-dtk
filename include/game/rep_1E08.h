@@ -5,6 +5,15 @@
 
 extern u8 lbl_3_bss_995C;
 
+typedef struct {
+    u8 _pad[0x404];
+    s16 someHalfword; // 0x404
+    u8 _pad2[0x60];
+    u8 someFlag; // 0x466
+} CommonBss_35154;
+
+extern CommonBss_35154 lbl_3_common_bss_35154;
+
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
 void fn_3_BB07C(void);

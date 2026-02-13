@@ -103,7 +103,7 @@ void fn_3_E6D90(void) {
 
 // .text:0x000E7350 size:0x14 mapped:0x807263E4
 void fn_3_E7350(void) {
-    return;
+    lbl_3_data_1963F = lbl_3_data_19640;
 }
 
 // .text:0x000E7364 size:0x24 mapped:0x807263F8

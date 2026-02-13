@@ -3,6 +3,13 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    u8 _pad[0x18];
+    u8 someFlag; // 0x18
+} UnknownStruct_B850;
+
+extern UnknownStruct_B850* lbl_3_bss_B850;
+
 void fn_3_14737C(void);
 void fn_3_147778(void);
 void fn_3_147C00(void);

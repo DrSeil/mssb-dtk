@@ -583,7 +583,7 @@ void fn_3_1573AC(void) {
 
 // .text:0x00157570 size:0x18 mapped:0x80796604
 void fn_3_157570(void) {
-    return;
+    lbl_3_bss_B850->someFlag = TRUE;
 }
 
 // .text:0x00157588 size:0x68 mapped:0x8079661C

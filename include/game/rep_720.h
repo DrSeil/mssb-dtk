@@ -4,6 +4,13 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 
+typedef struct {
+    u8 _pad[0xAC5];
+    u8 cameraFlag; // 0xAC5
+} Camera;
+
+extern Camera* g_pCamera;
+
 void fn_3_14BB4(void);
 void fn_3_14E1C(void);
 void fn_3_14E50(void);
@@ -27,7 +34,7 @@ void fn_3_15524(void);
 void fn_3_15A98(void);
 void fn_3_15D28(void);
 void fn_3_15D64(void);
-void fn_3_15D7C(void);
+void fn_3_15D7C(u8 value);
 void fn_3_15D90(void);
 void fn_3_15F18(void);
 void fn_3_15F38(void);

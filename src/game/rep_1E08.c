@@ -98,7 +98,7 @@ void fn_3_BD434(void) {
 
 // .text:0x000BD4F0 size:0x14 mapped:0x806FC584
 void fn_3_BD4F0(void) {
-    return;
+    lbl_3_common_bss_35154.someFlag = FALSE;
 }
 
 // .text:0x000BD504 size:0x1A8 mapped:0x806FC598

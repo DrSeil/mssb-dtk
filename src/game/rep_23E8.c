@@ -8,7 +8,7 @@ void fn_3_CB738(void) {
 
 // .text:0x000CB7D4 size:0x14 mapped:0x8070A868
 void fn_3_CB7D4(void) {
-    return;
+    lbl_3_common_bss_35154.someHalfword = 0;
 }
 
 // .text:0x000CB7E8 size:0xC0 mapped:0x8070A87C

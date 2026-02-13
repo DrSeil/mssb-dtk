@@ -113,7 +113,7 @@ void fn_3_736CC(void) {
 
 // .text:0x00073718 size:0x14 mapped:0x806B27AC
 void fn_3_73718(void) {
-    return;
+    g_Ball.postPitchResultCounter = -1;
 }
 
 // .text:0x0007372C size:0x124 mapped:0x806B27C0

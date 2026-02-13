@@ -117,8 +117,8 @@ void fn_3_15D64(void) {
 }
 
 // .text:0x00015D7C size:0x14 mapped:0x80654E10
-void fn_3_15D7C(void) {
-    return;
+void fn_3_15D7C(u8 value) {
+    g_pCamera->cameraFlag = value;
 }
 
 // .text:0x00015D90 size:0x188 mapped:0x80654E24

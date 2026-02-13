@@ -3,6 +3,13 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    u8 _pad[0xD4];
+    u8 someFlag; // 0xD4
+} CommonBss_32724;
+
+extern CommonBss_32724 lbl_3_common_bss_32724;
+
 void fn_3_6A2A4(void);
 void fn_3_6A300(void);
 void fn_3_6A400(void);
