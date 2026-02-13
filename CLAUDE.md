@@ -65,6 +65,8 @@ The toolchain consists of:
 
 **NEVER use pointer arithmetic with manual offsets.** Always define and use proper structs.
 
+**NEVER use void* as an argument or return type.** Always define structs to represent needed arguments.  Name the structs based off their usage.
+
 **BAD - Pointer Arithmetic:**
 
 ```c
