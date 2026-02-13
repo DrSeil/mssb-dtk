@@ -43,7 +43,8 @@ void fn_3_C2644(void) {
 
 // .text:0x000C2974 size:0x18 mapped:0x80701A08
 void fn_3_C2974(void) {
-    return;
+    lbl_3_bss_9DE7 = TRUE;
+    lbl_3_bss_9D82 = TRUE;
 }
 
 // .text:0x000C298C size:0x114 mapped:0x80701A20
@@ -240,4 +241,3 @@ void fn_3_C82B4(void) {
 void fn_3_C8650(void) {
     return;
 }
-

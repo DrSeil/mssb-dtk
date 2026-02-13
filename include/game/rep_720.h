@@ -7,6 +7,8 @@
 typedef struct {
     u8 _pad[0xAC5];
     u8 cameraFlag; // 0xAC5
+    u8 _pad2[0x12]; // 0xAC6-0xAD7
+    u8 cameraFlag2; // 0xAD8
 } Camera;
 
 extern Camera* g_pCamera;

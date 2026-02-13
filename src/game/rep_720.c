@@ -113,7 +113,7 @@ void fn_3_15D28(void) {
 
 // .text:0x00015D64 size:0x18 mapped:0x80654DF8
 void fn_3_15D64(void) {
-    return;
+    g_pCamera->cameraFlag2 = TRUE;
 }
 
 // .text:0x00015D7C size:0x14 mapped:0x80654E10
@@ -380,4 +380,3 @@ void fn_3_1CCC8(void) {
 void fn_3_1CE90(void) {
     return;
 }
-

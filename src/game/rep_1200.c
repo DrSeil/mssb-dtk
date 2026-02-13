@@ -172,8 +172,9 @@ void fn_3_75090(void) {
 }
 
 // .text:0x000750C4 size:0x18 mapped:0x806B4158
-void fn_3_750C4(void) {
-    return;
+void fn_3_750C4(s8 value) {
+    g_Pitcher.pitcherActionState = value;
+    g_Pitcher.currentStateFrameCounter = 0;
 }
 
 // .text:0x000750DC size:0xD8 mapped:0x806B4170
@@ -205,4 +206,3 @@ void fn_3_754B8(void) {
 void fn_3_75560(void) {
     return;
 }
-

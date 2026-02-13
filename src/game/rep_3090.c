@@ -152,8 +152,16 @@ void fn_3_104AD4(void) {
 }
 
 // .text:0x00104B20 size:0x1C mapped:0x80743BB4
-void fn_3_104B20(void) {
-    return;
+void fn_3_104B20( VecXYZ* dst,  SourceObj_104B20* src) {
+    f32 z,y,x;
+
+    x = src->pos.x;
+    y = src->pos.y;
+    z = src->pos.z;
+
+    dst->x = x;
+    dst->y = y;
+    dst->z = z;
 }
 
 // .text:0x00104B3C size:0x990 mapped:0x80743BD0
@@ -246,4 +254,3 @@ void fn_3_1069C0(void) {
 void fn_3_106BA0(void) {
     return;
 }
-

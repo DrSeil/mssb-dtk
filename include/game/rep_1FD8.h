@@ -4,6 +4,8 @@
 #include "mssbTypes.h"
 
 extern s32 lbl_3_bss_9D9C;
+extern u8 lbl_3_bss_9DE7;
+extern u8 lbl_3_bss_9D82;
 
 void fn_3_C1964(void);
 void fn_3_C19C8(void);

@@ -2,6 +2,13 @@
 #define __GAME_rep_3090_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+
+
+typedef struct SourceObj_104B20 {
+    u8 _pad[0x30];
+    VecXYZ pos;
+} SourceObj_104B20;
 
 void fn_3_FC448(void);
 void fn_3_FC938(void);
@@ -33,7 +40,7 @@ void fn_3_1048E0(void);
 void fn_3_104A3C(void);
 void fn_3_104A88(void);
 void fn_3_104AD4(void);
-void fn_3_104B20(void);
+void fn_3_104B20(VecXYZ* dst, SourceObj_104B20* src);
 void fn_3_104B3C(void);
 void fn_3_1054CC(void);
 void fn_3_1054D0(void);

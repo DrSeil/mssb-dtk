@@ -753,7 +753,7 @@ config.libs = [
             Object(NonMatching, "game/rep_2BF8.c"),
             Object(NonMatching, "game/sta_c5.c"),
             Object(NonMatching, "game/sta_c4.c"),
-            Object(NonMatching, "game/rep_3090.c"),
+            Object(NonMatching, "game/rep_3090.c", extra_cflags=["-O1"]),
             Object(NonMatching, "game/rep_31A0.c"),
             Object(NonMatching, "game/rep_31F0.c"),
             Object(NonMatching, "game/rep_3290.c"),

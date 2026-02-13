@@ -3,6 +3,15 @@
 
 #include "mssbTypes.h"
 
+// Define the structure for the common BSS symbol found at 0x32724
+typedef struct {
+    u8 _pad[0xcb];
+    u8 flagCB; // Offset 0xCB
+    u8 flagCC; // Offset 0xCC
+} CommonBss_32724;
+
+extern CommonBss_32724 lbl_3_common_bss_32724;
+
 void fn_3_6750C(void);
 void fn_3_675B8(void);
 void fn_3_67620(void);

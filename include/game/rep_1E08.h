@@ -6,7 +6,9 @@
 extern u8 lbl_3_bss_995C;
 
 typedef struct {
-    u8 _pad[0x404];
+    u8 _pad0[0x3AC];
+    u32 bitfield; // Offset 0x3AC
+    u8 _pad_extra[0x54];
     s16 someHalfword; // 0x404
     u8 _pad2[0x60];
     u8 someFlag; // 0x466

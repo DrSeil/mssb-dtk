@@ -48,7 +48,7 @@ void fn_3_BC224(void) {
 
 // .text:0x000BC25C size:0x18 mapped:0x806FB2F0
 void fn_3_BC25C(void) {
-    return;
+    lbl_3_common_bss_35154.bitfield |= 0x40;
 }
 
 // .text:0x000BC274 size:0x68 mapped:0x806FB308
