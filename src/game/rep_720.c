@@ -347,8 +347,8 @@ void fn_3_1C684(void) {
 }
 
 // .text:0x0001C898 size:0x10 mapped:0x8065B92C
-void fn_3_1C898(void) {
-    return;
+u8 getSceneID(void) {
+    return g_GameLogic.sceneID;
 }
 
 // .text:0x0001C8A8 size:0x4 mapped:0x8065B93C

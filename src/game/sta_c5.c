@@ -348,7 +348,7 @@ void fn_3_F6C60(void) {
 
 // .text:0x000F6FCC size:0x10 mapped:0x80736060
 void fn_3_F6FCC(void) {
-    return;
+    lbl_3_bss_AEE8 = TRUE;
 }
 
 // .text:0x000F6FDC size:0x1468 mapped:0x80736070

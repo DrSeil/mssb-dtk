@@ -1,6 +1,11 @@
 #include "game/rep_1FD8.h"
 #include "header_rep_data.h"
 
+// .text:0x000C1964 size:0x10 mapped:0x807009F8
+void fn_3_C1964(void) {
+    lbl_3_bss_9D9C = 1;
+}
+
 // .text:0x000C19C8 size:0x250 mapped:0x80700A5C
 void fn_3_C19C8(void) {
     return;

@@ -1,6 +1,11 @@
 #include "game/sta_c4.h"
 #include "header_rep_data.h"
 
+// .text:0x000F8444 size:0x10 mapped:0x807374D8
+void fn_3_F8444(void) {
+    lbl_3_bss_B5D4 = TRUE;
+}
+
 // .text:0x000F8524 size:0x8C mapped:0x807375B8
 void fn_3_F8524(void) {
     return;

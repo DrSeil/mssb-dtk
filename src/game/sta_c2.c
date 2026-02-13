@@ -58,7 +58,7 @@ void fn_3_CCC24(void) {
 
 // .text:0x000CD958 size:0x10 mapped:0x8070C9EC
 void fn_3_CD958(void) {
-    return;
+    lbl_3_bss_A81C = TRUE;
 }
 
 // .text:0x000CD968 size:0x1E0 mapped:0x8070C9FC

@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 
+extern u8 lbl_3_bss_A81C;
+
 void fn_3_CB8A8(void);
 void fn_3_CBA9C(void);
 void fn_3_CBAFC(void);

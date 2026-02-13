@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 
+extern u8 lbl_3_bss_995C;
+
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
 void fn_3_BB07C(void);
@@ -50,5 +52,6 @@ void fn_3_BF8F8(void);
 void fn_3_BFB3C(void);
 void fn_3_BFDA4(void);
 void fn_3_C0134(void);
+void fn_3_C07A0(void);
 
 #endif // !__GAME_rep_1E08_H_

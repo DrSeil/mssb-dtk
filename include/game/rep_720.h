@@ -2,6 +2,7 @@
 #define __GAME_rep_720_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_14BB4(void);
 void fn_3_14E1C(void);
@@ -72,7 +73,7 @@ void fn_3_1C0B0(void);
 void fn_3_1C130(void);
 void fn_3_1C1B0(void);
 void fn_3_1C684(void);
-void fn_3_1C898(void);
+u8 getSceneID(void);
 void fn_3_1C8A8(void);
 void fn_3_1C8AC(void);
 void fn_3_1CAC0(void);

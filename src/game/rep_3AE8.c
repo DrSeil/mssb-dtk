@@ -13,7 +13,7 @@ void fn_3_15BAA0(void) {
 
 // .text:0x0015C000 size:0x14 mapped:0x8079B094
 void fn_3_15C000(void) {
-    return;
+    lbl_3_data_2709C.value = 2;
 }
 
 // .text:0x0015C014 size:0x10 mapped:0x8079B0A8

@@ -235,3 +235,8 @@ void fn_3_BFDA4(void) {
 void fn_3_C0134(void) {
     return;
 }
+
+// .text:0x000C07A0 size:0x10 mapped:0x806FF834
+void fn_3_C07A0(void) {
+    lbl_3_bss_995C = 3;
+}

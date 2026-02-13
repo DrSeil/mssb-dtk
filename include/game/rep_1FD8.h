@@ -3,6 +3,9 @@
 
 #include "mssbTypes.h"
 
+extern s32 lbl_3_bss_9D9C;
+
+void fn_3_C1964(void);
 void fn_3_C19C8(void);
 void fn_3_C1C18(void);
 void fn_3_C2244(void);

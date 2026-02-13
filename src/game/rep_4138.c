@@ -16,3 +16,8 @@ void fn_3_16DB6C(void) {
     return;
 }
 
+// .text:0x0016E328 size:0x10 mapped:0x807AD3BC
+void fn_3_16E328(void) {
+    lbl_3_bss_D6EC = TRUE;
+}
+
