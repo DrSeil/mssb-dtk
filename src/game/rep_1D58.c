@@ -1,6 +1,12 @@
 #include "game/rep_1D58.h"
 #include "header_rep_data.h"
 
+extern u8 lbl_3_data_11168[16];
+
+static struct StadiumObject* lbl_3_bss_190C;
+static u8 lbl_3_bss_1902;
+static struct StadiumObject* lbl_3_bss_9940;
+
 // .text:0x000B7FC8 size:0x108 mapped:0x806F705C
 void fn_3_B7FC8(void) {
     return;
@@ -17,13 +23,13 @@ void fn_3_B8184(void) {
 }
 
 // .text:0x000B827C size:0x10 mapped:0x806F7310
-void fn_3_B827C(void) {
-    return;
+struct StadiumObject* fn_3_B827C(void) {
+    return lbl_3_bss_190C;
 }
 
 // .text:0x000B828C size:0xC mapped:0x806F7320
-void fn_3_B828C(void) {
-    return;
+void fn_3_B828C(struct StadiumObject* arg0) {
+    lbl_3_bss_190C = arg0;
 }
 
 // .text:0x000B8298 size:0x17C mapped:0x806F732C
@@ -57,8 +63,13 @@ void fn_3_B85DC(void) {
 }
 
 // .text:0x000B8658 size:0x24 mapped:0x806F76EC
-void fn_3_B8658(void) {
-    return;
+int fn_3_B8658(f32* a, f32* b) {
+    f32 va = *a;
+    f32 vb = *b;
+    if (va < vb) {
+        return -1;
+    }
+    return va > vb;
 }
 
 // .text:0x000B867C size:0x1AC mapped:0x806F7710
@@ -92,7 +103,7 @@ void fn_3_B9124(void) {
 }
 
 // .text:0x000B916C size:0x5C mapped:0x806F8200
-int processStadiumObjectFunction(int, void*, int, void*) {
+int processStadiumObjectFunction(int, struct StadiumObject*, int, struct StadiumObject*) {
     return;
 }
 
@@ -127,13 +138,13 @@ void fn_3_B950C(void) {
 }
 
 // .text:0x000B9510 size:0x14 mapped:0x806F85A4
-void fn_3_B9510(void) {
-    return;
+void fn_3_B9510(int idx) {
+    lbl_3_data_11168[idx] = 1;
 }
 
 // .text:0x000B9524 size:0x10 mapped:0x806F85B8
 void fn_3_B9524(void) {
-    return;
+    lbl_3_bss_1902 = 0;
 }
 
 // .text:0x000B9534 size:0xB8 mapped:0x806F85C8
@@ -147,8 +158,10 @@ void fn_3_B95EC(void) {
 }
 
 // .text:0x000B97C8 size:0x14 mapped:0x806F885C
-void fn_3_B97C8(void) {
-    return;
+void fn_3_B97C8(struct StadiumObject* arg0) {
+    if (arg0 != NULL) {
+        lbl_3_bss_9940 = arg0;
+    }
 }
 
 // .text:0x000B97DC size:0x10C mapped:0x806F8870

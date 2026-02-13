@@ -27,7 +27,7 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
             if (collisionCheckType == 2 && (ret & BALL_COLLISION_TYPE_FOUL)) {
                 ret = BALL_COLLISION_TYPE_NONE;
             } else {
-                ret = processStadiumObjectFunction(g_d_GameSettings.StadiumID, ((int**)&v)[0], ret, outCollision);
+                ret = processStadiumObjectFunction(g_d_GameSettings.StadiumID, (struct StadiumObject*)&v, ret, (struct StadiumObject*)outCollision);
             }
         }
     }
