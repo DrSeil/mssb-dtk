@@ -19,6 +19,7 @@ typedef struct SourceObj_104B20 {
     VecXYZ pos;
 } SourceObj_104B20;
 
+void fn_3_FBDAC(s32 param);
 void fn_3_FC448(void);
 void fn_3_FC938(void);
 void fn_3_FCE38(void);
@@ -64,7 +65,7 @@ void fn_3_106014(void);
 void fn_3_1060D8(void);
 void fn_3_10617C(void);
 void fn_3_106270(void);
-void fn_3_10698C(void);
+u32 fn_3_10698C(u32* list);
 void* fn_3_1069B0(void* base, s32 index);
 void fn_3_1069C0(void);
 void fn_3_106BA0(void);

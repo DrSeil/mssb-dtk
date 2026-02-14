@@ -18,6 +18,7 @@ typedef struct {
     u16 field_0x4A; // 0x4A
     u8 field_0x4C;  // 0x4C
 } UnknownStruct_14CA98;
+void pitchingMachinePitching(s32 param);
 
 void fn_3_14737C(void);
 void fn_3_147778(void);

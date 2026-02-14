@@ -37,8 +37,11 @@ s32 fn_3_134908(UnknownObj_134908* a, UnknownObj_134908* b) {
 }
 
 // .text:0x00134918 size:0x24 mapped:0x807739AC
-void fn_3_134918(void) {
-    return;
+s32 fn_3_134918(f32* a, f32* b) {
+    if (*a < *b) {
+        return -1;
+    }
+    return *a > *b;
 }
 
 // .text:0x0013493C size:0x344 mapped:0x807739D0
@@ -345,4 +348,3 @@ void fn_3_13C464(void) {
 void fn_3_13C468(void) {
     return;
 }
-

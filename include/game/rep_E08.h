@@ -15,6 +15,15 @@ typedef struct {
 
 extern Struct_32220 lbl_3_common_bss_32220;
 
+typedef struct {
+    u8 _pad0[0x38];
+    s16 unk38; // Offset 0x38
+    s16 unk3A; // Offset 0x3A
+    u8 _pad1[0x18]; // Total size 0x54
+} AnimationStruct_31EAC;
+
+extern AnimationStruct_31EAC g_UnkAnimation_31EAC[];
+
 void fn_3_60768(void);
 void fn_3_60804(void);
 void fn_3_60A98(void);
@@ -28,7 +37,7 @@ void fn_3_62904(void);
 void fn_3_62B50(void);
 void fn_3_62CA8(void);
 void fn_3_62D44(void);
-void fn_3_62E04(void);
+void fn_3_62E04(s32 index);
 void fn_3_62E28(void);
 void fn_3_62E70(void);
 void fn_3_631AC(void);

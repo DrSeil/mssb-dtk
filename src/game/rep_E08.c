@@ -67,8 +67,10 @@ void fn_3_62D44(void) {
 }
 
 // .text:0x00062E04 size:0x24 mapped:0x806A1E98
-void fn_3_62E04(void) {
-    return;
+void fn_3_62E04(s32 index) {
+    // This specific order matches the load/store pattern in the assembly
+    g_UnkAnimation_31EAC[index].unk3A = g_UnkAnimation_31EAC[index].unk38;
+    g_UnkAnimation_31EAC[index].unk38 = 0;
 }
 
 // .text:0x00062E28 size:0x48 mapped:0x806A1EBC
@@ -142,4 +144,3 @@ void fn_3_67130(void) {
 void fn_3_6714C(void) {
     return;
 }
-

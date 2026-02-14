@@ -235,8 +235,13 @@ void fn_3_106270(void) {
 }
 
 // .text:0x0010698C size:0x24 mapped:0x80745A20
-void fn_3_10698C(void) {
-    return;
+u32 fn_3_10698C(u32* list) {
+    u32 count = 0;
+    while (*list != 0) {
+        list++;
+        count++;
+    }
+    return count;
 }
 
 // .text:0x001069B0 size:0x10 mapped:0x80745A44

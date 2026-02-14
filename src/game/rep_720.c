@@ -154,7 +154,7 @@ void fn_3_15FD0(void) {
 
 // .text:0x00015FF0 size:0x24 mapped:0x80655084
 void fn_3_15FF0(void) {
-    return;
+    fn_3_FBDAC(0x69);
 }
 
 // .text:0x00016014 size:0x20 mapped:0x806550A8
@@ -164,7 +164,7 @@ void fn_3_16014(void) {
 
 // .text:0x00016034 size:0x24 mapped:0x806550C8
 void fn_3_16034(void) {
-    return;
+    fn_3_FBDAC(0x68);
 }
 
 // .text:0x00016058 size:0x168 mapped:0x806550EC

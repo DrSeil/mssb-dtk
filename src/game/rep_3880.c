@@ -23,7 +23,7 @@ void fn_3_147CFC(void) {
 
 // .text:0x00147DFC size:0x24 mapped:0x80786E90
 void fn_3_147DFC(void) {
-    return;
+    pitchingMachinePitching(0x25);
 }
 
 // .text:0x00147E20 size:0x174 mapped:0x80786EB4
@@ -88,7 +88,7 @@ void fn_3_14A070(void) {
 
 // .text:0x0014A164 size:0x24 mapped:0x807891F8
 void fn_3_14A164(void) {
-    return;
+    pitchingMachinePitching(0x24);
 }
 
 // .text:0x0014A188 size:0x1F4 mapped:0x8078921C
@@ -113,7 +113,7 @@ void fn_3_14A90C(void) {
 
 // .text:0x0014AC1C size:0x24 mapped:0x80789CB0
 void fn_3_14AC1C(void) {
-    return;
+    pitchingMachinePitching(0x23);
 }
 
 // .text:0x0014AC40 size:0x608 mapped:0x80789CD4
@@ -173,7 +173,7 @@ void fn_3_14C348(void) {
 
 // .text:0x0014C398 size:0x24 mapped:0x8078B42C
 void fn_3_14C398(void) {
-    return;
+    pitchingMachinePitching(0x21);
 }
 
 // .text:0x0014C3BC size:0x10C mapped:0x8078B450
@@ -271,7 +271,7 @@ void fn_3_14DC80(void) {
 
 // .text:0x0014DCE0 size:0x24 mapped:0x8078CD74
 void fn_3_14DCE0(void) {
-    return;
+    pitchingMachinePitching(0x1F);
 }
 
 // .text:0x0014DD04 size:0x268 mapped:0x8078CD98
@@ -496,7 +496,7 @@ void fn_3_1541C4(void) {
 
 // .text:0x00154214 size:0x24 mapped:0x807932A8
 void fn_3_154214(void) {
-    return;
+    pitchingMachinePitching(0x27);
 }
 
 // .text:0x00154238 size:0xBC mapped:0x807932CC
@@ -526,12 +526,12 @@ void fn_3_15521C(void) {
 
 // .text:0x00155264 size:0x24 mapped:0x807942F8
 void fn_3_155264(void) {
-    return;
+    pitchingMachinePitching(0x1B);
 }
 
 // .text:0x00155288 size:0x24 mapped:0x8079431C
 void fn_3_155288(void) {
-    return;
+    pitchingMachinePitching(0x1B);
 }
 
 // .text:0x001552AC size:0x738 mapped:0x80794340
@@ -606,7 +606,7 @@ void fn_3_15767C(void) {
 
 // .text:0x001578F8 size:0x24 mapped:0x8079698C
 void fn_3_1578F8(void) {
-    return;
+    pitchingMachinePitching(0x16);
 }
 
 // .text:0x0015791C size:0x1A8 mapped:0x807969B0
@@ -618,4 +618,3 @@ void fn_3_15791C(void) {
 void fn_3_157AC4(void) {
     return;
 }
-

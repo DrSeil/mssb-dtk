@@ -138,11 +138,18 @@ void fn_3_1194FC(void) {
     return;
 }
 
-// .text:0x00119854 size:0x24 mapped:0x807588E8
-void fn_3_119854(void) {
-    return;
-}
+extern f32 lbl_3_data_22650[];
 
+// .text:0x00119854 size:0x24 mapped:0x807588E8
+// Register Mismatch
+f32 fn_3_119854(u32 index) {
+u8 i = (u8)index;
+    if (i > 2) {
+        i = 2;
+    }
+    // Base address in r3, offset in r0
+    return lbl_3_data_22650[i];
+}
 // .text:0x00119878 size:0xBC mapped:0x8075890C
 void fn_3_119878(void) {
     return;
@@ -277,4 +284,3 @@ void fn_3_11D1B0(void) {
 void fn_3_11D2C8(void) {
     return;
 }
-
