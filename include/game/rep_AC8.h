@@ -4,6 +4,9 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 
+extern Fielder g_Fielders[];
+
+
 void fn_3_251E4(void);
 void fn_3_253A4(void);
 void fn_3_25648(void);
@@ -15,7 +18,7 @@ void fn_3_261E8(void);
 void fn_3_26664(void);
 void fn_3_26A74(void);
 void fn_3_27648(void);
-void fn_3_27738(void);
+void fn_3_27738(s32 fielderIndex);
 void fn_3_27764(void);
 void fn_3_27860(void);
 void fn_3_27D68(void);

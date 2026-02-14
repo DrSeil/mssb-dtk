@@ -1,3 +1,4 @@
+#include "Dolphin/GX/GXPixel.h"
 #include "game/sta_c5.h"
 #include "header_rep_data.h"
 
@@ -42,8 +43,9 @@ void fn_3_EEF24(void) {
 }
 
 // .text:0x000EEFA4 size:0x2C mapped:0x8072E038
+// .text:0x000EEFA4 size:0x2C mapped:0x8072E038
 void fn_3_EEFA4(void) {
-    return;
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
 }
 
 // .text:0x000EEFD0 size:0x4 mapped:0x8072E064
@@ -297,8 +299,14 @@ void fn_3_F5E78(void) {
 }
 
 // .text:0x000F5EFC size:0x2C mapped:0x80734F90
-void fn_3_F5EFC(void) {
-    return;
+s32 fn_3_F5EFC(unknown_tri_compare* a, unknown_tri_compare* b) {
+    u32 valA = a->value;
+    u32 valB = b->value;
+
+    if (valA < valB) {
+        return -1;
+    }
+    return valA > valB;
 }
 
 // .text:0x000F5F28 size:0x24 mapped:0x80734FBC

@@ -167,8 +167,8 @@ void fn_3_CFA88(void) {
 }
 
 // .text:0x000CFA8C size:0x28 mapped:0x8070EB20
-void fn_3_CFA8C(void) {
-    return;
+void fn_3_CFA8C(ActorObject* actor) {
+    AnimateActorBones(actor->wrapper->boneData);
 }
 
 // .text:0x000CFAB4 size:0x90 mapped:0x8070EB48
@@ -387,8 +387,17 @@ void fn_3_D53C0(void) {
 }
 
 // .text:0x000D5444 size:0x2C mapped:0x807144D8
-void fn_3_D5444(void) {
-    return;
+s32 fn_3_D5444(unknown_tri_compare* a, unknown_tri_compare* b) {
+    u32 valA = a->value;
+    u32 valB = b->value;
+
+    if (valA < valB) {
+        return -1;
+    }
+    
+    // In Metrowerks, (u32 > u32) generates the sequence:
+    // xor -> cntlzw -> slw -> srwi
+    return valA > valB;
 }
 
 // .text:0x000D5470 size:0x24 mapped:0x80714504

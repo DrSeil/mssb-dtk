@@ -1,3 +1,4 @@
+#include "Dolphin/GX/GXPixel.h"
 #include "game/sta_c4.h"
 #include "header_rep_data.h"
 
@@ -27,8 +28,9 @@ void fn_3_F8ABC(void) {
 }
 
 // .text:0x000F8B04 size:0x2C mapped:0x80737B98
+// .text:0x000F8B04 size:0x2C mapped:0x80737B98
 void fn_3_F8B04(void) {
-    return;
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
 }
 
 // .text:0x000F8B30 size:0x4 mapped:0x80737BC4
@@ -125,4 +127,3 @@ void fn_3_FB3D8(void) {
 void fn_3_FBBA0(void) {
     return;
 }
-

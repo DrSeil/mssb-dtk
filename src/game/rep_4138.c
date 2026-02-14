@@ -15,9 +15,24 @@ void fn_3_16D9B0(void) {
 void fn_3_16DB6C(void) {
     return;
 }
+// .text:0x0016E2FC size:0x2C mapped:0x807AD390
+void fn_3_16E2FC(u16 *ptr, s32 index) {
+    if (ptr == NULL) {
+        return;
+    }
+
+    // lhz r5, 0(r3) -> subi r0, r5, 1 -> cmpw r0, r4
+    if ((s32)(ptr[0] - 1) < index) {
+        return;
+    }
+
+    // Direct access triggers lis/stw for each global
+    lbl_3_bss_D6E4 = ptr;
+    lbl_3_bss_D6E8 = index;
+}
+
 
 // .text:0x0016E328 size:0x10 mapped:0x807AD3BC
 void fn_3_16E328(void) {
     lbl_3_bss_D6EC = TRUE;
 }
-

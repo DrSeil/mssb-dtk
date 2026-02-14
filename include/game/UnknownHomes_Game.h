@@ -543,6 +543,13 @@ typedef struct _InMemPitcherType {
     /*0x176*/ u8 unused_pitcherIsFielder; // unsure
 } InMemPitcherType;                       // size: 0x178
 
+typedef struct FieldingLogic {
+    u8 _pad0[0x13B];
+    u8 unk_13B;                          // Offset 0x13B
+} FieldingLogic;
+
+extern FieldingLogic g_FieldingLogic;
+
 extern InMemPitcherType g_Pitcher;
 extern InMemBallType g_Ball;
 extern InMemRunnerType g_Runners[4];
@@ -2407,9 +2414,19 @@ typedef struct _MiniGameStruct {
     /*0x1D7A*/ u8 _1D7A;
     /*0x1D7B*/ u8 _1D7B;
     /*0x1D7C*/ InputStruct _1D7C[4];
-} MiniGameStruct; // size: 0x1D7C
+    /*0x1DBC*/ u8 _1DBC[0xC];
+    /*0x1DC8*/ u8 player_states[4];
+} MiniGameStruct; // size: 0x1DCC
 
 extern MiniGameStruct g_Minigame;
+
+typedef struct Fielder {
+    u8 _pad0[0x25B];
+    u8 unk_25B; // Offset 0x25B: Set to 1
+    u8 _pad1[0x268 - 0x25C];
+} Fielder;
+
+extern Fielder g_Fielders[];
 
 typedef struct _BatterReachStruct {
     /*0x000*/ f32 HorizontalRangeNear;

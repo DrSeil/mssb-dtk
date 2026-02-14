@@ -77,8 +77,21 @@ void fn_3_7FD90(void) {
 }
 
 // .text:0x0007FEA8 size:0x2C mapped:0x806BEF3C
-void fn_3_7FEA8(void) {
-    return;
+void fn_3_7FEA8(s32 runnerIdx, s32 direction) {
+    // Defines the pointer here to steer the compiler to use mulli/add
+    InMemRunnerType* runner = &g_Runners[runnerIdx];
+
+    // Signed comparison: if (rosterID < 0) return;
+    if (runner->rosterID < 0) {
+        return;
+    }
+
+    // if (direction == 0) return;
+    if (direction == 0) {
+        return;
+    }
+
+    runner->runningDirectionDesired = direction;
 }
 
 // .text:0x0007FED4 size:0xFC mapped:0x806BEF68

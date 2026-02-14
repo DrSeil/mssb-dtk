@@ -34,4 +34,8 @@ extern u8 lbl_3_common_bss_32B20;
 void sndRemoveListener(void* listener);
 
 
+
+void sndVolume(u8 volume, u16 time, u8 volGroup);
+void fn_3_902FC(void);
+
 #endif // !__GAME_m_sound_H_

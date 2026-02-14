@@ -1,4 +1,5 @@
 #include "game/rep_3520.h"
+#include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
 
 // .text:0x00133200 size:0x120 mapped:0x80772294
@@ -8,7 +9,13 @@ void fn_3_133200(void) {
 
 // .text:0x00133320 size:0x2C mapped:0x807723B4
 void fn_3_133320(void) {
-    return;
+    s8 i = 0;
+    do {
+        // Accessing the global directly with the index i
+        // avoids the pre-calculation of the pointer.
+        g_Minigame.player_states[i] = 0;
+        i++;
+    } while (i < 4);
 }
 
 // .text:0x0013334C size:0x1170 mapped:0x807723E0

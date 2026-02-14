@@ -268,6 +268,10 @@ typedef enum _STADIUM_ID {
     STADIUM_ID_TOY_FIELD,
 } STADIUM_ID;
 
+typedef struct unknown_tri_compare {
+    u32 value;
+} unknown_tri_compare;
+
 #ifndef __cplusplus
 typedef u8 bool;
 #define true TRUE

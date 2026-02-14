@@ -130,3 +130,8 @@ void fn_3_90064(void) {
 void fn_3_90150(void) {
     return;
 }
+
+// .text:0x000902FC size:0x28 mapped:0x806CF390
+void fn_3_902FC(void) {
+    sndVolume(0, 0xA, 0xFF);
+}

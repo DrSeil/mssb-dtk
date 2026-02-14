@@ -57,8 +57,13 @@ void fn_3_27648(void) {
 }
 
 // .text:0x00027738 size:0x2C mapped:0x806667CC
-void fn_3_27738(void) {
-    return;
+void fn_3_27738(s32 fielderIndex) {
+    // Creating this local pointer anchors the index calculation to r5
+    // and the base address calculation to r4/r0.
+    Fielder* fielder = &g_Fielders[fielderIndex];
+    
+    fielder->unk_25B = 1;
+    g_Ball.catchAnimationTotalFrames = 0;
 }
 
 // .text:0x00027764 size:0xFC mapped:0x806667F8
@@ -1115,4 +1120,3 @@ void fn_3_595C4(void) {
 void fn_3_596F8(void) {
     return;
 }
-

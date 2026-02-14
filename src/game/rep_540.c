@@ -19,12 +19,19 @@ void fn_3_65A8(void) {
 
 // .text:0x000065C8 size:0x2C mapped:0x8064565C
 void fn_3_65C8(void) {
-    return;
+    if (g_Ball.matchFramesAndBallAngle.framesInsidePlant < 0x7FFE) {
+        g_Ball.matchFramesAndBallAngle.framesInsidePlant++;
+    } else {
+        g_Ball.matchFramesAndBallAngle.framesInsidePlant = 0x7FFF;
+    }
 }
 
 // .text:0x000065F4 size:0x2C mapped:0x80645688
 void fn_3_65F4(void) {
-    return;
+    // Ordering is critical to match the interleaving of r5 and r3 stores
+    g_Ball.pauseBallMovementWhenInPlant = 0;
+    g_FieldingLogic.unk_13B = 1;
+    g_Ball.frameCountdownAfterLeavingPlant = 3;
 }
 
 // .text:0x00006620 size:0x74 mapped:0x806456B4

@@ -19,7 +19,7 @@ void fn_3_7F494(void);
 void fn_3_7F9C4(void);
 void fn_3_7FA78(void);
 void fn_3_7FD90(void);
-void fn_3_7FEA8(void);
+void fn_3_7FEA8(s32 runnerIdx, s32 direction);
 void fn_3_7FED4(void);
 void fn_3_7FFD0(void);
 void fn_3_80028(void);

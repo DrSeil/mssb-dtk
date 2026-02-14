@@ -5,6 +5,20 @@
 
 extern u8 lbl_3_bss_A81C;
 
+// Forward declaration for the dependency
+void AnimateActorBones(void* boneData);
+
+// Struct at the first level of indirection
+typedef struct BoneWrapper {
+    void* boneData; // Offset 0x00
+} BoneWrapper;
+
+// Main structure passed to fn_3_CFA8C
+typedef struct ActorObject {
+    u8 _pad0[0x74];
+    BoneWrapper* wrapper; // Offset 0x74
+} ActorObject;
+
 void fn_3_CB8A8(void);
 void fn_3_CBA9C(void);
 void fn_3_CBAFC(void);
@@ -38,7 +52,7 @@ void fn_3_CF72C(void);
 void fn_3_CF92C(void);
 void fn_3_CF930(void);
 void fn_3_CFA88(void);
-void fn_3_CFA8C(void);
+void fn_3_CFA8C(ActorObject* actor);
 void fn_3_CFAB4(void);
 void fn_3_CFB44(void);
 void fn_3_CFD58(void);
@@ -82,7 +96,9 @@ void fn_3_D4E00(void);
 void fn_3_D501C(void);
 void fn_3_D511C(void);
 void fn_3_D53C0(void);
-void fn_3_D5444(void);
+
+
+s32 fn_3_D5444(unknown_tri_compare* a, unknown_tri_compare* b);
 s32 fn_3_D5470(f32* a, f32* b);
 void fn_3_D5494(void);
 void fn_3_D55EC(void);

@@ -200,7 +200,8 @@ void fn_3_BF1AC(void) {
 
 // .text:0x000BF20C size:0x2C mapped:0x806FE2A0
 void fn_3_BF20C(void) {
-    return;
+    fn_8006C43C(0);
+    fn_8006C3F0(0);
 }
 
 // .text:0x000BF238 size:0x488 mapped:0x806FE2CC

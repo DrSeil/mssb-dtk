@@ -5,6 +5,9 @@
 
 extern u8 lbl_3_bss_995C;
 
+void fn_8006C3F0(s32 arg);
+void fn_8006C43C(s32 arg);
+
 typedef struct {
     u8 _pad0[0x3AC];
     u32 bitfield; // Offset 0x3AC
