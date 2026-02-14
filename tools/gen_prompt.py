@@ -118,7 +118,7 @@ Keep the code style consistent with the surrounding functions in the source file
 Your instructions will be passed to another AI model to generate the implementation.  Make your instructions clear and concise.
 One special Note, if you are defining new Structs, instruct the AI to search for a definition for that struct/variable BEFORE creating a new version.
 Don't ask to work on the next function.  Your goal is to only work on the current function.
-Instruct the AI to use 'ninja' to build the project. and tools/feedback_diff.py '{func}' to verify their implementation.
+Instruct the AI to use 'ninja' to verify the whole project builds.  Don't check the match, the user will do that.
 """
 
 
