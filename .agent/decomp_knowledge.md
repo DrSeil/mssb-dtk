@@ -40,6 +40,8 @@ An instruction-level analyzer for iterative refinement.
 *   **Usage**: `python3 tools/feedback_diff.py game/game/game_batter atBat_batter`
 *   **Focus**: Identifies **Missing**, **Extra**, and **Mismatched** operands (offsets/constants) while ignoring register swaps in the early stages.
 
+Always use feedback_diff.py to compare the decompiled code to the original assembly.
+
 ### `tools/decomp_helper.py`
 Simplifies the retrieval of ASM for a given unit and symbol.
 

@@ -24,6 +24,8 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, script_dir)
 
 import decomp_helper
+import feedback_diff
+from feedback_diff import run_objdiff, find_unit_for_symbol, get_symbol_data
 
 ROOT_DIR = os.path.dirname(script_dir)
 CONFIG_BASE = os.path.join(ROOT_DIR, "config/GYQE01")
@@ -107,11 +109,17 @@ typedef double f64;
 # If you need to define new structs, add them to the appropriate header file.
 # Keep the code style consistent with the surrounding functions in the source file."""
 INSTRUCTIONS_TEMPLATE = """\
-Implement the function `{func}` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `{func}` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
-Keep the code style consistent with the surrounding functions in the source file."""
+Keep the code style consistent with the surrounding functions in the source file.
+
+Your instructions will be passed to another AI model to generate the implementation.  Make your instructions clear and concise.
+One special Note, if you are defining new Structs, instruct the AI to search for a definition for that struct/variable BEFORE creating a new version.
+Don't ask to work on the next function.  Your goal is to only work on the current function.
+Instruct the AI to use 'ninja' to build the project. and tools/feedback_diff.py '{func}' to verify their implementation.
+"""
 
 
 # ---------------------------------------------------------------------------
@@ -152,7 +160,7 @@ def find_function(module, max_size, min_size):
             if size < min_size or (max_size and size > max_size):
                 continue
             fm = func.get("measures", {})
-            if fm.get("matched_code_percent", 0) == 100.0:
+            if fm.get("matched_code_percent", 0) >= 25.0:
                 continue
             candidates.append({
                 "name": func.get("name", ""),
@@ -168,13 +176,35 @@ def find_function(module, max_size, min_size):
         info = locate_function(c["name"])
         if not info:
             continue
-        # Check if already matched via objdiff
-        fb = run_feedback(c["name"])
-        if fb and "MATCH!" in fb:
+        
+        # Real-time check via objdiff
+        match_percent = get_match_percent(c["name"])
+        if match_percent is not None and match_percent >= 25.0:
             continue
+
+        # Check if already matched via objdiff (redundant with above but keeps logic safe)
+        if match_percent == 100.0:
+            continue
+            
         return c["name"]
 
     return None
+
+
+def get_match_percent(func_name):
+    """Get the current match percentage from objdiff."""
+    unit = find_unit_for_symbol(func_name)
+    if not unit:
+        return None
+    
+    data = run_objdiff(unit, func_name)
+    if not data:
+        return None
+        
+    _, right_sym = get_symbol_data(data, func_name)
+    if right_sym and "match_percent" in right_sym:
+        return float(right_sym["match_percent"])
+    return 0.0
 
 
 def locate_function(func_name):
@@ -280,12 +310,29 @@ def run_feedback(func_name):
         return None
 
 
+def run_m2c(func_name):
+    """Run m2c_helper.py and return stdout."""
+    try:
+        result = subprocess.run(
+            ["python3", os.path.join(script_dir, "m2c_helper.py"), func_name],
+            capture_output=True, text=True, cwd=ROOT_DIR,
+        )
+        if result.returncode == 0:
+            lines = result.stdout.splitlines()
+            # Filter out decompctx logging
+            filtered = [l for l in lines if not l.startswith("Processing file")]
+            return "\n".join(filtered)
+    except Exception:
+        pass
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Prompt assembly
 # ---------------------------------------------------------------------------
 
 def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
-                 header_path, header_content, feedback):
+                 header_path, header_content, feedback, m2c_output):
     """Assemble the complete prompt."""
     sections = []
 
@@ -338,6 +385,11 @@ def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
     if feedback and "MATCH!" not in feedback:
         sections.append(f"\n## Current Diff (compiled vs target)\n")
         sections.append(f"```\n{feedback.strip()}\n```")
+
+    # m2c approximate decomp
+    if m2c_output:
+        sections.append(f"\n## Approximate Decompilation (from m2c)\n")
+        sections.append(f"```c\n{m2c_output.strip()}\n```")
 
     # Header file
     if header_content:
@@ -409,10 +461,13 @@ def main():
     # 6. Get current feedback
     feedback = run_feedback(func_name)
 
-    # 7. Build prompt
+    # 7. Run m2c
+    m2c_output = run_m2c(func_name)
+
+    # 8. Build prompt
     prompt = build_prompt(
         func_name, info, asm_text, deps, syms,
-        src_path, src_content, header_path, header_content, feedback,
+        src_path, src_content, header_path, header_content, feedback, m2c_output,
     )
 
     # 8. Output
