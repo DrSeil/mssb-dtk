@@ -8,7 +8,7 @@ void fn_3_8B718(void) {
 
 // .text:0x0008B7DC size:0x28 mapped:0x806CA870
 void fn_3_8B7DC(void) {
-    return;
+    sndRemoveListener(&lbl_3_common_bss_32B20);
 }
 
 // .text:0x0008B804 size:0x8C mapped:0x806CA898
@@ -130,4 +130,3 @@ void fn_3_90064(void) {
 void fn_3_90150(void) {
     return;
 }
-

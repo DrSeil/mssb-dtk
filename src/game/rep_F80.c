@@ -1,4 +1,5 @@
 #include "game/rep_F80.h"
+#include "game/rep_1E08.h"
 #include "header_rep_data.h"
 
 // .text:0x0006A2A4 size:0x5C mapped:0x806A9338
@@ -38,11 +39,12 @@ void fn_3_6AA98(void) {
 
 // .text:0x0006AB30 size:0x28 mapped:0x806A9BC4
 void fn_3_6AB30(void) {
-    return;
+    fn_3_BF1AC();
+    fn_3_CABB4();
+    fn_80011578();
 }
 
 // .text:0x0006AB58 size:0x368 mapped:0x806A9BEC
 void fn_3_6AB58(void) {
     return;
 }
-

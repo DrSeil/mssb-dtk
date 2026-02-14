@@ -30,4 +30,8 @@ void fn_3_8FF5C(void);
 void fn_3_90064(void);
 void fn_3_90150(void);
 
+extern u8 lbl_3_common_bss_32B20;
+void sndRemoveListener(void* listener);
+
+
 #endif // !__GAME_m_sound_H_

@@ -1,4 +1,5 @@
 #include "game/rep_1F58.h"
+#include "game/rep_1E08.h"
 #include "header_rep_data.h"
 
 // .text:0x000C0854 size:0x108 mapped:0x806FF8E8
@@ -22,8 +23,15 @@ void fn_3_C0C4C(void) {
 }
 
 // .text:0x000C0CE8 size:0x28 mapped:0x806FFD7C
-void fn_3_C0CE8(void) {
-    return;
+void fn_3_C0CE8(f32 arg0, f32 arg1, f32 arg2, u8 arg3) {
+    u32 temp_mask = lbl_3_common_bss_35154.bitfield;
+    
+    lbl_3_common_bss_35154.unk_434 = arg0;
+    temp_mask |= 0x100;
+    lbl_3_common_bss_35154.unk_438 = arg1;
+    lbl_3_common_bss_35154.unk_43C = arg2;
+    lbl_3_common_bss_35154.unk_467 = arg3;
+    lbl_3_common_bss_35154.bitfield = temp_mask;
 }
 
 // .text:0x000C0D10 size:0xC8 mapped:0x806FFDA4
@@ -60,4 +68,3 @@ void fn_3_C1344(void) {
 void fn_3_C1770(void) {
     return;
 }
-

@@ -35,8 +35,11 @@ void fn_3_A4F50(void);
 void fn_3_A53DC(void);
 void fn_3_A5704(void);
 void fn_3_A5B4C(void);
+extern s32 lbl_3_bss_1828[];
+extern s32 lbl_3_bss_1838[];
+
 void fn_3_A63E4(void);
-void fn_3_A67E8(void);
+void fn_3_A67E8(s32 index);
 void fn_3_A6810(void);
 void fn_3_A6ABC(void);
 void fn_3_A6D48(void);
