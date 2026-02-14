@@ -24,7 +24,9 @@ void fn_3_14E84(void) {
 
 // .text:0x00014EC0 size:0x28 mapped:0x80653F54
 void fn_3_14EC0(void) {
-    return;
+    if (g_pCamera->unk_A50 == -1) {
+        g_pCamera->unk_A50 = g_Strikes.unk_C;
+    }
 }
 
 // .text:0x00014EE8 size:0x3C mapped:0x80653F7C

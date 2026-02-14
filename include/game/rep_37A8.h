@@ -36,5 +36,7 @@ void fn_3_146408(void);
 void fn_3_146928(void);
 void fn_3_1469CC(void);
 void fn_3_146A90(void);
+void fn_800B9948(void (*callback)(void));
+
 
 #endif // !__GAME_rep_37A8_H_

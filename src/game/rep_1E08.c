@@ -138,7 +138,9 @@ void fn_3_BD80C(void) {
 
 // .text:0x000BD8D8 size:0x24 mapped:0x806FC96C
 void fn_3_BD8D8(void) {
-    return;
+    // Directly access the global to ensure the ha/l (lis/addi) pattern
+    lbl_8036E548.unk3070 = fn_3_BD80C;
+    lbl_8036E548.unk3074 = fn_3_BD7DC;
 }
 
 // .text:0x000BD8FC size:0x3A8 mapped:0x806FC990

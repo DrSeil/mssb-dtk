@@ -16,7 +16,7 @@ void fn_3_B8464(void);
 void fn_3_B8574(void);
 void fn_3_B85A8(void);
 void fn_3_B85DC(void);
-int fn_3_B8658(f32*, f32*);
+s32 fn_3_B8658(f32*, f32*);
 void fn_3_B867C(void);
 void fn_3_B8828(void);
 void fn_3_B8C08(void);

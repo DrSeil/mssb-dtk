@@ -107,8 +107,8 @@ void fn_3_E7350(void) {
 }
 
 // .text:0x000E7364 size:0x24 mapped:0x807263F8
-void fn_3_E7364(void) {
-    return;
+void fn_3_E7364(s32 index) {
+    lbl_3_data_19640 = ((u8*)lbl_3_common_bss_350E4)[index * 0xE8 + 0xC0];
 }
 
 // .text:0x000E7388 size:0x9C mapped:0x8072641C
@@ -150,4 +150,3 @@ void fn_3_E8AC8(void) {
 void fn_3_E8B24(void) {
     return;
 }
-

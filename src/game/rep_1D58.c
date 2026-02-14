@@ -63,13 +63,13 @@ void fn_3_B85DC(void) {
 }
 
 // .text:0x000B8658 size:0x24 mapped:0x806F76EC
-int fn_3_B8658(f32* a, f32* b) {
-    f32 va = *a;
-    f32 vb = *b;
-    if (va < vb) {
+s32 fn_3_B8658(f32* a, f32* b) {
+    f32 fa = *a;
+    f32 fb = *b;
+    if (fa < fb) {
         return -1;
     }
-    return va > vb;
+    return fa > fb;
 }
 
 // .text:0x000B867C size:0x1AC mapped:0x806F7710

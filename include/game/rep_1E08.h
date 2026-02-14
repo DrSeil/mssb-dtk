@@ -15,7 +15,15 @@ typedef struct {
 } CommonBss_35154;
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
+ 
+typedef struct {
+    u8 _pad[0x3070];
+    void (*unk3070)(void); // Offset 0x3070
+    void (*unk3074)(void); // Offset 0x3074
+} GlobalStruct_8036E548;
 
+extern GlobalStruct_8036E548 lbl_8036E548;
+ 
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
 void fn_3_BB07C(void);

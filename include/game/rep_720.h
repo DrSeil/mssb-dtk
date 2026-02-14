@@ -5,13 +5,21 @@
 #include "game/UnknownHomes_Game.h"
 
 typedef struct {
-    u8 _pad[0xAC5];
+    u8 _pad[0xA50];
+    s32 unk_A50;   // Offset 0xA50
+    u8 _pad2[0x71]; // Adjustment based on previous 0xAC5 offset
     u8 cameraFlag; // 0xAC5
-    u8 _pad2[0x12]; // 0xAC6-0xAD7
+    u8 _pad3[0x12]; // 0xAC6-0xAD7
     u8 cameraFlag2; // 0xAD8
 } Camera;
 
+typedef struct {
+    u8 _pad[0xC];
+    s32 unk_C; // Offset 0xC
+} Strikes;
+
 extern Camera* g_pCamera;
+extern Strikes g_Strikes;
 
 void fn_3_14BB4(void);
 void fn_3_14E1C(void);
