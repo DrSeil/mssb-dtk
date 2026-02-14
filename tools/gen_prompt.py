@@ -114,6 +114,7 @@ stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
 Keep the code style consistent with the surrounding functions in the source file.
+If you need to create new variables (for example in a struct) call them something like unk_XX where XX is the byte offset.
 
 Your instructions will be passed to another AI model to generate the implementation.  Make your instructions clear and concise.
 One special Note, if you are defining new Structs, instruct the AI to search for a definition for that struct/variable BEFORE creating a new version.
