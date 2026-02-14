@@ -62,8 +62,8 @@ void fn_3_FD670(void) {
 }
 
 // .text:0x000FD9FC size:0x20 mapped:0x8073CA90
-void fn_3_FD9FC(void) {
-    return;
+u32 fn_3_FD9FC(void) {
+    return lbl_3_common_bss_DE94->field_0x18 == 1;
 }
 
 // .text:0x000FDA1C size:0x114 mapped:0x8073CAB0

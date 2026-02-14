@@ -1,4 +1,5 @@
 #include "game/rep_720.h"
+#include "game/rep_3090.h"
 #include "header_rep_data.h"
 
 // .text:0x00014BB4 size:0x268 mapped:0x80653C48
@@ -128,7 +129,7 @@ void fn_3_15D90(void) {
 
 // .text:0x00015F18 size:0x20 mapped:0x80654FAC
 void fn_3_15F18(void) {
-    return;
+    fn_3_FD670();
 }
 
 // .text:0x00015F38 size:0x3C mapped:0x80654FCC
@@ -138,7 +139,7 @@ void fn_3_15F38(void) {
 
 // .text:0x00015F74 size:0x20 mapped:0x80655008
 void fn_3_15F74(void) {
-    return;
+    fn_3_FD670();
 }
 
 // .text:0x00015F94 size:0x3C mapped:0x80655028
@@ -148,7 +149,7 @@ void fn_3_15F94(void) {
 
 // .text:0x00015FD0 size:0x20 mapped:0x80655064
 void fn_3_15FD0(void) {
-    return;
+    fn_3_FD670();
 }
 
 // .text:0x00015FF0 size:0x24 mapped:0x80655084
@@ -158,7 +159,7 @@ void fn_3_15FF0(void) {
 
 // .text:0x00016014 size:0x20 mapped:0x806550A8
 void fn_3_16014(void) {
-    return;
+    fn_3_FD670();
 }
 
 // .text:0x00016034 size:0x24 mapped:0x806550C8

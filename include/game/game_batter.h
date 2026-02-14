@@ -24,5 +24,6 @@ void setDefaultInMemBatter(void);
 void setBatterContactConstants(void);
 void initializeInMemBatter(void);
 void atBat_batter(void);
+void starHitSetting_unused(void);
 
 #endif // !__GAME_HitBall_H_

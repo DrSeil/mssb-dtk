@@ -323,7 +323,10 @@ void fn_3_89028(void) {
 
 // .text:0x0008911C size:0x20 mapped:0x806C81B0
 void fn_3_8911C(void) {
-    return;
+    g_Runners[0].leadOffStatus = 0;
+    g_Runners[1].leadOffStatus = 0;
+    g_Runners[2].leadOffStatus = 0;
+    g_Runners[3].leadOffStatus = 0;
 }
 
 // .text:0x0008913C size:0x728 mapped:0x806C81D0
@@ -391,4 +394,3 @@ void fn_3_8A7B4(void) {
 void fn_3_8A958(void) {
     return;
 }
-

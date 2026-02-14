@@ -1,6 +1,8 @@
 #include "game/rep_540.h"
 #include "header_rep_data.h"
 
+#include "game/UnknownHomes_Game.h"
+
 // .text:0x00006530 size:0x78 mapped:0x806455C4
 void fn_3_6530(void) {
     return;
@@ -8,8 +10,12 @@ void fn_3_6530(void) {
 
 // .text:0x000065A8 size:0x20 mapped:0x8064563C
 void fn_3_65A8(void) {
-    return;
+    if (g_Ball.ballState == 2) {
+        g_Ball.ballState = 1;
+    }
 }
+
+
 
 // .text:0x000065C8 size:0x2C mapped:0x8064565C
 void fn_3_65C8(void) {
