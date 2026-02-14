@@ -2,6 +2,7 @@
 #define __GAME_rep_13B8_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_7D79C(void);
 void fn_3_7D920(void);

@@ -133,7 +133,9 @@ void fn_3_668BC(void) {
 
 // .text:0x00067130 size:0x1C mapped:0x806A61C4
 void fn_3_67130(void) {
-    return;
+    lbl_3_common_bss_32220.field_0x08 = 0;
+    lbl_3_common_bss_32220.field_0x0B = 0;
+    lbl_3_common_bss_32220.field_0x04 = 0;
 }
 
 // .text:0x0006714C size:0x394 mapped:0x806A61E0

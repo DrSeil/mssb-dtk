@@ -77,8 +77,8 @@ void fn_3_FDB30(void) {
 }
 
 // .text:0x00100018 size:0x20 mapped:0x8073F0AC
-void fn_3_100018(void) {
-    return;
+BOOL fn_3_100018(void) {
+    return (s32)lbl_3_common_bss_DE94->field_0x9B6 == 1;
 }
 
 // .text:0x00100038 size:0x44 mapped:0x8073F0CC

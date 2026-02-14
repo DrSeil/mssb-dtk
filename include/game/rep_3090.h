@@ -5,6 +5,13 @@
 #include "game/UnknownHomes_Game.h"
 
 
+typedef struct {
+    u8 _pad[0x9B6];
+    u8 field_0x9B6; // 0x9B6
+} Struct_DE94_Inner;
+
+extern Struct_DE94_Inner* lbl_3_common_bss_DE94;
+
 typedef struct SourceObj_104B20 {
     u8 _pad[0x30];
     VecXYZ pos;
@@ -25,7 +32,7 @@ void fn_3_FD670(void);
 void fn_3_FD9FC(void);
 void fn_3_FDA1C(void);
 void fn_3_FDB30(void);
-void fn_3_100018(void);
+BOOL fn_3_100018(void);
 void fn_3_100038(void);
 void fn_3_10007C(void);
 void fn_3_1000D8(void);

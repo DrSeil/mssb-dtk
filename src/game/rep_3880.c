@@ -207,8 +207,11 @@ void fn_3_14CA00(void) {
 }
 
 // .text:0x0014CA98 size:0x1C mapped:0x8078BB2C
-void fn_3_14CA98(void) {
-    return;
+void fn_3_14CA98(UnknownStruct_14CA98* obj) {
+    obj->field_0x44 = 0;
+    obj->field_0x45 = 0xFF;
+    obj->field_0x4A = 0;
+    obj->field_0x4C = 0;
 }
 
 // .text:0x0014CAB4 size:0x74 mapped:0x8078BB48

@@ -363,7 +363,8 @@ void fn_3_8A350(void) {
 
 // .text:0x0008A4C8 size:0x1C mapped:0x806C955C
 void fn_3_8A4C8(void) {
-    return;
+    g_Runners[0].position.x = g_Batter.batterPos.x;
+    g_Runners[0].position.z = g_Batter.batterPos.z;
 }
 
 // .text:0x0008A4E4 size:0xC0 mapped:0x806C9578

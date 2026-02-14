@@ -2,6 +2,7 @@
 #define __GAME_rep_AC8_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_251E4(void);
 void fn_3_253A4(void);
@@ -67,7 +68,7 @@ void fn_3_31A3C(void);
 void fn_3_31C50(void);
 void fn_3_32090(void);
 void fn_3_323A4(void);
-void fn_3_327F4(void);
+BOOL fn_3_327F4(void);
 void fn_3_32810(void);
 void fn_3_329A4(void);
 void fn_3_33088(void);

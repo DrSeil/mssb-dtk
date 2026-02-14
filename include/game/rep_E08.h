@@ -3,6 +3,18 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    u8 _pad0[0x04];
+    u16 field_0x04; // 0x04
+    u8 _pad1[0x02];
+    u8 field_0x08;  // 0x08
+    u8 _pad2[0x02];
+    u8 field_0x0B;  // 0x0B
+    u8 _pad3[0x04];
+} Struct_32220; // size: 0x10
+
+extern Struct_32220 lbl_3_common_bss_32220;
+
 void fn_3_60768(void);
 void fn_3_60804(void);
 void fn_3_60A98(void);

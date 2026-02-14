@@ -10,6 +10,15 @@ typedef struct {
 
 extern UnknownStruct_B850* lbl_3_bss_B850;
 
+typedef struct {
+    u8 _pad0[0x44];
+    u8 field_0x44;  // 0x44
+    u8 field_0x45;  // 0x45
+    u8 _pad1[0x4];
+    u16 field_0x4A; // 0x4A
+    u8 field_0x4C;  // 0x4C
+} UnknownStruct_14CA98;
+
 void fn_3_14737C(void);
 void fn_3_147778(void);
 void fn_3_147C00(void);
@@ -51,7 +60,7 @@ void fn_3_14C79C(void);
 void fn_3_14C830(void);
 void fn_3_14C904(void);
 void fn_3_14CA00(void);
-void fn_3_14CA98(void);
+void fn_3_14CA98(UnknownStruct_14CA98* obj);
 void fn_3_14CAB4(void);
 void fn_3_14CB28(void);
 void fn_3_14CBB4(void);
