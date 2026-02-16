@@ -4,6 +4,9 @@
 #include "mssbTypes.h"
 
 extern u8 lbl_3_bss_995C;
+extern s16 lbl_3_bss_9952;
+
+void pitchingMachinePitching(s32 param);
 
 void fn_8006C3F0(s32 arg);
 void fn_8006C43C(s32 arg);
@@ -24,11 +27,15 @@ typedef struct {
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
  
-typedef struct {
-    u8 _pad[0x3070];
+typedef struct GlobalStruct_8036E548 {
+    u8 _pad0[0x70];
+    s32 unk70;             // Offset 0x70
+    u8 _pad1[0x3070 - 0x74];
     void (*unk3070)(void); // Offset 0x3070
-    void (*unk3074)(void); // Offset 0x3074
+    void (*unk3074)(s32);  // Offset 0x3074
 } GlobalStruct_8036E548;
+
+void fn_800BD670(s32 fieldVal, s32 arg1, GlobalStruct_8036E548* globalPtr);
 
 extern GlobalStruct_8036E548 lbl_8036E548;
  
@@ -57,7 +64,7 @@ void fn_3_BD6AC(void);
 void fn_3_BD758(void);
 BOOL fn_3_BD7D0(void);
 void fn_3_BD7D8(void);
-void fn_3_BD7DC(void);
+void fn_3_BD7DC(s32 arg1);
 void fn_3_BD80C(void);
 void fn_3_BD8D8(void);
 void fn_3_BD8FC(void);
@@ -79,6 +86,7 @@ void fn_3_BF8F8(void);
 void fn_3_BFB3C(void);
 void fn_3_BFDA4(void);
 void fn_3_C0134(void);
+void fn_3_C0770(void);
 void fn_3_C07A0(void);
 
 #endif // !__GAME_rep_1E08_H_

@@ -127,10 +127,13 @@ void fn_3_BD7D8(void) {
 }
 
 // .text:0x000BD7DC size:0x30 mapped:0x806FC870
-void fn_3_BD7DC(void) {
-    return;
+// Register Mismatch.
+void fn_3_BD7DC(s32 arg1) {
+    // We pass the global address directly as the 3rd param to keep r5 active.
+    // For the 1st param, we access the field in a way that forces the 
+    // compiler to anchor the base address into the now-free r3 register.
+    fn_800BD670((&lbl_8036E548)->unk70, arg1, &lbl_8036E548);
 }
-
 // .text:0x000BD80C size:0xCC mapped:0x806FC8A0
 void fn_3_BD80C(void) {
     return;
@@ -237,6 +240,12 @@ void fn_3_BFDA4(void) {
 // .text:0x000C0134 size:0x63C mapped:0x806FF1C8
 void fn_3_C0134(void) {
     return;
+}
+
+// .text:0x000C0770 size:0x2C mapped:0x806FF804
+void fn_3_C0770(void) {
+    pitchingMachinePitching(0x10);
+    lbl_3_bss_9952 = 0;
 }
 
 // .text:0x000C07A0 size:0x10 mapped:0x806FF834

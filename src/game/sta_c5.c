@@ -1,5 +1,7 @@
 #include "Dolphin/GX/GXPixel.h"
+#include "Dolphin/GX/GXPixel.h"
 #include "game/sta_c5.h"
+#include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
 
 // .text:0x000EE100 size:0x288 mapped:0x8072D194
@@ -244,8 +246,12 @@ void fn_3_F42A0(void) {
 }
 
 // .text:0x000F466C size:0x30 mapped:0x80733700
+// .text:0x000F466C size:0x30 mapped:0x80733700
+void fn_3_27648(void);
+
 void fn_3_F466C(void) {
-    return;
+    fn_3_27648();
+    g_FieldingLogic.unk_13B = 1;
 }
 
 // .text:0x000F469C size:0x4 mapped:0x80733730

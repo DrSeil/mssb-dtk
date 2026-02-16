@@ -5,9 +5,14 @@
 
 void fn_3_13C7BC(void);
 void fn_3_13D578(void);
-void fn_3_13D5E8(void);
+// Use a distinct name to avoid conflict with the u32 version in mssbTypes.h
+typedef struct unk_13d5e8_struct {
+    f32 value; // Offset 0x00
+} unk_13d5e8_struct;
+
+s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
 void fn_3_13D618(void);
-void fn_3_13DA20(void);
+s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
 void fn_3_13DA50(void);
 void fn_3_13DC48(void);
 void fn_3_13DDE0(void);

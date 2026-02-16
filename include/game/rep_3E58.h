@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 
+void fn_800B0A5C_insertQueue(void (*callback)(void), s32 priority);
+
 void fn_3_1666B0(void);
 void fn_3_16689C(void);
 void fn_3_16696C(void);

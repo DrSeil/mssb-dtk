@@ -12,8 +12,11 @@ void fn_3_16689C(void) {
 }
 
 // .text:0x0016696C size:0x30 mapped:0x807A5A00
+// .text:0x0016696C size:0x30 mapped:0x807A5A00
 void fn_3_16696C(void) {
-    return;
+    // Calling the queue insertion with the local function and priority -6.
+    // The constant -6 (0xFFFA) matches the lis/subi sequence.
+    fn_800B0A5C_insertQueue(fn_3_16689C, 0xFFFA);
 }
 
 // .text:0x0016699C size:0x294 mapped:0x807A5A30
@@ -55,4 +58,3 @@ void fn_3_1674D0(void) {
 void fn_3_1678A8(void) {
     return;
 }
-

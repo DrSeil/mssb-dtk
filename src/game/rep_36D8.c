@@ -11,9 +11,26 @@ void fn_3_13D578(void) {
     return;
 }
 
+extern f32 lbl_3_rodata_3728;
+
 // .text:0x0013D5E8 size:0x30 mapped:0x8077C67C
-void fn_3_13D5E8(void) {
-    return;
+//Two instructions swapped order
+s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {
+f32 scale;
+    f32 valB;
+    f32 valA;
+    
+    // Force scale to be the first float dereferenced in the function logic
+    scale = lbl_3_rodata_3728; 
+    
+    // By separating these into distinct lines AFTER scale is assigned,
+    // we nudge the compiler to follow this sequence for the lfs instructions.
+    valB = b->value; // Target: lfs f0, 0x0(r4)
+    valA = a->value; // Target: lfs f1, 0x0(r3)
+
+    // The arithmetic (scale * valA) - (scale * valB) 
+    // triggers fmuls f0, f2, f0 then fmsubs f0, f2, f1, f0
+    return (s32)((scale * a->value) - (scale * b->value));
 }
 
 // .text:0x0013D618 size:0x408 mapped:0x8077C6AC
@@ -22,8 +39,24 @@ void fn_3_13D618(void) {
 }
 
 // .text:0x0013DA20 size:0x30 mapped:0x8077CAB4
-void fn_3_13DA20(void) {
-    return;
+extern f32 lbl_3_rodata_3728;
+
+// .text:0x0013DA20 size:0x30 mapped:0x8077CAB4
+// Same issue as fn_3_13D5E8.
+s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {
+    f32 scale;
+    f32 valB;
+    f32 valA;
+    
+    // Step 1: Force scale load (lfs f2)
+    scale = lbl_3_rodata_3728; 
+    
+    // Step 2: Force argument loads in specific order (f0 then f1)
+    valB = b->value; 
+    valA = a->value; 
+
+    // Step 3: Fused multiply-subtract and conversion
+    return (s32)((scale * valA) - (scale * valB));
 }
 
 // .text:0x0013DA50 size:0x1F8 mapped:0x8077CAE4
@@ -170,4 +203,3 @@ void fn_3_1413E4(void) {
 void fn_3_1414AC(void) {
     return;
 }
-
