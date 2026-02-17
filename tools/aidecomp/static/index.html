@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADS Dashboard - MSSB Decomp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">ADS</div>
+                <h1>Decomp<span class="accent">AI</span></h1>
+            </div>
+            <nav>
+                <button class="nav-item active" data-tab="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </button>
+                <button class="nav-item" data-tab="monitor">
+                    <span class="icon">📈</span> Monitor
+                </button>
+                <button class="nav-item" data-tab="config">
+                    <span class="icon">⚙️</span> Config
+                </button>
+                <button class="nav-item" data-tab="template">
+                    <span class="icon">📝</span> Template
+                </button>
+                <button class="nav-item" data-tab="explore">
+                    <span class="icon">🔍</span> Explore
+                </button>
+            </nav>
+            <div class="status-panel">
+                <h3>System Status</h3>
+                <div class="status-indicator online">
+                    <span class="dot"></span> Online
+                </div>
+                <div class="cpu-usage">
+                    <span>CPU</span>
+                    <div class="progress-bar-sm">
+                        <div class="fill" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="top-bar">
+                <div class="breadcrumbs">Home / Dashboard</div>
+                <div class="server-time" id="server-time">--:--</div>
+            </header>
+
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="hero-card">
+                    <h2>Autonomous Decompilation System</h2>
+                    <p>Select a function to begin the decompilation pipeline.</p>
+                    <div class="input-group">
+                        <input type="text" id="func-input" placeholder="Function Name (e.g. fn_80012345)"
+                            class="glass-input">
+                        <input type="text" id="asm-input" placeholder="ASM Path (e.g. asm/fn_80012345.s)"
+                            class="glass-input">
+                        <button id="start-btn" class="btn-primary">Start Pipeline</button>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    <div class="card glass-card">
+                        <h3>Live Progress</h3>
+                        <div class="progress-circle" id="score-circle" data-score="0">
+                            <div class="circle-text">0%</div>
+                        </div>
+                        <div class="log-output" id="live-logs">
+                            <p class="log-entry system">> System ready.</p>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card code-view">
+                        <h3>Current Draft</h3>
+                        <pre><code id="code-display" class="language-c">// Code will appear here...</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-config" class="tab-content">
+                <div class="card glass-card">
+                    <h3>System Configuration</h3>
+                    <form id="config-form">
+                        <div class="form-group">
+                            <label>Max Rounds</label>
+                            <input type="number" name="max_rounds" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Build Command</label>
+                            <input type="text" name="build_cmd" value="ninja">
+                        </div>
+                        <div class="form-group">
+                            <label>Objdiff Path</label>
+                            <input type="text" name="objdiff_path" value="/usr/bin/objdiff">
+                        </div>
+                        <button type="submit" class="btn-secondary">Save Config</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="tab-monitor" class="tab-content">
+                <div class="card glass-card">
+                    <h3>Active Tasks</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Function</th>
+                                <th>Status</th>
+                                <th>Score</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasks-list">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-template" class="tab-content">
+                <div class="card glass-card">
+                    <h3>Prompt Template</h3>
+                    <p>Edit the template used for AI refinement.</p>
+                    <textarea id="template-editor" class="glass-input"
+                        style="width: 100%; height: 300px; resize: vertical;"></textarea>
+                    <button id="save-template-btn" class="btn-primary" style="margin-top: 15px;">Save Template</button>
+                </div>
+            </div>
+
+            <div id="tab-explore" class="tab-content">
+                <div class="card glass-card">
+                    <h3>Unmatched Functions</h3>
+                    <div class="input-group" style="justify-content: flex-start; margin-bottom: 20px;">
+                        <input type="text" id="explore-module" placeholder="Module Filter (e.g. game/)"
+                            class="glass-input" style="width: 200px;">
+                        <input type="number" id="explore-match-max" placeholder="Max Match %" value="100"
+                            class="glass-input" style="width: 100px;">
+                        <select id="explore-sort" class="glass-input" style="width: 150px;">
+                            <option value="size">Size (Asc)</option>
+                            <option value="-size">Size (Desc)</option>
+                            <option value="match_pct">Match % (Asc)</option>
+                        </select>
+                        <button id="explore-btn" class="btn-primary">Filter</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Function</th>
+                                <th>Size</th>
+                                <th>Match %</th>
+                                <th>Unit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="explore-list">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -37,5 +37,7 @@ report.json
 
 nonmatching/**
 
+tools/aidecomp/.venv/**
+
 
 docs/ghidra_annotations.json
