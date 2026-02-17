@@ -10,7 +10,8 @@ void fn_3_14BB4(void) {
 
 // .text:0x00014E1C size:0x34 mapped:0x80653EB0
 void fn_3_14E1C(void) {
-    return;
+    lbl_3_bss_44 = 0;
+    fn_800528AC(NULL, &lbl_3_bss_44);
 }
 
 // .text:0x00014E50 size:0x34 mapped:0x80653EE4
