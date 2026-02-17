@@ -655,8 +655,10 @@ void fn_3_40C04(void) {
 }
 
 // .text:0x00040D54 size:0x34 mapped:0x8067FDE8
+
 void fn_3_40D54(void) {
-    return;
+    fn_3_49F40(6, 7);
+    fn_3_49F40(8, 6);
 }
 
 // .text:0x00040D88 size:0x424 mapped:0x8067FE1C

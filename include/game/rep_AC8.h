@@ -231,4 +231,5 @@ void fn_3_59338(void);
 void fn_3_595C4(void);
 void fn_3_596F8(void);
 
+// No local headers needed.
 #endif // !__GAME_rep_AC8_H_
