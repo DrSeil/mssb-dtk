@@ -125,7 +125,7 @@ void fn_3_B93C4(void) {
 }
 
 // .text:0x000B93C8 size:0x4 mapped:0x806F845C
-void fn_3_B93C8(void) {
+void fn_3_B93C8(s32) {
     return;
 }
 

@@ -34,7 +34,7 @@ int processStadiumObjectFunction(int, struct StadiumObject*, int, struct Stadium
 void fn_3_B91C8(void);
 void fn_3_B939C(void);
 void fn_3_B93C4(void);
-void fn_3_B93C8(void);
+void fn_3_B93C8(s32);                                    /* extern */
 void fn_3_B93CC(void);
 void fn_3_B950C(void);
 void fn_3_B9510(int);

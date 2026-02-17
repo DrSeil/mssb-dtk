@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "game/rep_F80.h"
 #include "header_rep_data.h"
+#include "game/rep_1D58.h"
 
 // .text:0x0006BEA4 size:0x15C mapped:0x806AAF38
 void fn_3_6BEA4(void) {
