@@ -78,8 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadExploreData() {
         const module = document.getElementById('explore-module').value;
-        const maxMatch = document.getElementById('explore-match-max').value;
-        const sort = document.getElementById('explore-sort').value;
+        const maxMatchInput = document.getElementById('explore-match-max');
+        const maxMatch = maxMatchInput ? maxMatchInput.value : 100;
+        const sort = 'size';
 
         let url = `/functions?limit=50&sort_by=${sort}&max_match=${maxMatch}`;
         if (module) url += `&module=${encodeURIComponent(module)}`;
@@ -92,12 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 exploreList.innerHTML = '';
                 data.results.forEach(func => {
                     const tr = document.createElement('tr');
+                    const fileName = func.unit.split('/').pop();
                     tr.innerHTML = `
-                       <td>${func.name}</td>
-                       <td>0x${func.size.toString(16).toUpperCase()}</td>
+                       <td title="${func.name}">${func.name.length > 15 ? func.name.substring(0, 12) + '...' : func.name}</td>
                        <td>${func.match_pct.toFixed(1)}%</td>
-                       <td>${func.unit}</td>
-                       <td><button class="btn-primary btn-sm" onclick="startDecomp('${func.name}', '${func.unit}')">Decomp</button></td>
+                       <td title="${func.unit}">${fileName}</td>
+                       <td><button class="btn-primary btn-sm" onclick="startDecomp('${func.name}', '${func.unit}')">Select</button></td>
                    `;
                     exploreList.appendChild(tr);
                 });
@@ -107,14 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Initial load
+    loadExploreData();
+
     if (exploreBtn) exploreBtn.addEventListener('click', loadExploreData);
 
-    // Auto load on tab switch
-    navItems.forEach(item => {
-        if (item.dataset.tab === 'explore') {
-            item.addEventListener('click', loadExploreData);
-        }
-    });
 
     // Start Process
     const startBtn = document.getElementById('start-btn');
@@ -126,16 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Make functions globally available for inline onclick
     window.startDecomp = (name, unit) => {
-        // Switch to dashboard
-        const dashboardTab = document.querySelector('.nav-item[data-tab="dashboard"]');
-        if (dashboardTab) dashboardTab.click();
-
         const funcInput = document.getElementById('func-input');
         if (funcInput) funcInput.value = name;
 
-        // Try to guess asm path from unit
-        // unit like "src/game/foo.c" -> "asm/game/foo/funcname.s" usually
-        // But let's just leave it empty or user fills it
+        // Show selection in logs
+        const entry = document.createElement('div');
+        entry.className = 'log-entry system';
+        entry.innerText = `> Selected ${name} from ${unit}`;
+        liveLogs.appendChild(entry);
     };
 
     if (startBtn) {
@@ -257,11 +253,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         entry.className = 'log-entry success';
                         entry.innerText = `> Verification complete. Score: ${(result.score * 100).toFixed(1)}%`;
                         liveLogs.appendChild(entry);
-                    } else if (result.log) {
+
+                        // Populate ASM Diff
+                        const asmDiffDisplay = document.getElementById('asm-diff-display');
+                        if (asmDiffDisplay && result.asm_diff) {
+                            asmDiffDisplay.innerText = result.asm_diff;
+                        }
+                    } else {
                         const entry = document.createElement('div');
                         entry.className = 'log-entry error';
-                        entry.innerText = `> Verification failed: ${result.log.substring(0, 100)}...`;
+                        const reason = result.status || "Unknown error";
+                        const detail = (result.log) ? result.log.substring(0, 1000) : "No log available.";
+                        entry.innerText = `> Verification Failed [${reason}]:\n${detail}`;
                         liveLogs.appendChild(entry);
+                        console.error("FULL BUILD LOG:", result.log);
                     }
                 }
             } catch (e) {
@@ -310,6 +315,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 smartCommitBtn.innerText = "Smart Commit";
                 smartCommitBtn.disabled = false;
             }
+        });
+    }
+    // Prompt Modal Logic
+    const promptModal = document.getElementById('prompt-modal');
+    const genPromptBtn = document.getElementById('gen-prompt-btn');
+    const closeOverlay = document.querySelector('.close-modal');
+    const copyPromptBtn = document.getElementById('copy-prompt-btn');
+    const generatedPrompt = document.getElementById('generated-prompt');
+
+    if (genPromptBtn) {
+        genPromptBtn.addEventListener('click', async () => {
+            const funcName = funcInput.value.trim();
+            if (!funcName) return alert("No function selected.");
+
+            genPromptBtn.innerText = "...";
+            genPromptBtn.disabled = true;
+
+            const externs = document.getElementById('externs-display').innerText;
+            const headers = document.getElementById('header-display').innerText;
+            const body = document.getElementById('code-display').innerText;
+
+            try {
+                const res = await fetch(`/generate_prompt/${funcName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ externs, headers, body })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    generatedPrompt.value = data.prompt;
+                    promptModal.classList.add('active');
+                } else {
+                    alert(data.message || "Failed to generate prompt");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Request failed");
+            } finally {
+                genPromptBtn.innerText = "AI Prompt";
+                genPromptBtn.disabled = false;
+            }
+        });
+    }
+
+    if (closeOverlay) {
+        closeOverlay.addEventListener('click', () => {
+            promptModal.classList.remove('active');
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === promptModal) {
+            promptModal.classList.remove('active');
+        }
+    });
+
+    if (copyPromptBtn) {
+        copyPromptBtn.addEventListener('click', () => {
+            generatedPrompt.select();
+            document.execCommand('copy');
+            copyPromptBtn.innerText = "Copied!";
+            setTimeout(() => {
+                copyPromptBtn.innerText = "Copy to Clipboard";
+            }, 2000);
         });
     }
 });

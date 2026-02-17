@@ -9,6 +9,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
+import sys
+
+# Add tools to path for decomp_helper
+sys.path.append("tools")
+import decomp_helper
 
 app = FastAPI()
 
@@ -197,6 +202,22 @@ class DecompOrchestrator:
 
             new_content = re.sub(pattern, c_code.strip(), content, flags=re.DOTALL)
             
+            # Ensure UnknownHeaders.h is included if it's our externs target
+            externs_file = CONFIG.get("externs_header", "UnknownHeaders.h").split('/')[-1]
+            include_line = f'#include "{externs_file}"'
+            if include_line not in new_content:
+                # Insert after the first include
+                lines = new_content.splitlines()
+                inserted = False
+                for i, line in enumerate(lines):
+                    if line.startswith('#include'):
+                        lines.insert(i + 1, include_line)
+                        inserted = True
+                        break
+                if not inserted:
+                    lines.insert(0, include_line)
+                new_content = "\n".join(lines)
+
             with open(src_path, "w") as f:
                 f.write(new_content)
             
@@ -272,12 +293,20 @@ class DecompOrchestrator:
 
         # Backups
         backups = {}
+        created_files = []
         for p in [src_path, header_path, externs_path]:
             if p and os.path.exists(p):
                 with open(p, "r") as f: backups[p] = f.read()
 
         try:
-            # 1. Temporarily apply changes
+            # 1. Ensure UnknownHeaders.h exists to prevent build failures
+            if externs_path and not os.path.exists(externs_path):
+                os.makedirs(os.path.dirname(externs_path), exist_ok=True)
+                with open(externs_path, "w") as f:
+                    f.write("#ifndef UNKNOWN_HEADERS_H\n#define UNKNOWN_HEADERS_H\n\n#include \"types.h\"\n\n#endif\n")
+                created_files.append(externs_path)
+
+            # 2. Temporarily apply changes
             if externs and externs_path:
                 with open(externs_path, "r") as f: content = f.read()
                 new_l = [l for l in externs.splitlines() if l.strip() and l.strip() not in content]
@@ -299,32 +328,66 @@ class DecompOrchestrator:
 
             # 2. Build
             build_cmd_str = CONFIG.get("build_cmd", "ninja")
-            build_proc = subprocess.run(build_cmd_str.split(), capture_output=True, text=True)
-            if build_proc.returncode != 0:
-                return {"status": "build_error", "log": build_proc.stderr}
+            print(f"DEBUG: Running build: {build_cmd_str}")
+            try:
+                build_proc = subprocess.run(build_cmd_str.split(), capture_output=True, text=True, timeout=120)
+                if build_proc.returncode != 0:
+                    combined_log = (build_proc.stdout or "") + (build_proc.stderr or "")
+                    print(f"DEBUG: Build failed full log:\n{combined_log}")
+                    return {"status": "build_error", "log": combined_log}
+            except subprocess.TimeoutExpired:
+                print("ERROR: Build timed out (120s)")
+                return {"status": "build_timeout", "log": "Build process timed out after 120 seconds."}
 
             # 3. Score
             objdiff_bin = CONFIG.get("objdiff_path", "objdiff")
             cmd = [objdiff_bin, "diff", "--format", "json", "-u", self.unit_name, "-o", "-", self.func_name]
-            res = subprocess.run(cmd, capture_output=True, text=True)
-            if res.returncode != 0:
-                return {"status": "objdiff_error", "log": res.stderr}
+            print(f"DEBUG: Running objdiff: {' '.join(cmd)}")
+            try:
+                res = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+                if res.returncode != 0:
+                    combined_log = (res.stdout or "") + (res.stderr or "")
+                    print(f"DEBUG: Objdiff failed: {combined_log[:100]}...")
+                    return {"status": "objdiff_error", "log": combined_log}
+            except subprocess.TimeoutExpired:
+                 print("ERROR: Objdiff timed out (30s)")
+                 return {"status": "objdiff_timeout", "log": "Score calculation timed out."}
             
             data = json.loads(res.stdout)
             if "right" in data and "symbols" in data["right"]:
                 for sym in data["right"]["symbols"]:
                     if sym.get("name") == self.func_name:
                         score = sym.get("match_percent", 0.0) / 100.0
-                        return {"status": "success", "score": score, "diff": f"Match percent: {sym.get('match_percent')}%", "unit": self.unit_name}
+                        print(f"DEBUG: Calculated score: {score}")
+                        
+                        # Get textual diff via feedback_diff.py for UI display
+                        feedback_cmd = ["python3", "tools/feedback_diff.py", self.unit_name, self.func_name]
+                        print(f"DEBUG: Running feedback_diff: {' '.join(feedback_cmd)}")
+                        try:
+                            res_text = subprocess.run(feedback_cmd, capture_output=True, text=True, timeout=30)
+                        except subprocess.TimeoutExpired:
+                            res_text = type('obj', (object,), {'stdout': '// Feedback diff timed out.', 'stderr': ''})()
+                        
+                        return {
+                            "status": "success", 
+                            "score": score, 
+                            "diff": f"Match percent: {sym.get('match_percent')}%", 
+                            "asm_diff": res_text.stdout or res_text.stderr or "// No differences found (100% match or empty output).",
+                            "unit": self.unit_name
+                        }
             
+            print("DEBUG: Function not found in objdiff output")
             return {"status": "not_found", "score": 0, "diff": "Function not found in objdiff output"}
 
         except Exception as e:
             return {"status": "error", "log": str(e)}
         finally:
-            # Always Revert
+            # Revert modified files
             for p, content in backups.items():
                 with open(p, "w") as f: f.write(content)
+            # Delete temporary created files
+            for p in created_files:
+                if os.path.exists(p): os.remove(p)
 
     def run_build_and_score_old(self, c_code):
         try:
@@ -585,6 +648,39 @@ async def verify_draft(func_name: str, body: CommitRequest):
     result = orch.run_build_and_score(body.body, externs=body.externs, headers=body.headers)
     
     return {"status": "success", "result": result}
+@app.post("/generate_prompt/{func_name}")
+async def generate_prompt(func_name: str, body: CommitRequest):
+    unit_name = find_unit_name(func_name)
+    if not unit_name:
+        return {"status": "error", "message": "Could not resolve unit."}
+        
+    orch = DecompOrchestrator(func_name, unit_name)
+    asm_path = find_asm_path(func_name)
+    asm_content = ""
+    if asm_path:
+        asm_content = decomp_helper.extract_asm(asm_path, func_name) or ""
+    
+    # Get feedback/errors
+    result = orch.run_build_and_score(body.body, externs=body.externs, headers=body.headers)
+    errors = result.get("asm_diff") or result.get("log") or ""
+    
+    # Context (Unit Header)
+    context = body.headers
+    
+    # Template
+    template = CONFIG.get("prompt_template", "")
+    full_c = f"{body.externs}\n\n{body.headers}\n\n{body.body}"
+    
+    try:
+        prompt = template.format(
+            asm_content=asm_content,
+            c_code=full_c,
+            context=context,
+            errors=errors
+        )
+        return {"status": "success", "prompt": prompt}
+    except Exception as e:
+        return {"status": "error", "message": f"Template formatting failed: {e}"}
 
 # Mount static files
 app.mount("/", StaticFiles(directory="tools/aidecomp/static", html=True), name="static")
