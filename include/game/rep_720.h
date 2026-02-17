@@ -98,4 +98,5 @@ void fn_3_1CBCC(void);
 void fn_3_1CCC8(void);
 void fn_3_1CE90(void);
 
+extern s32 lbl_3_bss_44;
 #endif // !__GAME_rep_720_H_

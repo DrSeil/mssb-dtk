@@ -1,4 +1,5 @@
 #include "game/rep_720.h"
+#include "UnknownHeaders.h"
 #include "game/rep_3090.h"
 #include "header_rep_data.h"
 
@@ -13,8 +14,10 @@ void fn_3_14E1C(void) {
 }
 
 // .text:0x00014E50 size:0x34 mapped:0x80653EE4
+// One register is STWU instead of STW
 void fn_3_14E50(void) {
-    return;
+    lbl_3_bss_44 = 5;
+    fn_800528AC(fn_3_14BB4, &lbl_3_bss_44);
 }
 
 // .text:0x00014E84 size:0x3C mapped:0x80653F18
