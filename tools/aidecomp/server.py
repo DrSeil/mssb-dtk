@@ -179,20 +179,21 @@ class DecompOrchestrator:
             return f"src/{'/'.join(parts[1:])}.c"
         return None
 
-    def apply_header_changes(self, file_path, lines_text):
+    def apply_header_changes(self, file_path, lines_text, replace_only=False):
         if not file_path or not os.path.exists(file_path):
-            return
+            return False
         
         with open(file_path, "r") as f:
             content = f.read()
         
         lines = content.splitlines()
         modified = False
+        any_replaced = False
         
+        remaining_lines = []
         for new_line in lines_text.splitlines():
             new_line = new_line.strip()
             if not new_line: continue
-            if new_line in content: continue
             
             # Extract function name from the new line if it's a prototype
             match = re.search(r'(\w+)\s*\(', new_line)
@@ -200,17 +201,25 @@ class DecompOrchestrator:
             
             replaced = False
             if found_func_name:
+                search_pat = rf"\b{re.escape(found_func_name)}\s*\("
                 for i, line in enumerate(lines):
-                    if f"{found_func_name}(" in line and ";" in line:
+                    if re.search(search_pat, line) and ";" in line:
                          # Simple check to avoid replacing comments
-                         if "//" not in line.split(f"{found_func_name}(")[0]:
+                         if "//" not in line.split(found_func_name)[0]:
                              print(f"DEBUG: Replacing prototype for {found_func_name} in {file_path}")
                              lines[i] = new_line
                              replaced = True
                              modified = True
+                             any_replaced = True
                              break
             
             if not replaced:
+                remaining_lines.append(new_line)
+        
+        if not replace_only and remaining_lines:
+            # Append what wasn't replaced
+            for new_line in remaining_lines:
+                if new_line in content: continue
                 # Append before the last #endif
                 insertion_idx = -1
                 for i in range(len(lines) - 1, -1, -1):
@@ -228,6 +237,63 @@ class DecompOrchestrator:
         if modified:
             with open(file_path, "w") as f:
                 f.write("\n".join(lines) + "\n")
+        
+        return any_replaced
+
+    def remove_prototype(self, file_path, func_name):
+        if not file_path or not os.path.exists(file_path):
+            return
+        with open(file_path, "r") as f:
+            content = f.read()
+        lines = content.splitlines()
+        new_lines = []
+        modified = False
+        for line in lines:
+            if f"{func_name}(" in line and ";" in line and "//" not in line.split(f"{func_name}(")[0]:
+                print(f"DEBUG: Removing prototype for {func_name} from {file_path}")
+                modified = True
+                continue
+            new_lines.append(line)
+        if modified:
+            with open(file_path, "w") as f:
+                f.write("\n".join(new_lines) + "\n")
+
+    def sync_source_signatures(self, src_path, header_text):
+        if not src_path or not os.path.exists(src_path) or not header_text:
+            return
+            
+        with open(src_path, "r") as f:
+            content = f.read()
+            
+        modified = False
+        for proto in header_text.splitlines():
+            proto = proto.strip()
+            if not proto or ";" not in proto: continue
+            
+            # Get function name
+            match = re.search(r'(\w+)\s*\(', proto)
+            if not match: continue
+            func_name = match.group(1)
+            
+            # Don't sync the function we're actively committing (it gets full body replacement)
+            if func_name == self.func_name: continue
+            
+            # Find definition signature in source
+            # Clean up proto to be a signature (no semicolon, add brace start)
+            new_sig = proto.replace(";", "").strip()
+            
+            # Pattern to find the signature part of a definition
+            # ^[ \t]*[^\n;\(]+?\bfunc_name\b\s*\([^)]*\)\s*\{
+            def_sig_pat = rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(func_name)}\b\s*\([^)]*\)\s*\{{"
+            
+            if re.search(def_sig_pat, content):
+                print(f"DEBUG: Syncing source signature for {func_name} in {src_path}")
+                content = re.sub(def_sig_pat, new_sig + " {", content, count=1)
+                modified = True
+                
+        if modified:
+            with open(src_path, "w") as f:
+                f.write(content)
 
     def commit_to_source(self, c_code):
         src_path = self.resolve_source_path()
@@ -238,19 +304,35 @@ class DecompOrchestrator:
         try:
             with open(src_path, "r") as f:
                 content = f.read()
-            
-            # Pattern to match function definition: type func_name(args) { body }
-            # Added more robust type list and account for pointers/spacing
-            pattern = rf"(void|u8|u16|u32|s8|s16|s32|int|float|f32|f64|char)\s*\*?\s*{self.func_name}\s*\([^)]*\)\s*\{{[^}}]*\}}"
-            
-            if not re.search(pattern, content, re.DOTALL):
-                print(f"DEBUG: regex did not find function {self.func_name} in {src_path}")
-                # Fallback: simpler pattern if the above is too specific
-                pattern = rf"{self.func_name}\s*\([^)]*\)\s*\{{[^}}]*\}}"
-                if not re.search(pattern, content, re.DOTALL):
-                    return False
 
-            new_content = re.sub(pattern, c_code.strip(), content, flags=re.DOTALL)
+            print(f"DEBUG: commit_to_source for {self.func_name} in {src_path}")
+            
+            # Validation: Ensure the code being committed actually declares the function it's supposed to.
+            # We look for the function name followed by an open parenthesis.
+            if not re.search(rf"\b{re.escape(self.func_name)}\b\s*\(", c_code):
+                print(f"ERROR: Code being committed for {self.func_name} does not appear to contain its definition.")
+                return False
+
+            # Pattern to match function signature and its body
+            # We look for the function name preceded by a type at the start of a line.
+            # Then we match everything until a '}' that is at the start of a line.
+            pattern = rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(self.func_name)}\b\s*\([^)]*\)\s*\{{.*?^\}}"
+            
+            match = re.search(pattern, content, re.DOTALL)
+            if not match:
+                # Fallback: a slightly looser pattern that doesn't require ^} if it's the last function or formatted differently
+                print(f"DEBUG: strict regex did not find {self.func_name}. Trying fallback.")
+                pattern = rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(self.func_name)}\b\s*\([^)]*\)\s*\{{.*?\}}"
+                match = re.search(pattern, content, re.DOTALL)
+            
+            if not match:
+                print(f"ERROR: could not find function definition for {self.func_name} in {src_path}")
+                return False
+
+            print(f"DEBUG: Found match for {self.func_name} at range {match.start()} to {match.end()}")
+            
+            # Construct new content by replacing the matched range
+            new_content = content[:match.start()] + "\n" + c_code.strip() + content[match.end():]
             
             # Ensure UnknownHeaders.h is included if it's our externs target
             externs_file = CONFIG.get("externs_header", "UnknownHeaders.h").split('/')[-1]
@@ -288,21 +370,38 @@ class DecompOrchestrator:
             if p and os.path.exists(p):
                 subprocess.run(["git", "checkout", p], capture_output=True)
 
-        # 1. Externs
+        if headers and header_path and os.path.exists(header_path):
+            self.apply_header_changes(header_path, headers)
+            if src_path:
+                self.sync_source_signatures(src_path, headers)
+            
+        # 1. Externs - check if they should actually replace something in the local header first
         if externs and externs_path:
             if not os.path.exists(externs_path):
                 os.makedirs(os.path.dirname(externs_path), exist_ok=True)
                 with open(externs_path, "w") as f:
                     f.write("#ifndef UNKNOWN_HEADERS_H\n#define UNKNOWN_HEADERS_H\n\n#include \"types.h\"\n\n#endif\n")
-            self.apply_header_changes(externs_path, externs)
-
-        # 2. Local Headers
-        if headers and header_path and os.path.exists(header_path):
-            self.apply_header_changes(header_path, headers)
+            
+            # Try to replace in local header first to prevent duplicates
+            replaced_in_local = False
+            if header_path and os.path.exists(header_path):
+                replaced_in_local = self.apply_header_changes(header_path, externs, replace_only=True)
+            
+            # Only append to externs if NOT replaced in local header
+            if not replaced_in_local:
+                self.apply_header_changes(externs_path, externs)
+            else:
+                # If we replaced some but not all, we should still handle the rest
+                # For simplicity, we'll try replacing in externs too
+                self.apply_header_changes(externs_path, externs, replace_only=True)
+            
+            # Sync any signatures that moved to local header or were already there
+            if src_path:
+                self.sync_source_signatures(src_path, externs)
 
         # 3. Source Code
         if c_code:
-            self.commit_to_source(c_code)
+            return self.commit_to_source(c_code)
             
         return True
 
@@ -331,14 +430,28 @@ class DecompOrchestrator:
                 created_files.append(externs_path)
 
             # 2. Temporarily apply changes
-            if externs and externs_path:
-                self.apply_header_changes(externs_path, externs)
-
+            # Local headers first
             if headers and header_path and os.path.exists(header_path):
                 self.apply_header_changes(header_path, headers)
+                if src_path:
+                    self.sync_source_signatures(src_path, headers)
+
+            if externs and externs_path:
+                # Check for redeclarations in local header even if they came from externs box
+                replaced_in_local = False
+                if header_path and os.path.exists(header_path):
+                     replaced_in_local = self.apply_header_changes(header_path, externs, replace_only=True)
+                
+                if not replaced_in_local:
+                    self.apply_header_changes(externs_path, externs)
+                else:
+                    self.apply_header_changes(externs_path, externs, replace_only=True)
+                
+                if src_path:
+                    self.sync_source_signatures(src_path, externs)
 
             if not self.commit_to_source(c_code):
-                 raise Exception(f"Could not find signature for {self.func_name} in {src_path}")
+                 return {"status": "error", "log": f"Could not find signature for {self.func_name} in {src_path}"}
 
             # 2. Build
             build_cmd_str = CONFIG.get("build_cmd", "ninja")
