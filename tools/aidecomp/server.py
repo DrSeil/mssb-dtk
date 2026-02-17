@@ -179,6 +179,56 @@ class DecompOrchestrator:
             return f"src/{'/'.join(parts[1:])}.c"
         return None
 
+    def apply_header_changes(self, file_path, lines_text):
+        if not file_path or not os.path.exists(file_path):
+            return
+        
+        with open(file_path, "r") as f:
+            content = f.read()
+        
+        lines = content.splitlines()
+        modified = False
+        
+        for new_line in lines_text.splitlines():
+            new_line = new_line.strip()
+            if not new_line: continue
+            if new_line in content: continue
+            
+            # Extract function name from the new line if it's a prototype
+            match = re.search(r'(\w+)\s*\(', new_line)
+            found_func_name = match.group(1) if match else None
+            
+            replaced = False
+            if found_func_name:
+                for i, line in enumerate(lines):
+                    if f"{found_func_name}(" in line and ";" in line:
+                         # Simple check to avoid replacing comments
+                         if "//" not in line.split(f"{found_func_name}(")[0]:
+                             print(f"DEBUG: Replacing prototype for {found_func_name} in {file_path}")
+                             lines[i] = new_line
+                             replaced = True
+                             modified = True
+                             break
+            
+            if not replaced:
+                # Append before the last #endif
+                insertion_idx = -1
+                for i in range(len(lines) - 1, -1, -1):
+                    if "#endif" in lines[i]:
+                        insertion_idx = i
+                        break
+                
+                if insertion_idx != -1:
+                    lines.insert(insertion_idx, new_line)
+                    modified = True
+                else:
+                    lines.append(new_line)
+                    modified = True
+        
+        if modified:
+            with open(file_path, "w") as f:
+                f.write("\n".join(lines) + "\n")
+
     def commit_to_source(self, c_code):
         src_path = self.resolve_source_path()
         if not src_path or not os.path.exists(src_path):
@@ -244,37 +294,11 @@ class DecompOrchestrator:
                 os.makedirs(os.path.dirname(externs_path), exist_ok=True)
                 with open(externs_path, "w") as f:
                     f.write("#ifndef UNKNOWN_HEADERS_H\n#define UNKNOWN_HEADERS_H\n\n#include \"types.h\"\n\n#endif\n")
-            
-            with open(externs_path, "r") as f:
-                e_content = f.read()
-            
-            new_lines = []
-            for line in externs.splitlines():
-                if line.strip() and line.strip() not in e_content:
-                    new_lines.append(line)
-            
-            if new_lines:
-                last_endif = e_content.rfind("#endif")
-                if last_endif != -1:
-                    e_content = e_content[:last_endif] + "\n".join(new_lines) + "\n" + e_content[last_endif:]
-                    with open(externs_path, "w") as f:
-                        f.write(e_content)
+            self.apply_header_changes(externs_path, externs)
 
         # 2. Local Headers
         if headers and header_path and os.path.exists(header_path):
-            with open(header_path, "r") as f:
-                h_content = f.read()
-            
-            new_lines = []
-            for line in headers.splitlines():
-                if line.strip() and line.strip() not in h_content:
-                    new_lines.append(line)
-            if new_lines:
-                last_endif = h_content.rfind("#endif")
-                if last_endif != -1:
-                    h_content = h_content[:last_endif] + "\n".join(new_lines) + "\n" + h_content[last_endif:]
-                    with open(header_path, "w") as f:
-                        f.write(h_content)
+            self.apply_header_changes(header_path, headers)
 
         # 3. Source Code
         if c_code:
@@ -308,20 +332,10 @@ class DecompOrchestrator:
 
             # 2. Temporarily apply changes
             if externs and externs_path:
-                with open(externs_path, "r") as f: content = f.read()
-                new_l = [l for l in externs.splitlines() if l.strip() and l.strip() not in content]
-                if new_l:
-                    idx = content.rfind("#endif")
-                    if idx != -1:
-                        with open(externs_path, "w") as f: f.write(content[:idx] + "\n".join(new_l) + "\n" + content[idx:])
+                self.apply_header_changes(externs_path, externs)
 
             if headers and header_path and os.path.exists(header_path):
-                with open(header_path, "r") as f: content = f.read()
-                new_l = [l for l in headers.splitlines() if l.strip() and l.strip() not in content]
-                if new_l:
-                    idx = content.rfind("#endif")
-                    if idx != -1:
-                        with open(header_path, "w") as f: f.write(content[:idx] + "\n".join(new_l) + "\n" + content[idx:])
+                self.apply_header_changes(header_path, headers)
 
             if not self.commit_to_source(c_code):
                  raise Exception(f"Could not find signature for {self.func_name} in {src_path}")

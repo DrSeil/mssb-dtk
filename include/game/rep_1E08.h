@@ -2,6 +2,7 @@
 #define __GAME_rep_1E08_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 extern u8 lbl_3_bss_995C;
 extern s16 lbl_3_bss_9952;
@@ -27,17 +28,7 @@ typedef struct {
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
  
-typedef struct GlobalStruct_8036E548 {
-    u8 _pad0[0x70];
-    s32 unk70;             // Offset 0x70
-    u8 _pad1[0x3070 - 0x74];
-    void (*unk3070)(void); // Offset 0x3070
-    void (*unk3074)(s32);  // Offset 0x3074
-} GlobalStruct_8036E548;
 
-void fn_800BD670(s32 fieldVal, s32 arg1, GlobalStruct_8036E548* globalPtr);
-
-extern GlobalStruct_8036E548 lbl_8036E548;
  
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);

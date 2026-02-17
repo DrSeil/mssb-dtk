@@ -7,7 +7,7 @@ void fn_3_21C90(void);
 void fn_3_21DE4(void);
 void fn_3_21F14(void);
 void fn_3_2273C(void);
-void fn_3_2281C(void);
+BOOL fn_3_2281C(s32 index);
 void fn_3_22850(void);
 void fn_3_22944(void);
 void fn_3_22948(void);

@@ -1,4 +1,5 @@
 #include "game/rep_A00.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x00021C90 size:0x154 mapped:0x80660D24
@@ -22,8 +23,25 @@ void fn_3_2273C(void) {
 }
 
 // .text:0x0002281C size:0x34 mapped:0x806618B0
-void fn_3_2281C(void) {
-    return;
+/**
+ * @address 0002281C
+ */
+BOOL fn_3_2281C(s32 index) {
+    // lis r4, lbl_8036E548@ha
+    // addi r3, r4, lbl_8036E548@l
+    // slwi r0, r3, 2 -> add r3, r3, r0
+    Struct_3_2281C_Entry* ptr = lbl_8036E548.entries[index];
+
+    // lwz r3, 0x2C50(r3)
+    // cmplwi r3, 0
+    if (ptr == NULL) {
+        return TRUE;
+    }
+
+    // lha r0, 0x68(r3)
+    // cntlzw r0, r0
+    // srwi r3, r0, 5
+    return ptr->field_0x68 == 0;
 }
 
 // .text:0x00022850 size:0xF4 mapped:0x806618E4
@@ -101,4 +119,3 @@ void fn_3_24630(void) {
 void fn_3_24708(void) {
     return;
 }
-
