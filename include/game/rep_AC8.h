@@ -171,7 +171,7 @@ void fn_3_499C4(void);
 void fn_3_49C18(void);
 void fn_3_49EA8(void);
 void fn_3_49F3C(void);
-void fn_3_49F40(void);
+void fn_3_49F40(s32 arg0, s32 arg1);
 void fn_3_4A124(void);
 void fn_3_4A408(void);
 void fn_3_4A9AC(void);

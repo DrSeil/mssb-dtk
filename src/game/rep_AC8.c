@@ -1,4 +1,5 @@
 #include "game/rep_AC8.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000251E4 size:0x1C0 mapped:0x80664278
@@ -357,8 +358,10 @@ void fn_3_334EC(void) {
 }
 
 // .text:0x00033D9C size:0x34 mapped:0x80672E30
+
 void fn_3_33D9C(void) {
-    return;
+    fn_3_49F40(6,7);
+    fn_3_49F40(8,6);
 }
 
 // .text:0x00033DD0 size:0x418 mapped:0x80672E64
@@ -827,7 +830,7 @@ void fn_3_49F3C(void) {
 }
 
 // .text:0x00049F40 size:0x1E4 mapped:0x80688FD4
-void fn_3_49F40(void) {
+void fn_3_49F40(s32 arg0, s32 arg1) {
     return;
 }
 
