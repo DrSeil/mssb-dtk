@@ -175,7 +175,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     liveLogs.appendChild(msgEntry);
                 }
 
-                if (data.draft_code) {
+                if (data.draft_split) {
+                    const externsDisplay = document.getElementById('externs-display');
+                    const headerDisplay = document.getElementById('header-display');
+                    const codeDisplay = document.getElementById('code-display');
+
+                    if (externsDisplay) externsDisplay.innerText = data.draft_split.externs || '// No external headers needed.';
+                    if (headerDisplay) headerDisplay.innerText = data.draft_split.headers || '// No local headers needed.';
+                    if (codeDisplay) codeDisplay.innerText = data.draft_split.body || '// No code generated.';
+
+                    // Update Labels with context if possible
+                    const unitHeaderLabel = document.getElementById('unit-header-label');
+                    const unitSourceLabel = document.getElementById('unit-source-label');
+
+                    if (data.result && data.result.unit) {
+                        const unitFile = data.result.unit.split('/').pop();
+                        if (unitHeaderLabel) unitHeaderLabel.innerText = `Unit Header (${unitFile}.h)`;
+                        if (unitSourceLabel) unitSourceLabel.innerText = `Unit Source (${unitFile}.c)`;
+                    }
+
+                } else if (data.draft_code) {
                     codeDisplay.innerText = data.draft_code;
                 } else if (data.result && data.result.diff) {
                     codeDisplay.innerText = data.result.diff;
@@ -206,5 +225,91 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreCircle.style.setProperty('--percent', percent);
         const text = scoreCircle.querySelector('.circle-text');
         if (text) text.innerText = `${percent.toFixed(1)}%`;
+    }
+
+    // Verify Logic
+    const verifyBtn = document.getElementById('verify-btn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', async () => {
+            const funcName = funcInput.value.trim();
+            if (!funcName) return alert("No function selected.");
+
+            const externs = document.getElementById('externs-display').innerText;
+            const headers = document.getElementById('header-display').innerText;
+            const body = document.getElementById('code-display').innerText;
+
+            verifyBtn.innerText = "Verifying...";
+            verifyBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/verify/${funcName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ externs, headers, body })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    const result = data.result;
+                    if (result.score !== undefined) {
+                        updateScore(result.score * 100);
+                        const entry = document.createElement('div');
+                        entry.className = 'log-entry success';
+                        entry.innerText = `> Verification complete. Score: ${(result.score * 100).toFixed(1)}%`;
+                        liveLogs.appendChild(entry);
+                    } else if (result.log) {
+                        const entry = document.createElement('div');
+                        entry.className = 'log-entry error';
+                        entry.innerText = `> Verification failed: ${result.log.substring(0, 100)}...`;
+                        liveLogs.appendChild(entry);
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                verifyBtn.innerText = "Verify Changes";
+                verifyBtn.disabled = false;
+            }
+        });
+    }
+
+    // Smart Commit Logic
+    const smartCommitBtn = document.getElementById('smart-commit-btn');
+    if (smartCommitBtn) {
+        smartCommitBtn.addEventListener('click', async () => {
+            const funcName = funcInput.value.trim();
+            if (!funcName) return alert("No function selected.");
+
+            const externs = document.getElementById('externs-display').innerText;
+            const headers = document.getElementById('header-display').innerText;
+            const body = document.getElementById('code-display').innerText;
+
+            smartCommitBtn.innerText = "Committing...";
+            smartCommitBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/commit/${funcName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ externs, headers, body })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry success';
+                    entry.innerText = `> ${data.message}`;
+                    liveLogs.appendChild(entry);
+                } else {
+                    alert(data.message || "Commit failed");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Request failed");
+            } finally {
+                smartCommitBtn.innerText = "Smart Commit";
+                smartCommitBtn.disabled = false;
+            }
+        });
     }
 });

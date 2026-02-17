@@ -82,8 +82,30 @@
                     </div>
 
                     <div class="card glass-card code-view">
-                        <h3>Current Draft</h3>
-                        <pre><code id="code-display" class="language-c">// Code will appear here...</code></pre>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0;">Current Draft</h3>
+                            <div class="draft-actions">
+                                <button id="verify-btn" class="btn-secondary btn-sm" style="margin-right: 10px;">Verify
+                                    Changes</button>
+                                <button id="smart-commit-btn" class="btn-primary btn-sm">Smart Commit</button>
+                            </div>
+                        </div>
+
+                        <div class="draft-section">
+                            <label>Headers (UnknownHeaders.h / External)</label>
+                            <pre><code id="externs-display" class="language-c" contenteditable="true">// External symbols...</code></pre>
+                        </div>
+
+                        <div class="draft-section">
+                            <label id="unit-header-label">Unit Header (rep_XX.h / Local)</label>
+                            <pre><code id="header-display" class="language-c" contenteditable="true">// Unit declarations...</code></pre>
+                        </div>
+
+                        <div class="draft-section">
+                            <label id="unit-source-label">Unit Source (rep_XX.c / Code)</label>
+                            <pre><code id="code-display" class="language-c" contenteditable="true">// Function implementation...</code></pre>
+                        </div>
                     </div>
                 </div>
             </div>

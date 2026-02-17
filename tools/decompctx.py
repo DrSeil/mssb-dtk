@@ -89,7 +89,8 @@ def process_file(in_file: str, lines: List[str]) -> str:
                     if in_file in defines:
                         break
                     defines.add(in_file)
-            print("Processing file", in_file)
+            import sys
+            print("Processing file", in_file, file=sys.stderr)
         include_match = include_pattern.match(line.strip())
         if include_match and not include_match[1].endswith(".s"):
             excluded = False

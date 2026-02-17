@@ -29,6 +29,7 @@ CONFIG = {
     "target_obj": "build/mssb/main.dol.o",
     "ghidra_path": "/path/to/ghidra/support/analyzeHeadless",
     "m2c_path": "python3 tools/m2c_repo/m2c.py",
+    "externs_header": "include/UnknownHeaders.h",
     "prompt_template": "Refine the following C code based on the assembly:\n\n{asm_content}\n\nCurrent C:\n{c_code}\n\nContext:\n{context}\n\nErrors:\n{errors}"
 
 }
@@ -36,18 +37,24 @@ CONFIG = {
 REPORT_CACHE = None
 
 def load_report():
-    global REPORT_CACHE
-    if REPORT_CACHE:
-        return REPORT_CACHE
+    # Try multiple common report paths
+    candidates = [
+        "build/GYQE01/report.json",
+        "report.json"
+    ]
     
-    report_path = "report.json"
-    if not os.path.exists(report_path):
+    report_path = None
+    for cand in candidates:
+        if os.path.exists(cand):
+            report_path = cand
+            break
+            
+    if not report_path:
         return None
         
     try:
         with open(report_path, "r") as f:
-            REPORT_CACHE = json.load(f)
-        return REPORT_CACHE
+            return json.load(f)
     except Exception:
         return None
 
@@ -118,22 +125,24 @@ class DecompOrchestrator:
 
     def generate_m2c_draft(self, asm_file):
         print(f"DEBUG: generate_m2c_draft for {self.func_name} using {asm_file}")
-        m2c_py = CONFIG.get('m2c_path', 'python3 tools/m2c_repo/m2c.py')
+        # Use m2c_helper.py instead of raw m2c.py to get context automatically
+        m2c_helper = "python3 tools/m2c_helper.py"
         env = os.environ.copy()
-        pythonpath = env.get("PYTHONPATH", "")
-        repo_path = os.path.abspath("tools/m2c_repo")
-        if repo_path not in pythonpath:
-            env["PYTHONPATH"] = f"{repo_path}:{pythonpath}"
-
-        cmd = f"{m2c_py} --target ppc-mwcc-c {asm_file} --function {self.func_name}"
+        
+        cmd = f"{m2c_helper} {self.func_name} --target ppc-mwcc-c"
         try:
-            print(f"DEBUG: Running m2c cmd: {cmd}")
-            res = subprocess.check_output(cmd, shell=True, env=env, text=True, stderr=subprocess.STDOUT)
-            print(f"DEBUG: m2c success, output length: {len(res)}")
-            return res
-        except subprocess.CalledProcessError as e:
-            print(f"ERROR: m2c failed: {e.output}")
-            return f"/* Error generating draft: {e.output} */"
+            print(f"DEBUG: Running m2c_helper cmd: {cmd}")
+            # Use run instead of check_output so we can separate stdout and stderr
+            res = subprocess.run(cmd.split(), env=env, capture_output=True, text=True)
+            if res.returncode != 0:
+                print(f"ERROR: m2c_helper failed: {res.stderr}")
+                return f"/* Error generating draft: {res.stderr} */"
+            
+            print(f"DEBUG: m2c_helper success, output length: {len(res.stdout)}")
+            return res.stdout
+        except Exception as e:
+            print(f"ERROR: m2c_helper Exception: {e}")
+            return f"/* Exception generating draft: {e} */"
 
     def resolve_source_path(self):
         # Read objdiff.json to find base_path for this unit
@@ -197,43 +206,127 @@ class DecompOrchestrator:
             print(f"ERROR: failed to commit to {src_path}: {e}")
             return False
 
-    def run_build_and_score(self, c_code):
+    def commit_all_changes(self, externs, headers, c_code):
+        print(f"DEBUG: commit_all_changes for {self.func_name}")
+        src_path = self.resolve_source_path()
+        header_path = src_path.replace('src/', 'include/').replace('.c', '.h') if src_path else None
+        externs_path = CONFIG.get("externs_header", "include/UnknownHeaders.h")
+        
+        # Reset files to base states if they exist
+        for p in [src_path, header_path, externs_path]:
+            if p and os.path.exists(p):
+                subprocess.run(["git", "checkout", p], capture_output=True)
+
+        # 1. Externs
+        if externs and externs_path:
+            if not os.path.exists(externs_path):
+                os.makedirs(os.path.dirname(externs_path), exist_ok=True)
+                with open(externs_path, "w") as f:
+                    f.write("#ifndef UNKNOWN_HEADERS_H\n#define UNKNOWN_HEADERS_H\n\n#include \"types.h\"\n\n#endif\n")
+            
+            with open(externs_path, "r") as f:
+                e_content = f.read()
+            
+            new_lines = []
+            for line in externs.splitlines():
+                if line.strip() and line.strip() not in e_content:
+                    new_lines.append(line)
+            
+            if new_lines:
+                last_endif = e_content.rfind("#endif")
+                if last_endif != -1:
+                    e_content = e_content[:last_endif] + "\n".join(new_lines) + "\n" + e_content[last_endif:]
+                    with open(externs_path, "w") as f:
+                        f.write(e_content)
+
+        # 2. Local Headers
+        if headers and header_path and os.path.exists(header_path):
+            with open(header_path, "r") as f:
+                h_content = f.read()
+            
+            new_lines = []
+            for line in headers.splitlines():
+                if line.strip() and line.strip() not in h_content:
+                    new_lines.append(line)
+            if new_lines:
+                last_endif = h_content.rfind("#endif")
+                if last_endif != -1:
+                    h_content = h_content[:last_endif] + "\n".join(new_lines) + "\n" + h_content[last_endif:]
+                    with open(header_path, "w") as f:
+                        f.write(h_content)
+
+        # 3. Source Code
+        if c_code:
+            self.commit_to_source(c_code)
+            
+        return True
+
+    def run_build_and_score(self, c_code, externs=None, headers=None):
         print("DEBUG: run_build_and_score started")
         src_path = self.resolve_source_path()
         if not src_path or not os.path.exists(src_path):
              return {"status": "error", "log": f"Could not find source file for unit {self.unit_name}"}
 
-        # Backup original source
-        original_content = None
-        try:
-            with open(src_path, "r") as f:
-                original_content = f.read()
-        except Exception as e:
-            return {"status": "error", "log": f"Failed to read source: {e}"}
+        header_path = src_path.replace('src/', 'include/').replace('.c', '.h')
+        externs_path = CONFIG.get("externs_header", "include/UnknownHeaders.h")
 
-        # Integrate AI code temporarily for assessment
-        if not self.commit_to_source(c_code):
-             return {"status": "error", "log": f"Could not find signature for {self.func_name} in {src_path}"}
-        
-        # 1. Build
-        build_cmd_str = CONFIG.get("build_cmd", "ninja")
-        print(f"DEBUG: Running build cmd: {build_cmd_str}")
+        # Backups
+        backups = {}
+        for p in [src_path, header_path, externs_path]:
+            if p and os.path.exists(p):
+                with open(p, "r") as f: backups[p] = f.read()
+
         try:
+            # 1. Temporarily apply changes
+            if externs and externs_path:
+                with open(externs_path, "r") as f: content = f.read()
+                new_l = [l for l in externs.splitlines() if l.strip() and l.strip() not in content]
+                if new_l:
+                    idx = content.rfind("#endif")
+                    if idx != -1:
+                        with open(externs_path, "w") as f: f.write(content[:idx] + "\n".join(new_l) + "\n" + content[idx:])
+
+            if headers and header_path and os.path.exists(header_path):
+                with open(header_path, "r") as f: content = f.read()
+                new_l = [l for l in headers.splitlines() if l.strip() and l.strip() not in content]
+                if new_l:
+                    idx = content.rfind("#endif")
+                    if idx != -1:
+                        with open(header_path, "w") as f: f.write(content[:idx] + "\n".join(new_l) + "\n" + content[idx:])
+
+            if not self.commit_to_source(c_code):
+                 raise Exception(f"Could not find signature for {self.func_name} in {src_path}")
+
+            # 2. Build
+            build_cmd_str = CONFIG.get("build_cmd", "ninja")
             build_proc = subprocess.run(build_cmd_str.split(), capture_output=True, text=True)
             if build_proc.returncode != 0:
-                print(f"DEBUG: Build failed: {build_proc.stderr[:200]}...")
-                # Revert on fail
-                with open(src_path, "w") as f: f.write(original_content)
                 return {"status": "build_error", "log": build_proc.stderr}
-        except Exception as e:
-            print(f"ERROR: Build exception: {e}")
-            with open(src_path, "w") as f: f.write(original_content)
-            return {"status": "build_exception", "log": str(e)}
 
-        # 2. Score
-        objdiff_bin = CONFIG.get("objdiff_path", "objdiff")
-        cmd = [objdiff_bin, "diff", "--format", "json", "-u", self.unit_name, "-o", "-", self.func_name]
-        print(f"DEBUG: Running objdiff: {cmd}")
+            # 3. Score
+            objdiff_bin = CONFIG.get("objdiff_path", "objdiff")
+            cmd = [objdiff_bin, "diff", "--format", "json", "-u", self.unit_name, "-o", "-", self.func_name]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode != 0:
+                return {"status": "objdiff_error", "log": res.stderr}
+            
+            data = json.loads(res.stdout)
+            if "right" in data and "symbols" in data["right"]:
+                for sym in data["right"]["symbols"]:
+                    if sym.get("name") == self.func_name:
+                        score = sym.get("match_percent", 0.0) / 100.0
+                        return {"status": "success", "score": score, "diff": f"Match percent: {sym.get('match_percent')}%", "unit": self.unit_name}
+            
+            return {"status": "not_found", "score": 0, "diff": "Function not found in objdiff output"}
+
+        except Exception as e:
+            return {"status": "error", "log": str(e)}
+        finally:
+            # Always Revert
+            for p, content in backups.items():
+                with open(p, "w") as f: f.write(content)
+
+    def run_build_and_score_old(self, c_code):
         try:
             res = subprocess.run(cmd, capture_output=True, text=True)
             
@@ -260,6 +353,48 @@ class DecompOrchestrator:
         except Exception as e:
             print(f"ERROR: objdiff exception: {e}")
             return {"status": "objdiff_exception", "log": str(e)}
+
+def split_m2c_draft(c_code, func_name):
+    externs = []
+    unit_headers = []
+    function_body = []
+    
+    lines = c_code.splitlines()
+    in_function = False
+    
+    for line in lines:
+        stripped = line.strip()
+        # Skip assembly source info or metadata lines if any (usually starting with # or /*)
+        if stripped.startswith('#'): continue
+
+        if not stripped: 
+            if in_function:
+                 function_body.append(line)
+            continue
+        
+        # Detect function start - look for the signature with a {
+        if func_name in line and '{' in line and '(' in line:
+            in_function = True
+        
+        if in_function:
+            function_body.append(line)
+        else:
+            if stripped.startswith('?') or '/* extern */' in line:
+                externs.append(line)
+            elif stripped.startswith('extern') or stripped.startswith('static') or stripped.startswith('typedef'):
+                unit_headers.append(line)
+            else:
+                # If it's a declaration before the function that we haven't caught
+                if stripped.endswith(';') and '(' in stripped:
+                    unit_headers.append(line)
+                else:
+                    externs.append(line)
+                
+    return {
+        "externs": "\n".join(externs),
+        "headers": "\n".join(unit_headers),
+        "body": "\n".join(function_body)
+    }
 
 class ConfigUpdate(BaseModel):
     max_rounds: Optional[int]
@@ -324,10 +459,12 @@ def get_functions(
                     size = 0
             
             # Get match percent
-            # Some reports might put it in 'measures', others 'metadata'
-            # Based on score_functions.py it is in measures
-            measures = func.get("measures", {})
-            match_pct = measures.get("matched_code_percent", 0.0)
+            # Handle different report formats: 'fuzzy_match_percent' or 'measures.matched_code_percent'
+            match_pct = func.get("fuzzy_match_percent")
+            if match_pct is None:
+                measures = func.get("measures", {})
+                match_pct = measures.get("matched_code_percent", 0.0)
+            
             if match_pct is None: 
                 match_pct = 0.0
                 
@@ -388,7 +525,14 @@ async def process_function(func_name: str, request: Request):
     if result.get("score") == 1.0:
         print("DEBUG: Full match acheived!")
         orch.commit_to_source(current_c)
-        return {"status": "matched", "round": 0, "result": result, "draft_code": current_c}
+        draft_split = split_m2c_draft(current_c, func_name)
+        return {
+            "status": "matched", 
+            "round": 0, 
+            "result": result, 
+            "draft_code": current_c,
+            "draft_split": draft_split
+        }
     
     # ... (rest of function)
     print("DEBUG: Reporting in_progress status")
@@ -407,9 +551,40 @@ async def process_function(func_name: str, request: Request):
         "current_score": result.get("score"), 
         "diff": result.get("diff"),
         "draft_code": current_c,
+        "draft_split": split_m2c_draft(current_c, func_name),
         "result": result
     }
 
+
+class CommitRequest(BaseModel):
+    externs: str
+    headers: str
+    body: str
+
+@app.post("/commit/{func_name}")
+async def commit_to_base(func_name: str, body: CommitRequest):
+    unit_name = find_unit_name(func_name)
+    if not unit_name:
+        return {"status": "error", "message": "Could not resolve unit."}
+        
+    orch = DecompOrchestrator(func_name, unit_name)
+    success = orch.commit_all_changes(body.externs, body.headers, body.body)
+    
+    if success:
+        return {"status": "success", "message": "Changes committed and verified."}
+    else:
+        return {"status": "error", "message": "Commit failed."}
+
+@app.post("/verify/{func_name}")
+async def verify_draft(func_name: str, body: CommitRequest):
+    unit_name = find_unit_name(func_name)
+    if not unit_name:
+        return {"status": "error", "message": "Could not resolve unit."}
+        
+    orch = DecompOrchestrator(func_name, unit_name)
+    result = orch.run_build_and_score(body.body, externs=body.externs, headers=body.headers)
+    
+    return {"status": "success", "result": result}
 
 # Mount static files
 app.mount("/", StaticFiles(directory="tools/aidecomp/static", html=True), name="static")
