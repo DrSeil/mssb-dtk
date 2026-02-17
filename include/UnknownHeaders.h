@@ -21,4 +21,5 @@ extern GlobalStruct_8036E548 lbl_8036E548;
 void fn_800BD670(s32 fieldVal, s32 arg1, GlobalStruct_8036E548* globalPtr);
 extern GlobalStruct_8036E548 lbl_8036E548;
 // No external headers needed.
+void fn_3_B93C8(s32);                                    /* extern */
 #endif

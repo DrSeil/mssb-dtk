@@ -1,4 +1,5 @@
 #include "game/rep_1038.h"
+#include "UnknownHeaders.h"
 #include "game/rep_F80.h"
 #include "header_rep_data.h"
 
@@ -22,8 +23,11 @@ void fn_3_6C0E0(void) {
 }
 
 // .text:0x0006C108 size:0x34 mapped:0x806AB19C
+
+
 void fn_3_6C108(void) {
-    return;
+    fn_3_B93C8(1);
+    lbl_3_common_bss_32724._pad2[4] = 0;
 }
 
 // .text:0x0006C13C size:0x14 mapped:0x806AB1D0
