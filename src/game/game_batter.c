@@ -7,6 +7,7 @@
 #include "game/rep_540.h"
 #include "game/rep_1188.h"
 #include "game/rep_8C8.h"
+#include "game/rep_1F58.h"
 #include "musyx/musyx.h"
 
 // probably in data

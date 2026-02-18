@@ -2,6 +2,7 @@
 #define UNKNOWN_HEADERS_H
 
 #include "types.h"
+#include "game/UnknownHomes_Game.h"
 
 typedef void (*QueueCallback)(void);
 void fn_800528AC(void (*callback)(void), s32 *arg1);
@@ -82,4 +83,8 @@ typedef struct CommonBss_35154 {
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
 extern void fn_80034CEC(u32);
+// The assembly passes the index in r4
+extern VecXZ lbl_3_data_111C8[];
+// Extern function prototype based on bl fn_8003A688
+extern void fn_8003A688(f32, f32);
 #endif

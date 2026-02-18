@@ -29,7 +29,7 @@ void fn_3_BC25C(void);
 void fn_3_BC274(void);
 void fn_3_BC2DC(void);
 void fn_3_BC6D8(void);
-void fn_3_BC850(void);
+void fn_3_BC850( s32 index);
 void fn_3_BC888(void);
 void fn_3_BCA20(void);
 void fn_3_BD1D4(void);
