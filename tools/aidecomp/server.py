@@ -35,8 +35,7 @@ CONFIG = {
     "ghidra_path": "/path/to/ghidra/support/analyzeHeadless",
     "m2c_path": "python3 tools/m2c_repo/m2c.py",
     "externs_header": "include/UnknownHeaders.h",
-    "prompt_template": "Refine the following C code based on the assembly:\n\n{asm_content}\n\nCurrent C:\n{c_code}\n\nContext:\n{context}\n\nErrors:\n{errors}"
-
+    "prompt_template": "Refine the following C code to match the assembly output as closely as possible.\n\nAssembly:\n{asm_content}\n\nCurrent C Code:\n{c_code}\n\nUsed Data Structures:\n{structures}\n\nHeader Context:\n{context}\n\nBuild/Comparison Errors:\n{errors}\n\nProvide the refined C code block only."
 }
 
 REPORT_CACHE = None
@@ -79,6 +78,61 @@ def find_unit_name(func_name):
             if unit_path:
                 break
     return unit_path
+
+def unit_to_header(unit_name):
+    if not unit_name: return None
+    # Strip build prefix
+    path = unit_name
+    if path.startswith('build/'):
+        parts = path.split('/')
+        try:
+            src_idx = parts.index('src')
+            path = "/".join(parts[src_idx+1:])
+        except ValueError:
+            path = "/".join(parts[2:])
+            
+    if path.endswith('.o'): path = path[:-2]
+    if path.endswith('.c'): path = path[:-2]
+    return f"include/{path}.h"
+
+def unit_to_source(unit_name):
+    if not unit_name: return None
+    # Strip build prefix
+    path = unit_name
+    if path.startswith('build/'):
+        parts = path.split('/')
+        try:
+            src_idx = parts.index('src')
+            path = "/".join(parts[src_idx:])
+        except ValueError:
+            path = "/".join(parts[2:])
+            if not path.startswith('src/'): path = 'src/' + path
+            
+    if path.endswith('.o'): path = path[:-2] + '.c'
+    if not path.endswith('.c'): path += '.c'
+    return path
+
+def is_meaningful_code(text):
+    if not text: return False
+    # Check if there's anything other than comments and whitespace
+    clean = re.sub(r'//.*', '', text) # Remove line comments
+    clean = re.sub(r'/\*.*?\*/', '', clean, flags=re.DOTALL) # Remove block comments
+    clean = clean.strip()
+    
+    # Also ignore common placeholders
+    placeholders = [
+        "No external headers needed",
+        "No local headers needed",
+        "No changes needed",
+        "External symbols",
+        "Unit declarations",
+        "Function implementation"
+    ]
+    for p in placeholders:
+        if p.lower() in text.lower() and len(clean) < len(p) + 10:
+            return False
+            
+    return len(clean) > 0
 
 def find_asm_path(func_name):
     print(f"DEBUG: find_asm_path called for {func_name}")
@@ -206,10 +260,11 @@ class DecompOrchestrator:
                     if re.search(search_pat, line) and ";" in line:
                          # Simple check to avoid replacing comments
                          if "//" not in line.split(found_func_name)[0]:
-                             print(f"DEBUG: Replacing prototype for {found_func_name} in {file_path}")
-                             lines[i] = new_line
+                             if lines[i] != new_line:
+                                 print(f"DEBUG: Replacing prototype for {found_func_name} in {file_path}")
+                                 lines[i] = new_line
+                                 modified = True
                              replaced = True
-                             modified = True
                              any_replaced = True
                              break
             
@@ -258,6 +313,44 @@ class DecompOrchestrator:
             with open(file_path, "w") as f:
                 f.write("\n".join(new_lines) + "\n")
 
+    def apply_global_header_changes(self, lines_text):
+        if not lines_text: return
+        
+        externs_path = CONFIG.get("externs_header", "include/UnknownHeaders.h")
+        src_path = self.resolve_source_path()
+        local_header = src_path.replace('src/', 'include/').replace('.c', '.h') if src_path else None
+        
+        for line in lines_text.splitlines():
+            line = line.strip()
+            if not line: continue
+            
+            # Identify function name
+            match = re.search(r'(\w+)\s*\(', line)
+            func_name = match.group(1) if match else None
+            
+            if func_name:
+                # 1. Try local header first
+                if local_header and os.path.exists(local_header):
+                    if self.apply_header_changes(local_header, line, replace_only=True):
+                        self.sync_source_signatures(src_path, line)
+                        continue
+                
+                # 2. Try home header of the function
+                home_unit = find_unit_name(func_name)
+                if home_unit and home_unit != self.unit_name:
+                    home_header = unit_to_header(home_unit)
+                    if home_header and os.path.exists(home_header):
+                         if self.apply_header_changes(home_header, line, replace_only=True):
+                             home_src = unit_to_source(home_unit)
+                             self.sync_source_signatures(home_src, line)
+                             continue
+                
+                # 3. Fallback to UnknownHeaders.h (default)
+                self.apply_header_changes(externs_path, line)
+            else:
+                # Not a function, goes to UnknownHeaders.h
+                self.apply_header_changes(externs_path, line)
+
     def sync_source_signatures(self, src_path, header_text):
         if not src_path or not os.path.exists(src_path) or not header_text:
             return
@@ -295,12 +388,115 @@ class DecompOrchestrator:
             with open(src_path, "w") as f:
                 f.write(content)
 
+
+
+    def find_type_definition(self, type_name):
+        # Look for struct NAME { or typedef struct NAME { or enum NAME {
+        search_pat = rf"\b(struct|enum|union|typedef)\s+{type_name}\b"
+        try:
+            grep_out = subprocess.run(["grep", "-rn", search_pat, "include/"], capture_output=True, text=True).stdout
+            if not grep_out:
+                # Try finding where it's used as a typedef target specifically
+                search_pat = rf"\b{type_name}\s*;"
+                grep_out = subprocess.run(["grep", "-rn", search_pat, "include/"], capture_output=True, text=True).stdout
+        except:
+            return None
+            
+        if not grep_out: return None
+        
+        # Take first match in include/
+        match_lines = grep_out.splitlines()
+        line_info = match_lines[0]
+        # Prefer matches that look like definitions (have a {)
+        for ml in match_lines:
+            if "{" in ml:
+                line_info = ml
+                break
+                
+        match = re.match(r'(.*?):(\d+):', line_info)
+        if not match: return None
+        
+        filepath, lineno = match.groups()
+        lineno = int(lineno)
+        
+        try:
+            with open(filepath, 'r') as f:
+                lines = f.readlines()
+        except:
+            return None
+            
+        start_idx = lineno - 1
+        
+        # Backtrack if we matched the tail end of a typedef struct { ... } TypeName;
+        if re.search(rf"\b{type_name}\s*;", lines[start_idx]):
+             curr = start_idx
+             bc = 0
+             found_start = False
+             while curr >= 0 and curr > start_idx - 50:
+                 l = lines[curr]
+                 bc += l.count('}')
+                 bc -= l.count('{')
+                 if bc == 0 and '{' in l:
+                     start_idx = curr
+                     found_start = True
+                     break
+                 curr -= 1
+        
+        block = []
+        brace_count = 0
+        started = False
+        
+        for i in range(start_idx, min(start_idx + 100, len(lines))):
+            line = lines[i]
+            block.append(line)
+            brace_count += line.count('{')
+            brace_count -= line.count('}')
+            if '{' in line: started = True
+            
+            if started and brace_count <= 0:
+                if ';' in line: break
+                if i+1 < len(lines) and (';' in lines[i+1] or re.search(rf"\b{type_name}\b", lines[i+1])):
+                    block.append(lines[i+1])
+                    break
+        
+        return "".join(block).strip()
+
+    def get_all_used_structures(self, code_text):
+        # Find potential types: Upper-case words or words after 'struct '
+        words = set(re.findall(r'\b([A-Z]\w+)\b', code_text))
+        words.update(re.findall(r'(?:struct|union|enum)\s+(\w+)', code_text))
+        
+        # Look for return types and casting
+        words.update(re.findall(r'\(([^)]+?)\s*\*', code_text)) # (Type *)
+        
+        ignore = {'void', 'int', 'char', 'float', 'double', 'short', 'long', 'signed', 'unsigned', 'bool', 'static', 'extern', 'volatile', 'const', 'inline', 'struct', 'enum', 'union', 'typedef'}
+        ignore.update({'s8', 'u8', 's16', 'u16', 's32', 'u32', 's64', 'u64', 'f32', 'f64', 'BOOL', 'size_t', 'uptr', 'uintptr_t', 'NULL', 'TRUE', 'FALSE'})
+        
+        defs = []
+        found_names = set()
+        
+        for t in sorted(list(words)):
+            t = t.strip()
+            if not t or t in ignore or len(t) < 3 or t[0].isdigit(): continue
+            if t in found_names: continue
+            
+            # Rough check if it's already defined in the provided code
+            if re.search(rf'\b(struct|enum|union)\s+{t}\b\s*\{{', code_text) or re.search(rf'}}\s*{t}\s*;', code_text):
+                continue
+                
+            d = self.find_type_definition(t)
+            if d:
+                defs.append(d)
+                found_names.add(t)
+                
+        return "\n\n".join(defs)
+
     def commit_to_source(self, c_code):
         src_path = self.resolve_source_path()
         if not src_path or not os.path.exists(src_path):
             print(f"ERROR: could not find source file to commit: {src_path}")
             return False
-        
+            
         try:
             with open(src_path, "r") as f:
                 content = f.read()
@@ -365,39 +561,22 @@ class DecompOrchestrator:
         header_path = src_path.replace('src/', 'include/').replace('.c', '.h') if src_path else None
         externs_path = CONFIG.get("externs_header", "include/UnknownHeaders.h")
         
-        # Reset files to base states if they exist
-        for p in [src_path, header_path, externs_path]:
-            if p and os.path.exists(p):
-                subprocess.run(["git", "checkout", p], capture_output=True)
+        # Apply changes to the current state of files on disk
 
+        # 1. Headers - apply to local header
         if headers and header_path and os.path.exists(header_path):
             self.apply_header_changes(header_path, headers)
             if src_path:
                 self.sync_source_signatures(src_path, headers)
             
-        # 1. Externs - check if they should actually replace something in the local header first
-        if externs and externs_path:
+        # 2. Externs - smart route to their home headers or fallback
+        if is_meaningful_code(externs):
             if not os.path.exists(externs_path):
                 os.makedirs(os.path.dirname(externs_path), exist_ok=True)
                 with open(externs_path, "w") as f:
                     f.write("#ifndef UNKNOWN_HEADERS_H\n#define UNKNOWN_HEADERS_H\n\n#include \"types.h\"\n\n#endif\n")
             
-            # Try to replace in local header first to prevent duplicates
-            replaced_in_local = False
-            if header_path and os.path.exists(header_path):
-                replaced_in_local = self.apply_header_changes(header_path, externs, replace_only=True)
-            
-            # Only append to externs if NOT replaced in local header
-            if not replaced_in_local:
-                self.apply_header_changes(externs_path, externs)
-            else:
-                # If we replaced some but not all, we should still handle the rest
-                # For simplicity, we'll try replacing in externs too
-                self.apply_header_changes(externs_path, externs, replace_only=True)
-            
-            # Sync any signatures that moved to local header or were already there
-            if src_path:
-                self.sync_source_signatures(src_path, externs)
+            self.apply_global_header_changes(externs)
 
         # 3. Source Code
         if c_code:
@@ -405,7 +584,7 @@ class DecompOrchestrator:
             
         return True
 
-    def run_build_and_score(self, c_code, externs=None, headers=None):
+    def run_build_and_score(self, c_code, externs=None, headers=None, revert=True):
         print("DEBUG: run_build_and_score started")
         src_path = self.resolve_source_path()
         if not src_path or not os.path.exists(src_path):
@@ -430,25 +609,15 @@ class DecompOrchestrator:
                 created_files.append(externs_path)
 
             # 2. Temporarily apply changes
-            # Local headers first
-            if headers and header_path and os.path.exists(header_path):
+            # Local headers box
+            if is_meaningful_code(headers) and header_path and os.path.exists(header_path):
                 self.apply_header_changes(header_path, headers)
                 if src_path:
                     self.sync_source_signatures(src_path, headers)
 
-            if externs and externs_path:
-                # Check for redeclarations in local header even if they came from externs box
-                replaced_in_local = False
-                if header_path and os.path.exists(header_path):
-                     replaced_in_local = self.apply_header_changes(header_path, externs, replace_only=True)
-                
-                if not replaced_in_local:
-                    self.apply_header_changes(externs_path, externs)
-                else:
-                    self.apply_header_changes(externs_path, externs, replace_only=True)
-                
-                if src_path:
-                    self.sync_source_signatures(src_path, externs)
+            # Externs box - smart route
+            if is_meaningful_code(externs):
+                self.apply_global_header_changes(externs)
 
             if not self.commit_to_source(c_code):
                  return {"status": "error", "log": f"Could not find signature for {self.func_name} in {src_path}"}
@@ -509,12 +678,13 @@ class DecompOrchestrator:
         except Exception as e:
             return {"status": "error", "log": str(e)}
         finally:
-            # Revert modified files
-            for p, content in backups.items():
-                with open(p, "w") as f: f.write(content)
-            # Delete temporary created files
-            for p in created_files:
-                if os.path.exists(p): os.remove(p)
+            if revert:
+                # Revert modified files
+                for p, content in backups.items():
+                    with open(p, "w") as f: f.write(content)
+                # Delete temporary created files
+                for p in created_files:
+                    if os.path.exists(p): os.remove(p)
 
     def run_build_and_score_old(self, c_code):
         try:
@@ -751,8 +921,8 @@ class CommitRequest(BaseModel):
     headers: str
     body: str
 
-@app.post("/commit/{func_name}")
-async def commit_to_base(func_name: str, body: CommitRequest):
+@app.post("/save/{func_name}")
+async def save_to_disk(func_name: str, body: CommitRequest):
     unit_name = find_unit_name(func_name)
     if not unit_name:
         return {"status": "error", "message": "Could not resolve unit."}
@@ -761,9 +931,53 @@ async def commit_to_base(func_name: str, body: CommitRequest):
     success = orch.commit_all_changes(body.externs, body.headers, body.body)
     
     if success:
-        return {"status": "success", "message": "Changes committed and verified."}
+        return {"status": "success", "message": f"Changes for {func_name} saved to file system."}
     else:
-        return {"status": "error", "message": "Commit failed."}
+        return {"status": "error", "message": "Failed to save changes to disk."}
+
+@app.post("/commit/{func_name}")
+async def commit_to_base(func_name: str, body: CommitRequest):
+    unit_name = find_unit_name(func_name)
+    if not unit_name:
+        return {"status": "error", "message": "Could not resolve unit."}
+        
+    orch = DecompOrchestrator(func_name, unit_name)
+    # 1. Apply changes permanently
+    success = orch.commit_all_changes(body.externs, body.headers, body.body)
+    
+    if not success:
+        return {"status": "error", "message": "Commit to files failed."}
+
+    # 2. Check score after permanent commit (don't revert!)
+    score_result = orch.run_build_and_score(body.body, body.externs, body.headers, revert=False)
+    
+    message = "Changes committed to files."
+    git_status = "none"
+    
+    if score_result.get("score") == 1.0:
+        # 3. If 100%, git commit
+        src_path = orch.resolve_source_path()
+        header_path = src_path.replace('src/', 'include/').replace('.c', '.h') if src_path else None
+        externs_path = CONFIG.get("externs_header", "include/UnknownHeaders.h")
+        
+        # Add files to git
+        files_to_add = [f for f in [src_path, header_path, externs_path] if f and os.path.exists(f)]
+        if files_to_add:
+            subprocess.run(["git", "add"] + files_to_add)
+            commit_res = subprocess.run(["git", "commit", "-m", f"match {func_name}"], capture_output=True, text=True)
+            if commit_res.returncode == 0:
+                git_status = "committed"
+                message = f"100% match! Automatically committed to git: 'match {func_name}'"
+            else:
+                git_status = "failed"
+                message = f"100% match achieved, but git commit failed: {commit_res.stderr or commit_res.stdout}"
+    
+    return {
+        "status": "success", 
+        "message": message, 
+        "git_status": git_status,
+        "score": score_result.get("score")
+    }
 
 @app.post("/verify/{func_name}")
 async def verify_draft(func_name: str, body: CommitRequest):
@@ -798,10 +1012,14 @@ async def generate_prompt(func_name: str, body: CommitRequest):
     template = CONFIG.get("prompt_template", "")
     full_c = f"{body.externs}\n\n{body.headers}\n\n{body.body}"
     
+    # Extract structures
+    structures = orch.get_all_used_structures(full_c)
+    
     try:
         prompt = template.format(
             asm_content=asm_content,
             c_code=full_c,
+            structures=structures,
             context=context,
             errors=errors
         )

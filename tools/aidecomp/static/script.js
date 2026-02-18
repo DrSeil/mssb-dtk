@@ -278,6 +278,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Save to Disk Logic
+    const saveBtn = document.getElementById('save-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', async () => {
+            const funcName = funcInput.value.trim();
+            if (!funcName) return alert("No function selected.");
+
+            const externs = document.getElementById('externs-display').innerText;
+            const headers = document.getElementById('header-display').innerText;
+            const body = document.getElementById('code-display').innerText;
+
+            saveBtn.innerText = "Saving...";
+            saveBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/save/${funcName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ externs, headers, body })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry success';
+                    entry.innerText = `> ${data.message}`;
+                    liveLogs.appendChild(entry);
+                } else {
+                    alert(data.message || "Save failed");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Request failed");
+            } finally {
+                saveBtn.innerText = "Save to Disk";
+                saveBtn.disabled = false;
+            }
+        });
+    }
+
     // Smart Commit Logic
     const smartCommitBtn = document.getElementById('smart-commit-btn');
     if (smartCommitBtn) {
