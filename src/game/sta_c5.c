@@ -1,6 +1,5 @@
 #include "Dolphin/GX/GXPixel.h"
 #include "UnknownHeaders.h"
-#include "Dolphin/GX/GXPixel.h"
 #include "game/sta_c5.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
