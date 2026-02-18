@@ -17,4 +17,6 @@ void fn_3_1149B8(void);
 void fn_3_114A2C(void);
 void fn_3_114A88(void);
 
+#include "stl/mem.h"
+#include "game/UnknownHomes_Game.h"
 #endif // !__GAME_rep_3290_H_

@@ -1,4 +1,5 @@
 #include "game/rep_3290.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x001133C4 size:0x338 mapped:0x80752458
@@ -12,8 +13,14 @@ void fn_3_1136FC(void) {
 }
 
 // .text:0x0011391C size:0x34 mapped:0x807529B0
+
 void fn_3_11391C(void) {
-    return;
+    /* * Using the struct member directly ensures the compiler generates 
+     * the two-step address calculation:
+     * 1. lis r3, g_Minigame@ha / addi r3, r3, g_Minigame@l
+     * 2. addi r3, r3, 0x1d7c
+     */
+    memset(g_Minigame._1D7C, 0, 0x78);
 }
 
 // .text:0x00113950 size:0xF8 mapped:0x807529E4
@@ -65,4 +72,3 @@ void fn_3_114A2C(void) {
 void fn_3_114A88(void) {
     return;
 }
-
