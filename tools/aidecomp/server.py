@@ -36,7 +36,28 @@ CONFIG = {
     "m2c_path": "python3 tools/m2c_repo/m2c.py",
     "externs_header": "include/UnknownHeaders.h",
     "prompt_template": "Refine the following C code to match the assembly output as closely as possible.\n\nAssembly:\n{asm_content}\n\nCurrent C Code:\n{c_code}\n\nUsed Data Structures:\n{structures}\n\nHeader Context:\n{context}\n\nBuild/Comparison Errors:\n{errors}\n\nProvide the refined C code block only."
-}
+TEMPLATE_PATH = "tools/aidecomp/ai_template.txt"
+
+def save_template():
+    try:
+        with open(TEMPLATE_PATH, "w") as f:
+            f.write(CONFIG.get("prompt_template", ""))
+    except Exception as e:
+        print(f"ERROR saving template: {e}")
+
+def load_template():
+    if os.path.exists(TEMPLATE_PATH):
+        try:
+            with open(TEMPLATE_PATH, "r") as f:
+                return f.read()
+        except Exception as e:
+            print(f"ERROR loading template: {e}")
+    return None
+
+# Load template from disk if it exists
+saved_temp = load_template()
+if saved_temp:
+    CONFIG["prompt_template"] = saved_temp
 
 REPORT_CACHE = None
 
@@ -875,6 +896,8 @@ def update_config(conf: ConfigUpdate):
     for k, v in conf.dict(exclude_unset=True).items():
         if v is not None:
             CONFIG[k] = v
+    if conf.prompt_template is not None:
+        save_template()
     return CONFIG
 
 @app.get("/template")
@@ -886,6 +909,7 @@ async def update_template(request: Request):
     data = await request.json()
     if "template" in data:
         CONFIG["prompt_template"] = data["template"]
+        save_template()
     return {"status": "success", "template": CONFIG["prompt_template"]}
 
 @app.get("/functions")

@@ -1,0 +1,18 @@
+Refine the following C code to match the assembly output as closely as possible.
+
+Assembly:
+{asm_content}
+
+Current C Code:
+{c_code}
+
+Used Data Structures:
+{structures}
+
+Header Context:
+{context}
+
+Build/Comparison Errors:
+{errors}
+
+Provide the refined C code block only.
