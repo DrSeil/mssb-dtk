@@ -1,5 +1,8 @@
 #include "game/rep_31F0.h"
+#include "UnknownHeaders.h"
+#include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
+#include "stl/mem.h"
 
 // .text:0x00110634 size:0x3D0 mapped:0x8074F6C8
 void fn_3_110634(void) {
@@ -7,8 +10,16 @@ void fn_3_110634(void) {
 }
 
 // .text:0x00110A04 size:0x34 mapped:0x8074FA98
+
 void fn_3_110A04(void) {
-    return;
+    /* * lis r3, g_Minigame@ha
+     * li r4, 0
+     * addi r3, r3, g_Minigame@l
+     * li r5, 0x78
+     * addi r3, r3, 0x1d7c   <-- This offset corresponds to _1D7C
+     * bl memset
+     */
+    memset(g_Minigame._1D7C, 0, 0x78);
 }
 
 // .text:0x00110A38 size:0x9C mapped:0x8074FACC
