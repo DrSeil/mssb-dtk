@@ -35,7 +35,7 @@ CONFIG = {
     "ghidra_path": "/path/to/ghidra/support/analyzeHeadless",
     "m2c_path": "python3 tools/m2c_repo/m2c.py",
     "externs_header": "include/UnknownHeaders.h",
-    "prompt_template": "Refine the following C code to match the assembly output as closely as possible.\n\nAssembly:\n{asm_content}\n\nCurrent C Code:\n{c_code}\n\nUsed Data Structures:\n{structures}\n\nHeader Context:\n{context}\n\nBuild/Comparison Errors:\n{errors}\n\nProvide the refined C code block only."
+}
 TEMPLATE_PATH = "tools/aidecomp/ai_template.txt"
 
 def save_template():
@@ -526,11 +526,12 @@ class DecompOrchestrator:
              curr = start_idx
              bc = 0
              found_start = False
-             while curr >= 0 and curr > start_idx - 50:
+             # Increased limit to 5000 to handle massive structs like MiniGameStruct
+             while curr >= 0 and curr > start_idx - 5000:
                  l = lines[curr]
                  bc += l.count('}')
                  bc -= l.count('{')
-                 if bc == 0 and '{' in l:
+                 if bc <= 0 and '{' in l:
                      start_idx = curr
                      found_start = True
                      break
@@ -540,7 +541,8 @@ class DecompOrchestrator:
         brace_count = 0
         started = False
         
-        for i in range(start_idx, min(start_idx + 100, len(lines))):
+        # Increase capture limit to 5000 lines
+        for i in range(start_idx, min(start_idx + 5000, len(lines))):
             line = lines[i]
             block.append(line)
             brace_count += line.count('{')
@@ -1151,6 +1153,52 @@ async def generate_prompt(func_name: str, body: CommitRequest):
         return {"status": "success", "prompt": prompt}
     except Exception as e:
         return {"status": "error", "message": f"Template formatting failed: {e}"}
+
+@app.get("/lookup_symbol/{symbol_name}")
+def lookup_symbol(symbol_name: str):
+    orch = DecompOrchestrator("", "")
+    definition = orch.find_type_definition(symbol_name)
+    if definition:
+        return {"status": "success", "definition": definition}
+    else:
+        return {"status": "error", "message": f"Symbol {symbol_name} not found."}
+
+class ReplaceRequest(BaseModel):
+    original: str
+    replacement: str
+
+@app.post("/global_replace")
+def global_replace(req: ReplaceRequest):
+    if not req.original or not req.replacement:
+        return {"status": "error", "message": "Original and replacement content required."}
+    
+    count = 0
+    errors = []
+    
+    # Iterate over all files in the project
+    for root, dirs, files in os.walk("."):
+        # Skip some dirs
+        if "build" in dirs: dirs.remove("build")
+        if ".git" in dirs: dirs.remove(".git")
+        if ".venv" in dirs: dirs.remove(".venv")
+        
+        for file in files:
+            if file.endswith(('.c', '.h', '.cpp', '.hpp')):
+                filepath = os.path.join(root, file)
+                try:
+                    with open(filepath, 'r') as f:
+                        content = f.read()
+                    
+                    if req.original in content:
+                        print(f"DEBUG: Global replacing in {filepath}")
+                        new_content = content.replace(req.original, req.replacement)
+                        with open(filepath, 'w') as f:
+                            f.write(new_content)
+                        count += 1
+                except Exception as e:
+                    errors.append(f"Error processing {filepath}: {e}")
+                    
+    return {"status": "success", "files_modified": count, "errors": errors}
 
 # Mount static files
 app.mount("/", StaticFiles(directory="tools/aidecomp/static", html=True), name="static")

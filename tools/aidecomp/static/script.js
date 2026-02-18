@@ -478,4 +478,76 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     }
+
+    // Symbol Tool Logic
+    const symbolLookupBtn = document.getElementById('symbol-lookup-btn');
+    const symbolLookupInput = document.getElementById('symbol-lookup-input');
+    const symbolOriginalText = document.getElementById('symbol-original-text');
+    const symbolReplacementText = document.getElementById('symbol-replacement-text');
+    const globalReplaceBtn = document.getElementById('global-replace-btn');
+
+    if (symbolLookupBtn) {
+        symbolLookupBtn.addEventListener('click', async () => {
+            const sym = symbolLookupInput.value.trim();
+            if (!sym) return;
+
+            symbolLookupBtn.innerText = "...";
+            symbolLookupBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/lookup_symbol/${encodeURIComponent(sym)}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    symbolOriginalText.value = data.definition;
+                    symbolReplacementText.value = data.definition;
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                alert("Lookup failed");
+            } finally {
+                symbolLookupBtn.innerText = "Lookup Symbol";
+                symbolLookupBtn.disabled = false;
+            }
+        });
+    }
+
+    if (globalReplaceBtn) {
+        globalReplaceBtn.addEventListener('click', async () => {
+            const original = symbolOriginalText.value;
+            const replacement = symbolReplacementText.value;
+
+            if (!original || !replacement) return alert("Original and replacement content required.");
+            if (original === replacement) return alert("Definitions are identical.");
+
+            const confirmMsg = "CRITICAL WARNING:\n\nThis will perform an EXACT find-and-replace project-wide.\nFiles modified will be overwritten on disk immediately.\n\nAre you absolutely sure you want to proceed?";
+            if (!confirm(confirmMsg)) return;
+
+            globalReplaceBtn.innerText = "Processing...";
+            globalReplaceBtn.disabled = true;
+
+            try {
+                const res = await fetch('/global_replace', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ original, replacement })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert(`SUCCESS: Global replace complete.\n\nModified ${data.files_modified} files.\n\nErrors: ${data.errors.length}`);
+                    if (data.errors.length > 0) console.error("Global replace errors:", data.errors);
+                    // Clear fields after success
+                    symbolOriginalText.value = '';
+                    symbolReplacementText.value = '';
+                } else {
+                    alert(data.message || "Global replace failed.");
+                }
+            } catch (e) {
+                alert("Request failed");
+            } finally {
+                globalReplaceBtn.innerText = "Execute Global Replace";
+                globalReplaceBtn.disabled = false;
+            }
+        });
+    }
 });

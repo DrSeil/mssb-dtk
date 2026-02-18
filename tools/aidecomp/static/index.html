@@ -46,6 +46,9 @@
                 <button class="nav-item" data-tab="template">
                     <span class="icon">📝</span> Template
                 </button>
+                <button class="nav-item" data-tab="symbols">
+                    <span class="icon">🔄</span> Symbols
+                </button>
                 <button class="nav-item" data-tab="explore">
                     <span class="icon">🔍</span> Explore
                 </button>
@@ -222,6 +225,41 @@
                     <textarea id="template-editor" class="glass-input"
                         style="width: 100%; height: 300px; resize: vertical;"></textarea>
                     <button id="save-template-btn" class="btn-primary" style="margin-top: 15px;">Save Template</button>
+                </div>
+            </div>
+
+            <div id="tab-symbols" class="tab-content">
+                <div class="hero-card">
+                    <h2>Global Symbol Refinement</h2>
+                    <p>Lookup a symbol definition, modify it, and perform a project-wide find-and-replace.</p>
+                    <div class="input-group">
+                        <input type="text" id="symbol-lookup-input" placeholder="Symbol Name (e.g. BatterReachStruct)"
+                            class="glass-input">
+                        <button id="symbol-lookup-btn" class="btn-primary">Lookup Symbol</button>
+                    </div>
+                </div>
+
+                <div class="grid-layout" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="card glass-card">
+                        <h3>Current Definition</h3>
+                        <textarea id="symbol-original-text" class="glass-input" readonly
+                            style="width: 100%; height: 400px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></textarea>
+                    </div>
+                    <div class="card glass-card">
+                        <h3>New Definition</h3>
+                        <textarea id="symbol-replacement-text" class="glass-input"
+                            style="width: 100%; height: 400px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></textarea>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 24px; display: flex; justify-content: center; flex-direction: column; align-items: center;">
+                    <p style="color: #ff4d4d; font-weight: bold; margin-bottom: 10px;">⚠️ Warning: This will search and
+                        replace the EXACT text above in ALL .c and .h files.</p>
+                    <button id="global-replace-btn" class="btn-primary"
+                        style="padding: 12px 40px; background: var(--secondary); color: white; font-weight: bold;">
+                        Execute Global Replace
+                    </button>
                 </div>
             </div>
 

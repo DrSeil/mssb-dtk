@@ -14,5 +14,3 @@ Header Context:
 
 Build/Comparison Errors:
 {errors}
-
-Provide the refined C code block only.
