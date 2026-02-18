@@ -240,28 +240,100 @@ class DecompOrchestrator:
         with open(file_path, "r") as f:
             content = f.read()
         
-        lines = content.splitlines()
         modified = False
         any_replaced = False
         
+        # 1. Handle Structural Blocks (typedef struct, struct, enum, union)
+        # We look for blocks like: typedef struct NAME { ... } NAME; OR struct NAME { ... };
+        processed_blocks = []
+        
+        # Look for potential block names and find their full blocks in DASHBOARD input
+        # Pattern: (typedef\s+)?(struct|enum|union)\s+(\w+)?\s*\{
+        potential_blocks = re.finditer(r'(?m)(?:typedef\s+)?(?:struct|enum|union)\s+(\w+)?\s*\{', lines_text)
+        
+        for p_match in potential_blocks:
+            start_idx = p_match.start()
+            # Find matching brace
+            brace_count = 0
+            end_idx = -1
+            for i in range(start_idx, len(lines_text)):
+                if lines_text[i] == '{': brace_count += 1
+                elif lines_text[i] == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        # Find trailing semicolon/name
+                        tail_match = re.match(r'\s*(\w+)?\s*;', lines_text[i+1:])
+                        if tail_match:
+                            end_idx = i + 1 + tail_match.end()
+                            break
+            
+            if end_idx != -1:
+                new_block = lines_text[start_idx:end_idx].strip()
+                # Determine "Name" for identifying this block
+                # If it's a typedef, the name is at the end. Otherwise it's after struct/enum/union
+                is_typedef = new_block.startswith("typedef")
+                type_match = re.search(r'(?:struct|enum|union)\s+(\w+)', new_block)
+                type_key = type_match.group(1) if type_match else None
+                
+                name_at_end = None
+                if is_typedef:
+                    name_match = re.search(r'}\s*(\w+)\s*;$', new_block)
+                    if name_match: name_at_end = name_match.group(1)
+                
+                block_id = name_at_end or type_key
+                if block_id:
+                    # Look for existing block in file. 
+                    # We look for a block that has the same ID (at the end for typedef, at start otherwise)
+                    if is_typedef:
+                        # Find existing typedef struct { ... } block_id;
+                        # We use a greedy match for the content between { } but try to find the one finishing at block_id;
+                        existing_pat = rf'(?s)typedef\s+(?:struct|enum|union)\b[^{{}}]*?\{{.*?}}\s*{re.escape(block_id)}\s*;'
+                    else:
+                        # Find existing struct block_id { ... };
+                        existing_pat = rf'(?s)(?:struct|enum|union)\s+{re.escape(block_id)}\b\s*\{{.*?}}\s*;'
+                    
+                    if re.search(existing_pat, content):
+                        print(f"DEBUG: Replacing block for {block_id} in {file_path}")
+                        content = re.sub(existing_pat, new_block, content, count=1)
+                        modified = True
+                        any_replaced = True
+                        processed_blocks.append(new_block)
+
+        # Remove processed blocks from lines_text to avoid processing lines individually
+        for block in processed_blocks:
+            lines_text = lines_text.replace(block, "")
+
+        # 2. Handle lines (Prototypes, Externs)
+        lines = content.splitlines()
         remaining_lines = []
+        
         for new_line in lines_text.splitlines():
             new_line = new_line.strip()
             if not new_line: continue
             
-            # Extract function name from the new line if it's a prototype
-            match = re.search(r'(\w+)\s*\(', new_line)
-            found_func_name = match.group(1) if match else None
+            found_id = None
+            search_pat = None
             
+            # Function Prototype?
+            m_proto = re.search(r'(\w+)\s*\(', new_line)
+            # Extern Variable?
+            m_ext = re.search(r'extern\s+[\w\s\*]+\s+(\w+)\s*(?:\[.*?\])?\s*;', new_line)
+            
+            if m_proto:
+                found_id = m_proto.group(1)
+                search_pat = rf"\b{re.escape(found_id)}\s*\("
+            elif m_ext:
+                found_id = m_ext.group(1)
+                search_pat = rf"extern\s+[\w\s\*]+\s+{re.escape(found_id)}\b\s*(\[.*?\])?\s*;"
+
             replaced = False
-            if found_func_name:
-                search_pat = rf"\b{re.escape(found_func_name)}\s*\("
+            if found_id:
                 for i, line in enumerate(lines):
                     if re.search(search_pat, line) and ";" in line:
                          # Simple check to avoid replacing comments
-                         if "//" not in line.split(found_func_name)[0]:
-                             if lines[i] != new_line:
-                                 print(f"DEBUG: Replacing prototype for {found_func_name} in {file_path}")
+                         if "//" not in line.split(found_id)[0]:
+                             if lines[i].strip() != new_line:
+                                 print(f"DEBUG: Replacing declaration for {found_id} in {file_path}")
                                  lines[i] = new_line
                                  modified = True
                              replaced = True
