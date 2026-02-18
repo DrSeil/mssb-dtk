@@ -2416,6 +2416,8 @@ typedef struct _MiniGameStruct {
     /*0x1D7C*/ InputStruct _1D7C[4];
     /*0x1DBC*/ u8 _1DBC[0xC];
     /*0x1DC8*/ u8 player_states[4];
+/*0x1DCC*/ u8 _pad_extension[0x1DF4 - 0x1DCC]; 
+    /*0x1DF4*/ s16 targetPointsArray[4];          
 } MiniGameStruct; // size: 0x1DCC
 
 extern MiniGameStruct g_Minigame;
