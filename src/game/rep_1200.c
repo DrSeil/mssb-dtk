@@ -1,4 +1,5 @@
 #include "game/rep_1200.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0006F6CC size:0x7C mapped:0x806AE760
@@ -167,8 +168,15 @@ void fn_3_74D0C(void) {
 }
 
 // .text:0x00075090 size:0x34 mapped:0x806B4124
+
+
 void fn_3_75090(void) {
-    return;
+
+    g_Pitcher.pitcherActionState = 1;
+    g_Pitcher.currentStateFrameCounter = 0;
+    g_Ball.AtBat_Contact_BallPos.x = g_Pitcher.ballCurrentPosition.x;
+    g_Ball.AtBat_Contact_BallPos.y = g_Pitcher.ballCurrentPosition.y;
+    g_Ball.AtBat_Contact_BallPos.z = g_Pitcher.ballCurrentPosition.z;
 }
 
 // .text:0x000750C4 size:0x18 mapped:0x806B4158
