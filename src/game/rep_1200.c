@@ -1,6 +1,8 @@
 #include "game/rep_1200.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/UnknownHomes_Game.h"
+
 
 // .text:0x0006F6CC size:0x7C mapped:0x806AE760
 void fn_3_6F6CC(void) {
@@ -43,8 +45,32 @@ void fn_3_703EC(void) {
 }
 
 // .text:0x00070680 size:0x38 mapped:0x806AF714
-void fn_3_70680(void) {
-    return;
+
+
+
+/**
+ * @address 00070680
+ */
+s32 fn_3_70680(f32 value) {
+    /* * Target: lfs f0, 0x7c(r3) -> g_Pitcher.strikeZoneLeft
+     * fcmpo cr0, f1, f0 -> value vs left
+     * cror eq, gt, eq   -> implements >=
+     * bne .L_FAIL       -> if !(value >= left) return 0
+     */
+    if (value >= g_Pitcher.strikeZoneLeft) {
+        /* * Target: lfs f0, 0x80(r3) -> g_Pitcher.strikeZoneRight
+         * fcmpo cr0, f1, f0 -> value vs right
+         * cror eq, lt, eq   -> implements <=
+         * bne .L_FAIL       -> if !(value <= right) return 0
+         */
+        if (value <= g_Pitcher.strikeZoneRight) {
+            /* li r3, 1 -> blr */
+            return 1;
+        }
+    }
+    
+    /* .L_FAIL: li r3, 0 -> blr */
+    return 0;
 }
 
 // .text:0x000706B8 size:0xB0 mapped:0x806AF74C
