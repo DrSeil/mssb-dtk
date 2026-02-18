@@ -35,4 +35,15 @@ typedef struct UnknownStruct_350E4 {
 
 extern UnknownStruct_350E4 lbl_3_common_bss_350E4[];
 
+typedef struct Bss_1910 {
+f32 unk0;
+f32 unk4;
+f32 unk8;
+f32 unkC;
+f32 unk10;
+f32 unk14;
+} Bss_1910;
+extern Bss_1910 lbl_3_bss_1910;
+extern f32 lbl_3_rodata_1DD0;
+extern f32 lbl_3_rodata_1DD4;
 #endif

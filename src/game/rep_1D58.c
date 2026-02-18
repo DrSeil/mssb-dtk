@@ -50,8 +50,25 @@ void fn_3_B8464(void) {
 }
 
 // .text:0x000B8574 size:0x34 mapped:0x806F7608
+//register Swaps
+
 void fn_3_B8574(void) {
-    return;
+    /* * To match the register allocation (f1 = 1DD0, f0 = 1DD4), we must steer the
+     * compiler to process 1DD0 first using a pointer anchor (addi r5, r4, offset).
+     */
+
+    f32 val1DD4 = lbl_3_rodata_1DD4;
+    f32 val1DD0 = lbl_3_rodata_1DD0;
+
+    /* * Initial assignment to the struct field triggers stfsu (Store with Update).
+     * Subsequent stores use the updated base register r4.
+     */
+    lbl_3_bss_1910.unk0 = val1DD0;
+    lbl_3_bss_1910.unk4 = val1DD0;
+    lbl_3_bss_1910.unk8 = val1DD0;
+    lbl_3_bss_1910.unkC = val1DD4;
+    lbl_3_bss_1910.unk10 = val1DD4;
+    lbl_3_bss_1910.unk14 = val1DD4;
 }
 
 // .text:0x000B85A8 size:0x34 mapped:0x806F763C
