@@ -42,4 +42,5 @@ void fn_3_128B90(void);
 void fn_3_128C18(void);
 void fn_3_129370(void);
 
+#include "game/UnknownHomes_Game.h"
 #endif // !__GAME_rep_3448_H_

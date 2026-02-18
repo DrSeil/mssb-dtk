@@ -1,4 +1,5 @@
 #include "game/rep_3448.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0011EC28 size:0x404 mapped:0x8075DCBC
@@ -12,8 +13,44 @@ void fn_3_11F02C(void) {
 }
 
 // .text:0x0011F480 size:0x34 mapped:0x8075E514
+
+#include "game/UnknownHomes_Game.h"
+
+/**
+ * @address 0011F480
+ */
+
+#include "game/UnknownHomes_Game.h"
+
+/**
+ * @address 0011F480
+ */
 void fn_3_11F480(void) {
-    return;
+    MiniGameStruct* mini = &g_Minigame;
+
+    /* Establishing r3 and checking condition */
+    if (mini->GameMode_MiniGame == 4) {
+        /* To force 'li r4, 0' to stay after the bnelr:
+           We initialize it here. If it still hoists, we use a dummy 
+           inline block or a volatile-like approach. */
+        u32 i = 0; 
+        
+        do {
+            /* lha r0, 0x1890(r3) */
+            s16 points = *(s16*)((u8*)mini + 0x1890);
+            
+            /* The increment and compare are interleaved to match 
+               Target scheduling: addi r4, r4, 1 -> cmplwi r4, 4 */
+            i++;
+            
+            /* sth r0, 0x1df4(r3) */
+            *(s16*)((u8*)mini + 0x1df4) = points;
+
+            /* addi r3, r3, 2 */
+            mini = (MiniGameStruct*)((u8*)mini + 2);
+
+        } while (i < 4);
+    }
 }
 
 // .text:0x0011F4B4 size:0x54 mapped:0x8075E548
@@ -190,4 +227,3 @@ void fn_3_128C18(void) {
 void fn_3_129370(void) {
     return;
 }
-
