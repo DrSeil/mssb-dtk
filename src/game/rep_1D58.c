@@ -55,8 +55,37 @@ void fn_3_B8574(void) {
 }
 
 // .text:0x000B85A8 size:0x34 mapped:0x806F763C
-void fn_3_B85A8(void) {
-    return;
+
+/**
+ * @address 000B85A8
+ */
+
+/**
+ * @address 000B85A8
+ */
+
+/**
+ * @address 000B85A8
+ */
+u32 fn_3_B85A8(s32 index, u32* outPtr) {
+    /* Anchoring: slwi for index happens before the addi for the global base. 
+       We use element 0 of the global array. */
+    UnknownStruct_350E4* bss = &lbl_3_common_bss_350E4[0];
+
+    /* * Matches:
+     * lwz r3, 0x40(r7)   -> Load pointer unk40
+     * lwz r6, 0x44(r7)   -> Load pointer unk44
+     * lhzx r3, r3, r5    -> Load u16 from unk40[index]
+     * slwi r3, r3, 2     -> Multiply loaded u16 by 4
+     * add r3, r6, r3     -> Offset unk44 by that value
+     */
+    *outPtr = (u32)&bss->unk44[bss->unk40[index]];
+
+    /* * Matches:
+     * lwz r3, 0x3c(r7)   -> Load pointer unk3C
+     * lwzx r3, r3, r0    -> Load u32 from unk3C[index]
+     */
+    return bss->unk3C[index];
 }
 
 // .text:0x000B85DC size:0x7C mapped:0x806F7670

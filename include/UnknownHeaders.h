@@ -22,13 +22,17 @@ void fn_800BD670(s32 fieldVal, s32 arg1, GlobalStruct_8036E548* globalPtr);
 extern GlobalStruct_8036E548 lbl_8036E548;
 extern f32 lbl_3_rodata_1414;
 
-typedef struct {
-    u8 _pad0[0x6C];
+typedef struct UnknownStruct_350E4 {
+    u8 _pad0[0x3C];
+    u32* unk3C;         /* 0x3C - Pointer to u32 array */
+    u16* unk40;         /* 0x40 - Pointer to u16 array */
+    u32* unk44;         /* 0x44 - Pointer to u32 array base */
+    u8 _pad1[0x6C-0x48];
     u8 unk6C;           /* 0x6C */
-    u8 _pad1[0xC0-0x6D];
+    u8 _pad2[0xC0-0x6D];
     u8 targetByte;      /* 0xC0 */
-    u8 _pad2[0xE8-0xC1];
 } UnknownStruct_350E4;
 
 extern UnknownStruct_350E4 lbl_3_common_bss_350E4[];
+
 #endif
