@@ -1,8 +1,10 @@
 #include "Dolphin/GX/GXPixel.h"
+#include "UnknownHeaders.h"
 #include "Dolphin/GX/GXPixel.h"
 #include "game/sta_c5.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
+#include "game/rep_1D58.h"
 
 // .text:0x000EE100 size:0x288 mapped:0x8072D194
 void fn_3_EE100(void) {
@@ -71,8 +73,21 @@ void fn_3_EF21C(void) {
 }
 
 // .text:0x000EF3D4 size:0x34 mapped:0x8072E468
-void fn_3_EF3D4(void) {
-    return;
+
+
+
+void fn_3_EF3D4(UnknownStruct_EF3D4* arg0, u32 index) {
+    /* * clrlslwi r0, r4, 24, 2 
+     * This instruction clears the top 24 bits of r4 and shifts left by 2.
+     * This is the compiler's way of doing (u8)index * 4.
+     */
+    u8 scaledIndex = (u8)index;
+    
+    /* * lwz r3, 0x74(r3)
+     * lwzx r4, r4, r0 (where r4 is base of lbl_3_bss_B154)
+     * bl fn_3_B97DC
+     */
+    fn_3_B97DC(arg0->unk74, lbl_3_bss_B154[scaledIndex]);
 }
 
 // .text:0x000EF408 size:0x154 mapped:0x8072E49C
