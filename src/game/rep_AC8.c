@@ -485,8 +485,22 @@ void fn_3_39EB0(void) {
 }
 
 // .text:0x0003A1FC size:0x38 mapped:0x80679290
-void fn_3_3A1FC(void) {
-    return;
+
+#include "game/UnknownHomes_Game.h"
+
+void fn_3_3A1FC(s32 index) {
+    /* mulli r4, r3, 0x268 triggers from indexing the global array */
+    Fielder *fielder = &g_Fielders[index];
+
+    /* lha r0, 0x1b6(r4) loads a signed halfword */
+    if (fielder->unk1B6 != 0) {
+        /* Branch taken: copy unk54 to unk50 and exit */
+        fielder->unk50 = fielder->unk54;
+        return;
+    }
+
+    /* Branch not taken: load from rodata and exit */
+    fielder->unk50 = lbl_3_rodata_B20;
 }
 
 // .text:0x0003A234 size:0x350 mapped:0x806792C8

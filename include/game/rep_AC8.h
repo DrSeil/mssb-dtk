@@ -102,7 +102,7 @@ void fn_3_393B0(void);
 void fn_3_39858(void);
 void fn_3_39DC4(void);
 void fn_3_39EB0(void);
-void fn_3_3A1FC(void);
+void fn_3_3A1FC(s32 index);
 void fn_3_3A234(void);
 void fn_3_3A584(void);
 void fn_3_3AAF8(void);
@@ -232,4 +232,5 @@ void fn_3_595C4(void);
 void fn_3_596F8(void);
 
 // No local headers needed.
+extern f32 lbl_3_rodata_B20;
 #endif // !__GAME_rep_AC8_H_
