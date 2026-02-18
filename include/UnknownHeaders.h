@@ -3,7 +3,8 @@
 
 #include "types.h"
 
-void fn_800528AC(void (*)(), s32 *);                   /* extern */
+typedef void (*QueueCallback)(void);
+void fn_800528AC(void (*callback)(void), s32 *arg1);
 typedef struct Struct_3_2281C_Entry {
 u8 _pad0[0x68];
 s16 field_0x68;
@@ -46,4 +47,10 @@ f32 unk14;
 extern Bss_1910 lbl_3_bss_1910;
 extern f32 lbl_3_rodata_1DD0;
 extern f32 lbl_3_rodata_1DD4;
+typedef struct QueueEntry {
+u8 _pad0[0x10];
+s16 unk10;
+} QueueEntry;
+/* extern function with proper types */
+QueueEntry* fn_800B0A5C_insertQueue(QueueCallback callback, s32 priority);
 #endif

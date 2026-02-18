@@ -1,4 +1,5 @@
 #include "game/rep_1E08.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000BA538 size:0x2BC mapped:0x806F95CC
@@ -167,8 +168,32 @@ void fn_3_BDF74(void) {
 }
 
 // .text:0x000BE140 size:0x34 mapped:0x806FD1D4
+
+/**
+ * @address 000BE140
+ */
+
+/**
+ * @address 000BE140
+ */
+
+/**
+ * @address 000BE140
+ */
 void fn_3_BE140(void) {
-    return;
+    QueueEntry* entry;
+
+    /* * lis r3, fn_3_BDF74@ha
+     * li r4, 0x3
+     * addi r3, r3, fn_3_BDF74@l
+     * bl fn_800B0A5C_insertQueue
+     */
+    entry = fn_800B0A5C_insertQueue(fn_3_BDF74, 3);
+
+    /* * li r0, 0x2
+     * sth r0, 0x10(r3)
+     */
+    entry->unk10 = 2;
 }
 
 // .text:0x000BE174 size:0x60 mapped:0x806FD208
