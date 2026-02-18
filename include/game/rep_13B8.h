@@ -25,7 +25,7 @@ void fn_3_7FFD0(void);
 void fn_3_80028(void);
 void fn_3_810C4(void);
 void fn_3_81190(void);
-void fn_3_81AB8(void);
+void fn_3_81AB8(s32 index);
 void fn_3_81AEC(void);
 void fn_3_81BC8(void);
 void fn_3_81EAC(void);

@@ -20,4 +20,5 @@ void (*unk3074)(s32);   // Offset 0x3074
 extern GlobalStruct_8036E548 lbl_8036E548;
 void fn_800BD670(s32 fieldVal, s32 arg1, GlobalStruct_8036E548* globalPtr);
 extern GlobalStruct_8036E548 lbl_8036E548;
+extern f32 lbl_3_rodata_1414;
 #endif

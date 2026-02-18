@@ -1,4 +1,5 @@
 #include "game/rep_13B8.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0007D79C size:0x184 mapped:0x806BC830
@@ -120,8 +121,22 @@ void fn_3_81190(void) {
 }
 
 // .text:0x00081AB8 size:0x34 mapped:0x806C0B4C
-void fn_3_81AB8(void) {
-    return;
+
+
+void fn_3_81AB8(s32 index) {
+    /* Anchoring r4: The compiler generates mulli and add to calculate the array 
+       offset based on the struct size 0x154. Defining the pointer exactly where 
+       it's first used ensures the address calculation matches the register flow. */
+    InMemRunnerType *runner = &g_Runners[index];
+
+    /* Byte assignments: r0 is loaded with 2 and stored at offsets 0x137 and 0x136. */
+    runner->runningDirectionCode = 2;
+    runner->nextDirectionBeingProcessed = 2;
+
+    /* Float assignments: f0 is loaded once from rodata and stored in multiple fields. */
+    runner->groundVelocity[0] = lbl_3_rodata_1414;
+    runner->percentRanPerFrame_slideAdj = lbl_3_rodata_1414;
+    runner->roundingStrengthPercent = lbl_3_rodata_1414;
 }
 
 // .text:0x00081AEC size:0xDC mapped:0x806C0B80
