@@ -303,26 +303,50 @@ class DecompOrchestrator:
                 
                 block_id = name_at_end or type_key
                 if block_id:
-                    # Look for existing block in file. 
-                    # We look for a block that has the same ID (at the end for typedef, at start otherwise)
+                    # Robustly find existing block in content using the same brace-counting strategy
+                    # 1. Find the start of the block with the same header (typedef struct etc. + id/tag)
                     if is_typedef:
-                        # Find existing typedef struct { ... } block_id;
-                        # We use a greedy match for the content between { } but try to find the one finishing at block_id;
-                        existing_pat = rf'(?s)typedef\s+(?:struct|enum|union)\b[^{{}}]*?\{{.*?}}\s*{re.escape(block_id)}\s*;'
+                        # For typedef, the name is at the end, so we search for the struct/enum start
+                        # and then check if it's the right one by looking at the end brace.
+                        # Pattern to find any typedef start:
+                        search_pat = rf'(?s)typedef\s+(?:struct|enum|union)\b[^{{}}]*?\{{'
                     else:
-                        # Find existing struct block_id { ... };
-                        existing_pat = rf'(?s)(?:struct|enum|union)\s+{re.escape(block_id)}\b\s*\{{.*?}}\s*;'
+                        # For plain struct, the name is at the start
+                        search_pat = rf'(?s)(?:struct|enum|union)\s+{re.escape(block_id)}\b\s*\{{'
                     
-                    if re.search(existing_pat, content):
-                        print(f"DEBUG: Replacing block for {block_id} in {file_path}")
-                        content = re.sub(existing_pat, new_block, content, count=1)
-                        modified = True
-                        any_replaced = True
-                        processed_blocks.append(new_block)
+                    matches = list(re.finditer(search_pat, content))
+                    block_replaced = False
+                    
+                    for m in reversed(matches): # Search reversed to avoid offset issues if we did multiple, though we only replace one
+                        start_pos = m.start()
+                        # Find end of this block in file content
+                        f_bc = 0
+                        f_end = -1
+                        for j in range(start_pos, len(content)):
+                            if content[j] == '{': f_bc += 1
+                            elif content[j] == '}':
+                                f_bc -= 1
+                                if f_bc == 0:
+                                    # Check for trailing semicolon/name
+                                    f_tail = re.match(r'\s*(\w+)?\s*;', content[j+1:])
+                                    if f_tail:
+                                        f_end = j + 1 + f_tail.end()
+                                        found_id = f_tail.group(1) or type_key
+                                        
+                                        # If the found block matches our block_id, replace it
+                                        if (is_typedef and found_id == block_id) or (not is_typedef and type_key == block_id):
+                                            print(f"DEBUG: Replacing existing block for {block_id} in {file_path}")
+                                            content = content[:start_pos] + new_block + content[f_end:]
+                                            modified = True
+                                            any_replaced = True
+                                            processed_blocks.append(new_block)
+                                            block_replaced = True
+                                            break
+                        if block_replaced: break
 
         # Remove processed blocks from lines_text to avoid processing lines individually
         for block in processed_blocks:
-            lines_text = lines_text.replace(block, "")
+            lines_text = lines_text.replace(block.strip(), "")
 
         # 2. Handle lines (Prototypes, Externs)
         lines = content.splitlines()
@@ -367,7 +391,7 @@ class DecompOrchestrator:
         if not replace_only and remaining_lines:
             # Append what wasn't replaced
             for new_line in remaining_lines:
-                if new_line in content: continue
+                if any(new_line.strip() == l.strip() for l in lines): continue
                 # Append before the last #endif
                 insertion_idx = -1
                 for i in range(len(lines) - 1, -1, -1):
