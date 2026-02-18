@@ -5,15 +5,6 @@
 
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
-
-typedef struct {
-    u8 _pad[0xC0];
-    u8 targetByte; // Offset 0xC0
-    u8 _pad2[0x27]; // Total size 0xE8
-} UnknownStruct_E7364;
-
-extern UnknownStruct_E7364* lbl_3_common_bss_350E4;
-
 void fn_3_E59B4(void);
 void fn_3_E5A1C(void);
 void fn_3_E5A84(void);

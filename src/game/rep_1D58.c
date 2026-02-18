@@ -1,5 +1,6 @@
 #include "game/rep_1D58.h"
 #include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 extern u8 lbl_3_data_11168[16];
@@ -116,7 +117,7 @@ void fn_3_B91C8(void) {
 // .text:0x000B939C size:0x28 mapped:0x806F8430
 void fn_3_B939C(void) {
     // Evaluation of (x == 2) triggers the subfic/cntlzw/extrwi pattern
-    lbl_3_common_bss_350E4.unk6C = (g_GameLogic.gameStatus == 2);
+    lbl_3_common_bss_350E4[0].unk6C = (g_GameLogic.gameStatus == 2);
 }
 
 // .text:0x000B93C4 size:0x4 mapped:0x806F8458

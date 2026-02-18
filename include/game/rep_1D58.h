@@ -6,12 +6,6 @@
 typedef struct StadiumObject StadiumObject;
 
 
-typedef struct {
-    u8 _pad[0x6C];
-    u8 unk6C; // Offset 0x6C
-} CommonBss_350E4;
-extern CommonBss_350E4 lbl_3_common_bss_350E4;
-
 void fn_3_B7FC8(void);
 void fn_3_B80D0(void);
 void fn_3_B8184(void);
