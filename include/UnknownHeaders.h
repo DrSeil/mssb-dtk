@@ -64,4 +64,22 @@ typedef struct {
     f32 unk14;
 } UnknownStructB7;
 extern UnknownStructB7 lbl_3_data_4444;
+
+typedef struct CommonBss_35154 {
+    /* 0x000 */ u32 firstMember; // Previously inside _pad0
+    /* 0x004 */ u8 _pad0[0x3AC - 4];
+    /* 0x3AC */ u32 bitfield;
+    /* 0x3B0 */ u8 _pad_extra[0x54];
+    /* 0x404 */ s16 someHalfword;
+    /* 0x406 */ u8 _pad2[0x2E];
+    /* 0x434 */ f32 unk_434;
+    /* 0x438 */ f32 unk_438;
+    /* 0x43C */ f32 unk_43C;
+    /* 0x440 */ u8 _pad3[0x26];
+    /* 0x466 */ u8 someFlag;
+    /* 0x467 */ u8 unk_467;
+} CommonBss_35154;
+
+extern CommonBss_35154 lbl_3_common_bss_35154;
+extern void fn_80034CEC(u32);
 #endif

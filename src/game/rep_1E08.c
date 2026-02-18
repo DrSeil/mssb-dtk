@@ -43,10 +43,20 @@ void fn_3_BBF94(void) {
 }
 
 // .text:0x000BC224 size:0x38 mapped:0x806FB2B8
-void fn_3_BC224(void) {
-    return;
-}
 
+
+void fn_3_BC224(void) {
+    /* Target: 
+     * addi r3, r3, lbl@l  -> r3 points to start of struct
+     * lwz r3, 0x0(r3)     -> loads 4 bytes from offset 0
+     */
+    fn_80034CEC(lbl_3_common_bss_35154.firstMember);
+
+    /* Target:
+     * stw r0, lbl@l(r3)   -> stores 0 into offset 0 of the struct
+     */
+    lbl_3_common_bss_35154.firstMember = 0;
+}
 // .text:0x000BC25C size:0x18 mapped:0x806FB2F0
 void fn_3_BC25C(void) {
     lbl_3_common_bss_35154.bitfield |= 0x40;

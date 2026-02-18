@@ -12,21 +12,7 @@ void pitchingMachinePitching(s32 param);
 void fn_8006C3F0(s32 arg);
 void fn_8006C43C(s32 arg);
 
-typedef struct {
-    u8 _pad0[0x3AC];
-    u32 bitfield; // Offset 0x3AC
-    u8 _pad_extra[0x54];
-    s16 someHalfword; // 0x404
-    u8 _pad2[0x2E];
-    f32 unk_434;      // 0x434
-    f32 unk_438;      // 0x438
-    f32 unk_43C;      // 0x43C
-    u8 _pad3[0x26];
-    u8 someFlag; // 0x466
-    u8 unk_467; // 0x467
-} CommonBss_35154;
 
-extern CommonBss_35154 lbl_3_common_bss_35154;
  
 
  
