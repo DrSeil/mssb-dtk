@@ -392,12 +392,13 @@ class DecompOrchestrator:
 
     def find_type_definition(self, type_name):
         # Look for struct NAME { or typedef struct NAME { or enum NAME {
-        search_pat = rf"\b(struct|enum|union|typedef)\s+{type_name}\b"
+        escaped_name = re.escape(type_name)
+        search_pat = rf"\b(struct|enum|union|typedef)\s+{escaped_name}\b"
         try:
             grep_out = subprocess.run(["grep", "-rn", search_pat, "include/"], capture_output=True, text=True).stdout
             if not grep_out:
                 # Try finding where it's used as a typedef target specifically
-                search_pat = rf"\b{type_name}\s*;"
+                search_pat = rf"\b{escaped_name}\s*;"
                 grep_out = subprocess.run(["grep", "-rn", search_pat, "include/"], capture_output=True, text=True).stdout
         except:
             return None
@@ -481,7 +482,8 @@ class DecompOrchestrator:
             if t in found_names: continue
             
             # Rough check if it's already defined in the provided code
-            if re.search(rf'\b(struct|enum|union)\s+{t}\b\s*\{{', code_text) or re.search(rf'}}\s*{t}\s*;', code_text):
+            escaped_t = re.escape(t)
+            if re.search(rf'\b(struct|enum|union)\s+{escaped_t}\b\s*\{{', code_text) or re.search(rf'}}\s*{escaped_t}\s*;', code_text):
                 continue
                 
             d = self.find_type_definition(t)
