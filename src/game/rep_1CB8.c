@@ -23,8 +23,29 @@ void fn_3_B7D6C(void) {
 }
 
 // .text:0x000B7DD8 size:0x38 mapped:0x806F6E6C
-void fn_3_B7DD8(void) {
-    return;
+
+
+/**
+ * @address 000B7DD8
+ */
+s32 fn_3_B7DD8(f32 f1, f32 f2) {
+    /* Target: lfs f3, 0x14(r3) */
+    f32 limit = lbl_3_data_4444.unk14;
+    
+    /* Target: fadds f0, f1, f3 -> fcmpo cr0, f2, f0 -> ble .L_000B7DF8 */
+    if (f2 > f1 + limit) {
+        /* Target: li r3, 1 -> blr */
+        return 1;
+    }
+
+    /* Target: fneg f0, f1 
+       Target: fadds f0, f0, f3
+       Target: fcmpo cr0, f2, f0
+       Target: mfcr r0 -> extrwi r3, r0, 1, 1 
+       
+       Writing it exactly as (-f1 + limit) forces the compiler to negate f1 
+       separately before adding, matching the fneg/fadds sequence. */
+    return f2 > (-f1 + limit);
 }
 
 // .text:0x000B7E10 size:0x34 mapped:0x806F6EA4

@@ -59,4 +59,9 @@ s32 unk74;
 } UnknownStruct_EF3D4;
 /* The global is accessed as an array of 32-bit values (pointers or ints) */
 extern s32 lbl_3_bss_B154[];
+typedef struct {
+    u8 pad[0x14];
+    f32 unk14;
+} UnknownStructB7;
+extern UnknownStructB7 lbl_3_data_4444;
 #endif

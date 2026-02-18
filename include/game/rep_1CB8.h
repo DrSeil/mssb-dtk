@@ -7,7 +7,7 @@ void fn_3_B79AC(void);
 void fn_3_B7C2C(void);
 void fn_3_B7CDC(void);
 void fn_3_B7D6C(void);
-void fn_3_B7DD8(void);
+s32 fn_3_B7DD8(f32 f1, f32 f2);
 s32 fn_3_B7E10(f32 f1, f32 f2);
 void fn_3_B7E44(void);
 
