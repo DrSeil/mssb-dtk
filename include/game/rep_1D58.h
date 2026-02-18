@@ -36,7 +36,7 @@ void fn_3_B9524(void);
 void fn_3_B9534(void);
 void fn_3_B95EC(void);
 void fn_3_B97C8(struct StadiumObject*);
-void fn_3_B97DC(void);
+extern void fn_3_B97DC(s32 arg0, s32 arg1);
 void fn_3_B98E8(void);
 void fn_3_B99E4(void);
 void fn_3_B9BB4(void);
