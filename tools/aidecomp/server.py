@@ -649,28 +649,55 @@ class DecompOrchestrator:
                  print("ERROR: Objdiff timed out (30s)")
                  return {"status": "objdiff_timeout", "log": "Score calculation timed out."}
             
+            def extract_formatted_asm(sym_obj):
+                if not sym_obj: return ""
+                lines = []
+                for inst_entry in sym_obj.get("instructions", []):
+                    inst = inst_entry.get("instruction")
+                    if inst and "formatted" in inst:
+                        lines.append(inst["formatted"])
+                return "\n".join(lines)
+
             data = json.loads(res.stdout)
+            right_sym = None
+            left_sym = None
+            
             if "right" in data and "symbols" in data["right"]:
                 for sym in data["right"]["symbols"]:
                     if sym.get("name") == self.func_name:
-                        score = sym.get("match_percent", 0.0) / 100.0
-                        print(f"DEBUG: Calculated score: {score}")
-                        
-                        # Get textual diff via feedback_diff.py for UI display
-                        feedback_cmd = ["python3", "tools/feedback_diff.py", self.unit_name, self.func_name]
-                        print(f"DEBUG: Running feedback_diff: {' '.join(feedback_cmd)}")
-                        try:
-                            res_text = subprocess.run(feedback_cmd, capture_output=True, text=True, timeout=30)
-                        except subprocess.TimeoutExpired:
-                            res_text = type('obj', (object,), {'stdout': '// Feedback diff timed out.', 'stderr': ''})()
-                        
-                        return {
-                            "status": "success", 
-                            "score": score, 
-                            "diff": f"Match percent: {sym.get('match_percent')}%", 
-                            "asm_diff": res_text.stdout or res_text.stderr or "// No differences found (100% match or empty output).",
-                            "unit": self.unit_name
-                        }
+                        right_sym = sym
+                        break
+            
+            if "left" in data and "symbols" in data["left"]:
+                for sym in data["left"]["symbols"]:
+                    if sym.get("name") == self.func_name:
+                        left_sym = sym
+                        break
+
+            if right_sym:
+                score = right_sym.get("match_percent", 0.0) / 100.0
+                print(f"DEBUG: Calculated score: {score}")
+                
+                target_asm = extract_formatted_asm(left_sym)
+                current_asm = extract_formatted_asm(right_sym)
+
+                # Get textual diff via feedback_diff.py for UI display
+                feedback_cmd = ["python3", "tools/feedback_diff.py", self.unit_name, self.func_name]
+                print(f"DEBUG: Running feedback_diff: {' '.join(feedback_cmd)}")
+                try:
+                    res_text = subprocess.run(feedback_cmd, capture_output=True, text=True, timeout=30)
+                except subprocess.TimeoutExpired:
+                    res_text = type('obj', (object,), {'stdout': '// Feedback diff timed out.', 'stderr': ''})()
+                
+                return {
+                    "status": "success", 
+                    "score": score, 
+                    "diff": f"Match percent: {right_sym.get('match_percent')}%", 
+                    "asm_diff": res_text.stdout or res_text.stderr or "// No differences found (100% match or empty output).",
+                    "target_asm": target_asm,
+                    "current_asm": current_asm,
+                    "unit": self.unit_name
+                }
             
             print("DEBUG: Function not found in objdiff output")
             return {"status": "not_found", "score": 0, "diff": "Function not found in objdiff output"}

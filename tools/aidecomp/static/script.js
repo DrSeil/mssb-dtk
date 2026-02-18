@@ -202,6 +202,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateScore(data.result.score * 100);
                 }
 
+                if (data.result && data.result.asm_diff) {
+                    const asmDiffDisplay = document.getElementById('asm-diff-display');
+                    if (asmDiffDisplay) asmDiffDisplay.innerText = data.result.asm_diff;
+                }
+
+                if (data.result && data.result.target_asm) {
+                    const targetAsmDisplay = document.getElementById('target-asm-display');
+                    if (targetAsmDisplay) targetAsmDisplay.innerText = data.result.target_asm;
+                }
+
+                if (data.result && data.result.current_asm) {
+                    const currentAsmDisplay = document.getElementById('current-asm-display');
+                    if (currentAsmDisplay) currentAsmDisplay.innerText = data.result.current_asm;
+                }
+
                 if (data.status === 'matched') {
                     resultEntry.classList.add('success');
                 } else if (data.status.includes('failure')) {
@@ -258,6 +273,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         const asmDiffDisplay = document.getElementById('asm-diff-display');
                         if (asmDiffDisplay && result.asm_diff) {
                             asmDiffDisplay.innerText = result.asm_diff;
+                        }
+
+                        const targetAsmDisplay = document.getElementById('target-asm-display');
+                        if (targetAsmDisplay && result.target_asm) {
+                            targetAsmDisplay.innerText = result.target_asm;
+                        }
+
+                        const currentAsmDisplay = document.getElementById('current-asm-display');
+                        if (currentAsmDisplay && result.current_asm) {
+                            currentAsmDisplay.innerText = result.current_asm;
                         }
                     } else {
                         const entry = document.createElement('div');
