@@ -429,8 +429,12 @@ void fn_3_151760(void) {
 }
 
 // .text:0x00151798 size:0x38 mapped:0x8079082C
+
+
+
 void fn_3_151798(void) {
-    return;
+    memset(lbl_3_bss_B894, 0, 0xFU);
+    pitchingMachinePitching(0x1C);
 }
 
 // .text:0x001517D0 size:0x228 mapped:0x80790864

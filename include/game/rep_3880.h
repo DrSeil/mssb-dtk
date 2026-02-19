@@ -146,4 +146,5 @@ void fn_3_1578F8(void);
 void fn_3_15791C(void);
 void fn_3_157AC4(void);
 
+// No local headers needed.
 #endif // !__GAME_rep_3880_H_
