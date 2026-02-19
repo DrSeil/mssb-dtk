@@ -544,8 +544,10 @@ typedef struct _InMemPitcherType {
 } InMemPitcherType;                       // size: 0x178
 
 typedef struct FieldingLogic {
-    u8 _pad0[0x13B];
-    u8 unk_13B;                          // Offset 0x13B
+    u8 _pad0[0x133];
+    u8 unk133;       // 0x133 - Referenced in assembly
+    u8 _pad1[0x13B - 0x134];
+    u8 unk_13B;      // 0x13B
 } FieldingLogic;
 
 extern FieldingLogic g_FieldingLogic;

@@ -22,8 +22,21 @@ void fn_3_14E50(void) {
 }
 
 // .text:0x00014E84 size:0x3C mapped:0x80653F18
+
 void fn_3_14E84(void) {
-    return;
+    /* lbz r0, 0x133(r3) -> cmplwi r0, 2 -> bnelr */
+    if (g_FieldingLogic.unk133 != 2) {
+        return;
+    }
+
+    /* lwz r4, g_pCamera(r3) -> lha r0, 0xaa4(r4) -> cmpwi r0, 0 -> bnelr */
+    if (g_pCamera->unkAA4 != 0) {
+        return;
+    }
+
+    /* lwz r0, 0x24(r3) -> sth r0, 0xaa4(r4) */
+    /* Note: sth uses the lower 16 bits of the word loaded from g_Stats */
+    g_pCamera->unkAA4 = g_Stats.unk24;
 }
 
 // .text:0x00014EC0 size:0x28 mapped:0x80653F54

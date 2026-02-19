@@ -4,13 +4,15 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 
-typedef struct {
-    u8 _pad[0xA50];
-    s32 unk_A50;   // Offset 0xA50
-    u8 _pad2[0x71]; // Adjustment based on previous 0xAC5 offset
-    u8 cameraFlag; // 0xAC5
-    u8 _pad3[0x12]; // 0xAC6-0xAD7
-    u8 cameraFlag2; // 0xAD8
+typedef struct Camera {
+    u8 _pad0[0xA50];
+    s32 unk_A50;     // 0xA50
+    u8 _pad1[0xAA4 - 0xA54]; 
+    s16 unkAA4;      // 0xAA4 - Referenced in assembly
+    u8 _pad2[0xAC5 - 0xAA6];
+    u8 cameraFlag;   // 0xAC5
+    u8 _pad3[0xAD8 - 0xAC6];
+    u8 cameraFlag2;  // 0xAD8
 } Camera;
 
 typedef struct {
@@ -99,4 +101,9 @@ void fn_3_1CCC8(void);
 void fn_3_1CE90(void);
 
 extern s32 lbl_3_bss_44;
+typedef struct Stats {
+u8 _pad[0x24];
+u32 unk24;
+} Stats;
+extern Stats g_Stats;
 #endif // !__GAME_rep_720_H_
