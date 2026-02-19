@@ -14,3 +14,6 @@ Header Context:
 
 Build/Comparison Errors:
 {errors}
+
+## Referenced Symbols
+{symbols}

@@ -218,8 +218,16 @@ class DecompOrchestrator:
                 print(f"ERROR: m2c_helper failed: {res.stderr}")
                 return f"/* Error generating draft: {res.stderr} */"
             
-            print(f"DEBUG: m2c_helper success, output length: {len(res.stdout)}")
-            return res.stdout
+            # Strip diagnostic lines that m2c_helper prints to stdout mixed with the C output
+            diag_prefixes = ("Processing file ", "Failed to locate ", "Warning:", "Error:")
+            filtered_lines = [
+                l for l in res.stdout.splitlines()
+                if not any(l.strip().startswith(p) for p in diag_prefixes)
+            ]
+            output = "\n".join(filtered_lines)
+            
+            print(f"DEBUG: m2c_helper success, output length: {len(output)}")
+            return output
         except Exception as e:
             print(f"ERROR: m2c_helper Exception: {e}")
             return f"/* Exception generating draft: {e} */"
@@ -646,22 +654,26 @@ class DecompOrchestrator:
         Covers: function calls (fn_3_XXXX), globals (g_XXX, lbl_3_XXX),
         and any other identifier that grep can find in include/.
         """
+        print(f"DEBUG get_all_used_symbols: code_text length = {len(code_text)}")
         # --- Candidate extraction ---
         candidates = set()
 
         # Function calls: anything(  that isn't a keyword or type
         calls = re.findall(r'\b([A-Za-z_]\w+)\s*\(', code_text)
         candidates.update(calls)
+        print(f"DEBUG get_all_used_symbols: {len(calls)} function call candidates: {calls[:20]}")
 
         # Global-variable-style identifiers: g_XX, lbl_XX, s_XX, D_XX
         globals_found = re.findall(r'\b((?:g_|lbl_|s_|D_|gp_)\w+)\b', code_text)
         candidates.update(globals_found)
+        print(f"DEBUG get_all_used_symbols: {len(globals_found)} global candidates: {globals_found[:20]}")
+
+        print(f"DEBUG get_all_used_symbols: total unique candidates = {len(candidates)}")
 
         # --- Filter out things that are already defined in the code block ---
-        # Defined functions
+        # Defined functions (have a body)
         defined_funcs = set(re.findall(r'\b(\w+)\s*\([^)]*\)\s*\{', code_text))
-        # Defined variables / struct members (anything with a ; after a declaration)
-        defined_vars = set(re.findall(r'\b(\w+)\s*(?:=|;)', code_text))
+        print(f"DEBUG get_all_used_symbols: defined_funcs = {defined_funcs}")
         # C keywords and common types to skip
         skip = {
             'if', 'else', 'while', 'for', 'do', 'return', 'switch', 'case', 'break',
@@ -673,13 +685,19 @@ class DecompOrchestrator:
         }
 
         to_lookup = set()
+        filtered_reasons = {}
         for name in candidates:
             name = name.strip()
             if not name or name in skip or len(name) < 3 or name[0].isdigit():
+                filtered_reasons[name] = "skip/short/digit"
                 continue
-            if name in defined_funcs or name in defined_vars:
+            if name in defined_funcs:
+                filtered_reasons[name] = "defined_funcs"
                 continue
             to_lookup.add(name)
+
+        print(f"DEBUG get_all_used_symbols: to_lookup ({len(to_lookup)}) = {sorted(to_lookup)[:20]}")
+        print(f"DEBUG get_all_used_symbols: filtered out: {dict(list(filtered_reasons.items())[:20])}")
 
         # --- Look each one up ---
         found_decls = []
@@ -691,15 +709,39 @@ class DecompOrchestrator:
             # Try symbol declaration first (extern, prototype, macro)
             decl = find_symbol_declaration(name)
             if decl:
+                print(f"DEBUG get_all_used_symbols: FOUND declaration for {name}")
                 found_decls.append(f"// {name}\n{decl}")
                 found_names.add(name)
                 continue
             # Fall back to type definition (struct/typedef)
             defn = self.find_type_definition(name)
             if defn:
+                print(f"DEBUG get_all_used_symbols: FOUND type def for {name}")
                 found_decls.append(defn)
                 found_names.add(name)
+            else:
+                print(f"DEBUG get_all_used_symbols: NOT FOUND: {name}")
 
+        print(f"DEBUG get_all_used_symbols: total found (pass 1) = {len(found_decls)}")
+
+        # --- Second pass: resolve types referenced in discovered declarations (one level deep) ---
+        type_candidates = set()
+        for decl_block in found_decls:
+            # Extract type-like words from declarations (capitalized or after struct/enum/union)
+            type_candidates.update(re.findall(r'\b([A-Z]\w+)\b', decl_block))
+            type_candidates.update(re.findall(r'(?:struct|union|enum)\s+(\w+)', decl_block))
+        
+        for t in sorted(type_candidates):
+            t = t.strip()
+            if not t or t in skip or t in found_names or len(t) < 3:
+                continue
+            defn = self.find_type_definition(t)
+            if defn:
+                print(f"DEBUG get_all_used_symbols: FOUND type def for referenced type {t}")
+                found_decls.append(defn)
+                found_names.add(t)
+
+        print(f"DEBUG get_all_used_symbols: total found (final) = {len(found_decls)}")
         return "\n\n".join(found_decls)
 
     def commit_to_source(self, c_code):
@@ -1258,6 +1300,8 @@ async def generate_prompt(func_name: str, body: CommitRequest):
     
     # Extract all external symbol declarations/prototypes referenced in the code
     symbols = orch.get_all_used_symbols(full_c)
+    print(f"DEBUG generate_prompt: symbols length = {len(symbols)}")
+    print(f"DEBUG generate_prompt: template has {{symbols}} = {'{symbols}' in template}")
     
     try:
         prompt = template.format(
