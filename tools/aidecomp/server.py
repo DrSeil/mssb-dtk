@@ -639,6 +639,69 @@ class DecompOrchestrator:
                 
         return "\n\n".join(defs)
 
+    def get_all_used_symbols(self, code_text):
+        """
+        Find all external symbols referenced in code_text that aren't defined
+        within it, and return their declarations/prototypes/definitions.
+        Covers: function calls (fn_3_XXXX), globals (g_XXX, lbl_3_XXX),
+        and any other identifier that grep can find in include/.
+        """
+        # --- Candidate extraction ---
+        candidates = set()
+
+        # Function calls: anything(  that isn't a keyword or type
+        calls = re.findall(r'\b([A-Za-z_]\w+)\s*\(', code_text)
+        candidates.update(calls)
+
+        # Global-variable-style identifiers: g_XX, lbl_XX, s_XX, D_XX
+        globals_found = re.findall(r'\b((?:g_|lbl_|s_|D_|gp_)\w+)\b', code_text)
+        candidates.update(globals_found)
+
+        # --- Filter out things that are already defined in the code block ---
+        # Defined functions
+        defined_funcs = set(re.findall(r'\b(\w+)\s*\([^)]*\)\s*\{', code_text))
+        # Defined variables / struct members (anything with a ; after a declaration)
+        defined_vars = set(re.findall(r'\b(\w+)\s*(?:=|;)', code_text))
+        # C keywords and common types to skip
+        skip = {
+            'if', 'else', 'while', 'for', 'do', 'return', 'switch', 'case', 'break',
+            'continue', 'default', 'goto', 'sizeof', 'typedef', 'struct', 'enum',
+            'union', 'extern', 'static', 'const', 'volatile', 'inline', 'void',
+            'int', 'char', 'float', 'double', 'short', 'long', 'signed', 'unsigned',
+            's8', 'u8', 's16', 'u16', 's32', 'u32', 's64', 'u64', 'f32', 'f64',
+            'BOOL', 'NULL', 'TRUE', 'FALSE', 'bool', 'size_t', 'uptr', 'uintptr_t',
+        }
+
+        to_lookup = set()
+        for name in candidates:
+            name = name.strip()
+            if not name or name in skip or len(name) < 3 or name[0].isdigit():
+                continue
+            if name in defined_funcs or name in defined_vars:
+                continue
+            to_lookup.add(name)
+
+        # --- Look each one up ---
+        found_decls = []
+        found_names = set()
+
+        for name in sorted(to_lookup):
+            if name in found_names:
+                continue
+            # Try symbol declaration first (extern, prototype, macro)
+            decl = find_symbol_declaration(name)
+            if decl:
+                found_decls.append(f"// {name}\n{decl}")
+                found_names.add(name)
+                continue
+            # Fall back to type definition (struct/typedef)
+            defn = self.find_type_definition(name)
+            if defn:
+                found_decls.append(defn)
+                found_names.add(name)
+
+        return "\n\n".join(found_decls)
+
     def commit_to_source(self, c_code):
         src_path = self.resolve_source_path()
         if not src_path or not os.path.exists(src_path):
@@ -1190,14 +1253,18 @@ async def generate_prompt(func_name: str, body: CommitRequest):
     template = CONFIG.get("prompt_template", "")
     full_c = f"{body.externs}\n\n{body.headers}\n\n{body.body}"
     
-    # Extract structures
+    # Extract struct/type definitions used in the code
     structures = orch.get_all_used_structures(full_c)
+    
+    # Extract all external symbol declarations/prototypes referenced in the code
+    symbols = orch.get_all_used_symbols(full_c)
     
     try:
         prompt = template.format(
             asm_content=asm_content,
             c_code=full_c,
             structures=structures,
+            symbols=symbols,
             context=context,
             errors=errors
         )
@@ -1205,14 +1272,57 @@ async def generate_prompt(func_name: str, body: CommitRequest):
     except Exception as e:
         return {"status": "error", "message": f"Template formatting failed: {e}"}
 
+def find_symbol_declaration(symbol_name: str) -> str | None:
+    """
+    Search include/ and src/ for a declaration matching symbol_name.
+    Handles: extern variables, function prototypes, #define macros.
+    Returns the matching line(s) as a string, or None.
+    """
+    escaped = re.escape(symbol_name)
+    # Match: extern ... symbol_name ...; OR return_type symbol_name(...); OR #define symbol_name
+    patterns = [
+        rf'\bextern\b[^;]*\b{escaped}\b[^;]*;',
+        rf'^[^/\n]*\b{escaped}\s*\([^)]*\)\s*;',  # function prototype
+        rf'^\s*#define\s+{escaped}\b',
+    ]
+    results = []
+    for pat in patterns:
+        try:
+            out = subprocess.run(
+                ["grep", "-rn", "--include=*.h", "-E", pat, "include/"],
+                capture_output=True, text=True
+            ).stdout.strip()
+            if out:
+                results.append(out)
+        except Exception:
+            pass
+    if not results:
+        return None
+    # Return the first match line(s) de-duplicated
+    seen = set()
+    lines = []
+    for block in results:
+        for line in block.splitlines():
+            # Strip the file:lineno: prefix to get just the declaration
+            match = re.match(r'^[^:]+:\d+:(.*)', line)
+            decl = match.group(1).strip() if match else line.strip()
+            if decl and decl not in seen:
+                seen.add(decl)
+                lines.append(decl)
+    return "\n".join(lines) if lines else None
+
 @app.get("/lookup_symbol/{symbol_name}")
 def lookup_symbol(symbol_name: str):
     orch = DecompOrchestrator("", "")
+    # Try type definition first (struct / typedef / enum / union)
     definition = orch.find_type_definition(symbol_name)
     if definition:
-        return {"status": "success", "definition": definition}
-    else:
-        return {"status": "error", "message": f"Symbol {symbol_name} not found."}
+        return {"status": "success", "definition": definition, "kind": "type"}
+    # Fall back to variable/function/macro declaration
+    declaration = find_symbol_declaration(symbol_name)
+    if declaration:
+        return {"status": "success", "definition": declaration, "kind": "symbol"}
+    return {"status": "error", "message": f"Symbol '{symbol_name}' not found."}
 
 class ReplaceRequest(BaseModel):
     original: str
