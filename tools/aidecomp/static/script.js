@@ -550,4 +550,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Gemini Chat Logic
+    const geminiSendBtn = document.getElementById('gemini-send-btn');
+    const geminiPromptInput = document.getElementById('gemini-prompt-input');
+    const geminiResponseDisplay = document.getElementById('gemini-response-display');
+    const geminiStatus = document.getElementById('gemini-status');
+
+    if (geminiSendBtn) {
+        geminiSendBtn.addEventListener('click', async () => {
+            const prompt = geminiPromptInput.value.trim();
+            if (!prompt) return alert("Please enter a prompt.");
+
+            geminiSendBtn.innerText = "Thinking...";
+            geminiSendBtn.disabled = true;
+            if (geminiStatus) geminiStatus.innerText = "Waiting for Gemini CLI response...";
+            if (geminiResponseDisplay) geminiResponseDisplay.innerText = "// Loading...";
+
+            try {
+                const res = await fetch('/gemini_chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    if (geminiResponseDisplay) geminiResponseDisplay.innerText = data.response || '(empty response)';
+                    if (geminiStatus) geminiStatus.innerText = "✅ Response received.";
+                } else {
+                    const errorMsg = data.message || "Unknown error";
+                    const extra = data.response ? `\n\nOutput:\n${data.response}` : '';
+                    const stderr = data.stderr ? `\n\nStderr:\n${data.stderr}` : '';
+                    if (geminiResponseDisplay) geminiResponseDisplay.innerText = `Error: ${errorMsg}${extra}${stderr}`;
+                    if (geminiStatus) geminiStatus.innerText = "❌ Error occurred.";
+                }
+            } catch (e) {
+                console.error(e);
+                if (geminiResponseDisplay) geminiResponseDisplay.innerText = `Request failed: ${e.message}`;
+                if (geminiStatus) geminiStatus.innerText = "❌ Request failed.";
+            } finally {
+                geminiSendBtn.innerText = "Send to Gemini";
+                geminiSendBtn.disabled = false;
+            }
+        });
+    }
 });

@@ -1224,6 +1224,41 @@ def global_replace(req: ReplaceRequest):
                     
     return {"status": "success", "files_modified": count, "errors": errors}
 
+class GeminiChatRequest(BaseModel):
+    prompt: str
+
+@app.post("/gemini_chat")
+async def gemini_chat(req: GeminiChatRequest):
+    if not req.prompt or not req.prompt.strip():
+        return {"status": "error", "message": "Prompt is required."}
+
+    try:
+        result = subprocess.run(
+            ["gemini", "--sandbox", req.prompt.strip()],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=os.getcwd(),
+        )
+        output = result.stdout or ""
+        stderr = result.stderr or ""
+
+        if result.returncode != 0:
+            return {
+                "status": "error",
+                "message": f"Gemini CLI exited with code {result.returncode}",
+                "response": output,
+                "stderr": stderr,
+            }
+
+        return {"status": "success", "response": output}
+    except FileNotFoundError:
+        return {"status": "error", "message": "Gemini CLI not found. Install with: npm install -g @google/gemini-cli"}
+    except subprocess.TimeoutExpired:
+        return {"status": "error", "message": "Gemini CLI timed out after 120 seconds."}
+    except Exception as e:
+        return {"status": "error", "message": f"Failed to run Gemini CLI: {str(e)}"}
+
 # Mount static files
 app.mount("/", StaticFiles(directory="tools/aidecomp/static", html=True), name="static")
 

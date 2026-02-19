@@ -52,6 +52,9 @@
                 <button class="nav-item" data-tab="explore">
                     <span class="icon">🔍</span> Explore
                 </button>
+                <button class="nav-item" data-tab="gemini">
+                    <span class="icon">🤖</span> Gemini
+                </button>
             </nav>
             <div class="status-panel">
                 <h3>System Status</h3>
@@ -260,6 +263,28 @@
                         style="padding: 12px 40px; background: var(--secondary); color: white; font-weight: bold;">
                         Execute Global Replace
                     </button>
+                </div>
+            </div>
+
+            <div id="tab-gemini" class="tab-content">
+                <div class="hero-card">
+                    <h2>Gemini Chat</h2>
+                    <p>Send a one-shot prompt to the local Gemini CLI and view the response.</p>
+                </div>
+
+                <div class="card glass-card" style="margin-top: 24px;">
+                    <h3>Prompt</h3>
+                    <textarea id="gemini-prompt-input" class="glass-input" placeholder="Ask Gemini anything..."
+                        style="width: 100%; height: 150px; resize: vertical; font-family: 'Inter', sans-serif; font-size: 0.95rem;"></textarea>
+                    <div style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+                        <button id="gemini-send-btn" class="btn-primary">Send to Gemini</button>
+                        <span id="gemini-status" style="color: var(--text-secondary); font-size: 0.85rem;"></span>
+                    </div>
+                </div>
+
+                <div class="card glass-card" style="margin-top: 24px;">
+                    <h3>Response</h3>
+                    <pre><code id="gemini-response-display" style="max-height: 600px; overflow-y: auto; display: block; white-space: pre-wrap; word-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">// Response will appear here...</code></pre>
                 </div>
             </div>
 
