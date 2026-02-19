@@ -8,8 +8,9 @@ typedef struct Camera {
     u8 _pad0[0xA50];
     s32 unk_A50;     // 0xA50
     u8 _pad1[0xAA4 - 0xA54]; 
-    s16 unkAA4;      // 0xAA4 - Referenced in assembly
-    u8 _pad2[0xAC5 - 0xAA6];
+    s16 unkAA4;      // 0xAA4
+    s16 unkAA6;      // 0xAA6 - Reference in fn_3_14EE8
+    u8 _pad2[0xAC5 - 0xAA8];
     u8 cameraFlag;   // 0xAC5
     u8 _pad3[0xAD8 - 0xAC6];
     u8 cameraFlag2;  // 0xAD8
@@ -106,4 +107,5 @@ u8 _pad[0x24];
 u32 unk24;
 } Stats;
 extern Stats g_Stats;
+// No local headers needed.
 #endif // !__GAME_rep_720_H_

@@ -47,8 +47,24 @@ void fn_3_14EC0(void) {
 }
 
 // .text:0x00014EE8 size:0x3C mapped:0x80653F7C
+
+/**
+ * @address 00014EE8
+ */
 void fn_3_14EE8(void) {
-    return;
+    /* lbz r0, 0x91(r3) -> cmplwi r0, 0x1 -> bnelr */
+    if (g_Batter.contactMadeInd != 1) {
+        return;
+    }
+
+    /* lwz r4, g_pCamera@l(r3) -> lha r0, 0xaa6(r4) -> cmpwi r0, -1 -> bnelr */
+    if (g_pCamera->unkAA6 != -1) {
+        return;
+    }
+
+    /* lis r3, g_Ball@ha -> addi r3, r3, g_Ball@l -> lha r0, 0x1b9c(r3) */
+    /* sth r0, 0xaa6(r4) */
+    g_pCamera->unkAA6 = g_Ball.Hit_HorizontalAngle;
 }
 
 // .text:0x00014F24 size:0x44 mapped:0x80653FB8
