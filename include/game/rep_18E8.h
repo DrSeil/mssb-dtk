@@ -20,7 +20,7 @@ void fn_3_A31E8(void);
 void fn_3_A32B8(void);
 void fn_3_A3374(void);
 void fn_3_A36BC(void);
-void fn_3_A372C(void);
+s32 fn_3_A372C(void);
 void fn_3_A3768(void);
 void fn_3_A37BC(void);
 void fn_3_A384C(void);

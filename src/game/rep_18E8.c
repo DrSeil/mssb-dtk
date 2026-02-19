@@ -1,4 +1,5 @@
 #include "game/rep_18E8.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000A009C size:0x1C68 mapped:0x806DF130
@@ -87,8 +88,39 @@ void fn_3_A36BC(void) {
 }
 
 // .text:0x000A372C size:0x3C mapped:0x806E27C0
-void fn_3_A372C(void) {
-    return;
+
+#include "types.h"
+
+extern InMemBallType g_Ball;
+extern f32 lbl_3_rodata_1998;
+
+/**
+ * @address 000A372C
+ */
+s32 fn_3_A372C(void) {
+    /* * To match target:
+     * 1. Constant address -> r3 (lis r3)
+     * 2. Ball address -> r4 (lis r4)
+     * 3. Load ball.x into f2 and update r4 (lfsu f2)
+     * 4. Load constant from r3 into f1 (lfs f1)
+     * 5. Load ball.z from updated r4 into f3 (lfs f3)
+     */
+    f32 ballX = g_Ball.AtBat_Contact_BallPos.x;
+
+    f32 ballZ = g_Ball.AtBat_Contact_BallPos.z;
+    f32 constant = lbl_3_rodata_1998;
+
+
+
+    /* fadds f0, f1, f2 -> f1 must be first operand (constant + ballX) */
+    if (ballZ < (constant + ballX)) {
+        /* fsubs f0, f1, f2 -> f1 must be first operand (constant - ballX) */
+        if (ballZ < (constant - ballX)) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 // .text:0x000A3768 size:0x54 mapped:0x806E27FC
