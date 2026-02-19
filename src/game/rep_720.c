@@ -78,8 +78,26 @@ void fn_3_14F68(void) {
 }
 
 // .text:0x00014FC8 size:0x3C mapped:0x8065405C
+
+/**
+ * @address 00014FC8
+ */
 void fn_3_14FC8(void) {
-    return;
+    /* lis r3, lbl@ha -> addi r3, r3, lbl@l -> lha r0, 0x4(r3) */
+    /* cmpwi r0, 0xe -> bnelr */
+    if (lbl_3_common_bss_32A94.unk4 != 0xE) {
+        return;
+    }
+
+    /* lis r3, g_pCamera@ha -> lwz r4, g_pCamera@l(r3) -> lha r0, 0xa96(r4) */
+    /* cmpwi r0, 0 -> bnelr */
+    if (g_pCamera->unkA96 != 0) {
+        return;
+    }
+
+    /* lis r3, g_Stats@ha -> addi r3, r3, g_Stats@l -> lwz r0, 0x24(r3) */
+    /* sth r0, 0xa96(r4) */
+    g_pCamera->unkA96 = (s16)g_Stats.unk24;
 }
 
 // .text:0x00015004 size:0xBC mapped:0x80654098

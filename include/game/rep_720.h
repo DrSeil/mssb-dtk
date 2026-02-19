@@ -5,15 +5,17 @@
 #include "game/UnknownHomes_Game.h"
 
 typedef struct Camera {
-    u8 _pad0[0xA50];
-    s32 unk_A50;     // 0xA50
-    u8 _pad1[0xAA4 - 0xA54]; 
-    s16 unkAA4;      // 0xAA4
-    s16 unkAA6;      // 0xAA6 - Reference in fn_3_14EE8
-    u8 _pad2[0xAC5 - 0xAA8];
-    u8 cameraFlag;   // 0xAC5
-    u8 _pad3[0xAD8 - 0xAC6];
-    u8 cameraFlag2;  // 0xAD8
+    /* 0x000 */ u8 _pad0[0xA50];
+    /* 0xA50 */ s32 unk_A50;
+    /* 0xA54 */ u8 _pad1[0xA96 - 0xA54]; 
+    /* 0xA96 */ s16 unkA96;       // Offset 0xA96: used in fn_3_14FC8
+    /* 0xA98 */ u8 _pad2[0xAA4 - 0xA98];
+    /* 0xAA4 */ s16 unkAA4;       // Offset 0xAA4: used in fn_3_14E84
+    /* 0xAA6 */ s16 unkAA6;       // Offset 0xAA6: used in fn_3_14EE8
+    /* 0xAA8 */ u8 _pad3[0xAC5 - 0xAA8];
+    /* 0xAC5 */ u8 cameraFlag;    // Offset 0xAC5
+    /* 0xAC6 */ u8 _pad4[0xAD8 - 0xAC6];
+    /* 0xAD8 */ u8 cameraFlag2;   // Offset 0xAD8
 } Camera;
 
 typedef struct {
