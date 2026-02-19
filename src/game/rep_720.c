@@ -161,8 +161,24 @@ void fn_3_15A98(void) {
 }
 
 // .text:0x00015D28 size:0x3C mapped:0x80654DBC
+
 void fn_3_15D28(void) {
-    return;
+    /* * Target Sequence:
+     * lis r3, g_pCamera@ha -> addi r3, r3, g_pCamera@l
+     * lwz r3, 0(r3)        -> Load pointer
+     * lbz r0, 0xad8(r3)    -> Load cameraFlag2
+     * cmplwi r0, 1         -> Check if flag is 1
+     * bne .L_00015D50      -> Skip next call if not 1
+     */
+    if (g_pCamera->cameraFlag2 == 1) {
+        /* bl fn_3_FBE24 */
+        fn_3_FBE24();
+    }
+
+    /* .L_00015D50:
+     * bl fn_3_FD670
+     */
+    fn_3_FD670();
 }
 
 // .text:0x00015D64 size:0x18 mapped:0x80654DF8
