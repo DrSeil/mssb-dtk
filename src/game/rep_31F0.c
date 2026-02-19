@@ -63,8 +63,18 @@ void fn_3_1118B4(void) {
 }
 
 // .text:0x00111A88 size:0x3C mapped:0x80750B1C
+
+
 void fn_3_111A88(void) {
-    return;
+    // Note: We access fields directly through the global to force the 
+    // lis/addi g_GameLogic sequence seen in the assembly.
+    
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+
+    // The compiler will put 0x8 in r3 and the address of g_GameLogic in r4
+    fn_3_5A6D4(8, &g_GameLogic);
 }
 
 // .text:0x00111AC4 size:0x198 mapped:0x80750B58

@@ -30,4 +30,5 @@ void fn_3_1128E8(void);
 void fn_3_1128EC(void);
 void fn_3_112BD8(void);
 
+// No local headers needed.
 #endif // !__GAME_rep_31F0_H_

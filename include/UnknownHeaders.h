@@ -95,4 +95,5 @@ s16 unk4;
 extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
+extern void fn_3_5A6D4(s32, GameControlsStruct *);
 #endif
