@@ -1,4 +1,5 @@
 #include "game/rep_3880.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0014737C size:0x3FC mapped:0x80786410
@@ -410,8 +411,21 @@ void fn_3_151710(void) {
 }
 
 // .text:0x00151760 size:0x38 mapped:0x807907F4
+
+/**
+ * @address 00151760
+ */
 void fn_3_151760(void) {
-    return;
+    /* * Target Sequence:
+     * lis r3, lbl@ha -> li r4, 0 -> stw r0, 0x14(r1) -> addi r3, r3, lbl@l
+     * li r5, 0xf -> bl memset
+     */
+    memset(lbl_3_bss_B894, 0, 0xF);
+
+    /* * Target Sequence:
+     * li r3, 0x1c -> bl pitchingMachinePitching
+     */
+    pitchingMachinePitching(0x1C);
 }
 
 // .text:0x00151798 size:0x38 mapped:0x8079082C

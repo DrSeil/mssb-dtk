@@ -87,4 +87,5 @@ extern void fn_80034CEC(u32);
 extern VecXZ lbl_3_data_111C8[];
 // Extern function prototype based on bl fn_8003A688
 extern void fn_8003A688(f32, f32);
+extern u8 lbl_3_bss_B894[0xF];
 #endif

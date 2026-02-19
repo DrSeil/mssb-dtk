@@ -2,6 +2,8 @@
 #define __GAME_rep_3880_H_
 
 #include "mssbTypes.h"
+#include "stl/mem.h"
+
 
 typedef struct {
     u8 _pad[0x18];
