@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
+#include "game/rep_1838.h"
+#include "static/UnknownHomes_Static.h"
 
 typedef struct Camera {
     /* 0x000 */ u8 _pad0[0xA50];
@@ -110,4 +112,5 @@ u32 unk24;
 } Stats;
 extern Stats g_Stats;
 // No local headers needed.
+
 #endif // !__GAME_rep_720_H_

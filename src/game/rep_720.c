@@ -218,8 +218,26 @@ void fn_3_15F74(void) {
 }
 
 // .text:0x00015F94 size:0x3C mapped:0x80655028
+
+/**
+ * @address 00015F94
+ */
 void fn_3_15F94(void) {
-    return;
+    u32 result;
+
+    /* li r3, 0 -> bl fn_3_9EE24 */
+    result = fn_3_9EE24(0);
+
+    /* To match the assembly:
+     * 1. result stays in r3.
+     * 2. g_d_GameSettings address is loaded into r4.
+     * 3. StadiumID is loaded into r0.
+     * 4. result (r3) = result (r3) + StadiumID (r0).
+     * 5. result (r3) = result (r3) + 0x1D.
+     */
+    
+    result += g_d_GameSettings.StadiumID;
+    fn_3_FBDAC(result + 0x1D);
 }
 
 // .text:0x00015FD0 size:0x20 mapped:0x80655064
