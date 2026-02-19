@@ -389,16 +389,43 @@ class DecompOrchestrator:
                 remaining_lines.append(new_line)
         
         if not replace_only and remaining_lines:
-            # Append what wasn't replaced
-            for new_line in remaining_lines:
+            # Separate #include lines from other declarations
+            include_lines = [l for l in remaining_lines if l.strip().startswith('#include')]
+            other_lines = [l for l in remaining_lines if not l.strip().startswith('#include')]
+
+            # Insert #includes at the bottom of the existing include block at the top of the file
+            if include_lines:
+                # Find the last #include line in the top-of-file include block.
+                # We scan from the top, skipping blank lines and header guard lines,
+                # and stop as soon as we hit a non-include, non-blank, non-comment line.
+                last_include_idx = -1
+                for i, line in enumerate(lines):
+                    stripped = line.strip()
+                    if stripped.startswith('#include'):
+                        last_include_idx = i
+                    elif stripped.startswith('#ifndef') or stripped.startswith('#define') or stripped.startswith('#pragma') or not stripped or stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
+                        continue
+                    else:
+                        # Hit a real declaration - stop scanning the include block
+                        break
+
+                for new_inc in include_lines:
+                    if any(new_inc.strip() == l.strip() for l in lines):
+                        continue
+                    insert_at = last_include_idx + 1 if last_include_idx != -1 else 0
+                    lines.insert(insert_at, new_inc)
+                    last_include_idx = insert_at  # keep inserting below the previous one
+                    modified = True
+
+            # Insert other declarations before the last #endif
+            for new_line in other_lines:
                 if any(new_line.strip() == l.strip() for l in lines): continue
-                # Append before the last #endif
                 insertion_idx = -1
                 for i in range(len(lines) - 1, -1, -1):
                     if "#endif" in lines[i]:
                         insertion_idx = i
                         break
-                
+
                 if insertion_idx != -1:
                     lines.insert(insertion_idx, new_line)
                     modified = True
