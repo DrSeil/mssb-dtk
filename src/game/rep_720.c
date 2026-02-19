@@ -202,8 +202,14 @@ void fn_3_15F18(void) {
 }
 
 // .text:0x00015F38 size:0x3C mapped:0x80654FCC
+
+
+
 void fn_3_15F38(void) {
-    return;
+    if ((u8) g_pCamera->cameraFlag2 == 1) {
+        fn_3_FBE24();
+    }
+    fn_3_FD670();
 }
 
 // .text:0x00015F74 size:0x20 mapped:0x80655008
