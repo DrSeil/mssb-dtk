@@ -595,4 +595,178 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ── Symbols DB Logic ──────────────────────────────────────────────────
+    const symbolsdbSearchInput = document.getElementById('symbolsdb-search');
+    const symbolsdbModuleSelect = document.getElementById('symbolsdb-module');
+    const symbolsdbTypeSelect = document.getElementById('symbolsdb-type');
+    const symbolsdbLoadBtn = document.getElementById('symbolsdb-load-btn');
+    const symbolsdbCountSpan = document.getElementById('symbolsdb-count');
+    const symbolsdbTbody = document.getElementById('symbolsdb-tbody');
+    const symbolsdbPrev = document.getElementById('symbolsdb-prev');
+    const symbolsdbNext = document.getElementById('symbolsdb-next');
+    const symbolsdbPageInfo = document.getElementById('symbolsdb-page-info');
+    const symbolsdbDetail = document.getElementById('symbolsdb-detail');
+    const symbolsdbDetailTitle = document.getElementById('symbolsdb-detail-title');
+    const symbolsdbDetailCode = document.getElementById('symbolsdb-detail-code');
+    const symbolsdbCopyBtn = document.getElementById('symbolsdb-copy-btn');
+    const symbolsdbCloseDetail = document.getElementById('symbolsdb-close-detail');
+
+    let symbolsdbAllData = [];
+    let symbolsdbFiltered = [];
+    let symbolsdbPage = 0;
+    const SYMBOLS_PER_PAGE = 100;
+
+    function symbolsdbRenderTable() {
+        if (!symbolsdbTbody) return;
+        const start = symbolsdbPage * SYMBOLS_PER_PAGE;
+        const end = Math.min(start + SYMBOLS_PER_PAGE, symbolsdbFiltered.length);
+        const pageData = symbolsdbFiltered.slice(start, end);
+        const totalPages = Math.max(1, Math.ceil(symbolsdbFiltered.length / SYMBOLS_PER_PAGE));
+
+        if (pageData.length === 0) {
+            symbolsdbTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-secondary);">No symbols found</td></tr>';
+        } else {
+            symbolsdbTbody.innerHTML = pageData.map((s, i) => {
+                const badgeClass = s.type || 'label';
+                const ghidraCell = s.ghidra_name ? `<span class="sym-ghidra-name">${escapeHtml(s.ghidra_name)}</span>` : '—';
+                return `<tr data-idx="${start + i}">
+                    <td>${escapeHtml(s.name)}</td>
+                    <td><span class="sym-type-badge ${badgeClass}">${escapeHtml(s.type)}</span></td>
+                    <td>${escapeHtml(s.size || '—')}</td>
+                    <td>${escapeHtml(s.module)}</td>
+                    <td>${ghidraCell}</td>
+                    <td>0x${escapeHtml(s.address)}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        if (symbolsdbPageInfo) symbolsdbPageInfo.innerText = `Page ${symbolsdbPage + 1} / ${totalPages}`;
+        if (symbolsdbPrev) symbolsdbPrev.disabled = symbolsdbPage === 0;
+        if (symbolsdbNext) symbolsdbNext.disabled = end >= symbolsdbFiltered.length;
+        if (symbolsdbCountSpan) symbolsdbCountSpan.innerText = `${symbolsdbFiltered.length} symbols`;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function symbolsdbFilter() {
+        const search = (symbolsdbSearchInput?.value || '').toLowerCase();
+        const module = symbolsdbModuleSelect?.value || '';
+        const type = symbolsdbTypeSelect?.value || '';
+
+        symbolsdbFiltered = symbolsdbAllData.filter(s => {
+            if (module && s.module !== module) return false;
+            if (type && s.type !== type) return false;
+            if (search) {
+                const nameMatch = s.name.toLowerCase().includes(search);
+                const ghidraMatch = (s.ghidra_name || '').toLowerCase().includes(search);
+                if (!nameMatch && !ghidraMatch) return false;
+            }
+            return true;
+        });
+        symbolsdbPage = 0;
+        symbolsdbRenderTable();
+    }
+
+    async function symbolsdbLoad() {
+        if (symbolsdbLoadBtn) {
+            symbolsdbLoadBtn.innerText = 'Loading...';
+            symbolsdbLoadBtn.disabled = true;
+        }
+        try {
+            const res = await fetch('/symbols_db');
+            const data = await res.json();
+            if (data.status === 'success') {
+                symbolsdbAllData = data.symbols;
+                symbolsdbFilter();
+            }
+        } catch (e) {
+            console.error('Failed to load symbols DB:', e);
+        } finally {
+            if (symbolsdbLoadBtn) {
+                symbolsdbLoadBtn.innerText = 'Load';
+                symbolsdbLoadBtn.disabled = false;
+            }
+        }
+    }
+
+    if (symbolsdbLoadBtn) symbolsdbLoadBtn.addEventListener('click', symbolsdbLoad);
+    if (symbolsdbSearchInput) symbolsdbSearchInput.addEventListener('input', symbolsdbFilter);
+    if (symbolsdbModuleSelect) symbolsdbModuleSelect.addEventListener('change', symbolsdbFilter);
+    if (symbolsdbTypeSelect) symbolsdbTypeSelect.addEventListener('change', symbolsdbFilter);
+    if (symbolsdbPrev) symbolsdbPrev.addEventListener('click', () => { symbolsdbPage--; symbolsdbRenderTable(); });
+    if (symbolsdbNext) symbolsdbNext.addEventListener('click', () => { symbolsdbPage++; symbolsdbRenderTable(); });
+
+    // Click row to show detail
+    if (symbolsdbTbody) {
+        symbolsdbTbody.addEventListener('click', async (e) => {
+            const row = e.target.closest('tr');
+            if (!row || !row.dataset.idx) return;
+            const idx = parseInt(row.dataset.idx);
+            const sym = symbolsdbFiltered[idx];
+            if (!sym) return;
+
+            // Highlight selected row
+            symbolsdbTbody.querySelectorAll('tr').forEach(r => r.classList.remove('selected'));
+            row.classList.add('selected');
+
+            // Show detail panel
+            if (symbolsdbDetail) symbolsdbDetail.style.display = 'block';
+            if (symbolsdbDetailTitle) symbolsdbDetailTitle.innerText = sym.name;
+
+            let info = `Name:       ${sym.name}\n`;
+            info += `Type:       ${sym.type}\n`;
+            info += `Module:     ${sym.module}\n`;
+            info += `Section:    ${sym.section}\n`;
+            info += `Address:    0x${sym.address}\n`;
+            info += `Size:       ${sym.size || '—'}\n`;
+            info += `Scope:      ${sym.scope || '—'}\n`;
+            if (sym.ghidra_name) {
+                info += `\nGhidra Name: ${sym.ghidra_name}\n`;
+                info += `Ghidra Type: ${sym.ghidra_type}\n`;
+                info += `Namespace:   ${sym.namespace}\n`;
+                info += `Ref Count:   ${sym.ref_count}\n`;
+            }
+
+            if (symbolsdbDetailCode) symbolsdbDetailCode.innerText = info + '\nFetching type definition...';
+
+            // Fetch type definition — always send original name, server does address chain
+            try {
+                const res = await fetch(`/symbols_db/type/${encodeURIComponent(sym.name)}`);
+                const data = await res.json();
+                if (data.status === 'success' && data.definition) {
+                    const method = data.lookup_method ? ` (via ${data.lookup_method})` : '';
+                    const resolvedName = data.ghidra_name ? ` → ${data.ghidra_name}` : '';
+                    info += `\n── Definition${resolvedName}${method} ──\n${data.definition}`;
+                } else {
+                    info += `\n(No type definition found)`;
+                }
+            } catch (e) {
+                info += `\n(Error fetching definition)`;
+            }
+            if (symbolsdbDetailCode) symbolsdbDetailCode.innerText = info;
+        });
+    }
+
+    // Copy detail
+    if (symbolsdbCopyBtn) {
+        symbolsdbCopyBtn.addEventListener('click', () => {
+            const text = symbolsdbDetailCode?.innerText || '';
+            navigator.clipboard.writeText(text).then(() => {
+                symbolsdbCopyBtn.innerText = '✓ Copied';
+                setTimeout(() => { symbolsdbCopyBtn.innerText = '📋 Copy'; }, 1500);
+            });
+        });
+    }
+
+    // Close detail
+    if (symbolsdbCloseDetail) {
+        symbolsdbCloseDetail.addEventListener('click', () => {
+            if (symbolsdbDetail) symbolsdbDetail.style.display = 'none';
+            symbolsdbTbody?.querySelectorAll('tr').forEach(r => r.classList.remove('selected'));
+        });
+    }
 });

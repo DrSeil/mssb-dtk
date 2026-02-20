@@ -1405,6 +1405,288 @@ def global_replace(req: ReplaceRequest):
                     
     return {"status": "success", "files_modified": count, "errors": errors}
 
+# ── Symbols DB ────────────────────────────────────────────────────────────────
+_symbols_db_cache = None
+
+def _parse_symbols_txt(filepath, module):
+    """Parse a symbols.txt file into a list of dicts."""
+    symbols = []
+    try:
+        with open(filepath, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('//'):
+                    continue
+                # Format: name = section:0xADDRESS; // type:T size:0xS scope:SCOPE
+                m = re.match(
+                    r'^(\S+)\s*=\s*(\.\w+):0x([0-9A-Fa-f]+)\s*;\s*//\s*(.*)',
+                    line
+                )
+                if not m:
+                    continue
+                name, section, addr, comment = m.groups()
+                # Parse comment fields
+                sym_type = ""
+                size_hex = ""
+                scope = ""
+                for part in comment.split():
+                    if part.startswith("type:"):
+                        sym_type = part[5:]
+                    elif part.startswith("size:"):
+                        size_hex = part[5:]
+                    elif part.startswith("scope:"):
+                        scope = part[6:]
+                symbols.append({
+                    "name": name,
+                    "section": section,
+                    "address": addr,
+                    "type": sym_type,
+                    "size": size_hex,
+                    "scope": scope,
+                    "module": module,
+                })
+    except FileNotFoundError:
+        pass
+    return symbols
+
+def _load_ghidra_csv():
+    """Load exported_symbols.csv into a dict keyed by lowercase hex address."""
+    csv_path = "exported_symbols.csv"
+    ghidra = {}
+    try:
+        import csv
+        with open(csv_path, 'r') as f:
+            reader = csv.reader(f)
+            header = next(reader, None)
+            for row in reader:
+                if len(row) >= 6:
+                    name, loc, stype, ns, source, refs = row[0], row[1], row[2], row[3], row[4], row[5]
+                    ghidra[loc.lower()] = {
+                        "ghidra_name": name,
+                        "ghidra_type": stype,
+                        "namespace": ns,
+                        "source": source,
+                        "ref_count": refs,
+                    }
+    except FileNotFoundError:
+        pass
+    return ghidra
+
+def _build_symbols_db():
+    """Build the full symbols database, cached after first call."""
+    global _symbols_db_cache
+    if _symbols_db_cache is not None:
+        return _symbols_db_cache
+
+    modules = [
+        ("config/GYQE01/game/symbols.txt", "game"),
+        ("config/GYQE01/challenge/symbols.txt", "challenge"),
+        ("config/GYQE01/menus/symbols.txt", "menus"),
+        ("config/GYQE01/symbols.txt", "root"),
+    ]
+
+    all_symbols = []
+    for path, mod in modules:
+        parsed = _parse_symbols_txt(path, mod)
+        print(f"DEBUG symbols_db: Parsed {len(parsed)} symbols from {path} (module={mod})")
+        all_symbols.extend(parsed)
+
+    # Load Ghidra CSV for cross-referencing
+    ghidra = _load_ghidra_csv()
+
+    # Cross-reference: symbols.txt addresses are section-relative,
+    # but exported_symbols.csv uses absolute addresses.
+    # We'll try to match by name instead (more reliable).
+    ghidra_by_name = {}
+    for addr, info in ghidra.items():
+        ghidra_by_name[info["ghidra_name"].lower()] = info
+
+    for sym in all_symbols:
+        # Try exact name match first
+        ginfo = ghidra_by_name.get(sym["name"].lower())
+        if ginfo:
+            sym["ghidra_name"] = ginfo["ghidra_name"]
+            sym["ghidra_type"] = ginfo["ghidra_type"]
+            sym["namespace"] = ginfo["namespace"]
+            sym["ref_count"] = ginfo["ref_count"]
+        else:
+            sym["ghidra_name"] = ""
+            sym["ghidra_type"] = ""
+            sym["namespace"] = ""
+            sym["ref_count"] = ""
+
+    # Filter out hidden/internal entries (@etb_, @eti_)
+    all_symbols = [s for s in all_symbols if not s["name"].startswith("@")]
+
+    print(f"DEBUG symbols_db: Total symbols after filtering: {len(all_symbols)}")
+    _symbols_db_cache = all_symbols
+    return all_symbols
+
+@app.get("/symbols_db")
+def symbols_db(search: str = "", module: str = "", sym_type: str = ""):
+    symbols = _build_symbols_db()
+    results = symbols
+
+    if module:
+        results = [s for s in results if s["module"] == module]
+    if sym_type:
+        results = [s for s in results if s["type"] == sym_type]
+    if search:
+        q = search.lower()
+        results = [s for s in results if q in s["name"].lower() or q in s.get("ghidra_name", "").lower()]
+
+    print(f"DEBUG symbols_db: search={search!r} module={module!r} sym_type={sym_type!r} => {len(results)} results")
+    return {"status": "success", "count": len(results), "symbols": results}
+
+def _find_type_in_ingame_h(type_name):
+    """Extract full struct/enum/typedef definition from in_game.h using brace matching."""
+    ingame_path = "in_game.h"
+    try:
+        with open(ingame_path, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        return None
+
+    escaped = re.escape(type_name)
+    # Look for lines like "struct hugeAnimStruct {" or "typedef struct hugeAnimStruct"
+    struct_pattern = re.compile(rf'\b(struct|enum|union|typedef)\s+{escaped}\b')
+
+    result_parts = []
+
+    # Pass 1: Find struct/enum/union definitions
+    for i, line in enumerate(lines):
+        m = struct_pattern.search(line)
+        if not m:
+            continue
+        # Check if this line (or nearby) has an opening brace — it's a definition, not just a forward decl
+        # Skip forward declarations like "typedef struct X X;"
+        if '{' not in line:
+            # Check next line
+            if i + 1 < len(lines) and '{' in lines[i + 1]:
+                pass  # definition starts on next line
+            else:
+                continue  # just a forward declaration, skip
+
+        # Extract the full block with brace matching
+        block = []
+        brace_count = 0
+        started = False
+        for j in range(i, min(i + 5000, len(lines))):
+            block.append(lines[j])
+            brace_count += lines[j].count('{')
+            brace_count -= lines[j].count('}')
+            if '{' in lines[j]:
+                started = True
+            if started and brace_count <= 0:
+                # Check for trailing typedef name on next line
+                if ';' in lines[j]:
+                    break
+                if j + 1 < len(lines) and ';' in lines[j + 1]:
+                    block.append(lines[j + 1])
+                    break
+                break
+        definition = "".join(block).strip()
+        if definition and definition not in result_parts:
+            result_parts.append(definition)
+
+    # Pass 2: Collect function prototypes mentioning this type (up to 10)
+    proto_pattern = re.compile(rf'\b{escaped}\b')
+    protos = []
+    for line in lines:
+        stripped = line.strip()
+        if proto_pattern.search(stripped) and '(' in stripped and ')' in stripped and ';' in stripped:
+            # It's a function prototype
+            if stripped not in protos and 'struct ' + type_name not in stripped:
+                protos.append(stripped)
+                if len(protos) >= 10:
+                    break
+
+    if protos:
+        result_parts.append("// Function prototypes:\n" + "\n".join(protos))
+
+    return "\n\n".join(result_parts) if result_parts else None
+
+@app.get("/symbols_db/type/{type_name}")
+def symbols_db_type(type_name: str):
+    orch = DecompOrchestrator("", "")
+    print(f"DEBUG symbols_db_type: Looking up '{type_name}'")
+
+    parts = []  # Collect all definition parts to combine
+
+    # ── Part A: Project definition (from include/ headers) ──
+    direct_definition = orch.find_type_definition(type_name)
+    if direct_definition:
+        print(f"DEBUG symbols_db_type: Found project definition for '{type_name}'")
+        parts.append(f"// ── Project definition (from headers) ──\n{direct_definition}")
+
+    # ── Part B: in_game.h definition via address chain ──
+    ghidra_name = None
+    ghidra_definition = None
+
+    # Find this symbol in the DB to get its address
+    symbols = _build_symbols_db()
+    sym_entry = next((s for s in symbols if s["name"].lower() == type_name.lower()), None)
+
+    if sym_entry:
+        print(f"DEBUG symbols_db_type: Found in symbols DB: {sym_entry['name']} @ {sym_entry['address']}")
+        # Use cached Ghidra name if available
+        if sym_entry.get("ghidra_name"):
+            ghidra_name = sym_entry["ghidra_name"]
+            print(f"DEBUG symbols_db_type: Ghidra name from cache: '{ghidra_name}'")
+        else:
+            # Look up address in CSV
+            addr = sym_entry["address"].lower().lstrip("0") or "0"
+            ghidra = _load_ghidra_csv()
+            for candidate in [addr, addr.zfill(8), sym_entry["address"].lower()]:
+                if candidate in ghidra:
+                    ghidra_name = ghidra[candidate]["ghidra_name"]
+                    print(f"DEBUG symbols_db_type: Address {candidate} → Ghidra name '{ghidra_name}'")
+                    break
+
+    # Also try extracting hex from the name directly (g_hugeAnimStruct → 8036E548)
+    if not ghidra_name:
+        addr_match = re.search(r'(?:lbl_|fn_)(80[0-9A-Fa-f]{6})', type_name)
+        if addr_match:
+            raw_addr = addr_match.group(1).lower()
+            ghidra = _load_ghidra_csv()
+            if raw_addr in ghidra:
+                ghidra_name = ghidra[raw_addr]["ghidra_name"]
+                print(f"DEBUG symbols_db_type: Extracted addr {raw_addr} from name → Ghidra '{ghidra_name}'")
+
+    # If we found a Ghidra name, look up its full definition in in_game.h
+    if ghidra_name and ghidra_name.lower() != type_name.lower():
+        ingame_def = _find_type_in_ingame_h(ghidra_name)
+        if ingame_def:
+            print(f"DEBUG symbols_db_type: Found in_game.h definition via '{ghidra_name}'")
+            ghidra_definition = ingame_def
+            parts.append(f"// ── in_game.h definition (Ghidra name: {ghidra_name}) ──\n{ingame_def}")
+
+    # If nothing from the chain, try in_game.h for original name
+    if not ghidra_definition and not ghidra_name:
+        ingame_def = _find_type_in_ingame_h(type_name)
+        if ingame_def:
+            parts.append(f"// ── in_game.h definition ──\n{ingame_def}")
+
+    if parts:
+        combined = "\n\n".join(parts)
+        return {
+            "status": "success",
+            "definition": combined,
+            "lookup_method": "combined",
+            "ghidra_name": ghidra_name or "",
+        }
+
+    print(f"DEBUG symbols_db_type: Nothing found for '{type_name}'")
+    return {"status": "error", "message": f"Type '{type_name}' not found."}
+
+@app.post("/symbols_db/invalidate")
+def symbols_db_invalidate():
+    global _symbols_db_cache
+    _symbols_db_cache = None
+    return {"status": "success", "message": "Cache invalidated."}
+
+# ── End Symbols DB ────────────────────────────────────────────────────────────
+
 class GeminiChatRequest(BaseModel):
     prompt: str
 

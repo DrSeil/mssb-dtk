@@ -631,3 +631,80 @@ body {
         height: 300px;
     }
 }
+
+/* Symbols DB Table */
+.symbols-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.symbols-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.symbols-table th {
+    text-align: left;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.symbols-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-main);
+}
+
+.symbols-table tr:hover td {
+    background: rgba(56, 189, 248, 0.06);
+    cursor: pointer;
+}
+
+.symbols-table tr.selected td {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.2);
+}
+
+.sym-type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sym-type-badge.function {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+}
+
+.sym-type-badge.object {
+    background: rgba(192, 132, 252, 0.15);
+    color: #c084fc;
+}
+
+.sym-type-badge.label {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+}
+
+.sym-ghidra-name {
+    color: var(--accent-secondary);
+    font-style: italic;
+}
+
+.btn-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

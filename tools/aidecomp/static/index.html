@@ -52,6 +52,9 @@
                 <button class="nav-item" data-tab="explore">
                     <span class="icon">🔍</span> Explore
                 </button>
+                <button class="nav-item" data-tab="symbolsdb">
+                    <span class="icon">📦</span> Symbols DB
+                </button>
                 <button class="nav-item" data-tab="gemini">
                     <span class="icon">🤖</span> Gemini
                 </button>
@@ -286,6 +289,80 @@
                 <div class="card glass-card" style="margin-top: 24px;">
                     <h3>Response</h3>
                     <pre><code id="gemini-response-display" style="max-height: 600px; overflow-y: auto; display: block; white-space: pre-wrap; word-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">// Response will appear here...</code></pre>
+                </div>
+            </div>
+
+            <div id="tab-symbolsdb" class="tab-content">
+                <div class="hero-card">
+                    <h2>Symbols Database</h2>
+                    <p>Browse all project symbols from <code>symbols.txt</code>, cross-referenced with Ghidra exports
+                        and <code>in_game.h</code> type definitions.</p>
+                </div>
+
+                <div class="card glass-card" style="margin-top: 24px;">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <input type="text" id="symbolsdb-search" class="glass-input"
+                            placeholder="Search by name or Ghidra name..." style="flex: 1; min-width: 200px;">
+                        <select id="symbolsdb-module" class="glass-input" style="width: 140px;">
+                            <option value="">All Modules</option>
+                            <option value="game">Game</option>
+                            <option value="challenge">Challenge</option>
+                            <option value="menus">Menus</option>
+                            <option value="root">Root</option>
+                        </select>
+                        <select id="symbolsdb-type" class="glass-input" style="width: 140px;">
+                            <option value="">All Types</option>
+                            <option value="function">Function</option>
+                            <option value="object">Object</option>
+                            <option value="label">Label</option>
+                        </select>
+                        <button id="symbolsdb-load-btn" class="btn-primary">Load</button>
+                        <span id="symbolsdb-count" style="color: var(--text-secondary); font-size: 0.85rem;"></span>
+                    </div>
+                </div>
+
+                <div class="card glass-card" style="margin-top: 16px; padding: 0; overflow: hidden;">
+                    <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
+                        <table id="symbolsdb-table" class="symbols-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Module</th>
+                                    <th>Ghidra Name</th>
+                                    <th>Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="symbolsdb-tbody">
+                                <tr>
+                                    <td colspan="6"
+                                        style="text-align: center; padding: 40px; color: var(--text-secondary);">Click
+                                        "Load" to fetch symbols</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="symbolsdb-pagination"
+                        style="display: flex; justify-content: center; align-items: center; gap: 15px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.06);">
+                        <button id="symbolsdb-prev" class="btn-secondary" disabled>← Prev</button>
+                        <span id="symbolsdb-page-info" style="color: var(--text-secondary); font-size: 0.85rem;">Page
+                            1</span>
+                        <button id="symbolsdb-next" class="btn-secondary">Next →</button>
+                    </div>
+                </div>
+
+                <div id="symbolsdb-detail" class="card glass-card" style="margin-top: 16px; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 id="symbolsdb-detail-title" style="margin: 0;">Symbol Detail</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="symbolsdb-copy-btn" class="btn-secondary" style="font-size: 0.8rem;">📋
+                                Copy</button>
+                            <button id="symbolsdb-close-detail" class="btn-secondary"
+                                style="font-size: 0.8rem;">✕</button>
+                        </div>
+                    </div>
+                    <pre><code id="symbolsdb-detail-code" style="max-height: 400px; overflow-y: auto; display: block; white-space: pre-wrap; word-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></code></pre>
                 </div>
             </div>
 
