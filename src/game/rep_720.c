@@ -353,8 +353,15 @@ void fn_3_1785C(void) {
 }
 
 // .text:0x00017AF0 size:0x3C mapped:0x80656B84
+
+
+
 void fn_3_17AF0(void) {
-    return;
+    if ((u8) g_GameLogic.sceneID == 4) {
+        fn_3_197E8();
+        return;
+    }
+    fn_3_1C1B0();
 }
 
 // .text:0x00017B2C size:0x274 mapped:0x80656BC0
