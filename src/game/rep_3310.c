@@ -1,4 +1,5 @@
 #include "game/rep_3310.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 extern f32 lbl_3_data_2262C;
@@ -14,8 +15,16 @@ void fn_3_1169D0(void) {
 }
 
 // .text:0x00116B38 size:0x3C mapped:0x80755BCC
+
+
 void fn_3_116B38(void) {
-    return;
+    s32 multiplier = 2;
+
+    if (g_Minigame.GameMode_MiniGame == 3) {
+        multiplier = 31;
+    }
+
+    ((u8*)g_hugeAnimStruct.entries_2D94)[multiplier * 40 + 0x26] = 0;
 }
 
 // .text:0x00116B74 size:0x8A8 mapped:0x80755C08

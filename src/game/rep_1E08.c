@@ -158,7 +158,7 @@ void fn_3_BD7DC(s32 arg1) {
     // We pass the global address directly as the 3rd param to keep r5 active.
     // For the 1st param, we access the field in a way that forces the 
     // compiler to anchor the base address into the now-free r3 register.
-    fn_800BD670((&lbl_8036E548)->unk70, arg1, &lbl_8036E548);
+    fn_800BD670((&g_hugeAnimStruct)->field28_0x70, arg1, &g_hugeAnimStruct);
 }
 // .text:0x000BD80C size:0xCC mapped:0x806FC8A0
 void fn_3_BD80C(void) {
@@ -168,8 +168,8 @@ void fn_3_BD80C(void) {
 // .text:0x000BD8D8 size:0x24 mapped:0x806FC96C
 void fn_3_BD8D8(void) {
     // Directly access the global to ensure the ha/l (lis/addi) pattern
-    lbl_8036E548.unk3070 = fn_3_BD80C;
-    lbl_8036E548.unk3074 = fn_3_BD7DC;
+    g_hugeAnimStruct.funcPtr = fn_3_BD80C;
+    g_hugeAnimStruct.funcPtr2 = fn_3_BD7DC;
 }
 
 // .text:0x000BD8FC size:0x3A8 mapped:0x806FC990

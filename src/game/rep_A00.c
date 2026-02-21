@@ -27,10 +27,10 @@ void fn_3_2273C(void) {
  * @address 0002281C
  */
 BOOL fn_3_2281C(s32 index) {
-    // lis r4, lbl_8036E548@ha
-    // addi r3, r4, lbl_8036E548@l
+    // lis r4, g_hugeAnimStruct@ha
+    // addi r3, r4, g_hugeAnimStruct@l
     // slwi r0, r3, 2 -> add r3, r3, r0
-    Struct_3_2281C_Entry* ptr = lbl_8036E548.entries[index];
+    Struct_3_2281C_Entry* ptr = (Struct_3_2281C_Entry*)g_hugeAnimStruct.AnimationStructPtrs[index];
 
     // lwz r3, 0x2C50(r3)
     // cmplwi r3, 0
