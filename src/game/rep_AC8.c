@@ -1001,8 +1001,21 @@ void fn_3_52F4C(void) {
 }
 
 // .text:0x000530EC size:0x44 mapped:0x80692180
-void fn_3_530EC(void) {
-    return;
+
+void fn_3_530EC(int index) {
+    // Declaring the pointer but not immediately calculating it.
+    Fielder* fielder;
+    fielder = &g_Fielders[index];
+
+    fielder->prevPos[0] = fielder->pos[0];
+    fielder->prevPos[1] = fielder->pos[1];
+    fielder->prevPos[2] = fielder->pos[2];
+
+    // These use f0
+    fielder->unk30 = lbl_3_rodata_B20;
+    fielder->unk34 = lbl_3_rodata_B20;
+    fielder->unk50 = lbl_3_rodata_B20;
+    fielder->unk68 = lbl_3_rodata_B20;
 }
 
 // .text:0x00053130 size:0x5FC mapped:0x806921C4

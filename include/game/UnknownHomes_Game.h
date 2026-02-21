@@ -2425,10 +2425,18 @@ typedef struct _MiniGameStruct {
 extern MiniGameStruct g_Minigame;
 
 typedef struct Fielder {
-    /* 0x000 */ u8 _pad0[0x50];
-    /* 0x050 */ f32 unk50;
-    /* 0x054 */ f32 unk54;
-    /* 0x058 */ u8 _pad1[0x1B6 - 0x58];
+    /* 0x000 */ f32 pos[3];      // Offsets 0x00, 0x04, 0x08
+    /* 0x00C */ u8 _pad_mid[0x8]; 
+    /* 0x014 */ f32 prevPos[3];  // Offsets 0x14, 0x18, 0x1C
+    /* 0x020 */ u8 _pad_mid2[0x10];
+    /* 0x030 */ f32 unk30;       // Offset 0x30
+    /* 0x034 */ f32 unk34;       // Offset 0x34
+    /* 0x038 */ u8 _pad_mid3[0x18];
+    /* 0x050 */ f32 unk50;       // Offset 0x50
+    /* 0x054 */ f32 unk54;       // Offset 0x54
+    /* 0x058 */ u8 _pad_mid4[0x10]; 
+    /* 0x068 */ f32 unk68;       // Offset 0x68 - ADDED
+    /* 0x06C */ u8 _pad1[0x1B6 - 0x6C]; // Re-adjust pad to 0x1B6
     /* 0x1B6 */ s16 unk1B6;
     /* 0x1B8 */ u8 _pad2[0x25B - 0x1B8];
     /* 0x25B */ u8 unk_25B;
