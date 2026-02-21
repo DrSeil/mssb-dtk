@@ -50,6 +50,11 @@ typedef struct HugeAnimEntry2D94 {
     
     /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 bytes)
 } HugeAnimEntry2D94;
+typedef struct HugeAnimEntry68 {
+    u8 _pad0[0x34];
+    s32 unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
+    u8 _pad1[0x58]; // (0x90 - 0x38) bytes to make the struct size exactly 0x90
+} HugeAnimEntry68;
 
 typedef struct hugeAnimStruct {
     /* 0x0000 */ u8 field0_0x0[4];
@@ -78,7 +83,7 @@ typedef struct hugeAnimStruct {
     /* 0x005C */ s32 field23_0x5c;
     /* 0x0060 */ void* ctrlOrBonePtr;
     /* 0x0064 */ struct ACTBone* actRelatedPtr;
-    /* 0x0068 */ s32 field26_0x68;
+    /* 0x0068 */ HugeAnimEntry68* entries_68;
     /* 0x006C */ void* unkPtr;
     /* 0x0070 */ s32 field28_0x70;
     /* 0x0074 */ u8 pad_0x74[56];
@@ -422,4 +427,5 @@ extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
 extern void fn_3_5A6D4(s32, GameControlsStruct *);
+extern f32 fn_800B4A94(s32, hugeAnimStruct*);
 #endif

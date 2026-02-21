@@ -215,8 +215,18 @@ void fn_3_11A210(void) {
 }
 
 // .text:0x0011A350 size:0x3C mapped:0x807593E4
-void fn_3_11A350(void) {
-    return;
+
+
+
+
+u32 fn_3_11A350(s32 index) {
+    // Cast the existing pointer to our 0x90-stride struct
+    HugeAnimEntry68* entries = (HugeAnimEntry68*)g_hugeAnimStruct.entries_68;
+    
+    // This perfectly aligns the registers:
+    // r4 is used for &g_hugeAnimStruct (arg 2) and as the base pointer load.
+    // r3 calculates the array offset, loads unk34 (arg 1), and is passed directly.
+    return (u32)fn_800B4A94(entries[index].unk34, &g_hugeAnimStruct);
 }
 
 // .text:0x0011A38C size:0x7C mapped:0x80759420
