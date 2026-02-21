@@ -85,8 +85,25 @@ void fn_3_14EE8(void) {
 }
 
 // .text:0x00014F24 size:0x44 mapped:0x80653FB8
+
 void fn_3_14F24(void) {
-    return;
+    // lha r0, 0x2(r3) -> cmpwi r0, 0x24 -> bltlr
+    if (lbl_3_common_bss_32A94.unk2 < 0x24) {
+        return;
+    }
+
+    // cmpwi r0, 0x26 -> bgtlr
+    if (lbl_3_common_bss_32A94.unk2 > 0x26) {
+        return;
+    }
+
+    // lwz r4, g_pCamera@l(r3) -> lha r0, 0xa9c(r4) -> cmpwi r0, 0 -> bnelr
+    if (g_pCamera->unkA9C != 0) {
+        return;
+    }
+
+    // lwz r0, 0x24(r3) -> sth r0, 0xa9c(r4)
+    g_pCamera->unkA9C = (s16)g_Stats.unk24;
 }
 
 // .text:0x00014F68 size:0x60 mapped:0x80653FFC

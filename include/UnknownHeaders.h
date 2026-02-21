@@ -420,7 +420,8 @@ extern VecXZ lbl_3_data_111C8[];
 extern void fn_8003A688(f32, f32);
 extern u8 lbl_3_bss_B894[0xF];
 typedef struct CommonBss32A94 {
-u8 _pad[0x4];
+u8 _pad0[0x2];
+s16 unk2;
 s16 unk4;
 } CommonBss32A94;
 extern CommonBss32A94 lbl_3_common_bss_32A94;
