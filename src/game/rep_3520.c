@@ -1,4 +1,5 @@
 #include "game/rep_3520.h"
+#include "UnknownHeaders.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
 
@@ -182,8 +183,24 @@ void fn_3_1370A0(void) {
 }
 
 // .text:0x001371E8 size:0x3C mapped:0x8077627C
+
 void fn_3_1371E8(void) {
-    return;
+    // These pointers anchor to r3/r5 and r4
+    s16 *dataAddr = &lbl_3_data_21AF0; 
+    s16 *bssAddr = &lbl_3_bss_B702;
+    
+    // lha r0, 0(r5)
+    s16 val = *dataAddr;
+    
+    // lis r3, fn_3_1370A0@ha -> Overwrites r3, leaving r5 intact
+    void (*callback)(void) = fn_3_1370A0;
+
+    // sth r0, lbl_3_bss_B702@l(r4)
+    *bssAddr = val;
+
+    // Call only using r3. 
+    // r4 and r5 are already loaded and will stay in place.
+    fn_800528AC(callback);
 }
 
 // .text:0x00137224 size:0x1BC mapped:0x807762B8

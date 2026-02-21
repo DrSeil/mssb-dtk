@@ -5,7 +5,7 @@
 #include "game/UnknownHomes_Game.h"
 
 typedef void (*QueueCallback)(void);
-void fn_800528AC(void (*callback)(void), s32 *arg1);
+void fn_800528AC(void (*callback)(void));
 typedef struct Struct_3_2281C_Entry {
     u8 _pad0[0x68];
     s16 field_0x68;

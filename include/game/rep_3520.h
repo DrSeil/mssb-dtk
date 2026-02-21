@@ -78,4 +78,6 @@ void fn_3_13BCB8(void);
 void fn_3_13C464(void);
 void fn_3_13C468(void);
 
+extern s16 lbl_3_bss_B702;
+extern s16 lbl_3_data_21AF0;
 #endif // !__GAME_rep_3520_H_

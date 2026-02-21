@@ -10,15 +10,32 @@ void fn_3_14BB4(void) {
 
 // .text:0x00014E1C size:0x34 mapped:0x80653EB0
 void fn_3_14E1C(void) {
-    lbl_3_bss_44 = 0;
-    fn_800528AC(NULL, &lbl_3_bss_44);
+    // 1. lis r3, lbl_3_bss_44@ha
+    // 2. addi r4, r3, lbl_3_bss_44@l
+    // Anchoring the pointer to bssPtr ensures r4 is prepared.
+    s32 *bssPtr = &lbl_3_bss_44;
+    
+    // 3. li r0, 0
+    // 4. stw r0, 0(r4)
+    *bssPtr = 0;
+
+    // 5. li r3, 0 (passing NULL)
+    // Overwrites r3 with 0, matching the assembly.
+    fn_800528AC(NULL);
+
 }
 
 // .text:0x00014E50 size:0x34 mapped:0x80653EE4
 // One register is STWU instead of STW
 void fn_3_14E50(void) {
-    lbl_3_bss_44 = 5;
-    fn_800528AC(fn_3_14BB4, &lbl_3_bss_44);
+    void (*callback)(void) = fn_3_14BB4; // Anchors to r3
+    s32 *bssPtr = &lbl_3_bss_44;        // Anchors to r4
+
+    // stw r0, lbl_3_bss_44@l(r4)
+    *bssPtr = 5;
+
+    // Call using r3. r4 remains loaded with bssPtr from the store.
+    fn_800528AC(callback); 
 }
 
 // .text:0x00014E84 size:0x3C mapped:0x80653F18
@@ -336,15 +353,8 @@ void fn_3_1785C(void) {
 }
 
 // .text:0x00017AF0 size:0x3C mapped:0x80656B84
-
-
-
 void fn_3_17AF0(void) {
-    if ((u8) g_GameLogic.sceneID == 4) {
-        fn_3_197E8();
-        return;
-    }
-    fn_3_1C1B0();
+    return;
 }
 
 // .text:0x00017B2C size:0x274 mapped:0x80656BC0
