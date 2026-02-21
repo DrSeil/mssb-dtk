@@ -17,14 +17,21 @@ Progress is tracked at: https://decomp.dev/roeming/mssb-dtk
   - `src/Musyx/` Musyx music system
 - `include/` headers for decompiled C code
   - `include/game/UnknownHomes_Game.h` major game structs (Batter, Pitcher, Runners, etc.)
+  - `include/UnknownHeaders.h` global structs for symbols identified via Ghidra (e.g. `hugeAnimStruct`)
   - `include/mssbTypes.h` core type definitions (BOOL, Vec3D, etc.)
 - `config/GYQE01/` symbol addresses, code/data splits, and build configuration
-  - `symbols.txt` and `splits.txt` for the main DOL
-  - `game/`, `menus/`, `challenge/` subdirectories for REL modules
+  - `symbols.txt` top-level DOL symbols with absolute addresses (`fn_80XXXXXX`, `lbl_80XXXXXX`)
+  - `game/symbols.txt` game REL symbols with section-relative addresses (`fn_3_XXXX`, `lbl_3_XXXX`)
+  - `challenge/symbols.txt` challenge REL symbols (`fn_1_XXXX`, `lbl_1_XXXX`)
+  - `menus/symbols.txt` menus REL symbols (`fn_2_XXXX`, `lbl_2_XXXX`)
+  - `splits.txt` for code/data section splits
 - `build/GYQE01/` generated build artifacts (asm, obj files)
 - `orig/GYQE01/` original game files (main.dol, REL files)
 - `tools/` custom Python decompilation and build tools
+  - `tools/aidecomp/` ADS Dashboard web app (FastAPI + uvicorn)
 - `.agent/` AI agent workflow files and knowledge base
+- `exported_symbols.csv` Ghidra-exported symbols with names, addresses, types, namespaces, and ref counts
+- `in_game.h` Ghidra-exported C definitions (structs, enums, typedefs, function prototypes)
 
 ## Build System
 
@@ -58,6 +65,7 @@ The toolchain consists of:
 - `python3 tools/score_functions.py [--module MODULE] [--max-size N] [--min-size N]` find the easiest unmatched functions to decompile, ranked by size.
 - `python3 tools/check_pointer_arithmetic.py <file_or_directory>` detect pointer arithmetic with casts that should be replaced with struct field access. Use `--strict` to fail on violations.
 - `python3 tools/find_matches.py report.json` list functions that are already 100% matched.
+- **ADS Dashboard** (`python3 tools/aidecomp/server.py`, http://localhost:8000) — Web UI for decompilation, symbol lookup, and the **Symbols DB** browser.
 
 ## Code Quality Standards
 
@@ -142,6 +150,24 @@ Use `python3 tools/score_functions.py` to find small, simple unmatched functions
 2. Follow the "Decompile a function" workflow above.
 3. If matched, commit and return to step 1.
 4. If not matched after several attempts, move on to the next function.
+
+## Symbol Naming Conventions & Cross-Referencing
+
+### Codebase Symbol Names
+- **`fn_3_XXXX` / `lbl_3_XXXX`**: Game REL module functions/labels (section-relative addresses in `config/GYQE01/game/symbols.txt`)
+- **`fn_1_XXXX` / `lbl_1_XXXX`**: Challenge REL module
+- **`fn_2_XXXX` / `lbl_2_XXXX`**: Menus REL module
+- **`fn_80XXXXXX` / `lbl_80XXXXXX`**: DOL functions/labels (absolute addresses in `config/GYQE01/symbols.txt`)
+
+### Cross-Reference Workflow
+To identify what a symbol really is:
+1. Find the symbol's address in the appropriate `symbols.txt`
+2. Look up that address in `exported_symbols.csv` to find the **Ghidra name** (e.g., `lbl_8036E548` → `hugeAnimStruct`)
+3. Search `in_game.h` for the Ghidra name to get the full struct/enum/function definition
+4. Create a proper typedef in `include/UnknownHeaders.h` or the appropriate header, using the Ghidra name
+
+### Known Global Structs
+- `hugeAnimStruct g_hugeAnimStruct` @ `0x8036E548` — Large animation struct (0x3154 bytes), referenced by 122 functions
 
 ## Compiler Behavior Patterns (Metrowerks CodeWarrior / PowerPC)
 
