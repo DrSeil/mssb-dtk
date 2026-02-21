@@ -2463,7 +2463,7 @@ extern u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8);
 
 extern u8 swingSoundFrame[2][4];
 
-extern struct {
+typedef struct Struct34C58 {
     /* 0x00 */ u32 _00;
     /* 0x04 */ u32 _04;
     /* 0x08 */ u32 _08;
@@ -2490,7 +2490,8 @@ extern struct {
     /* 0x32 */ u8 _32;
     /* 0x33 */ u8 _33;
     /* 0x34 */ u8 _34;
-} lbl_3_common_bss_34C58; // size: 0x38
+} Struct34C58;
+extern Struct34C58 lbl_3_common_bss_34C58; // size: 0x38
 
 extern InputStruct g_Controls[];
 
