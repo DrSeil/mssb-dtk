@@ -1,4 +1,5 @@
 #include "game/m_sound.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0008B718 size:0xC4 mapped:0x806CA7AC
@@ -112,8 +113,26 @@ void fn_3_8FC80(void) {
 }
 
 // .text:0x0008FF18 size:0x44 mapped:0x806CEFAC
+
+
+
 void fn_3_8FF18(void) {
-    return;
+    Struct34C58* ptr;
+    ptr =   &lbl_3_common_bss_34C58;
+
+    //Not sure why this order, but its needed to match
+    ptr->_0C = -1;
+    lbl_3_bss_1780 = -1;
+
+    ptr->_10 = -1;
+    ptr->_14 = -1;
+    ptr->_18 = -1;
+    ptr->_1C = -1;
+    ptr->_28 = 0;
+    ptr->_04 = -1;
+    ptr->_08 = -1;
+    ptr->_2F = 0;
+    ptr->_33 = 0;
 }
 
 // .text:0x0008FF5C size:0x108 mapped:0x806CEFF0

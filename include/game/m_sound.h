@@ -38,4 +38,5 @@ void sndRemoveListener(void* listener);
 void sndVolume(u8 volume, u16 time, u8 volGroup);
 void fn_3_902FC(void);
 
+extern s32 lbl_3_bss_1780;
 #endif // !__GAME_m_sound_H_
