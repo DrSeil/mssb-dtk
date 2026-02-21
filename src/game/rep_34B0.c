@@ -1,4 +1,5 @@
 #include "game/rep_34B0.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0012E8FC size:0x214 mapped:0x8076D990
@@ -132,8 +133,16 @@ void fn_3_131FFC(void) {
 }
 
 // .text:0x0013207C size:0x40 mapped:0x80771110
+
+
 void fn_3_13207C(void) {
-    return;
+    // Register setup for sndFXStartEx:
+    // r3 = 0x1BD, r5 = 0x3F, r6 = 0
+    // r4 is prepared with the address of lbl_800EFBA4, then lbz r4, 6(r4)
+    sndFXStartEx(0x1BD, lbl_800EFBA4.volume, 0x3F, 0);
+
+    // After the first call returns, r3 is loaded with 6
+    fn_3_5A6D4(6);
 }
 
 // .text:0x001320BC size:0x310 mapped:0x80771150
@@ -150,4 +159,3 @@ void fn_3_1323CC(void) {
 void fn_3_1324E8(void) {
     return;
 }
-

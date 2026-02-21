@@ -2,6 +2,7 @@
 #define __GAME_rep_34B0_H_
 
 #include "mssbTypes.h"
+#include "musyx/musyx.h"
 
 void fn_3_12E8FC(void);
 void fn_3_12EB10(void);
