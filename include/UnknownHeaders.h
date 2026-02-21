@@ -428,4 +428,40 @@ extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
 extern void fn_3_5A6D4(s32, GameControlsStruct *);
 extern f32 fn_800B4A94(s32, hugeAnimStruct*);
+typedef struct Struct_14D6D4_Node {
+struct Struct_14D6D4_Node* next; // 0x00
+u8 _pad0[0x40];                  // Padding to 0x44
+u8 unk44;                        // 0x44
+u8 unk45;                        // 0x45
+u8 unk46;                        // 0x46
+u8 _pad1[3];                     // Padding to 0x4A
+s16 unk4A;                       // 0x4A
+u8 _pad2[2];                     // Padding to 0x4E
+u8 unk4E;                        // 0x4E
+} Struct_14D6D4_Node;
+typedef struct Struct_14D6D4_Input {
+u8 _pad0[0x0C];
+Struct_14D6D4_Node* listHead;    // 0x0C
+s32 field10;                     // 0x10
+} Struct_14D6D4_Input;
+
+typedef struct CommonBss_32724 {
+    /* 0x00 */ u8 _pad0[0x6C];
+    /* 0x6C */ s32 field6C;      // From fn_3_14D6D4
+    /* 0x70 */ u8 _pad1[0x20];   // Pad to 0x90
+    /* 0x90 */ s16 unk_90;
+    /* 0x92 */ s16 unk_92;
+    /* 0x94 */ u8 _pad2[0x15];
+    /* 0xA9 */ u8 unk_A9;
+    /* 0xAA */ u8 _pad3[0x0B];
+    /* 0xB5 */ u8 unk_B5;
+    /* 0xB6 */ u8 _pad4[0x15];   // Pad to 0xCB (0xCB - 0xB6 = 0x15)
+    /* 0xCB */ u8 flagCB;        // New flag
+    /* 0xCC */ u8 flagCC;        // New flag
+    /* 0xCD */ u8 _pad5[0x06];   // Pad to 0xD3 (0xD3 - 0xCD = 0x06)
+    /* 0xD3 */ u8 unk_D3;
+    /* 0xD4 */ u8 someFlag;
+} CommonBss_32724;
+
+extern CommonBss_32724 lbl_3_common_bss_32724;
 #endif

@@ -256,8 +256,22 @@ void fn_3_14D44C(void) {
 }
 
 // .text:0x0014D6D4 size:0x3C mapped:0x8078C768
-void fn_3_14D6D4(void) {
-    return;
+
+
+void fn_3_14D6D4(Struct_14D6D4_Input* in) {
+    Struct_14D6D4_Node* node;
+
+    in->field10 = lbl_3_common_bss_32724.field6C;
+    node = in->listHead;
+
+    do {
+        node->unk46 = 0;
+        node->unk45 = 0;
+        node->unk44 = 0;
+        node->unk4A = 0;
+        node->unk4E = 0;
+        node = node->next;
+    } while (node != NULL);
 }
 
 // .text:0x0014D710 size:0x570 mapped:0x8078C7A4
