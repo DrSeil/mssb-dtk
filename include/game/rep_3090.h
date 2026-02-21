@@ -6,10 +6,16 @@
 
 
 typedef struct Struct_DE94_Inner {
-    u8 _pad[0x18];
-    u32 field_0x18; // 0x18
-    u8 _pad2[0x99A];
-    u8 field_0x9B6; // 0x9B6
+    /* 0x000 */ u8 _pad0[0x18];
+    /* 0x018 */ u32 field_0x18;    // New field
+    /* 0x01C */ u8 _pad1[0x04];    // Align to 0x20
+    /* 0x020 */ u32 field_0x20;    // Accessed in fn_3_FD4DC
+    /* 0x024 */ u8 _pad2[0xF4];    // Align to 0x118 (0x118 - 0x24)
+    /* 0x118 */ u32 field_0x118;   // Accessed in fn_3_FD4DC
+    /* 0x11C */ u8 _pad3[0x08];    // Align to 0x124 (0x124 - 0x11C)
+    /* 0x124 */ u32 field_0x124;   // Accessed in fn_3_FD4DC
+    /* 0x128 */ u8 _pad4[0x88E];   // Align to 0x9B6 (0x9B6 - 0x128)
+    /* 0x9B6 */ u8 field_0x9B6;    // New field
 } Struct_DE94_Inner;
 
 extern Struct_DE94_Inner* lbl_3_common_bss_DE94;
@@ -70,4 +76,5 @@ void* fn_3_1069B0(void* base, s32 index);
 void fn_3_1069C0(void);
 void fn_3_106BA0(void);
 
+// No local headers needed.
 #endif // !__GAME_rep_3090_H_

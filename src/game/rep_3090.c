@@ -1,4 +1,5 @@
 #include "game/rep_3090.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000FC448 size:0x4F0 mapped:0x8073B4DC
@@ -42,8 +43,22 @@ void fn_3_FD408(void) {
 }
 
 // .text:0x000FD4DC size:0x40 mapped:0x8073C570
+
 void fn_3_FD4DC(void) {
-    return;
+    // 1. Load the global pointer into r3 once. 
+    // This anchors the base address and prevents reloads.
+    Struct_DE94_Inner* inner = lbl_3_common_bss_DE94;
+
+    // 2. srwi. r0, r0, 16 triggers the bne .L_000FD508.
+    // In MWCC, (u16)(val >> 16) or (val >> 16) in an if condition 
+    // usually triggers the dot-record shift.
+    if (!(inner->field_0x118 >> 16)) {
+        // 3. stw r0, 0x20(r3) <- lwz r0, 0x124(r3)
+        inner->field_0x20 = inner->field_0x124;
+    }
+
+    // 4. bl fn_3_FCF24
+    fn_3_FCF24();
 }
 
 // .text:0x000FD51C size:0x8C mapped:0x8073C5B0
