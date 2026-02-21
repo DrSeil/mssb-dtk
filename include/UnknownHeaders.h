@@ -426,7 +426,7 @@ s16 unk4;
 extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
-extern void fn_3_5A6D4(s32, GameControlsStruct *);
+extern void fn_3_5A6D4(s32);
 extern f32 fn_800B4A94(s32, hugeAnimStruct*);
 typedef struct Struct_14D6D4_Node {
 struct Struct_14D6D4_Node* next; // 0x00
@@ -464,4 +464,10 @@ typedef struct CommonBss_32724 {
 } CommonBss_32724;
 
 extern CommonBss_32724 lbl_3_common_bss_32724;
+// Definition for the global structure at 0x800EFBA4
+typedef struct SoundConfig {
+u8 _pad[0x6];
+u8 volume; // Offset 0x6
+} SoundConfig;
+extern SoundConfig lbl_800EFBA4;
 #endif

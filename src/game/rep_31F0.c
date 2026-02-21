@@ -74,7 +74,7 @@ void fn_3_111A88(void) {
     g_GameLogic.hudLoadingRelated = 1;
 
     // The compiler will put 0x8 in r3 and the address of g_GameLogic in r4
-    fn_3_5A6D4(8, &g_GameLogic);
+    fn_3_5A6D4(8);
 }
 
 // .text:0x00111AC4 size:0x198 mapped:0x80750B58
@@ -128,8 +128,10 @@ void fn_3_112558(void) {
 }
 
 // .text:0x001125D0 size:0x40 mapped:0x80751664
+
 void fn_3_1125D0(void) {
-    return;
+    sndFXStartEx(0x1BD, lbl_800EFBA4.volume, 0x3F, 0);
+    fn_3_5A6D4(6);
 }
 
 // .text:0x00112610 size:0x2D8 mapped:0x807516A4
