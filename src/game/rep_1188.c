@@ -94,7 +94,7 @@ void fn_3_6E1D4(void) {
 }
 
 // .text:0x0006E24C size:0x968 mapped:0x806AD2E0
-void fn_3_6E24C(void) {
+void setFielderValues(void) {
     return;
 }
 

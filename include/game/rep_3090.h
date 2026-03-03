@@ -7,15 +7,18 @@
 
 typedef struct Struct_DE94_Inner {
     /* 0x000 */ u8 _pad0[0x18];
-    /* 0x018 */ u32 field_0x18;    // New field
-    /* 0x01C */ u8 _pad1[0x04];    // Align to 0x20
-    /* 0x020 */ u32 field_0x20;    // Accessed in fn_3_FD4DC
-    /* 0x024 */ u8 _pad2[0xF4];    // Align to 0x118 (0x118 - 0x24)
-    /* 0x118 */ u32 field_0x118;   // Accessed in fn_3_FD4DC
-    /* 0x11C */ u8 _pad3[0x08];    // Align to 0x124 (0x124 - 0x11C)
-    /* 0x124 */ u32 field_0x124;   // Accessed in fn_3_FD4DC
-    /* 0x128 */ u8 _pad4[0x88E];   // Align to 0x9B6 (0x9B6 - 0x128)
-    /* 0x9B6 */ u8 field_0x9B6;    // New field
+    /* 0x018 */ u32 field_0x18;
+    /* 0x01C */ u8 _pad1[0x04];
+    /* 0x020 */ u32 field_0x20;
+    /* 0x024 */ u8 _pad2[0xF4];
+    /* 0x118 */ u32 field_0x118;   // 0x118
+    /* 0x11C */ u32 field_0x11C;   // 0x11C (Replaced _pad3)
+    /* 0x120 */ u8 _pad3[0x04];    // (Adjusted padding)
+    /* 0x124 */ u32 field_0x124;
+    /* 0x128 */ u8 _pad4[0x889];   // Align to 0x9B1 (0x128 + 0x889 = 0x9B1)
+    /* 0x9B1 */ u8 field_0x9B1;    // 0x9B1 (Corrected from 0x9B6)
+    /* 0x9B2 */ u8 _pad5[0x4];     // Remaining space to field_0x9B6
+    /* 0x9B6 */ u8 field_0x9B6;
 } Struct_DE94_Inner;
 
 extern Struct_DE94_Inner* lbl_3_common_bss_DE94;

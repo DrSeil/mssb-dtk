@@ -388,3 +388,7 @@ void fn_3_F6FCC(void) {
 void fn_3_F6FDC(void) {
     return;
 }
+
+s32 fn_3_EE0BC(u32 arg0){
+    return;
+}

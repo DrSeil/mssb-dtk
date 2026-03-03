@@ -97,8 +97,24 @@ BOOL fn_3_100018(void) {
 }
 
 // .text:0x00100038 size:0x44 mapped:0x8073F0CC
+//Simple Register Swap
 void fn_3_100038(void) {
-    return;
+    // Declaring 'ptr' as the very first thing usually forces 'r4' 
+    // because r3 is busy with the 'lis' for the pointer's address.
+    Struct_DE94_Inner *ptr = lbl_3_common_bss_DE94;
+    u32 val118 = ptr->field_0x118;
+
+    if (val118 > ptr->field_0x11C) {
+        if (ptr->field_0x9B1 == 0) {
+            ptr->field_0x118 = ptr->field_0x11C;
+        } else {
+            ptr->field_0x118 = 0;
+        }
+    } else {
+        // High-bit addition (r3 + 0x10000)
+        // Using 'val118' here is critical to ensure 'r3' is the source for 'addis'
+        ptr->field_0x118 = val118 + 0x10000;
+    }
 }
 
 // .text:0x0010007C size:0x5C mapped:0x8073F110
