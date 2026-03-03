@@ -48,8 +48,14 @@ void fn_3_148254(void) {
 }
 
 // .text:0x001483D4 size:0x48 mapped:0x80787468
-void fn_3_1483D4(void) {
-    return;
+
+bool fn_3_1483D4(void) {
+    // 1. Call rand() and get the result in r3.
+    // 2. Perform modulo 5. 
+    // 3. Compare the result to 0.
+    // 4. Normalize the boolean (val == 0) to an integer 0 or 1.
+    
+  return !(rand() % 5);
 }
 
 // .text:0x0014841C size:0xAD4 mapped:0x807874B0

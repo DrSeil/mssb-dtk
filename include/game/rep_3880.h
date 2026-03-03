@@ -32,7 +32,7 @@ void fn_3_147E20(void);
 void fn_3_147F94(void);
 void fn_3_1480E0(void);
 void fn_3_148254(void);
-void fn_3_1483D4(void);
+bool fn_3_1483D4(void);
 void fn_3_14841C(void);
 void fn_3_148EF0(void);
 void fn_3_148FD0(void);

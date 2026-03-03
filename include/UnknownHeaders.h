@@ -471,4 +471,5 @@ u8 _pad[0x6];
 u8 volume; // Offset 0x6
 } SoundConfig;
 extern SoundConfig lbl_800EFBA4;
+s32 rand();                                         /* extern */
 #endif
