@@ -553,13 +553,22 @@ void fn_3_1549F0(void) {
 }
 
 // .text:0x00154C7C size:0x5A0 mapped:0x80793D10
-void fn_3_154C7C(void) {
+void fn_3_154C7C(u32 unknown) {
     return;
 }
 
 // .text:0x0015521C size:0x48 mapped:0x807942B0
-void fn_3_15521C(void) {
-    return;
+
+
+
+void fn_3_15521C(u32 unused, u32 param_2, u32 param_3) {
+    if (g_d_GameSettings.GameModeSelected != 7) {
+        return;
+    }
+    if (param_2 == 0 || param_3 == 0) {
+        return;
+    }
+    fn_3_154C7C(unused);
 }
 
 // .text:0x00155264 size:0x24 mapped:0x807942F8

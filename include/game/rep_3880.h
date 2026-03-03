@@ -4,6 +4,7 @@
 #include "mssbTypes.h"
 #include "stl/mem.h"
 #include "UnknownHeaders.h"
+#include "static/UnknownHomes_static.h"
 
 
 typedef struct {
@@ -125,8 +126,8 @@ void fn_3_154214(void);
 void fn_3_154238(void);
 void fn_3_1542F4(void);
 void fn_3_1549F0(void);
-void fn_3_154C7C(void);
-void fn_3_15521C(void);
+void fn_3_154C7C(u32 unknown);
+void fn_3_15521C(u32 unused, u32 param_2, u32 param_3);
 void fn_3_155264(void);
 void fn_3_155288(void);
 void fn_3_1552AC(void);
