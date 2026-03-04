@@ -542,12 +542,22 @@ typedef struct _InMemPitcherType {
     /*0x175*/ u8 walkedInRunInd;
     /*0x176*/ u8 unused_pitcherIsFielder; // unsure
 } InMemPitcherType;                       // size: 0x178
-
+typedef struct FieldingTarget {
+    /* 0x00 */ s16 unk0; // sth r0, 0x0(r3)
+    /* 0x02 */ u8  unk2; // stb r0, 0x2(r4)
+} FieldingTarget;
 typedef struct FieldingLogic {
-    u8 _pad0[0x133];
-    u8 unk133;       // 0x133 - Referenced in assembly
-    u8 _pad1[0x13B - 0x134];
-    u8 unk_13B;      // 0x13B
+    /* 0x00 */ u8 _pad0[0x8C];
+    /* 0x8C */ FieldingTarget* unk8C; // lwz r4, 0x8c(r5)
+    
+    /* 0x90 */ u8 _pad1[0x133 - 0x90];
+    /* 0x133 */ u8 unk133;            // Preserving your previous find
+    
+    /* 0x134 */ u8 _pad2[0x13B - 0x134];
+    /* 0x13B */ u8 unk_13B;           // Preserving your previous find
+    
+    /* 0x13C */ u8 _pad3[0x14A - 0x13C];
+    /* 0x14A */ u16 unk14A;           // lhz r0, 0x14a(r5)
 } FieldingLogic;
 
 extern FieldingLogic g_FieldingLogic;

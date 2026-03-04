@@ -544,8 +544,22 @@ void fn_3_3B764(void) {
 }
 
 // .text:0x0003B99C size:0x48 mapped:0x8067AA30
+
 void fn_3_3B99C(void) {
-    return;
+    // Check MiniGame Mode (lbz r0, 0x1a2a(r3))
+    if (g_Minigame.GameMode_MiniGame == 5) {
+        return;
+    }
+
+    // Check Fielding Flags (lhz r0, 0x14a(r5))
+    // rlwinm. r0, r0, 0, 23, 23 checks bit 0x100
+    if (!(g_FieldingLogic.unk14A & 0x100)) {
+        return;
+    }
+
+    // Update target values
+    g_FieldingLogic.unk8C->unk2 = 2;
+    g_FieldingLogic.unk8C->unk0 = lbl_3_bss_170;
 }
 
 // .text:0x0003B9E4 size:0x46C mapped:0x8067AA78
