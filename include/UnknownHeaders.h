@@ -492,4 +492,5 @@ u8 volume; // Offset 0x6
 extern SoundConfig lbl_800EFBA4;
 s32 rand();                                         /* extern */
 extern s16 lbl_3_bss_170;
+void AnimateCharacter(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, u8 arg7, int arg8);
 #endif
