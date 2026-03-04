@@ -389,6 +389,20 @@ void fn_3_F6FDC(void) {
     return;
 }
 
-s32 fn_3_EE0BC(u32 arg0){
-    return;
+
+
+s32 fn_3_EE0BC(u32 arg0) {
+    s32 val = (arg0 >> 4) & 0xF;
+    switch (val) {
+        case 0:
+        case 1:
+            return 1;
+        case 2:
+        case 3:
+            return 2;
+        case 4:
+            return 4;
+        default:
+            return 0;
+    }
 }

@@ -78,4 +78,5 @@ void fn_3_F6FCC(void);
 void fn_3_F6FDC(void);
 
 s32 fn_3_EE0BC(u32 arg0);
+// No local headers needed.
 #endif // !__GAME_sta_c5_H_
