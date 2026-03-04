@@ -133,8 +133,11 @@ void fn_3_1192B8(void) {
 }
 
 // .text:0x00119468 size:0x44 mapped:0x807584FC
-void fn_3_119468(void) {
-    return;
+
+void fn_3_119468(s32 index) {
+    if (g_hugeAnimStruct.entries_68[index].unk34->animFlags & 0x9) {
+        fn_3_14225C();
+    }
 }
 
 // .text:0x001194AC size:0x50 mapped:0x80758540

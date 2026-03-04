@@ -34,7 +34,26 @@ typedef struct EOSPad {
  * Full field definitions available in in_game.h.
  * Using opaque byte array to prevent compiler alignment padding. */
 typedef struct unkAnimSubstruct {
-    u8 data[0xD2];
+    /* 0x00 */ void* field0_0x0[4];
+    /* 0x10 */ u8    field1_0x10[28];
+    /* 0x2C */ void* field2_0x2c[12];
+    /* 0x5C */ u8    field3_0x5c[4];
+    /* 0x60 */ u8    field4_0x60[4];
+    /* 0x64 */ void* field5_0x64[4];
+    /* 0x74 */ u8    field6_0x74[28];
+    /* 0x90 */ void* field7_0x90;     // First pointer at 0x90
+    /* 0x94 */ void* field7_0x94;     // Second pointer at 0x94
+    /* 0x98 */ u8    animFlags;       // Offset 0x98 - Target for lbz
+    /* 0x99 */ u8    field7_0x99[39]; // Remainder of the 0x90-0xC0 block
+    /* 0xC0 */ u8    field8_0xc0[4];
+    /* 0xC4 */ u8    field9_0xc4[4];
+    /* 0xC8 */ void* field10_0xc8;
+    /* 0xCC */ u8    field11_0xcc;
+    /* 0xCD */ u8    field12_0xcd;
+    /* 0xCE */ u8    field13_0xce;
+    /* 0xCF */ u8    field14_0xcf;
+    /* 0xD0 */ u8    field15_0xd0;
+    /* 0xD1 */ u8    field16_0xd1;
 } unkAnimSubstruct; /* size: 0xD2 */
 
 typedef struct HugeAnimEntry2D94 {
@@ -52,7 +71,7 @@ typedef struct HugeAnimEntry2D94 {
 } HugeAnimEntry2D94;
 typedef struct HugeAnimEntry68 {
     u8 _pad0[0x34];
-    s32 unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
+    unkAnimSubstruct* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
     u8 _pad1[0x58]; // (0x90 - 0x38) bytes to make the struct size exactly 0x90
 } HugeAnimEntry68;
 
@@ -428,7 +447,7 @@ extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
 extern void fn_3_5A6D4(s32);
-extern f32 fn_800B4A94(s32, hugeAnimStruct*);
+extern f32 fn_800B4A94(unkAnimSubstruct* arg0, hugeAnimStruct* arg1);
 typedef struct Struct_14D6D4_Node {
 struct Struct_14D6D4_Node* next; // 0x00
 u8 _pad0[0x40];                  // Padding to 0x44

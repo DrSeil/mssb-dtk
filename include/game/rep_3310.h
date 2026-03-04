@@ -2,6 +2,7 @@
 #define __GAME_rep_3310_H_
 
 #include "mssbTypes.h"
+#include "game/rep_37A8.h"
 
 void fn_3_116840(void);
 void fn_3_1169D0(void);
@@ -27,7 +28,7 @@ void fn_3_11897C(void);
 void fn_3_1189C8(void);
 void fn_3_118B18(void);
 void fn_3_1192B8(void);
-void fn_3_119468(void);
+void fn_3_119468(s32 index);
 void fn_3_1194AC(void);
 void fn_3_1194FC(void);
 f32 fn_3_119854(u32 index);
