@@ -7,8 +7,8 @@
 void fn_3_7D79C(void);
 void fn_3_7D920(void);
 void fn_3_7D9DC(void);
-void fn_3_7DB30(void);
-void fn_3_7DD24(void);
+void fn_3_7DB30(s32 unk);
+void fn_3_7DD24(s32 unk);
 void fn_3_7DD6C(void);
 void fn_3_7E2BC(void);
 void fn_3_7EA68(void);

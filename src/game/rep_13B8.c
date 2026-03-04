@@ -18,13 +18,21 @@ void fn_3_7D9DC(void) {
 }
 
 // .text:0x0007DB30 size:0x1F4 mapped:0x806BCBC4
-void fn_3_7DB30(void) {
+void fn_3_7DB30(s32 unk){
     return;
 }
 
 // .text:0x0007DD24 size:0x48 mapped:0x806BCDB8
-void fn_3_7DD24(void) {
-    return;
+
+void fn_3_7DD24(s32 unk) {
+    // The assembly uses lbz r0, 0x11e(r4) where r4 is &g_GameLogic
+    // and then lbz r0, 0x190b(r4) where r4 is &g_Minigame
+    
+    if (g_GameLogic.gameStatus == 2) {
+        if (g_Minigame.turnOverStatus == 0) {
+            fn_3_7DB30(unk);
+        }
+    }
 }
 
 // .text:0x0007DD6C size:0x550 mapped:0x806BCE00
