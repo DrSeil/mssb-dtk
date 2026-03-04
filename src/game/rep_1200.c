@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 #include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 
 
 // .text:0x0006F6CC size:0x7C mapped:0x806AE760
@@ -134,8 +135,15 @@ void fn_3_735A8(void) {
 }
 
 // .text:0x000736CC size:0x4C mapped:0x806B2760
+
 void fn_3_736CC(void) {
-    return;
+    s32 i;
+    for (i = 0; i < 3; i++) {
+        if (g_Strikes.unk_18[i] == -1) {
+            g_Strikes.unk_18[i] = 0;
+            return;
+        }
+    }
 }
 
 // .text:0x00073718 size:0x14 mapped:0x806B27AC

@@ -6,30 +6,7 @@
 #include "game/rep_1838.h"
 #include "static/UnknownHomes_Static.h"
 
-typedef struct Camera {
-    /* 0x000 */ u8 _pad0[0xA50];
-    /* 0xA50 */ s32 unk_A50;
-    /* 0xA54 */ u8 _pad1[0xA96 - 0xA54]; 
-    /* 0xA96 */ s16 unkA96;       // used in fn_3_14FC8
-    /* 0xA98 */ s16 unkA98;       // Offset 0xA98
-    /* 0xA9A */ u8 _pad2[0xA9C - 0xA9A];
-    /* 0xA9C */ s16 unkA9C;       // Offset 0xA9C: used in fn_3_14F24
-    /* 0xA9E */ u8 _pad3[0xAA4 - 0xA9E];
-    /* 0xAA4 */ s16 unkAA4;       // used in fn_3_14E84
-    /* 0xAA6 */ s16 unkAA6;       // used in fn_3_14EE8
-    /* 0xAA8 */ u8 _pad4[0xAC5 - 0xAA8];
-    /* 0xAC5 */ u8 cameraFlag;
-    /* 0xAC6 */ u8 _pad5[0xAD8 - 0xAC6];
-    /* 0xAD8 */ u8 cameraFlag2;
-} Camera;
 
-typedef struct {
-    u8 _pad[0xC];
-    s32 unk_C; // Offset 0xC
-} Strikes;
-
-extern Camera* g_pCamera;
-extern Strikes g_Strikes;
 
 void fn_3_14BB4(void);
 void fn_3_14E1C(void);

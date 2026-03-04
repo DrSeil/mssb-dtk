@@ -1,7 +1,7 @@
 #ifndef __UNKNOWN_HOMES_STATIC_H_
 #define __UNKNOWN_HOMES_STATIC_H_
 
-#include "mssbtypes.h"
+#include "mssbTypes.h"
 
 extern int fn_8001C67C_animation(int, int);
 
@@ -47,5 +47,32 @@ typedef struct _GameInitVariables {
 } GameInitVariables; // size: 0x58
 
 extern GameInitVariables g_d_GameSettings;
+
+typedef struct Camera {
+    /* 0x000 */ u8 _pad0[0xA50];
+    /* 0xA50 */ s32 unk_A50;
+    /* 0xA54 */ u8 _pad1[0xA96 - 0xA54]; 
+    /* 0xA96 */ s16 unkA96;       // used in fn_3_14FC8
+    /* 0xA98 */ s16 unkA98;       // Offset 0xA98
+    /* 0xA9A */ u8 _pad2[0xA9C - 0xA9A];
+    /* 0xA9C */ s16 unkA9C;       // Offset 0xA9C: used in fn_3_14F24
+    /* 0xA9E */ u8 _pad3[0xAA4 - 0xA9E];
+    /* 0xAA4 */ s16 unkAA4;       // used in fn_3_14E84
+    /* 0xAA6 */ s16 unkAA6;       // used in fn_3_14EE8
+    /* 0xAA8 */ u8 _pad4[0xAC5 - 0xAA8];
+    /* 0xAC5 */ u8 cameraFlag;
+    /* 0xAC6 */ u8 _pad5[0xAD8 - 0xAC6];
+    /* 0xAD8 */ u8 cameraFlag2;
+} Camera;
+
+typedef struct Strikes {
+    u8 _pad[0xC];        /* 0x00 */
+    s32 unk_C;           /* 0x0C */
+    u8 _pad18[0x8];      /* 0x10 - Padding to reach 0x18 */
+    s16 unk_18[3];       /* 0x18 - Array of strike values */
+} Strikes; // Total size likely 0x1E or padded to 0x20
+
+extern Camera* g_pCamera;
+extern Strikes g_Strikes;
 
 #endif // !__UNKNOWN_HOMES_STATIC_H_
