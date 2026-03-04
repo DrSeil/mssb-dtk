@@ -2,6 +2,7 @@
 #define __GAME_rep_1D58_H_
 
 #include "mssbTypes.h"
+#include "Dolphin/stl.h"
 
 typedef struct StadiumObject StadiumObject;
 

@@ -146,8 +146,17 @@ void fn_3_B908C(void) {
 }
 
 // .text:0x000B9124 size:0x48 mapped:0x806F81B8
+
 void fn_3_B9124(void) {
-    return;
+    // 1. Calculate size and copy data
+    // Assembly: mulli r5, r0, 0xe8 -> (count * 232)
+    memcpy(lbl_3_common_bss_350E4->dest, 
+           lbl_3_common_bss_350E4->src, 
+           lbl_3_common_bss_350E4->memcpyCount * 0xE8);
+
+    // 2. Perform the halfword copy
+    // Assembly: lha r0, 0x66(r3); sth r0, 0x68(r3);
+    lbl_3_common_bss_350E4->unk68 = lbl_3_common_bss_350E4->unk66;
 }
 
 // .text:0x000B916C size:0x5C mapped:0x806F8200
