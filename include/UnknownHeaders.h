@@ -577,4 +577,9 @@ typedef struct Scores {
 
 extern Scores g_Scores;
 extern VecXZ lbl_3_data_446C;
+extern int lbl_3_data_F350;
+// A pointer to a function pointer
+extern void (**lbl_803CC1B8)(void);/* --- Prototypes --- */
+// r3 = value, r4 = address, r5 = address
+void fn_80034E20(void (*first_arg)(void), int *second_arg, void (**third_arg)(void));
 #endif

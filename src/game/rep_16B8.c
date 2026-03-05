@@ -1,4 +1,5 @@
 #include "game/rep_16B8.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x00091520 size:0x540 mapped:0x806D05B4
@@ -18,7 +19,8 @@ void fn_3_91AC8(void) {
 
 // .text:0x00091B50 size:0x4C mapped:0x806D0BE4
 void fn_3_91B50(void) {
-    return;
+    fn_80034E20((void*)lbl_803CC1B8, (void*)&lbl_3_data_F350, (void*)&lbl_803CC1B8);
+    *lbl_803CC1B8 = fn_3_91AC8;
 }
 
 // .text:0x00091B9C size:0xD4 mapped:0x806D0C30
@@ -215,4 +217,3 @@ void fn_3_9698C(void) {
 void fn_3_96CA4(void) {
     return;
 }
-
