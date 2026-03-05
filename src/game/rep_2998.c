@@ -1,5 +1,8 @@
 #include "game/rep_2998.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "C3/control.h"
+
 
 // .text:0x000E1FA8 size:0x8C mapped:0x8072103C
 void fn_3_E1FA8(void) {
@@ -97,7 +100,14 @@ void fn_3_E4554(void) {
 }
 
 // .text:0x000E45A8 size:0x48 mapped:0x8072363C
-void fn_3_E45A8(void) {
+// Instructions out of order.
+void fn_3_E45A8(castleThwompObj *param) {
+// Scale the object (param starts with the control struct)
+    CTRLSetScale(&param->control, lbl_3_rodata_2B28, lbl_3_rodata_2B28, lbl_3_rodata_2B28);
+    
+    // Assign X rotation
+    (param->rotation).x = lbl_3_rodata_2B28;
+    
     return;
 }
 
@@ -145,4 +155,3 @@ void fn_3_E4EF4(void) {
 void fn_3_E4FC4(void) {
     return;
 }
-

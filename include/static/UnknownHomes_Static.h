@@ -75,4 +75,5 @@ typedef struct Strikes {
 extern Camera* g_pCamera;
 extern Strikes g_Strikes;
 
+
 #endif // !__UNKNOWN_HOMES_STATIC_H_

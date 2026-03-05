@@ -2,6 +2,7 @@
 #define __GAME_rep_2998_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 void fn_3_E1FA8(void);
 void fn_3_E2034(void);
@@ -22,7 +23,7 @@ void fn_3_E3764(void);
 void fn_3_E3914(void);
 void fn_3_E3B88(void);
 void fn_3_E4554(void);
-void fn_3_E45A8(void);
+void fn_3_E45A8(castleThwompObj *param);
 void fn_3_E45F0(void);
 void fn_3_E4658(void);
 void fn_3_E4760(void);

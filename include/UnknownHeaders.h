@@ -3,6 +3,8 @@
 
 #include "types.h"
 #include "game/UnknownHomes_Game.h"
+#include "C3/control.h"
+#include "Dolphin/mtx.h"
 
 typedef void (*QueueCallback)(void);
 void fn_800528AC(void (*callback)(void));
@@ -500,4 +502,67 @@ extern SoundConfig lbl_800EFBA4;
 s32 rand();                                         /* extern */
 extern s16 lbl_3_bss_170;
 void AnimateCharacter(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, u8 arg7, int arg8);
+extern f32 lbl_3_rodata_2B28;
+
+typedef struct ActLayout ActLayout;
+// --- Enums ---
+typedef enum thwompState {
+    THWOMP_IDLE = 0,
+    THWOMP_FALLING = 1,
+    THWOMP_GROUNDED = 2,
+    THWOMP_RISING = 3
+} thwompState;
+
+typedef enum barrelState {
+    BARREL_IDLE = 0,
+    BARREL_ACTIVE = 1
+} barrelState;
+
+// --- The Main Object Struct ---
+typedef struct castleThwompObj {
+    /* 0x00 */ Control control;      // Ghidra says Length 52 (0x34)
+    /* 0x34 */ u8 pad[8];           // Length 16 (0x10)
+    /* 0x44 */ Mtx mtx;              // Length 48 (0x30)
+    /* 0x74 */ ActLayout ***actPtr;  // Length 4
+    /* 0x78 */ s32 vertexData;       // Length 4
+    /* 0x7C */ void (*functionPtr)(void *);
+    /* 0x80 */ void (*unkFunctionPtr)(void *);
+    /* 0x84 */ s32 field7_0x84;
+    /* 0x88 */ s32 field8_0x88;
+    /* 0x8C */ s32 field9_0x8c;
+    /* 0x90 */ u8 flags[2];
+    /* 0x92 */ u8 field11_0x92;
+    /* 0x93 */ u8 field12_0x93;
+    /* 0x94 */ s16 field13_0x94;
+    /* 0x96 */ s16 field14_0x96;
+    /* 0x98 */ u8 field15_0x98;
+    /* 0x99 */ u8 hasBeenResetAfterLiveBallInd;
+    /* 0x9A */ u8 field17_0x9a[2];
+    /* 0x9C */ VecXYZ position;       // Length 12 (Ends at 0xA8)
+    
+    /* 0xA8 */ u8 id;
+    /* 0xA9 */ u8 starCollectedStatus;
+    /* 0xAA */ u8 field21_0xaa;
+    /* 0xAB */ u8 field22_0xab;
+    /* 0xAC */ f32 y_fallingIncrement; // Length 4 (Ends at 0xB0)
+
+    /* 0xB0 */ u8 state;
+    /* 0xB1 */ u8 framesOnGround;
+    /* 0xB2 */ u8 checkForSlamInd;
+    /* 0xB3 */ u8 field27_0xb3;      // Exactly 4 bytes total here
+
+    /* 0xB4 */ VecXYZ rotation;       // Starts at 180 (0xB4)
+    
+    /* 0xC0 */ f32 alsoRotation_maybe;
+    /* 0xC4 */ u8 objectState;
+    /* 0xC5 */ u8 maybeObjsToScale;
+    /* 0xC6 */ u8 state_alt;
+    /* 0xC7 */ u8 counterBetweenActions;
+    /* 0xC8 */ u8 field34_0xc8;
+    /* 0xC9 */ u8 field35_0xc9;
+    /* 0xCA */ u8 maybeIsActive;
+    /* 0xCB */ u8 field37_0xcb;
+    /* 0xCC */ u8 field38_0xcc[28];
+} castleThwompObj;
+
 #endif
