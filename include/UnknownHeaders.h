@@ -576,4 +576,5 @@ typedef struct Scores {
 } Scores;
 
 extern Scores g_Scores;
+extern VecXZ lbl_3_data_446C;
 #endif

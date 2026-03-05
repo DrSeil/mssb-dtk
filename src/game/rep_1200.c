@@ -230,8 +230,35 @@ void fn_3_751B4(void) {
 }
 
 // .text:0x000753E8 size:0x4C mapped:0x806B447C
-void fn_3_753E8(void) {
-    return;
+
+void fn_3_753E8(s32 param_1) {
+    // 0x000753EC: cmpwi r3, 0x0
+    // The incoming r3 (param_1) is compared to 0.
+    
+    // 0x000753F8: stb r0, 0x13e(r3)
+    g_Pitcher.pitcherActionState = 0;
+    
+    // 0x000753FC: sth r0, 0x120(r3)
+    g_Pitcher.currentStateFrameCounter = 0;
+
+    // 0x00075400: bne .L_0007540C
+    // If param_1 != 0, skip these two assignments.
+    if (param_1 == 0) {
+        // 0x00075404: stb r0, 0x159(r3)
+        g_Pitcher.nPitchesThisAB = 0;
+        // 0x00075408: stb r0, 0x15a(r3)
+        g_Pitcher.nPickoffAttempts = 0;
+    }
+
+    // 0x00075410: lfsu f1, lbl_3_data_446C@l(r4)
+    // 0x0007541C: lfs f0, 0x4(r4)
+    // 0x00075424: stfs f1, 0x8c(r3)
+    // 0x00075428: stfs f0, 0x90(r3)
+    g_Pitcher.pitcher.x = lbl_3_data_446C.x;
+    g_Pitcher.pitcher.z = lbl_3_data_446C.z;
+
+    // 0x0007542C: stb r0, 0x15e(r3)
+    g_Pitcher.pitchDeliveryAnimationPlaying = 0;
 }
 
 // .text:0x00075434 size:0x84 mapped:0x806B44C8
