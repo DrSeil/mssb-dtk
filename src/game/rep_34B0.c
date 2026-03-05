@@ -103,8 +103,15 @@ void fn_3_13119C(void) {
 }
 
 // .text:0x0013128C size:0x48 mapped:0x80770320
+
+
+
 void fn_3_13128C(void) {
-    return;
+    if ((s32) g_Scores.highscore >= (s32) g_Scores.threshold) {
+        fn_3_5A6D4(0xF);
+        return;
+    }
+    fn_3_5A6D4(6);
 }
 
 // .text:0x001312D4 size:0x26C mapped:0x80770368

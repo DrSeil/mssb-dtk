@@ -35,4 +35,5 @@ void fn_3_1320BC(void);
 void fn_3_1323CC(void);
 void fn_3_1324E8(void);
 
+// No local headers needed.
 #endif // !__GAME_rep_34B0_H_
