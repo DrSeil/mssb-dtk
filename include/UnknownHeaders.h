@@ -566,4 +566,14 @@ typedef struct castleThwompObj {
 } castleThwompObj;
 
 u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
+
+typedef struct Scores {
+    /* 0x00 */ s32 highscore;    // Matches 'lwz r3, 0x0(r4)'
+    /* 0x04 */ u8 _pad[166];     // Padding to reach 0xAA (0xAA - 0x04 = 166)
+    /* 0xAA */ u8 threshold;     // Matches 'lbz r0, 0xaa(r4)'
+    /* 0xAB */ u8 _pad2[24];     // Padding to reach your original 0xC3
+    /* 0xC3 */ u8 someFlag;
+} Scores;
+
+extern Scores g_Scores;
 #endif

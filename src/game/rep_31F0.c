@@ -98,8 +98,19 @@ void fn_3_112070(void) {
 }
 
 // .text:0x001120E0 size:0x48 mapped:0x80751174
+
 void fn_3_1120E0(void) {
-    return;
+    // stwu r1, -0x10(r1) : Prologue
+    // lis r3, g_Scores@ha / addi r4, r3, g_Scores@l : Load struct base into r4
+    
+    // The comparison: if (highscore < threshold) jump to .L_00112110 (the '6' case)
+    // This is logically: if (highscore >= threshold) call 0xF else call 0x6
+    if (g_Scores.highscore >= g_Scores.threshold) {
+        fn_3_5A6D4(0xF);
+    } else {
+        fn_3_5A6D4(0x6);
+    }
+    
 }
 
 // .text:0x00112128 size:0x7C mapped:0x807511BC
