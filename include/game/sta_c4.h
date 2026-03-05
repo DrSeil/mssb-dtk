@@ -31,4 +31,5 @@ void fn_3_FA58C(void);
 void fn_3_FB3D8(void);
 void fn_3_FBBA0(void);
 
+// No local headers needed.
 #endif // !__GAME_sta_c4_H_

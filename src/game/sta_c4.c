@@ -1,4 +1,5 @@
 #include "Dolphin/GX/GXPixel.h"
+#include "UnknownHeaders.h"
 #include "game/sta_c4.h"
 #include "header_rep_data.h"
 
@@ -23,8 +24,16 @@ void fn_3_F8878(void) {
 }
 
 // .text:0x000F8ABC size:0x48 mapped:0x80737B50
+
+
 void fn_3_F8ABC(void) {
-    return;
+    // 0x000F8ABC: stwu r1, -0x10(r1) - Function Prologue
+    // 0x000F8AE4: bl fn_80033A24
+    if (fn_80033A24(fn_3_F85B0, 0xF0, 0x0D, 0x2A, 1, 0x7F) != 0) {
+        // 0x000F8AF0: bl fn_3_F8878
+        fn_3_F8878();
+    }
+    // 0x000F8B00: blr - Function Epilogue
 }
 
 // .text:0x000F8B04 size:0x2C mapped:0x80737B98
