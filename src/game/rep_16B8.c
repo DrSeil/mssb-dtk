@@ -109,8 +109,11 @@ void fn_3_948B8(void) {
 }
 
 // .text:0x00094930 size:0x4C mapped:0x806D39C4
+
+
 void fn_3_94930(void) {
-    return;
+    fn_80034E20((void*)lbl_803CC1B8, (void*)&lbl_3_data_F3F0, (void*)&lbl_803CC1B8);
+    *lbl_803CC1B8 = fn_3_948B8;
 }
 
 // .text:0x0009497C size:0x248 mapped:0x806D3A10
