@@ -14,6 +14,8 @@ import sys
 # Add tools to path for decomp_helper
 sys.path.append("tools")
 import decomp_helper
+from decomp_helper import extract_ghidra_decomp
+import gen_prompt
 
 app = FastAPI()
 
@@ -1169,12 +1171,16 @@ async def process_function(func_name: str, request: Request):
         print("DEBUG: Full match acheived!")
         orch.commit_to_source(current_c)
         draft_split = split_m2c_draft(current_c, func_name)
+        info = gen_prompt.locate_function(func_name) or {}
+        addr = info.get("addr")
+        module = info.get("module")
         return {
             "status": "matched", 
             "round": 0, 
             "result": result, 
             "draft_code": current_c,
-            "draft_split": draft_split
+            "draft_split": draft_split,
+            "ghidra_decomp": extract_ghidra_decomp(func_name, "in_game.c", addr=addr, module=module)
         }
     
     # ... (rest of function)
@@ -1188,6 +1194,9 @@ async def process_function(func_name: str, request: Request):
     elif result.get("status") == "objdiff_error":
          message = f"Objdiff failed: {result.get('log')}"
 
+    info = gen_prompt.locate_function(func_name) or {}
+    addr = info.get("addr")
+    module = info.get("module")
     return {
         "status": "in_progress", 
         "message": message,
@@ -1195,7 +1204,8 @@ async def process_function(func_name: str, request: Request):
         "diff": result.get("diff"),
         "draft_code": current_c,
         "draft_split": split_m2c_draft(current_c, func_name),
-        "result": result
+        "result": result,
+        "ghidra_decomp": extract_ghidra_decomp(func_name, "in_game.c", addr=addr, module=module)
     }
 
 
@@ -1304,13 +1314,17 @@ async def generate_prompt(func_name: str, body: CommitRequest):
     print(f"DEBUG generate_prompt: template has {{symbols}} = {'{symbols}' in template}")
     
     try:
+        info = gen_prompt.locate_function(func_name) or {}
+        addr = info.get("addr")
+        module = info.get("module")
         prompt = template.format(
             asm_content=asm_content,
             c_code=full_c,
             structures=structures,
             symbols=symbols,
             context=context,
-            errors=errors
+            errors=errors,
+            ghidra_decomp=extract_ghidra_decomp(func_name, "in_game.c", addr=addr, module=module) or "// Not found in in_game.c"
         )
         return {"status": "success", "prompt": prompt}
     except Exception as e:

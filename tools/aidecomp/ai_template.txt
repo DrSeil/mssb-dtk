@@ -17,3 +17,6 @@ Build/Comparison Errors:
 
 ## Referenced Symbols
 {symbols}
+
+Ghidra Decompilation (from in_game.c)  Note this is from an Annotated memory dump of the game, so functions and variables may be named differently, but if the names seem better than what currently is being used feel free to suggest a change to them:
+{ghidra_decomp}

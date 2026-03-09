@@ -211,6 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (headerDisplay) headerDisplay.innerText = data.draft_split.headers || '// No local headers needed.';
                     if (codeDisplay) codeDisplay.innerText = data.draft_split.body || '// No code generated.';
 
+                    const ghidraDisplay = document.getElementById('ghidra-display');
+                    if (ghidraDisplay) ghidraDisplay.innerText = data.ghidra_decomp || '// Not found in in_game.c';
+
                     // Update Labels with context if possible
                     const unitHeaderLabel = document.getElementById('unit-header-label');
                     const unitSourceLabel = document.getElementById('unit-source-label');

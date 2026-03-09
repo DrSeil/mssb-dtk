@@ -24,6 +24,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, script_dir)
 
 import decomp_helper
+from decomp_helper import parse_symbols, parse_splits, find_file_for_address, extract_asm, extract_ghidra_decomp
 import feedback_diff
 from feedback_diff import run_objdiff, find_unit_for_symbol, get_symbol_data
 
@@ -329,12 +330,18 @@ def run_m2c(func_name):
     return None
 
 
+def run_ghidra_decomp(func_name, addr=None, module=None):
+    """Extract Ghidra decompilation from in_game.c."""
+    in_game_c = os.path.join(ROOT_DIR, "in_game.c")
+    return extract_ghidra_decomp(func_name, in_game_c, addr=addr, module=module)
+
+
 # ---------------------------------------------------------------------------
 # Prompt assembly
 # ---------------------------------------------------------------------------
 
 def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
-                 header_path, header_content, feedback, m2c_output):
+                 header_path, header_content, feedback, m2c_output, ghidra_output):
     """Assemble the complete prompt."""
     sections = []
 
@@ -392,6 +399,11 @@ def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
     if m2c_output:
         sections.append(f"\n## Approximate Decompilation (from m2c)\n")
         sections.append(f"```c\n{m2c_output.strip()}\n```")
+
+    # Ghidra decompilation
+    if ghidra_output:
+        sections.append(f"\n## Ghidra Decompilation (from in_game.c)\n")
+        sections.append(f"```c\n{ghidra_output.strip()}\n```")
 
     # Header file
     if header_content:
@@ -456,20 +468,21 @@ def main():
     # 4. Extract deps and symbols from assembly
     deps, syms = extract_deps_and_symbols(asm_text)
 
-    # 5. Read source and header files
     src_path, src_content = read_source_file(info)
     header_path, header_content = read_header_file(info)
 
     # 6. Get current feedback
     feedback = run_feedback(func_name)
 
-    # 7. Run m2c
+    # 7. Run m2c and Ghidra extraction
     m2c_output = run_m2c(func_name)
+    ghidra_output = run_ghidra_decomp(func_name, addr=info.get("addr"), module=info.get("module"))
 
     # 8. Build prompt
     prompt = build_prompt(
         func_name, info, asm_text, deps, syms,
-        src_path, src_content, header_path, header_content, feedback, m2c_output,
+        src_path, src_content, header_path, header_content, feedback, 
+        m2c_output, ghidra_output,
     )
 
     # 8. Output

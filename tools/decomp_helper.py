@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 import sys
 import argparse
 
@@ -64,6 +65,93 @@ def extract_asm(asm_file, func_name):
     except Exception:
         return None
     return "".join(output) if output else None
+
+# Known absolute offsets for modules to bridge DTK names to Ghidra names
+# These are used to calculate the absolute address for FUN_XXXXXXXX fallback
+MODULE_OFFSETS = {
+    "game": 0x8063F094,
+}
+
+def extract_ghidra_decomp(func_name, in_game_c_path, addr=None, module=None):
+    if not os.path.exists(in_game_c_path):
+        return None
+    
+    try:
+        # 1. First try searching for the exact function name
+        # Search for the function name followed by '(' to find the definition line
+        grep_cmd = ["grep", "-n", f" {func_name}(", in_game_c_path]
+        result = subprocess.run(grep_cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            grep_cmd = ["grep", "-n", f"^{func_name}(", in_game_c_path]
+            result = subprocess.run(grep_cmd, capture_output=True, text=True)
+            
+        # 2. If not found and we have address info, try FUN_XXXXXXXX
+        if result.returncode != 0 and addr is not None and module in MODULE_OFFSETS:
+            abs_addr = MODULE_OFFSETS[module] + addr
+            ghidra_name = f"FUN_{abs_addr:08x}"
+            # Ghidra often uses lowercase in hex names but sometimes uppercase
+            grep_cmd = ["grep", "-n", f" {ghidra_name}(", in_game_c_path]
+            result = subprocess.run(grep_cmd, capture_output=True, text=True)
+            if result.returncode != 0:
+                grep_cmd = ["grep", "-n", f"^{ghidra_name}(", in_game_c_path]
+                result = subprocess.run(grep_cmd, capture_output=True, text=True)
+            
+            # Try lowercase hex if still not found
+            if result.returncode != 0:
+                ghidra_name_lower = f"FUN_{abs_addr:08x}".lower()
+                grep_cmd = ["grep", "-n", f" {ghidra_name_lower}(", in_game_c_path]
+                result = subprocess.run(grep_cmd, capture_output=True, text=True)
+                if result.returncode != 0:
+                    grep_cmd = ["grep", "-n", f"^{ghidra_name_lower}(", in_game_c_path]
+                    result = subprocess.run(grep_cmd, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            return None
+        
+        # Often there are multiple hits (declarations, calls). 
+        # We want the one without a semicolon at the end of the signature line (or next line)
+        hits = result.stdout.splitlines()
+        start_line = -1
+        for hit in hits:
+            parts = hit.split(':', 1)
+            if len(parts) < 2: continue
+            l_num = int(parts[0])
+            l_text = parts[1].strip()
+            
+            # Skip declarations/calls (have semicolons)
+            if l_text.endswith(';'): continue
+            
+            # Found potential definition start
+            start_line = l_num
+            break
+            
+        if start_line == -1: return None
+        
+        # Read from start_line onwards and match braces
+        output = []
+        brace_count = 0
+        found_start_brace = False
+        
+        with open(in_game_c_path, 'r') as f:
+            # Skip to start_line
+            for i, line in enumerate(f):
+                if i + 1 < start_line: continue
+                
+                output.append(line)
+                brace_count += line.count('{')
+                brace_count -= line.count('}')
+                
+                if '{' in line:
+                    found_start_brace = True
+                
+                if found_start_brace and brace_count <= 0:
+                    break
+                    
+        return "".join(output) if output else None
+            
+    except Exception as e:
+        print(f"Error extracting Ghidra decomp: {e}")
+        return None
 
 def main():
     parser = argparse.ArgumentParser(description='Decompilation Helper')
