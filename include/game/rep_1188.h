@@ -7,7 +7,7 @@ void fn_3_6D6D4(void);
 void fn_3_6D964(void);
 void setInMemBatterConstants(int rosterID);
 void fn_3_6E1D4(void);
-void setFielderValues(void);
+void setFielderValues(void);  //This is important to find character struct
 void fn_3_6EBB4(void);
 void fn_3_6EF1C(void);
 
