@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
+#include "Dolphin/mtx.h"
+#include "Dolphin/mtxext.h"
 
 
 typedef struct Struct_DE94_Inner {
@@ -56,7 +58,7 @@ void fn_3_104338(void);
 void fn_3_1045A8(void);
 void fn_3_104740(void);
 void fn_3_1048E0(void);
-void fn_3_104A3C(void);
+void fn_3_104A3C(Vec *dst, const Mtx44 mtx);
 void fn_3_104A88(void);
 void fn_3_104AD4(void);
 void fn_3_104B20(VecXYZ* dst, SourceObj_104B20* src);
@@ -80,4 +82,5 @@ void fn_3_1069C0(void);
 void fn_3_106BA0(void);
 
 // No local headers needed.
+/* --- The Function --- */
 #endif // !__GAME_rep_3090_H_

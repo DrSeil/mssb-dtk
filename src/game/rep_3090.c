@@ -168,8 +168,27 @@ void fn_3_1048E0(void) {
 }
 
 // .text:0x00104A3C size:0x4C mapped:0x80743AD0
-void fn_3_104A3C(void) {
-    return;
+
+/* --- The Function --- */
+
+/* --- The Function --- */
+void fn_3_104A3C(Vec *dst, const Mtx44 mtx) {
+    // 0x00104A3C: stwu r1, -0x10(r1)
+    // 0x00104A54: mr r31, r3  (dst pointer saved to r31)
+    // 0x00104A58: mr r3, r4   (mtx moved to r3)
+    
+    register Vec *reg_dst = dst;
+    
+    // 0x00104A4C: addi r0, r5, lbl_3_data_21004@l
+    // 0x00104A5C: mr r4, r0   (src vector moved to r4)
+    // 0x00104A60: mr r5, r31  (dst vector moved to r5)
+    PSMTX44MultVec(mtx, &lbl_3_data_21004, reg_dst);
+    
+    // 0x00104A68: mr r3, r31
+    // 0x00104A6C: mr r4, r31
+    PSVECNormalize(reg_dst, reg_dst);
+    
+    // 0x00104A84: blr
 }
 
 // .text:0x00104A88 size:0x4C mapped:0x80743B1C

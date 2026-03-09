@@ -584,4 +584,6 @@ extern void (**lbl_803CC1B8)(void);/* --- Prototypes --- */
 void fn_80034E20(void (*first_arg)(void), int *second_arg, void (**third_arg)(void));
 extern int lbl_3_data_E120;
 extern int lbl_3_data_C1EC;
+// Identified as Vec3f_807d2604 in Ghidra
+extern Vec lbl_3_data_21004;
 #endif
