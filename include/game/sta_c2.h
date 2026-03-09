@@ -2,6 +2,7 @@
 #define __GAME_sta_c2_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 extern u8 lbl_3_bss_A81C;
 
@@ -79,7 +80,7 @@ void fn_3_D1B24(void);
 void fn_3_D1F2C(void);
 void fn_3_D2220(void);
 void fn_3_D233C(void);
-void fn_3_D249C(void);
+int fn_3_D249C(Struct_800D249C_Arg0 *param_1);
 void fn_3_D24E8(void);
 void fn_3_D255C(void);
 void fn_3_D2684(void);
@@ -110,4 +111,5 @@ void fn_3_D62F0(void);
 void fn_3_D6514(void);
 void fn_3_D67CC(void);
 
+// No local headers needed.
 #endif // !__GAME_sta_c2_H_

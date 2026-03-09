@@ -586,4 +586,15 @@ extern int lbl_3_data_E120;
 extern int lbl_3_data_C1EC;
 // Identified as Vec3f_807d2604 in Ghidra
 extern Vec lbl_3_data_21004;
+typedef struct Struct_800D249C_C4 {
+u8 _pad0[0xC];     // Gap: 0x00 - 0x0C = 0xC
+Vec field_0x0C;      // Offset 0x0C (accessed via r4 + 0xC)
+u8 _pad1[0x1B4];     // Gap: 0x1CC - (0x0C + 0x0C) = 0x1B4
+Vec field_0x1CC;     // Offset 0x1CC (accessed via r4 + 0x1CC)
+} Struct_800D249C_C4;
+typedef struct Struct_800D249C_Arg0 {
+u8 _pad0[0xC4];
+Struct_800D249C_C4 *ptr_0xC4; // Offset 0xC4
+} Struct_800D249C_Arg0;
+extern f64 lbl_3_rodata_2800;
 #endif

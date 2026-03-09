@@ -1,4 +1,5 @@
 #include "game/sta_c2.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000CB8A8 size:0x1F4 mapped:0x8070A93C
@@ -302,8 +303,24 @@ void fn_3_D233C(void) {
 }
 
 // .text:0x000D249C size:0x4C mapped:0x80711530
-void fn_3_D249C(void) {
-    return;
+
+
+int fn_3_D249C(Struct_800D249C_Arg0 *param_1) {
+    Vec vStack_08; // Local vector at r1 + 0x8
+    Struct_800D249C_C4 *temp_r4;
+
+    // 0x000D24AC: lwz r4, 0xc4(r3)
+    temp_r4 = param_1->ptr_0xC4;
+
+    // 0x000D24B0: addi r3, r4, 0x1cc
+    // 0x000D24B4: addi r4, r4, 0x0c
+    // 0x000D24A8: addi r5, r1, 0x8
+    PSVECSubtract(&temp_r4->field_0x1CC, &temp_r4->field_0x0C, &vStack_08);
+
+    // 0x000D24BC: addi r3, r1, 0x8
+    // 0x000D24C0: bl PSVECMag (result in f1)
+    // We compare directly to avoid 'frsp' rounding instructions.
+    return (f64)PSVECMag(&vStack_08) > lbl_3_rodata_2800;
 }
 
 // .text:0x000D24E8 size:0x74 mapped:0x8071157C
