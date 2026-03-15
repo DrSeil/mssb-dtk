@@ -41,3 +41,6 @@ tools/aidecomp/.venv/**
 
 
 docs/ghidra_annotations.json
+
+# Environment variables (API keys)
+.env

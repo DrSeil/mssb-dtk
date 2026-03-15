@@ -1,0 +1,479 @@
+"""Graph node functions for the decompilation loop.
+
+Each node takes DecompState and returns a partial state update dict.
+"""
+
+import os
+import sys
+import subprocess
+import json
+import re
+
+# Add tools directory to path for imports
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_tools_dir = os.path.dirname(_script_dir)
+_root_dir = os.path.dirname(_tools_dir)
+sys.path.insert(0, _tools_dir)
+
+import decomp_helper
+import gen_prompt
+import feedback_diff
+
+
+# ---------------------------------------------------------------------------
+# Node A: Source Finder
+# ---------------------------------------------------------------------------
+
+def source_finder_node(state):
+    """Resolve function name → module, source file, ASM, unit, header, Ghidra."""
+    func_name = state["function_name"]
+    print(f"[source_finder] Resolving {func_name}...")
+
+    # Locate function in symbols
+    info = gen_prompt.locate_function(func_name)
+    if not info:
+        return {
+            "status": "error",
+            "feedback": f"Could not locate {func_name} in any symbols file.",
+        }
+
+    module = info["module"]
+    source_file = info["file"]
+    addr = info["addr"]
+
+    # Extract assembly
+    asm_text = gen_prompt.get_assembly(func_name, info)
+    if not asm_text:
+        return {
+            "status": "error",
+            "feedback": f"Could not extract assembly for {func_name}.",
+        }
+
+    # Find the objdiff unit name
+    unit_name = feedback_diff.find_unit_for_symbol(func_name)
+    if not unit_name:
+        return {
+            "status": "error",
+            "feedback": f"Could not find objdiff unit for {func_name}.",
+        }
+
+    # Read header file
+    header_path, header_content = gen_prompt.read_header_file(info)
+
+    # Get Ghidra decompilation
+    ghidra_output = gen_prompt.run_ghidra_decomp(
+        func_name, addr=addr, module=module
+    )
+
+    # Read existing source file content
+    src_path, src_content = gen_prompt.read_source_file(info)
+
+    # Find the ASM path for reference
+    rel_path = os.path.splitext(source_file)[0] + ".s"
+    if module:
+        asm_path = os.path.join(_root_dir, f"build/GYQE01/{module}/asm", rel_path)
+    else:
+        asm_path = os.path.join(_root_dir, "build/GYQE01/asm", rel_path)
+
+    print(f"[source_finder] Found: module={module}, unit={unit_name}, "
+          f"source={source_file}, asm_lines={len(asm_text.splitlines())}")
+
+    return {
+        "module": module,
+        "source_file": source_file,
+        "asm_path": asm_path,
+        "asm_text": asm_text,
+        "unit_name": unit_name,
+        "header_path": header_path or "",
+        "header_content": header_content or "",
+        "ghidra_output": ghidra_output or "",
+        "status": "running",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Node B: Decompiler (M2C)
+# ---------------------------------------------------------------------------
+
+def decompiler_node(state):
+    """Run M2C to generate the initial C skeleton."""
+    func_name = state["function_name"]
+    print(f"[decompiler] Running M2C for {func_name}...")
+
+    # Use gen_prompt.run_m2c which wraps m2c_helper.py
+    m2c_output = gen_prompt.run_m2c(func_name)
+
+    if not m2c_output:
+        print(f"[decompiler] M2C failed, using empty skeleton")
+        m2c_output = f"// M2C could not decompile {func_name}\n"
+
+    # Split M2C output into externs / headers / body
+    # Import the split function from server.py or implement locally
+    split = _split_m2c_draft(m2c_output, func_name)
+
+    current_c_code = split.get("body", m2c_output)
+    externs = split.get("externs", "")
+    local_headers = split.get("headers", "")
+
+    print(f"[decompiler] M2C output: {len(m2c_output)} chars, "
+          f"body: {len(current_c_code)} chars")
+
+    return {
+        "m2c_output": m2c_output,
+        "current_c_code": current_c_code,
+        "externs": externs,
+        "local_headers": local_headers,
+        "iterations": 0,
+        "attempts": [],
+        "messages": [("ai", f"Generated initial M2C decompilation for {func_name}.")],
+    }
+
+
+def _split_m2c_draft(c_code, func_name):
+    """Split M2C output into externs, headers, and body."""
+    externs = []
+    unit_headers = []
+    function_body = []
+
+    lines = c_code.splitlines()
+    in_function = False
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith('#'):
+            continue
+
+        if not stripped:
+            if in_function:
+                function_body.append(line)
+            continue
+
+        # Detect function start
+        if func_name in line and '{' in line and '(' in line:
+            in_function = True
+
+        if in_function:
+            function_body.append(line)
+        else:
+            if stripped.startswith('?') or '/* extern */' in line:
+                externs.append(line)
+            elif (stripped.startswith('extern') or stripped.startswith('static')
+                  or stripped.startswith('typedef')):
+                unit_headers.append(line)
+            else:
+                if stripped.endswith(';') and '(' in stripped:
+                    unit_headers.append(line)
+                else:
+                    externs.append(line)
+
+    return {
+        "externs": "\n".join(externs),
+        "headers": "\n".join(unit_headers),
+        "body": "\n".join(function_body),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Node C: Refactorer (LLM)
+# ---------------------------------------------------------------------------
+
+def refactorer_node(state, escalate_after=5):
+    """Send context + history to the LLM, get improved C code back."""
+    from .llm import invoke_refactor
+
+    func_name = state["function_name"]
+    iteration = state.get("iterations", 0)
+    print(f"[refactorer] Iteration {iteration + 1} for {func_name}...")
+
+    try:
+        improved_code, tier = invoke_refactor(state, escalate_after=escalate_after)
+    except Exception as e:
+        print(f"[refactorer] LLM error: {e}")
+        return {
+            "status": "error",
+            "feedback": f"LLM invocation failed: {e}",
+            "messages": [("ai", f"LLM error on iteration {iteration + 1}: {e}")],
+        }
+
+    print(f"[refactorer] Got {len(improved_code)} chars from {tier} LLM")
+
+    return {
+        "current_c_code": improved_code,
+        "llm_tier": tier,
+        "messages": [("ai",
+            f"Iteration {iteration + 1}: Refactored using {tier} LLM "
+            f"({len(improved_code)} chars)."
+        )],
+    }
+
+
+# ---------------------------------------------------------------------------
+# Node D: Builder (Verification)
+# ---------------------------------------------------------------------------
+
+def builder_node(state):
+    """Write code, build with ninja, score with objdiff, collect feedback."""
+    func_name = state["function_name"]
+    unit_name = state["unit_name"]
+    iteration = state.get("iterations", 0)
+    current_code = state.get("current_c_code", "")
+
+    print(f"[builder] Build + score iteration {iteration + 1} for {func_name}...")
+
+    # Use the DecompOrchestrator from aidecomp for build-and-score
+    # We import it here to avoid circular deps at module load
+    sys.path.insert(0, os.path.join(_tools_dir, "aidecomp"))
+
+    try:
+        result = _run_build_and_score(
+            func_name, unit_name, current_code,
+            state.get("externs", ""),
+            state.get("local_headers", ""),
+        )
+    except Exception as e:
+        print(f"[builder] Build exception: {e}")
+        attempt = {
+            "c_code": current_code,
+            "match_percent": 0.0,
+            "feedback": "",
+            "build_error": str(e),
+        }
+        return {
+            "feedback": str(e),
+            "build_log": str(e),
+            "match_percent": 0.0,
+            "iterations": iteration + 1,
+            "attempts": state.get("attempts", []) + [attempt],
+            "status": "running",
+            "messages": [("ai", f"Build failed on iteration {iteration + 1}: {e}")],
+        }
+
+    status_code = result.get("status", "error")
+    match_percent = result.get("score", 0.0) * 100.0  # score is 0-1, we want 0-100
+    feedback_text = result.get("asm_diff", "")
+    build_log = result.get("log", "")
+
+    # Determine build error vs diff feedback
+    build_error = ""
+    if status_code in ("build_error", "build_timeout"):
+        build_error = build_log
+        feedback_text = ""
+        match_percent = 0.0
+    elif status_code == "error":
+        build_error = build_log or result.get("message", "Unknown error")
+
+    # Build the attempt record
+    attempt = {
+        "c_code": current_code,
+        "match_percent": match_percent,
+        "feedback": feedback_text,
+        "build_error": build_error,
+    }
+
+    new_status = "running"
+    if match_percent >= 100.0:
+        new_status = "matched"
+    elif status_code == "error":
+        new_status = "error"
+
+    print(f"[builder] Result: {match_percent:.1f}% match, status={new_status}")
+
+    return {
+        "feedback": feedback_text,
+        "build_log": build_error,
+        "match_percent": match_percent,
+        "iterations": iteration + 1,
+        "attempts": state.get("attempts", []) + [attempt],
+        "status": new_status,
+        "messages": [("ai",
+            f"Iteration {iteration + 1}: {match_percent:.1f}% match. "
+            f"Status: {new_status}."
+        )],
+    }
+
+
+def _run_build_and_score(func_name, unit_name, c_code, externs, headers):
+    """Run build + objdiff scoring, similar to DecompOrchestrator but standalone.
+
+    This writes code temporarily, builds, scores, and reverts.
+    """
+    # Resolve source path from unit name
+    source_path = _resolve_source_path(unit_name)
+    if not source_path or not os.path.exists(source_path):
+        return {"status": "error", "log": f"Source file not found for unit {unit_name}"}
+
+    header_path = source_path.replace('src/', 'include/').replace('.c', '.h')
+    externs_path = "include/UnknownHeaders.h"
+
+    # Backup originals
+    backups = {}
+    for p in [source_path, header_path, externs_path]:
+        if p and os.path.exists(p):
+            with open(p, "r") as f:
+                backups[p] = f.read()
+
+    try:
+        # Write the C code to the source file
+        if not _commit_code_to_source(source_path, func_name, c_code):
+            return {"status": "error", "log": f"Could not find {func_name} stub in {source_path}"}
+
+        # Build
+        build_proc = subprocess.run(
+            ["ninja"], capture_output=True, text=True, timeout=120,
+            cwd=_root_dir,
+        )
+        if build_proc.returncode != 0:
+            combined = (build_proc.stdout or "") + (build_proc.stderr or "")
+            return {"status": "build_error", "log": combined}
+
+        # Score via objdiff
+        objdiff_cmd = [
+            "objdiff", "diff", "--format", "json",
+            "-u", unit_name, "-o", "-", func_name,
+        ]
+        obj_proc = subprocess.run(
+            objdiff_cmd, capture_output=True, text=True, timeout=30,
+            cwd=_root_dir,
+        )
+        if obj_proc.returncode != 0:
+            combined = (obj_proc.stdout or "") + (obj_proc.stderr or "")
+            return {"status": "objdiff_error", "log": combined}
+
+        data = json.loads(obj_proc.stdout)
+
+        # Extract match percent
+        score = 0.0
+        if "right" in data and "symbols" in data["right"]:
+            for sym in data["right"]["symbols"]:
+                if sym.get("name") == func_name:
+                    score = sym.get("match_percent", 0.0) / 100.0
+                    break
+
+        # Get textual diff via feedback_diff
+        fb_proc = subprocess.run(
+            ["python3", os.path.join(_tools_dir, "feedback_diff.py"),
+             unit_name, func_name],
+            capture_output=True, text=True, timeout=30,
+            cwd=_root_dir,
+        )
+        asm_diff = fb_proc.stdout or fb_proc.stderr or ""
+
+        return {
+            "status": "success",
+            "score": score,
+            "asm_diff": asm_diff,
+            "unit": unit_name,
+        }
+
+    except subprocess.TimeoutExpired as e:
+        return {"status": "build_timeout", "log": f"Process timed out: {e}"}
+    except Exception as e:
+        return {"status": "error", "log": str(e)}
+    finally:
+        # Always revert
+        for p, content in backups.items():
+            with open(p, "w") as f:
+                f.write(content)
+
+
+def _resolve_source_path(unit_name):
+    """Convert objdiff unit name to source file path."""
+    # Try objdiff.json first
+    objdiff_path = os.path.join(_root_dir, "objdiff.json")
+    if os.path.exists(objdiff_path):
+        try:
+            with open(objdiff_path, "r") as f:
+                config = json.load(f)
+            for unit in config.get("units", []):
+                if unit.get("name") == unit_name:
+                    base_path = unit.get("base_path", "")
+                    if base_path:
+                        parts = base_path.split('/')
+                        try:
+                            src_idx = parts.index('src')
+                            rel = "/".join(parts[src_idx:])
+                            if rel.endswith('.o'):
+                                rel = rel[:-2] + '.c'
+                            return os.path.join(_root_dir, rel)
+                        except ValueError:
+                            pass
+        except Exception:
+            pass
+
+    # Fallback: guess from unit name
+    # game/game/rep_720 -> src/game/rep_720.c
+    parts = unit_name.split('/')
+    if len(parts) > 1:
+        return os.path.join(_root_dir, f"src/{'/'.join(parts[1:])}.c")
+    return None
+
+
+def _commit_code_to_source(src_path, func_name, c_code):
+    """Temporarily replace a function body in the source file."""
+    with open(src_path, "r") as f:
+        content = f.read()
+
+    # Pattern to match function signature and its body
+    pattern = (
+        rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(func_name)}\b"
+        rf"\s*\([^)]*\)\s*\{{.*?^\}}"
+    )
+
+    match = re.search(pattern, content, re.DOTALL)
+    if not match:
+        # Looser fallback
+        pattern = (
+            rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(func_name)}\b"
+            rf"\s*\([^)]*\)\s*\{{.*?\}}"
+        )
+        match = re.search(pattern, content, re.DOTALL)
+
+    if not match:
+        return False
+
+    new_content = content[:match.start()] + "\n" + c_code.strip() + content[match.end():]
+
+    with open(src_path, "w") as f:
+        f.write(new_content)
+
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Node E: Committer (permanent write on match)
+# ---------------------------------------------------------------------------
+
+def committer_node(state):
+    """Permanently commit matched code to the source file."""
+    func_name = state["function_name"]
+    unit_name = state["unit_name"]
+    current_code = state.get("current_c_code", "")
+
+    print(f"[committer] 100% MATCH! Committing {func_name}...")
+
+    source_path = _resolve_source_path(unit_name)
+    if not source_path:
+        return {
+            "status": "error",
+            "feedback": f"Could not find source path for {unit_name}",
+        }
+
+    success = _commit_code_to_source(source_path, func_name, current_code)
+
+    if success:
+        # Rebuild to make sure it sticks
+        subprocess.run(
+            ["ninja"], capture_output=True, text=True, timeout=120,
+            cwd=_root_dir,
+        )
+        print(f"[committer] Successfully committed {func_name} to {source_path}")
+        return {
+            "status": "matched",
+            "messages": [("ai", f"MATCHED! Committed {func_name} to {source_path}.")],
+        }
+    else:
+        print(f"[committer] Failed to commit {func_name}")
+        return {
+            "status": "error",
+            "feedback": f"Failed to commit {func_name} to source.",
+        }
