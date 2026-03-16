@@ -136,8 +136,13 @@ void fn_3_B8C08(void) {
 }
 
 // .text:0x000B902C size:0x60 mapped:0x806F80C0
+
 void fn_3_B902C(void) {
-    return;
+    if (lbl_3_bss_1904 != NULL) {
+        memcpy(lbl_3_common_bss_350E4[0].src, lbl_3_bss_1904, lbl_3_common_bss_350E4[0].memcpyCount * 0xe8);
+        fn_800ACFB0(lbl_3_bss_1904);
+        lbl_3_bss_1904 = NULL;
+    }
 }
 
 // .text:0x000B908C size:0x98 mapped:0x806F8120
