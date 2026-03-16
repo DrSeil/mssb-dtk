@@ -140,6 +140,16 @@ def analyze_diff(left_sym, right_sym):
 
     return "\n".join(feedback)
 
+def get_formatted_asm(sym):
+    if not sym:
+        return ""
+    lines = []
+    for entry in sym.get("instructions", []):
+        inst = entry.get("instruction")
+        if inst:
+            lines.append(inst.get("formatted", ""))
+    return "\n".join(lines)
+
 def parse_symbols(symbol_file):
     symbols = {}
     if not os.path.exists(symbol_file):
@@ -240,6 +250,7 @@ def find_unit_for_symbol(symbol_name):
 def main():
     parser = argparse.ArgumentParser(description="Analyze objdiff output for feedback.")
     parser.add_argument("args", nargs="+", help="Symbol name (and optionally unit name)")
+    parser.add_argument("--current-asm", action="store_true", help="Output only the compiled assembly of the current code")
     
     parsed_args = parser.parse_args()
     
@@ -262,9 +273,12 @@ def main():
         
     left_sym, right_sym = get_symbol_data(data, symbol)
     
-    print(f"Feedback for {symbol} in {unit}:")
-    print("-" * 40)
-    print(analyze_diff(left_sym, right_sym))
+    if parsed_args.current_asm:
+        print(get_formatted_asm(right_sym))
+    else:
+        print(f"Feedback for {symbol} in {unit}:")
+        print("-" * 40)
+        print(analyze_diff(left_sym, right_sym))
 
 if __name__ == "__main__":
     main()

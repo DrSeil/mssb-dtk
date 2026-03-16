@@ -53,6 +53,7 @@ You receive:
 4. (Optionally) Previous attempts and their results.
 5. (Optionally) A Ghidra decompilation as a rough reference.
 6. The current header file for context.
+7. The compiled assembly resulting from your current C code attempt.
 
 You must respond with FOUR clearly labeled sections. Use these exact markers:
 
@@ -514,6 +515,10 @@ def build_refactor_prompt(state: dict) -> str:
             if fb:
                 sections.append(f"**Diff Feedback:**\n```\n{fb.strip()}\n```\n")
 
+            cur_asm = attempt.get("current_asm", "")
+            if cur_asm:
+                sections.append(f"**Compiled Assembly:**\n```asm\n{cur_asm.strip()}\n```\n")
+
     # Current code + latest feedback
     current = state.get("current_c_code", "")
     if current:
@@ -524,6 +529,11 @@ def build_refactor_prompt(state: dict) -> str:
     if feedback:
         sections.append("## Latest Diff Feedback\n")
         sections.append(f"```\n{feedback.strip()}\n```\n")
+
+    current_asm = state.get("current_asm", "")
+    if current_asm:
+        sections.append("## Current Compiled Assembly\n")
+        sections.append(f"```asm\n{current_asm.strip()}\n```\n")
 
     build_log = state.get("build_log", "")
     if build_log:

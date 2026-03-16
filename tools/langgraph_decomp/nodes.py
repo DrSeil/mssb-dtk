@@ -281,12 +281,14 @@ def builder_node(state):
             state.get("local_headers", ""),
             state,
         )
+        current_asm = result.get("current_asm", "")
     except Exception as e:
         print(f"[builder] Build exception: {e}")
         attempt = {
             "c_code": current_code,
             "match_percent": 0.0,
             "feedback": "",
+            "current_asm": "",
             "build_error": str(e),
         }
         return {
@@ -318,6 +320,7 @@ def builder_node(state):
         "c_code": current_code,
         "match_percent": match_percent,
         "feedback": feedback_text,
+        "current_asm": current_asm,
         "build_error": build_error,
     }
 
@@ -333,6 +336,7 @@ def builder_node(state):
         "feedback": feedback_text,
         "build_log": build_error,
         "match_percent": match_percent,
+        "current_asm": current_asm,
         "iterations": iteration + 1,
         "attempts": state.get("attempts", []) + [attempt],
         "status": new_status,
@@ -433,18 +437,22 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     break
 
         # Get textual diff via feedback_diff
-        fb_proc = subprocess.run(
+        asm_diff = fb_proc.stdout or fb_proc.stderr or ""
+
+        # Get current compiled assembly
+        cur_asm_proc = subprocess.run(
             ["python3", os.path.join(_tools_dir, "feedback_diff.py"),
-             unit_name, func_name],
+             unit_name, func_name, "--current-asm"],
             capture_output=True, text=True, timeout=30,
             cwd=_root_dir,
         )
-        asm_diff = fb_proc.stdout or fb_proc.stderr or ""
+        current_asm = cur_asm_proc.stdout or ""
 
         return {
             "status": "success",
             "score": score,
             "asm_diff": asm_diff,
+            "current_asm": current_asm,
             "unit": unit_name,
         }
 
