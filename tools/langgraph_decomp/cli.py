@@ -96,8 +96,12 @@ def main():
         help="Pause before each refactorer call for manual inspection",
     )
     parser.add_argument(
-        "--verbose", action="store_true",
-        help="Show detailed output including LLM prompts",
+        '--verbose', action='store_true',
+        help='Show detailed output including LLM prompts',
+    )
+    parser.add_argument(
+        '--debug', action='store_true',
+        help='Show FULL debug output: complete LLM prompts, responses, build errors, and diffs',
     )
     args = parser.parse_args()
 
@@ -121,6 +125,7 @@ def main():
     print(f"{'='*60}\n")
 
     # Build the graph
+    debug_mode = args.debug or args.verbose
     graph, config = build_graph(
         max_iterations=args.max_iterations,
         escalate_after=args.escalate_after,
@@ -157,14 +162,14 @@ def main():
 
     try:
         if args.human_in_loop:
-            _run_with_interrupts(graph, initial_state, config, args.verbose)
+            _run_with_interrupts(graph, initial_state, config, args.verbose, args.debug)
         else:
-            _run_streaming(graph, initial_state, config, args.verbose)
+            _run_streaming(graph, initial_state, config, args.verbose, args.debug)
     except KeyboardInterrupt:
         print("\n\nInterrupted by user.")
     except Exception as e:
         print(f"\nFatal error: {e}")
-        if args.verbose:
+        if args.verbose or args.debug:
             import traceback
             traceback.print_exc()
 
@@ -172,23 +177,23 @@ def main():
     print(f"\nTotal time: {elapsed:.1f}s")
 
 
-def _run_streaming(graph, initial_state, config, verbose):
+def _run_streaming(graph, initial_state, config, verbose, debug):
     """Run the graph and stream node updates."""
     for event in graph.stream(initial_state, config):
         for node_name, node_output in event.items():
-            _print_node_update(node_name, node_output, verbose)
+            _print_node_update(node_name, node_output, verbose, debug)
 
     # Get final state
     final = graph.get_state(config)
     _print_final_summary(final.values)
 
 
-def _run_with_interrupts(graph, initial_state, config, verbose):
+def _run_with_interrupts(graph, initial_state, config, verbose, debug):
     """Run the graph with human-in-the-loop pauses before refactorer."""
     # Initial run until first interrupt
     for event in graph.stream(initial_state, config):
         for node_name, node_output in event.items():
-            _print_node_update(node_name, node_output, verbose)
+            _print_node_update(node_name, node_output, verbose, debug)
 
     while True:
         state = graph.get_state(config)
@@ -218,14 +223,19 @@ def _run_with_interrupts(graph, initial_state, config, verbose):
         # Resume
         for event in graph.stream(None, config):
             for node_name, node_output in event.items():
-                _print_node_update(node_name, node_output, verbose)
+                _print_node_update(node_name, node_output, verbose, debug)
 
     final = graph.get_state(config)
     _print_final_summary(final.values)
 
 
-def _print_node_update(node_name, output, verbose):
+def _print_node_update(node_name, output, verbose, debug=False):
     """Print a concise update for each node execution."""
+    # Guard against non-dict outputs (e.g. LangGraph interrupt events)
+    if not isinstance(output, dict):
+        print(f"   [{node_name}] (non-dict event: {type(output).__name__})")
+        return
+
     status = output.get("status", "")
     match_pct = output.get("match_percent")
     tier = output.get("llm_tier", "")
@@ -253,13 +263,65 @@ def _print_node_update(node_name, output, verbose):
 
     print(" | ".join(parts))
 
-    # Show feedback on mismatch (condensed)
-    if verbose:
+    # Debug mode: show everything
+    if debug:
+        # Show current C code if this node produced it
+        c_code = output.get("current_c_code", "")
+        if c_code:
+            print(f"\n   {'─'*50}")
+            print(f"   C CODE:")
+            print(f"   {'─'*50}")
+            for line in c_code.strip().splitlines():
+                print(f"   {line}")
+            print(f"   {'─'*50}")
+
+        # Show full feedback
+        fb = output.get("feedback", "")
+        if fb:
+            print(f"\n   {'─'*50}")
+            print(f"   OBJDIFF FEEDBACK:")
+            print(f"   {'─'*50}")
+            for line in fb.strip().splitlines():
+                print(f"   {line}")
+            print(f"   {'─'*50}")
+
+        # Show full build errors
+        build_log = output.get("build_log", "")
+        if build_log:
+            print(f"\n   {'─'*50}")
+            print(f"   BUILD ERROR:")
+            print(f"   {'─'*50}")
+            for line in build_log.strip().splitlines():
+                print(f"   {line}")
+            print(f"   {'─'*50}")
+
+        # Show M2C output
+        m2c = output.get("m2c_output", "")
+        if m2c:
+            print(f"\n   {'─'*50}")
+            print(f"   M2C OUTPUT:")
+            print(f"   {'─'*50}")
+            for line in m2c.strip().splitlines():
+                print(f"   {line}")
+            print(f"   {'─'*50}")
+
+        # Show ASM
+        asm = output.get("asm_text", "")
+        if asm:
+            print(f"\n   {'─'*50}")
+            print(f"   TARGET ASM:")
+            print(f"   {'─'*50}")
+            for line in asm.strip().splitlines():
+                print(f"   {line}")
+            print(f"   {'─'*50}")
+
+    elif verbose:
+        # Verbose: show condensed versions
         fb = output.get("feedback", "")
         if fb and "MATCH!" not in fb:
             lines = fb.strip().splitlines()
             if len(lines) > 10:
-                print(f"   Feedback ({len(lines)} lines): ...")
+                print(f"   Feedback ({len(lines)} lines):")
                 for line in lines[:5]:
                     print(f"      {line}")
                 print(f"      ... ({len(lines) - 5} more lines)")
@@ -269,7 +331,12 @@ def _print_node_update(node_name, output, verbose):
 
         build_log = output.get("build_log", "")
         if build_log:
-            print(f"   Build error: {build_log[:200]}...")
+            print(f"   Build error:")
+            for line in build_log.strip().splitlines()[:15]:
+                print(f"      {line}")
+            total_lines = len(build_log.strip().splitlines())
+            if total_lines > 15:
+                print(f"      ... ({total_lines - 15} more lines)")
 
 
 def _print_final_summary(state):

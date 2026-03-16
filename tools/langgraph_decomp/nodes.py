@@ -81,6 +81,7 @@ def source_finder_node(state):
     return {
         "module": module,
         "source_file": source_file,
+        "source_path": src_path or "",
         "asm_path": asm_path,
         "asm_text": asm_text,
         "unit_name": unit_name,
@@ -186,7 +187,7 @@ def refactorer_node(state, escalate_after=5):
     print(f"[refactorer] Iteration {iteration + 1} for {func_name}...")
 
     try:
-        improved_code, tier = invoke_refactor(state, escalate_after=escalate_after)
+        llm_result, tier = invoke_refactor(state, escalate_after=escalate_after)
     except Exception as e:
         print(f"[refactorer] LLM error: {e}")
         return {
@@ -195,14 +196,63 @@ def refactorer_node(state, escalate_after=5):
             "messages": [("ai", f"LLM error on iteration {iteration + 1}: {e}")],
         }
 
-    print(f"[refactorer] Got {len(improved_code)} chars from {tier} LLM")
+    # llm_result is a dict with 'function', 'updates', 'header', 'externs' keys
+    func_code = llm_result.get("function", "")
+    struct_updates = llm_result.get("updates", [])
+    header_adds = llm_result.get("header", "")
+    extern_adds = llm_result.get("externs", "")
+
+    # Post-process: strip #include directives from function code
+    func_lines = []
+    for line in func_code.splitlines():
+        if line.strip().startswith("#include"):
+            continue
+        func_lines.append(line)
+    func_code = "\n".join(func_lines).strip()
+
+    # Post-process: strip #ifndef/#define/#endif guards and #include from header additions
+    header_lines = []
+    for line in header_adds.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#ifndef") or stripped.startswith("#define __") or stripped.startswith("#endif"):
+            continue
+        if stripped.startswith("#include"):
+            continue
+        header_lines.append(line)
+    header_adds = "\n".join(header_lines).strip()
+
+    print(f"[refactorer] Got {len(func_code)} chars function, "
+          f"{len(struct_updates)} struct updates, "
+          f"{len(header_adds)} chars header, {len(extern_adds)} chars externs from {tier} LLM")
+    print(f"[refactorer] === LLM FUNCTION ===")
+    print(func_code)
+    print(f"[refactorer] === END LLM FUNCTION ===")
+    if struct_updates:
+        print(f"[refactorer] === LLM STRUCT UPDATES ({len(struct_updates)}) ===")
+        for upd in struct_updates:
+            print(f"  @@@ {upd['type_name']}")
+            print(upd['definition'])
+            print(f"  @@@ END")
+        print(f"[refactorer] === END STRUCT UPDATES ===")
+    if header_adds:
+        print(f"[refactorer] === LLM HEADER ADDITIONS ===")
+        print(header_adds)
+        print(f"[refactorer] === END HEADER ===")
+    if extern_adds:
+        print(f"[refactorer] === LLM EXTERN ADDITIONS ===")
+        print(extern_adds)
+        print(f"[refactorer] === END EXTERNS ===")
 
     return {
-        "current_c_code": improved_code,
+        "current_c_code": func_code,
         "llm_tier": tier,
+        "local_headers": header_adds,
+        "externs": extern_adds,
+        "struct_updates": struct_updates,
         "messages": [("ai",
             f"Iteration {iteration + 1}: Refactored using {tier} LLM "
-            f"({len(improved_code)} chars)."
+            f"(func={len(func_code)}, updates={len(struct_updates)}, "
+            f"header={len(header_adds)}, externs={len(extern_adds)} chars)."
         )],
     }
 
@@ -229,6 +279,7 @@ def builder_node(state):
             func_name, unit_name, current_code,
             state.get("externs", ""),
             state.get("local_headers", ""),
+            state,
         )
     except Exception as e:
         print(f"[builder] Build exception: {e}")
@@ -292,11 +343,13 @@ def builder_node(state):
     }
 
 
-def _run_build_and_score(func_name, unit_name, c_code, externs, headers):
+def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=None):
     """Run build + objdiff scoring, similar to DecompOrchestrator but standalone.
 
     This writes code temporarily, builds, scores, and reverts.
     """
+    if state is None:
+        state = {}
     # Resolve source path from unit name
     source_path = _resolve_source_path(unit_name)
     if not source_path or not os.path.exists(source_path):
@@ -314,8 +367,35 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers):
 
     try:
         # Write the C code to the source file
+        print(f"[builder] === CODE BEING WRITTEN TO {source_path} ===")
+        print(c_code)
+        print(f"[builder] === END CODE ===")
         if not _commit_code_to_source(source_path, func_name, c_code):
             return {"status": "error", "log": f"Could not find {func_name} stub in {source_path}"}
+
+        # Apply struct updates (find and replace existing definitions)
+        struct_updates = state.get("struct_updates", [])
+        if struct_updates:
+            for upd in struct_updates:
+                type_name = upd["type_name"]
+                new_def = upd["definition"]
+                print(f"[builder] Applying struct update for {type_name}")
+                # _apply_struct_update returns the filepath it modified
+                updated = _apply_struct_update(type_name, new_def, backups)
+                if updated:
+                    print(f"[builder] Updated {type_name} in {updated}")
+                else:
+                    print(f"[builder] WARNING: Could not find {type_name} to update")
+
+        # Apply header additions (prototypes, struct defs)
+        if headers and headers.strip():
+            print(f"[builder] Applying header additions to {header_path}")
+            _append_to_file_if_missing(header_path, headers)
+
+        # Apply extern additions
+        if externs and externs.strip():
+            print(f"[builder] Applying extern additions to {externs_path}")
+            _append_to_file_if_missing(externs_path, externs)
 
         # Build
         build_proc = subprocess.run(
@@ -324,6 +404,9 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers):
         )
         if build_proc.returncode != 0:
             combined = (build_proc.stdout or "") + (build_proc.stderr or "")
+            print(f"[builder] === FULL BUILD ERROR ===")
+            print(combined)
+            print(f"[builder] === END BUILD ERROR ===")
             return {"status": "build_error", "log": combined}
 
         # Score via objdiff
@@ -437,6 +520,147 @@ def _commit_code_to_source(src_path, func_name, c_code):
         f.write(new_content)
 
     return True
+
+
+def _append_to_file_if_missing(file_path, new_lines_text):
+    """Append lines to a file if they are not already present.
+
+    Each line from new_lines_text is checked individually.
+    Only lines not already in the file are appended.
+    """
+    file_path = os.path.join(_root_dir, file_path) if not os.path.isabs(file_path) else file_path
+
+    if not os.path.exists(file_path):
+        print(f"[builder] Warning: {file_path} does not exist, creating it")
+        with open(file_path, "w") as f:
+            f.write("")
+
+    with open(file_path, "r") as f:
+        existing_content = f.read()
+
+    lines_to_add = []
+    for line in new_lines_text.strip().splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        # Skip comments
+        if stripped.startswith("//") or stripped.startswith("/*"):
+            continue
+        # Check if this declaration already exists (ignoring whitespace)
+        if stripped in existing_content:
+            continue
+        lines_to_add.append(line)
+
+    if lines_to_add:
+        # Find the right place to insert — before the last #endif if present,
+        # otherwise at the end
+        if "#endif" in existing_content:
+            # Insert before the last #endif
+            last_endif = existing_content.rfind("#endif")
+            new_content = (
+                existing_content[:last_endif]
+                + "\n".join(lines_to_add) + "\n\n"
+                + existing_content[last_endif:]
+            )
+        else:
+            new_content = existing_content.rstrip() + "\n\n" + "\n".join(lines_to_add) + "\n"
+
+        with open(file_path, "w") as f:
+            f.write(new_content)
+
+        print(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
+    else:
+        print(f"[builder] No new lines to add to {os.path.basename(file_path)}")
+
+
+def _apply_struct_update(type_name, new_definition, backups=None):
+    """Find and replace an existing struct/typedef definition across all include files.
+
+    Searches include/ directory for the type, extracts the full block, and replaces it.
+    If backups dict is provided, backs up the file before modifying.
+    Returns the file path if successful, None otherwise.
+    """
+    include_dir = os.path.join(_root_dir, "include")
+
+    # Search for the type definition
+    try:
+        result = subprocess.run(
+            ["grep", "-rln", "--include=*.h",
+             f"struct _*{type_name}", include_dir],
+            capture_output=True, text=True, timeout=5
+        )
+        if not result.stdout:
+            # Try typedef
+            result = subprocess.run(
+                ["grep", "-rln", "--include=*.h",
+                 f"typedef.*{type_name}", include_dir],
+                capture_output=True, text=True, timeout=5
+            )
+    except Exception:
+        return None
+
+    if not result.stdout:
+        return None
+
+    # Try each matching file
+    for filepath in result.stdout.strip().splitlines():
+        filepath = filepath.strip()
+        if not filepath or not os.path.exists(filepath):
+            continue
+
+        try:
+            with open(filepath, "r") as f:
+                content = f.read()
+        except Exception:
+            continue
+
+        # Find the struct/typedef block for this type
+        pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_name)}\b'
+        match = re.search(pattern, content)
+        if not match:
+            continue
+
+        start = match.start()
+        # Find opening brace
+        brace_pos = content.find('{', start)
+        if brace_pos == -1:
+            continue
+
+        # Find matching closing brace
+        depth = 0
+        end = brace_pos
+        for i in range(brace_pos, len(content)):
+            if content[i] == '{':
+                depth += 1
+            elif content[i] == '}':
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+
+        # Find semicolon after closing brace (and optional type name + comment)
+        rest = content[end+1:]
+        semi_match = re.match(r'[^;]*;[^\n]*', rest)
+        if semi_match:
+            end = end + 1 + semi_match.end()
+        else:
+            end += 1
+
+        old_block = content[start:end]
+        print(f"[builder] Replacing {len(old_block)} chars in {os.path.basename(filepath)}")
+
+        # Backup the file before modifying (if backups dict provided)
+        if backups is not None and filepath not in backups:
+            backups[filepath] = content
+
+        # Replace
+        new_content = content[:start] + new_definition.strip() + content[end:]
+        with open(filepath, "w") as f:
+            f.write(new_content)
+
+        return filepath
+
+    return None
 
 
 # ---------------------------------------------------------------------------

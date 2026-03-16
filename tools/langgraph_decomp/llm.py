@@ -17,6 +17,7 @@ import os
 import sys
 from typing import Optional
 
+from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 
 
@@ -25,6 +26,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 # ---------------------------------------------------------------------------
 _script_dir = os.path.dirname(os.path.abspath(__file__))
 _tools_dir = os.path.dirname(_script_dir)
+_root_dir = os.path.dirname(_tools_dir)
 sys.path.insert(0, _tools_dir)
 
 from gen_prompt import BACKGROUND, COMPILER_PATTERNS, CODE_RULES, TYPES_REFERENCE  # noqa: E402
@@ -50,31 +52,82 @@ You receive:
 3. Build/diff feedback showing where your code doesn't match.
 4. (Optionally) Previous attempts and their results.
 5. (Optionally) A Ghidra decompilation as a rough reference.
+6. The current header file for context.
 
-You must return ONLY the improved C function implementation — no markdown fences,
-no explanation, no headers, just the raw C code for the function body.
-The code must compile with Metrowerks CodeWarrior GC/1.3.2.
+You must respond with FOUR clearly labeled sections. Use these exact markers:
 
-IMPORTANT RULES:
+[FUNCTION]
+<ONLY the requested function implementation — nothing else>
+
+[UPDATES]
+Use this section to UPDATE existing struct/typedef definitions. For each update:
+@@@ TypeName
+<full replacement typedef/struct definition>
+@@@ END
+You may include multiple @@@ blocks. Leave this section empty if no updates needed.
+
+[HEADER]
+<ONLY new lines to ADD to the existing header file — NOT the entire header file>
+<leave empty if no header changes needed>
+
+[EXTERNS]
+<ONLY new extern declarations to ADD to UnknownHeaders.h>
+<leave empty if no extern changes needed>
+
+CRITICAL RULES:
+- The code must compile with Metrowerks CodeWarrior GC/1.3.2.
+- [FUNCTION] must contain ONLY the single requested function. Do NOT implement other
+  functions like helper functions or called functions — those already exist elsewhere.
+- [FUNCTION] must NOT contain #include directives — includes are handled by the build system.
+- [HEADER] must contain ONLY new lines to ADD. Do NOT reproduce the entire header file.
+  Do NOT include #ifndef guards, #define, #endif, or existing lines.
+- NEVER output `?` as a type. M2C uses `?` as a placeholder — you must replace ALL `?` with
+  real C types like `void`, `int`, `s32`, `u8`, `f32`, etc.
+- NEVER use `(? (*)())` casts. Use proper function pointer types like `void (*)(void)`.
 - NEVER use pointer arithmetic with manual offsets. Always use proper struct field access.
-- NEVER use void* as a parameter type. Define typed structs.
-- Read the feedback carefully — instruction mismatches tell you exactly what's wrong.
-- If the feedback says "Operand mismatch", the struct field offset or type is wrong.
-- If the feedback says "Instruction mnemonic mismatch", the logic flow is wrong.
-- Pay attention to register allocation patterns and rodata ordering.
+- Declare any new extern variables or function prototypes that the function needs.
+- If the function calls another function, add its prototype to [HEADER] or [EXTERNS].
+- Read build errors carefully — if a symbol is undeclared, add it to [EXTERNS].
+- Read diff feedback carefully — instruction mismatches tell you exactly what's wrong.
+
+STRUCT MODIFICATION RULES:
+- You will be provided with existing struct definitions from the codebase.
+- To UPDATE an existing struct, use the [UPDATES] section with @@@ TypeName markers.
+  Provide the COMPLETE replacement typedef. The system will find and replace it.
+- You ARE ALLOWED to ADD new fields to existing structs to match assembly offsets.
+- You ARE ALLOWED to define NEW nested structs inside existing structs, or as separate
+  typedefs, when the assembly suggests a sub-structure at a particular offset.
+- You ARE ALLOWED to replace padding with properly typed nested struct fields.
+  For example, if `artificial_padding(0, 0x70a, void*)` covers offsets 0x04-0x710,
+  you can replace part of that padding with a named sub-struct at the right offset.
+- You MUST NEVER remove or rename existing named fields from a struct.
+- Use `unk_XX` naming for new unknown fields, where XX is the hex byte offset.
+- Use padding arrays like `u8 _padXX[size]` for gaps between known fields.
+- If the assembly accesses offset 0x714 as a u32, but the struct only goes to 0x710,
+  add fields to fill the gap.
+- Put NEW struct/typedef definitions in the [HEADER] section.
+- Put UPDATED existing struct/typedef definitions in the [UPDATES] section.
 """
 
 
+
+
 def get_local_llm() -> BaseChatModel:
-    """Create an Ollama-backed chat model for local inference."""
-    from langchain_ollama import ChatOllama
+    """Create an OpenAI-compatible chat model for local inference (LM Studio/Ollama)."""
+    
+    # 1. Get the model name. 
+    # For LM Studio, this can often be any string, but Ollama needs the specific name.
+    model = os.environ.get("LOCAL_LLM_MODEL", "deepseek-coder-v2")
+    
+    # 2. Get the Base URL. 
+    # LM Studio default: http://localhost:1234/v1
+    # Ollama default:    http://localhost:11434/v1
+    base_url = os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:1234/v1")
 
-    model = os.environ.get("OLLAMA_MODEL", "deepseek-coder-v2")
-    base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-
-    return ChatOllama(
+    return ChatOpenAI(
         model=model,
         base_url=base_url,
+        api_key="lm-studio", # Required by the class, but ignored by local servers
         temperature=0.2,
     )
 
@@ -115,11 +168,303 @@ def get_cloud_llm() -> BaseChatModel:
 
 def get_llm(tier: str) -> BaseChatModel:
     """Get the appropriate LLM for the given tier."""
-    if tier == "local":
-        return get_local_llm()
-    else:
-        return get_cloud_llm()
+    # if tier == "local":
+    #     return get_local_llm()
+    # else:
+    return get_cloud_llm()
 
+
+# ---------------------------------------------------------------------------
+# Symbol Resolution — find existing definitions in the codebase
+# ---------------------------------------------------------------------------
+
+def resolve_symbol_definitions(state: dict) -> str:
+    """Find existing definitions for symbols referenced in M2C output and ASM.
+
+    Searches include/ and src/ directories for:
+    - extern declarations (variables and functions)
+    - static variable declarations in the source file
+    - struct/typedef definitions for types used in those declarations
+    - function prototypes for called functions
+
+    Returns a formatted string with all found definitions.
+    """
+    import re
+    import subprocess
+
+    include_dir = os.path.join(_root_dir, "include")
+    src_dir = os.path.join(_root_dir, "src")
+
+    # Also get the specific source file for this function
+    source_path = state.get("source_path", "")
+    if source_path and not os.path.isabs(source_path):
+        source_path = os.path.join(_root_dir, source_path)
+
+    # Gather all referenced symbols from M2C output, ASM, and current code
+    symbols = set()
+    types_to_resolve = set()
+
+    # Extract from M2C output
+    m2c = state.get("m2c_output", "")
+    current = state.get("current_c_code", "")
+    asm = state.get("asm_text", "")
+    combined_text = m2c + "\n" + current
+
+    # Find extern references: "extern TYPE name;" patterns in M2C
+    for match in re.finditer(r'extern\s+([\w\s\*]+?)\s+(\w+)\s*;', combined_text):
+        type_name = match.group(1).strip()
+        var_name = match.group(2).strip()
+        symbols.add(var_name)
+        # Extract base type (strip pointers, const, etc.)
+        base_type = re.sub(r'[\*\s]', '', type_name)
+        base_type = base_type.replace('const', '').replace('volatile', '').strip()
+        if base_type and base_type not in ('void', 'int', 'char', 'short', 'long',
+                                           'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                           's32', 's64', 'f32', 'f64', 'BOOL'):
+            types_to_resolve.add(base_type)
+
+    # Find function calls: "bl FuncName" in ASM
+    for match in re.finditer(r'bl\s+(\w+)', asm):
+        func_name = match.group(1)
+        if not func_name.startswith('.'):  # skip local labels
+            symbols.add(func_name)
+
+    # Find global references: "lbl_3_*" and "g_*" from ASM comments/labels
+    for match in re.finditer(r'\b(lbl_\w+|g_\w+)\b', asm):
+        symbols.add(match.group(1))
+
+    # Find symbol references in M2C/code: variable.field patterns
+    for match in re.finditer(r'\b(\w+)\s*\.\s*\w+', combined_text):
+        symbols.add(match.group(1))
+
+    if not symbols:
+        return ""
+
+    # Helper: run grep across both include/ and src/ (or a specific file)
+    def _grep_symbol(sym, pattern=None, file_extensions=None, search_paths=None):
+        """Grep for a symbol across include and src directories."""
+        if pattern is None:
+            pattern = sym
+        if file_extensions is None:
+            file_extensions = ["*.h", "*.c"]
+        if search_paths is None:
+            search_paths = [include_dir, src_dir]
+
+        results = []
+        for search_path in search_paths:
+            if not os.path.exists(search_path):
+                continue
+            try:
+                cmd = ["grep", "-rn"]
+                for ext in file_extensions:
+                    cmd.extend(["--include", ext])
+                cmd.extend([pattern, search_path])
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+                if result.stdout:
+                    results.extend(result.stdout.strip().splitlines())
+            except Exception:
+                pass
+        return results
+
+    # First, search the source file specifically for static declarations
+    # These are critical because the LLM must NOT redeclare them
+    source_defs = []
+    if source_path and os.path.exists(source_path):
+        try:
+            with open(source_path, "r") as f:
+                source_content = f.read()
+            for sym in symbols:
+                # Find static/global declarations of this symbol
+                for line_match in re.finditer(
+                    rf'^.*\b{re.escape(sym)}\b.*;\s*$', source_content, re.MULTILINE
+                ):
+                    line = line_match.group(0).strip()
+                    # Only include actual declarations (static, extern, or type declarations)
+                    if any(kw in line for kw in ['static ', 'extern ', 'struct ', 'void ', 'int ',
+                                                   'u8 ', 'u16 ', 'u32 ', 's8 ', 's16 ', 's32 ',
+                                                   'f32 ', 'f64 ', 'BOOL ']):
+                        source_defs.append((source_path, line))
+                        # Extract type from static declarations too
+                        static_match = re.search(
+                            rf'(?:static\s+)?(?:struct\s+)?(\w+)\s*\*?\s*{re.escape(sym)}',
+                            line
+                        )
+                        if static_match:
+                            stype = static_match.group(1)
+                            if stype not in ('static', 'extern', 'void', 'int', 'char',
+                                           'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                           's32', 's64', 'f32', 'f64', 'BOOL'):
+                                types_to_resolve.add(stype)
+                        break  # Only first declaration per symbol
+        except Exception:
+            pass
+
+    # Search for each symbol across both include/ and src/
+    found_files = {}  # symbol -> file it was found in
+
+    for sym in symbols:
+        lines = _grep_symbol(sym, file_extensions=["*.h"])
+        if lines:
+            for line in lines:
+                if ':' in line:
+                    filepath = line.split(':')[0]
+                    found_files[sym] = filepath
+                    # Check if this line declares the symbol as extern
+                    if 'extern' in line and sym in line:
+                        ext_match = re.search(
+                            rf'extern\s+([\w\s\*]+?)\s+{re.escape(sym)}\s*[;\[]',
+                            line
+                        )
+                        if ext_match:
+                            type_str = ext_match.group(1).strip()
+                            base = re.sub(r'[\*\s]', '', type_str)
+                            base = base.replace('const', '').replace('volatile', '').strip()
+                            if base and base not in ('void', 'int', 'char',
+                                'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                's32', 's64', 'f32', 'f64', 'BOOL'):
+                                types_to_resolve.add(base)
+                    break
+
+    # For each type that needs resolution, extract its full struct definition
+    resolved_defs = []  # (file, definition_text) pairs
+    resolved_types = set()
+
+    def _resolve_type(type_name, depth=0):
+        if depth > 3 or type_name in resolved_types:
+            return
+        resolved_types.add(type_name)
+
+        # Search both .h and .c files for struct definitions
+        lines = _grep_symbol(type_name, pattern=f"struct _*{type_name}")
+        if not lines:
+            lines = _grep_symbol(type_name, pattern=f"typedef.*{type_name}")
+
+        if lines:
+            for line in lines:
+                filepath = line.split(':')[0]
+                if ('struct' in line or 'typedef' in line) and ('{' in line or 'struct' in line):
+                    # Found the definition file -- extract the full block
+                    block = _extract_struct_block(filepath, type_name)
+                    if block:
+                        resolved_defs.append((filepath, block))
+                        # Find nested types in this block
+                        for nested in re.finditer(
+                            r'\b([A-Z]\w+)\s+\w+', block
+                        ):
+                            nested_type = nested.group(1)
+                            if nested_type not in ('typedef', 'struct',
+                                'enum', 'union', 'extern', 'void',
+                                'BOOL', 'Vec', 'Mtx', 'TRUE', 'FALSE', 'NULL'):
+                                _resolve_type(nested_type, depth + 1)
+                    break
+
+    for t in list(types_to_resolve):
+        _resolve_type(t)
+
+    # Also find function prototypes for called functions
+    for sym in symbols:
+        lines = _grep_symbol(sym, pattern=f"\\b{sym}\\b.*(", file_extensions=["*.h"])
+        if lines:
+            for line in lines:
+                line_content = line.split(':', 2)[-1].strip() if ':' in line else line
+                filepath = line.split(':')[0]
+                if '(' in line_content and ';' in line_content and 'extern' not in line_content:
+                    resolved_defs.append((filepath, line_content))
+                    break
+
+    # Also find extern declarations in headers
+    for sym in symbols:
+        lines = _grep_symbol(sym, pattern=f"extern.*{sym}", file_extensions=["*.h"])
+        if lines:
+            for line in lines:
+                line_content = line.split(':', 2)[-1].strip() if ':' in line else line
+                filepath = line.split(':')[0]
+                if 'extern' in line_content:
+                    resolved_defs.append((filepath, line_content))
+                    break
+
+    # Add source file definitions (these are critical context)
+    resolved_defs.extend(source_defs)
+
+    if not resolved_defs:
+        return ""
+
+    # Deduplicate
+    seen = set()
+    unique_defs = []
+    for filepath, defn in resolved_defs:
+        key = defn.strip()
+        if key not in seen:
+            seen.add(key)
+            unique_defs.append((filepath, defn))
+
+    # Format output
+    sections = ["## Existing Definitions from Codebase\n"]
+    sections.append(
+        "The following definitions already exist in the codebase. "
+        "You may ADD new fields to structs but NEVER remove existing fields.\n"
+        "Do NOT redeclare variables that are already declared below — "
+        "they already exist in the code.\n"
+    )
+
+    # Group by file
+    by_file = {}
+    for filepath, defn in unique_defs:
+        rel = os.path.relpath(filepath, _root_dir)
+        by_file.setdefault(rel, []).append(defn)
+
+    for rel_path, defs in by_file.items():
+        sections.append(f"### From `{rel_path}`\n")
+        sections.append("```c")
+        for d in defs:
+            sections.append(d)
+        sections.append("```\n")
+
+    return "\n".join(sections)
+
+
+def _extract_struct_block(filepath, type_name):
+    """Extract a full struct/typedef block from a file by type name."""
+    try:
+        with open(filepath, "r") as f:
+            content = f.read()
+    except Exception:
+        return None
+
+    import re
+
+    # Find the struct/typedef line
+    pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_name)}\b'
+    match = re.search(pattern, content)
+    if not match:
+        return None
+
+    start = match.start()
+    # Find the opening brace
+    brace_pos = content.find('{', start)
+    if brace_pos == -1:
+        return None
+
+    # Find matching closing brace
+    depth = 0
+    end = brace_pos
+    for i in range(brace_pos, len(content)):
+        if content[i] == '{':
+            depth += 1
+        elif content[i] == '}':
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+
+    # Find the semicolon after the closing brace (and optional type name)
+    semi = content.find(';', end)
+    if semi != -1 and semi - end < 50:  # reasonable distance
+        end = semi + 1
+    else:
+        end += 1
+
+    return content[start:end].strip()
 
 def build_refactor_prompt(state: dict) -> str:
     """Build the user-facing prompt for the refactorer from current state."""
@@ -146,6 +491,11 @@ def build_refactor_prompt(state: dict) -> str:
     if header:
         sections.append(f"## Header File (`{state.get('header_path', '')}`)\n")
         sections.append(f"```c\n{header.strip()}\n```\n")
+
+    # Existing definitions from codebase (structs, externs, prototypes)
+    symbol_defs = resolve_symbol_definitions(state)
+    if symbol_defs:
+        sections.append(symbol_defs)
 
     # Previous attempts with feedback
     attempts = state.get("attempts", [])
@@ -182,9 +532,24 @@ def build_refactor_prompt(state: dict) -> str:
 
     sections.append(
         "\n## Instruction\n"
-        f"Return ONLY the complete C function implementation for `{state['function_name']}`. "
-        "No markdown code fences. No explanation. Just raw C code.\n"
-        "Fix all issues identified in the feedback above."
+        f"You MUST respond with FOUR sections using these exact markers:\n\n"
+        f"[FUNCTION]\n"
+        f"ONLY the implementation of `{state['function_name']}`. "
+        f"Do NOT implement any other functions. Do NOT include #include directives.\n\n"
+        f"[UPDATES]\n"
+        f"To update EXISTING structs/typedefs, use:\n"
+        f"@@@ TypeName\n"
+        f"<complete replacement typedef/struct>\n"
+        f"@@@ END\n"
+        f"Leave empty if no updates needed.\n\n"
+        f"[HEADER]\n"
+        f"ONLY new additions (new struct defs, new prototypes). "
+        f"Do NOT reproduce the entire header file. No #ifndef guards.\n\n"
+        f"[EXTERNS]\n"
+        f"ONLY new extern declarations. Leave empty if none needed.\n\n"
+        f"CRITICAL: Replace ALL `?` types with real C types (void, s32, u8, f32, etc).\n"
+        f"CRITICAL: The code MUST compile. Declare all needed symbols.\n"
+        f"Fix all issues identified in the feedback above."
     )
 
     return "\n".join(sections)
@@ -203,6 +568,17 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
 
     from langchain_core.messages import SystemMessage, HumanMessage
 
+    print(f"[LLM] {'='*60}")
+    print(f"[LLM] SYSTEM PROMPT ({len(SYSTEM_PROMPT)} chars):")
+    print(f"[LLM] {'='*60}")
+    print(SYSTEM_PROMPT)
+    print(f"[LLM] {'='*60}")
+    print(f"[LLM] USER PROMPT ({len(user_prompt)} chars):")
+    print(f"[LLM] {'='*60}")
+    print(user_prompt)
+    print(f"[LLM] {'='*60}")
+    print(f"[LLM] Invoking {tier} LLM...")
+
     messages = [
         SystemMessage(content=SYSTEM_PROMPT),
         HumanMessage(content=user_prompt),
@@ -211,14 +587,143 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
     response = llm.invoke(messages)
     raw = response.content.strip()
 
-    # Strip markdown code fences if the LLM wrapped them
+    # Parse structured response into sections
+    result = parse_llm_response(raw)
+
+    return result, tier
+
+
+def parse_llm_response(raw: str) -> dict:
+    """Parse the LLM's structured response into sections.
+
+    Returns dict with keys: 'function', 'updates', 'header', 'externs'
+    'updates' is a list of {'type_name': str, 'definition': str} dicts.
+    """
+    import re
+
+    # Strip any wrapping markdown code fences
     if raw.startswith("```"):
         lines = raw.split("\n")
-        # Remove first line (```c or ```) and last line (```)
         if lines[-1].strip() == "```":
             lines = lines[1:-1]
         elif lines[0].strip().startswith("```"):
             lines = lines[1:]
         raw = "\n".join(lines)
 
-    return raw, tier
+    result = {"function": "", "updates": [], "header": "", "externs": ""}
+
+    # Try to parse structured sections using markers
+    if "[FUNCTION]" in raw:
+        markers = [
+            ("[FUNCTION]", "function"),
+            ("[UPDATES]", "_updates_raw"),
+            ("[HEADER]", "header"),
+            ("[EXTERNS]", "externs"),
+        ]
+
+        # Find positions of all markers
+        positions = []
+        for marker, key in markers:
+            idx = raw.find(marker)
+            if idx != -1:
+                positions.append((idx, len(marker), key))
+
+        # Sort by position
+        positions.sort(key=lambda x: x[0])
+
+        # Extract content between consecutive markers
+        raw_sections = {}
+        for i, (pos, marker_len, key) in enumerate(positions):
+            content_start = pos + marker_len
+            if i + 1 < len(positions):
+                content_end = positions[i + 1][0]
+            else:
+                content_end = len(raw)
+            raw_sections[key] = raw[content_start:content_end]
+
+        result["function"] = _clean_code_block(raw_sections.get("function", ""))
+        result["header"] = _clean_code_block(raw_sections.get("header", ""))
+        result["externs"] = _clean_code_block(raw_sections.get("externs", ""))
+
+        # Parse [UPDATES] section: extract @@@ TypeName / @@@ END blocks
+        updates_raw = raw_sections.get("_updates_raw", "")
+        if updates_raw:
+            result["updates"] = _parse_update_blocks(updates_raw)
+    else:
+        # Fallback: treat the entire response as the function
+        result["function"] = _clean_code_block(raw)
+
+    return result
+
+
+def _parse_update_blocks(text: str) -> list:
+    """Parse @@@ TypeName / @@@ END blocks from [UPDATES] section.
+
+    Returns list of {'type_name': str, 'definition': str} dicts.
+    """
+    import re
+    updates = []
+
+    # Find all @@@ TypeName ... @@@ END blocks
+    # Pattern: @@@ followed by a type name, then content, then @@@ END
+    pattern = r'@@@\s+(\w+)\s*\n(.*?)@@@\s*END'
+    for match in re.finditer(pattern, text, re.DOTALL):
+        type_name = match.group(1).strip()
+        definition = match.group(2).strip()
+
+        # Clean markdown fences from definition
+        definition = _clean_code_block(definition)
+
+        if type_name and definition:
+            updates.append({
+                "type_name": type_name,
+                "definition": definition,
+            })
+
+    # Also check for natural language "no updates" responses
+    if not updates:
+        cleaned = _clean_code_block(text)
+        if not cleaned:  # was filtered as natural language
+            return []
+
+    return updates
+
+
+def _clean_code_block(text: str) -> str:
+    """Clean a code block: strip fences, whitespace, and filter out natural language."""
+    text = text.strip()
+    # Remove markdown code fences if present
+    if text.startswith("```"):
+        lines = text.split("\n")
+        if lines[-1].strip() == "```":
+            lines = lines[1:-1]
+        elif lines[0].strip().startswith("```"):
+            lines = lines[1:]
+        text = "\n".join(lines).strip()
+
+    # Detect natural language responses that aren't code
+    # Common LLM responses when no changes are needed
+    no_change_phrases = [
+        "no new", "no changes", "none needed", "no additional",
+        "no extern", "no header", "not needed", "nothing to add",
+        "no modifications", "n/a", "no declarations", "not required",
+        "no updates", "already defined", "already declared",
+    ]
+    lower = text.lower().strip()
+
+    # Check for "no changes needed" type responses FIRST
+    for phrase in no_change_phrases:
+        if phrase in lower:
+            # Make sure it's not actual code that happens to contain these words
+            # Real code has semicolons, braces, or preprocessor directives
+            has_code = any(c in text for c in ['{', '}', ';', '#define', '#include'])
+            if not has_code:
+                return ""
+
+    # If text has no C code markers at all and is short, it's probably explanation
+    if lower and not any(c in text for c in ['{', '}', ';', '#', '(']):
+        if len(text) < 150 and text.count('\n') < 3:
+            return ""
+
+
+    return text
