@@ -186,14 +186,22 @@ def refactorer_node(state, escalate_after=5):
     iteration = state.get("iterations", 0)
     print(f"[refactorer] Iteration {iteration + 1} for {func_name}...")
 
+    prompt = ""
     try:
-        llm_result, tier = invoke_refactor(state, escalate_after=escalate_after)
+        llm_result, tier, prompt, raw_response = invoke_refactor(state, escalate_after=escalate_after)
     except Exception as e:
         print(f"[refactorer] LLM error: {e}")
+        # Try to at least get the prompt if possible
+        try:
+            from .llm import build_refactor_prompt
+            prompt = build_refactor_prompt(state)
+        except:
+            pass
         return {
             "status": "error",
             "feedback": f"LLM invocation failed: {e}",
             "messages": [("ai", f"LLM error on iteration {iteration + 1}: {e}")],
+            "last_prompt": prompt,
         }
 
     # llm_result is a dict with 'function', 'updates', 'header', 'externs' keys
@@ -254,6 +262,9 @@ def refactorer_node(state, escalate_after=5):
             f"(func={len(func_code)}, updates={len(struct_updates)}, "
             f"header={len(header_adds)}, externs={len(extern_adds)} chars)."
         )],
+        "explanation": llm_result.get("explanation", ""),
+        "last_prompt": prompt,
+        "last_raw_response": raw_response,
     }
 
 
@@ -291,6 +302,9 @@ def builder_node(state):
             "current_asm": "",
             "build_error": str(e),
         }
+
+        _write_attempt_log(state, attempt, iteration + 1)
+
         return {
             "feedback": str(e),
             "build_log": str(e),
@@ -332,7 +346,7 @@ def builder_node(state):
 
     print(f"[builder] Result: {match_percent:.1f}% match, status={new_status}")
 
-    return {
+    res = {
         "feedback": feedback_text,
         "build_log": build_error,
         "match_percent": match_percent,
@@ -345,6 +359,65 @@ def builder_node(state):
             f"Status: {new_status}."
         )],
     }
+
+    _write_attempt_log(state, attempt, iteration + 1)
+
+    return res
+
+
+def _write_attempt_log(state, attempt, iteration):
+    """Write all data for this attempt to a log file."""
+    func_name = state["function_name"]
+    log_dir = os.path.join(_root_dir, "logs", "decomp", func_name)
+    os.makedirs(log_dir, exist_ok=True)
+
+    log_file = os.path.join(log_dir, f"attempt_{iteration}.log")
+
+    content = []
+    content.append(f"METADATA")
+    content.append(f"========\n")
+    content.append(f"Function:    {func_name}")
+    content.append(f"Iteration:   {iteration}")
+    content.append(f"LLM Tier:    {state.get('llm_tier', 'unknown')}")
+    content.append(f"Match Pct:   {attempt.get('match_percent', 0.0):.1f}%")
+    content.append(f"Status:      {state.get('status', 'running')}\n")
+
+    content.append(f"\nPROMPT")
+    content.append(f"======\n")
+    content.append(state.get("last_prompt", "No prompt found"))
+
+    content.append(f"\nEXPLANATION")
+    content.append(f"===========\n")
+    content.append(state.get("explanation", "No explanation provided"))
+
+    content.append(f"\nRAW RESPONSE")
+    content.append(f"============\n")
+    content.append(state.get("last_raw_response", "No raw response found"))
+
+    content.append(f"\nPARSED RESULT")
+    content.append(f"=============\n")
+    content.append(f"--- C CODE ---\n")
+    content.append(attempt.get("c_code", ""))
+    content.append(f"\n--- HEADER ADDS ---\n")
+    content.append(state.get("local_headers", ""))
+    content.append(f"\n--- EXTERN ADDS ---\n")
+    content.append(state.get("externs", ""))
+    content.append(f"\n--- STRUCT UPDATES ---\n")
+    updates = state.get("struct_updates", [])
+    for upd in updates:
+        content.append(f"@@@ {upd.get('type_name')}\n{upd.get('definition')}\n@@@ END")
+
+    content.append(f"\n\nBUILD LOG")
+    content.append(f"=========\n")
+    content.append(attempt.get("build_error", "No build errors"))
+
+    content.append(f"\nOBJDIFF FEEDBACK")
+    content.append(f"================\n")
+    content.append(attempt.get("feedback", "No diff feedback (matched or build error)"))
+
+    with open(log_file, "w") as f:
+        f.write("\n".join(content))
+    print(f"[builder] Logged attempt to {log_file}")
 
 
 def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=None):
@@ -437,6 +510,12 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     break
 
         # Get textual diff via feedback_diff
+        fb_proc = subprocess.run(
+            ["python3", os.path.join(_tools_dir, "feedback_diff.py"),
+             unit_name, func_name],
+            capture_output=True, text=True, timeout=30,
+            cwd=_root_dir,
+        )
         asm_diff = fb_proc.stdout or fb_proc.stderr or ""
 
         # Get current compiled assembly

@@ -19,6 +19,7 @@ from typing import Optional
 
 from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.callbacks import StdOutCallbackHandler
 
 
 # ---------------------------------------------------------------------------
@@ -55,7 +56,10 @@ You receive:
 6. The current header file for context.
 7. The compiled assembly resulting from your current C code attempt.
 
-You must respond with FOUR clearly labeled sections. Use these exact markers:
+You must respond with FIVE clearly labeled sections. Use these exact markers:
+
+[EXPLANATION]
+<a brief summary of your changes and reasoning>
 
 [FUNCTION]
 <ONLY the requested function implementation — nothing else>
@@ -130,6 +134,7 @@ def get_local_llm() -> BaseChatModel:
         base_url=base_url,
         api_key="lm-studio", # Required by the class, but ignored by local servers
         temperature=0.2,
+        callbacks=[StdOutCallbackHandler()] # This prints the execution flow to console
     )
 
 
@@ -149,6 +154,7 @@ def get_cloud_llm() -> BaseChatModel:
             model=model,
             google_api_key=api_key,
             temperature=0.2,
+            callbacks=[StdOutCallbackHandler()] # This prints the execution flow to console
         )
     else:
         # OpenRouter via OpenAI-compatible API
@@ -164,6 +170,7 @@ def get_cloud_llm() -> BaseChatModel:
             openai_api_key=api_key,
             openai_api_base="https://openrouter.ai/api/v1",
             temperature=0.2,
+            callbacks=[StdOutCallbackHandler()]
         )
 
 
@@ -542,7 +549,9 @@ def build_refactor_prompt(state: dict) -> str:
 
     sections.append(
         "\n## Instruction\n"
-        f"You MUST respond with FOUR sections using these exact markers:\n\n"
+        f"You MUST respond with FIVE sections using these exact markers:\n\n"
+        f"[EXPLANATION]\n"
+        f"A brief summary of your changes.\n\n"
         f"[FUNCTION]\n"
         f"ONLY the implementation of `{state['function_name']}`. "
         f"Do NOT implement any other functions. Do NOT include #include directives.\n\n"
@@ -578,15 +587,13 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
 
     from langchain_core.messages import SystemMessage, HumanMessage
 
-    print(f"[LLM] {'='*60}")
-    print(f"[LLM] SYSTEM PROMPT ({len(SYSTEM_PROMPT)} chars):")
-    print(f"[LLM] {'='*60}")
-    print(SYSTEM_PROMPT)
-    print(f"[LLM] {'='*60}")
-    print(f"[LLM] USER PROMPT ({len(user_prompt)} chars):")
-    print(f"[LLM] {'='*60}")
-    print(user_prompt)
-    print(f"[LLM] {'='*60}")
+    if state.get("debug"):
+        print(f"[LLM] {'='*60}")
+        print(f"[LLM] USER PROMPT ({len(user_prompt)} chars):")
+        print(f"[LLM] {'='*60}")
+        print(user_prompt)
+        print(f"[LLM] {'='*60}")
+
     print(f"[LLM] Invoking {tier} LLM...")
 
     messages = [
@@ -600,13 +607,13 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
     # Parse structured response into sections
     result = parse_llm_response(raw)
 
-    return result, tier
+    return result, tier, user_prompt, raw
 
 
 def parse_llm_response(raw: str) -> dict:
     """Parse the LLM's structured response into sections.
 
-    Returns dict with keys: 'function', 'updates', 'header', 'externs'
+    Returns dict with keys: 'function', 'updates', 'header', 'externs', 'explanation'
     'updates' is a list of {'type_name': str, 'definition': str} dicts.
     """
     import re
@@ -620,11 +627,12 @@ def parse_llm_response(raw: str) -> dict:
             lines = lines[1:]
         raw = "\n".join(lines)
 
-    result = {"function": "", "updates": [], "header": "", "externs": ""}
+    result = {"function": "", "updates": [], "header": "", "externs": "", "explanation": ""}
 
     # Try to parse structured sections using markers
     if "[FUNCTION]" in raw:
         markers = [
+            ("[EXPLANATION]", "explanation"),
             ("[FUNCTION]", "function"),
             ("[UPDATES]", "_updates_raw"),
             ("[HEADER]", "header"),
@@ -654,6 +662,7 @@ def parse_llm_response(raw: str) -> dict:
         result["function"] = _clean_code_block(raw_sections.get("function", ""))
         result["header"] = _clean_code_block(raw_sections.get("header", ""))
         result["externs"] = _clean_code_block(raw_sections.get("externs", ""))
+        result["explanation"] = raw_sections.get("explanation", "").strip()
 
         # Parse [UPDATES] section: extract @@@ TypeName / @@@ END blocks
         updates_raw = raw_sections.get("_updates_raw", "")
@@ -702,7 +711,8 @@ def _parse_update_blocks(text: str) -> list:
 def _clean_code_block(text: str) -> str:
     """Clean a code block: strip fences, whitespace, and filter out natural language."""
     text = text.strip()
-    # Remove markdown code fences if present
+    # Remove markdown code fences if present (robust version)
+    # First, try to strip them from the start and end
     if text.startswith("```"):
         lines = text.split("\n")
         if lines[-1].strip() == "```":
@@ -710,6 +720,9 @@ def _clean_code_block(text: str) -> str:
         elif lines[0].strip().startswith("```"):
             lines = lines[1:]
         text = "\n".join(lines).strip()
+    
+    # Finally, remove any stray backticks that might have leaked in
+    text = text.replace("```", "").strip()
 
     # Detect natural language responses that aren't code
     # Common LLM responses when no changes are needed

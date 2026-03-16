@@ -69,7 +69,28 @@ labels will mismatch. Order your constant references to match the assembly.
 
 ### Casting and Sign Extension
 Use explicit casts to match `extsh` (sign-extend halfword) and `extsb` (sign-extend byte).
-Ensure `lwz` vs `lhz` vs `lbz` matches your struct field types (u32 vs u16 vs u8)."""
+Ensure `lwz` vs `lhz` vs `lbz` matches your struct field types (u32 vs u16 vs u8).
+
+### C89 Variable Declarations
+The compiler (Metrowerks CodeWarrior) is extremely strict about C89 rules.
+CRITICAL: You MUST declare ALL variables at the very BEGINNING of a block (`{ ... }`), before any other code or statements (like `if`, `memcpy`, or assignments).
+Failure to do this will cause an "expression syntax error".
+INCORRECT:
+```c
+void func() {
+    int a;
+    a = 5;
+    int b; // SYNTAX ERROR: declaration after assignment
+}
+```
+CORRECT:
+```c
+void func() {
+    int a;
+    int b; // Both at top
+    a = 5;
+}
+```"""
 
 CODE_RULES = """\
 - NEVER use pointer arithmetic with manual offsets. Always define proper structs.
@@ -77,7 +98,9 @@ CODE_RULES = """\
 - All struct field accesses must use `->` or `.` operators.
 - When you see `*(type*)((u8*)ptr + 0xNN)`, create a struct with a field at that offset.
 - Use `u8 _pad[0xNN];` for unknown fields between known offsets.
-- Check the existing header file for the source file — structs may already be defined."""
+- Check the existing header file for the source file — structs may already be defined.
+- ADD PROTOTYPES: If you call a function (like `_OSAllocFromHeap` or `void* memcpy`) that is not in the provided headers, you MUST add its prototype to the [HEADER] or [EXTERNS] section.
+- ALWAYS use project types (`u32`, `s16`, `f32`, etc.) instead of standard `long`, `short`, `float`."""
 
 TYPES_REFERENCE = """\
 ```c

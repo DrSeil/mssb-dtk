@@ -9,6 +9,7 @@ class AttemptRecord(TypedDict):
     c_code: str           # The C code that was tried
     match_percent: float  # Score achieved (0.0 – 100.0)
     feedback: str         # Instruction-level diff from objdiff
+    current_asm: str      # Compiled assembly for this attempt
     build_error: str      # Compiler errors (empty string on success)
 
 
@@ -47,3 +48,11 @@ class DecompState(TypedDict):
     iterations: int             # loop counter
     status: str                 # "running" | "matched" | "failed" | "error"
     llm_tier: str               # "local" | "cloud"
+    debug: bool                 # True for verbose logging
+    verbose: bool               # True for extra detail
+
+    # --- Attempt-specific details (for logging/prompting) ---
+    explanation: str            # latest LLM explanation of changes
+    last_prompt: str            # the full prompt sent to the LLM
+    last_raw_response: str      # the unparsed LLM response
+    current_asm: str            # latest compiled assembly for current C code

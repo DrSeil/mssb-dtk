@@ -155,6 +155,12 @@ def main():
         "iterations": 0,
         "status": "running",
         "llm_tier": "local",
+        "debug": args.debug,
+        "verbose": args.verbose,
+        "explanation": "",
+        "last_prompt": "",
+        "last_raw_response": "",
+        "current_asm": "",
     }
 
     # Run the graph
