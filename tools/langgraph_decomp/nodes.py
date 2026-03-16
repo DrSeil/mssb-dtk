@@ -682,9 +682,37 @@ def committer_node(state):
             "feedback": f"Could not find source path for {unit_name}",
         }
 
+    header_path = source_path.replace('src/', 'include/').replace('.c', '.h')
+    externs_path = "include/UnknownHeaders.h"
+
     success = _commit_code_to_source(source_path, func_name, current_code)
 
     if success:
+        # Apply struct updates permanently
+        struct_updates = state.get("struct_updates", [])
+        if struct_updates:
+            for upd in struct_updates:
+                type_name = upd["type_name"]
+                new_def = upd["definition"]
+                print(f"[committer] Permanently applying struct update for {type_name}")
+                updated = _apply_struct_update(type_name, new_def)
+                if updated:
+                    print(f"[committer] Updated {type_name} in {updated}")
+                else:
+                    print(f"[committer] WARNING: Could not find {type_name} to update")
+
+        # Apply header additions
+        headers = state.get("local_headers", "")
+        if headers and headers.strip():
+            print(f"[committer] Permanently applying header additions to {header_path}")
+            _append_to_file_if_missing(header_path, headers)
+
+        # Apply extern additions
+        externs = state.get("externs", "")
+        if externs and externs.strip():
+            print(f"[committer] Permanently applying extern additions to {externs_path}")
+            _append_to_file_if_missing(externs_path, externs)
+
         # Rebuild to make sure it sticks
         subprocess.run(
             ["ninja"], capture_output=True, text=True, timeout=120,
