@@ -110,8 +110,12 @@ STRUCT MODIFICATION RULES:
 - Use padding arrays like `u8 _padXX[size]` for gaps between known fields.
 - If the assembly accesses offset 0x714 as a u32, but the struct only goes to 0x710,
   add fields to fill the gap.
-- Put NEW struct/typedef definitions in the [HEADER] section.
-- Put UPDATED existing struct/typedef definitions in the [UPDATES] section.
+- Put NEW struct/typedef definitions or NEW function prototypes in the [HEADER] section. 
+  Use standard C syntax. Do NOT use @@@ markers here.
+- Put UPDATED existing struct/typedef definitions in the [UPDATES] section ONLY. 
+  You MUST use the @@@ TypeName ... @@@ END syntax here.
+- Put NEW extern declarations (like `extern s32 lbl_3_data_BF6C;`) in the [EXTERNS] section.
+  Use standard C syntax. Do NOT use @@@ markers here.
 """
 
 
@@ -307,12 +311,14 @@ def resolve_symbol_definitions(state: dict) -> str:
         except Exception:
             pass
 
-    # Search for each symbol across both include/ and src/
+    # Track which symbols are found
+    resolved_symbols = set()
     found_files = {}  # symbol -> file it was found in
 
     for sym in symbols:
         lines = _grep_symbol(sym, file_extensions=["*.h"])
         if lines:
+            resolved_symbols.add(sym)
             for line in lines:
                 if ':' in line:
                     filepath = line.split(':')[0]
@@ -332,6 +338,16 @@ def resolve_symbol_definitions(state: dict) -> str:
                                 's32', 's64', 'f32', 'f64', 'BOOL'):
                                 types_to_resolve.add(base)
                     break
+        else:
+            # Try searching .c files too for non-static symbols
+            lines = _grep_symbol(sym, file_extensions=["*.c"])
+            if lines:
+                for line in lines:
+                    if 'static' not in line and sym in line:
+                        resolved_symbols.add(sym)
+                        break
+
+    # For each type that needs resolution, extract its full struct definition
 
     # For each type that needs resolution, extract its full struct definition
     resolved_defs = []  # (file, definition_text) pairs
@@ -406,6 +422,12 @@ def resolve_symbol_definitions(state: dict) -> str:
             seen.add(key)
             unique_defs.append((filepath, defn))
 
+    # Create a mapping of found files for grouping
+    by_file = {}
+    for filepath, defn in unique_defs:
+        rel = os.path.relpath(filepath, _root_dir)
+        by_file.setdefault(rel, []).append(defn)
+
     # Format output
     sections = ["## Existing Definitions from Codebase\n"]
     sections.append(
@@ -415,18 +437,35 @@ def resolve_symbol_definitions(state: dict) -> str:
         "they already exist in the code.\n"
     )
 
-    # Group by file
-    by_file = {}
-    for filepath, defn in unique_defs:
-        rel = os.path.relpath(filepath, _root_dir)
-        by_file.setdefault(rel, []).append(defn)
-
     for rel_path, defs in by_file.items():
         sections.append(f"### From `{rel_path}`\n")
         sections.append("```c")
         for d in defs:
             sections.append(d)
         sections.append("```\n")
+
+    # Add a section for types/symbols that could NOT be resolved
+    unknown_types = types_to_resolve - resolved_types
+    unknown_symbols = symbols - resolved_symbols
+    
+    if unknown_types or unknown_symbols:
+        sections.append("## Unknown Types/Symbols (You MUST define these)\n")
+        sections.append(
+            "The following were referenced but NO definition was found in the codebase. "
+            "You MUST provide a definition or extern declaration for these if you use them.\n"
+        )
+        if unknown_types:
+            sections.append("### Unknown Types (Define in [HEADER] or [UPDATES])")
+            for t in sorted(list(unknown_types)):
+                sections.append(f"- `{t}`")
+        if unknown_symbols:
+            sections.append("\n### Unknown Symbols (Declare in [EXTERNS] or provide in [FUNCTION])")
+            for s in sorted(list(unknown_symbols)):
+                # Skip the function itself
+                if s == state.get("func_name"):
+                    continue
+                sections.append(f"- `{s}`")
+        sections.append("\n")
 
     return "\n".join(sections)
 
@@ -601,8 +640,13 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
         HumanMessage(content=user_prompt),
     ]
 
-    response = llm.invoke(messages)
-    raw = response.content.strip()
+    full_response = ""
+    for chunk in llm.stream(messages):
+        content = chunk.content
+        full_response += content
+        print(content, end="", flush=True)
+    print() # Final newline after streaming
+    raw = full_response.strip()
 
     # Parse structured response into sections
     result = parse_llm_response(raw)
@@ -685,7 +729,8 @@ def _parse_update_blocks(text: str) -> list:
 
     # Find all @@@ TypeName ... @@@ END blocks
     # Pattern: @@@ followed by a type name, then content, then @@@ END
-    pattern = r'@@@\s+(\w+)\s*\n(.*?)@@@\s*END'
+    # Use [\r\n]+ to be robust against line endings
+    pattern = r'@@@\s*(\w+)\s*[\r\n]+(.*?)@@@\s*END'
     for match in re.finditer(pattern, text, re.DOTALL):
         type_name = match.group(1).strip()
         definition = match.group(2).strip()

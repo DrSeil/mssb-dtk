@@ -462,17 +462,41 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 if updated:
                     print(f"[builder] Updated {type_name} in {updated}")
                 else:
-                    print(f"[builder] WARNING: Could not find {type_name} to update")
+                    # FALLBACK: If update failed (type not found), add it to the primary header
+                    print(f"[builder] WARNING: Could not find {type_name} to update, adding to {header_path}")
+                    _append_to_file_if_missing(header_path, new_def, backups)
 
         # Apply header additions (prototypes, struct defs)
         if headers and headers.strip():
             print(f"[builder] Applying header additions to {header_path}")
-            _append_to_file_if_missing(header_path, headers)
+            for line in headers.strip().splitlines():
+                line = line.strip()
+                if not line or line.startswith("//") or line.startswith("/*"):
+                    continue
+                # If it's an extern, handle it globally
+                match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
+                if match:
+                    symbol_name = match.group(2).strip()
+                    _add_or_update_extern(symbol_name, line, header_path, backups)
+                else:
+                    _append_to_file_if_missing(header_path, line, backups)
 
         # Apply extern additions
         if externs and externs.strip():
-            print(f"[builder] Applying extern additions to {externs_path}")
-            _append_to_file_if_missing(externs_path, externs)
+            print(f"[builder] Applying extern additions/updates")
+            for line in externs.strip().splitlines():
+                line = line.strip()
+                if not line or line.startswith("//") or line.startswith("/*"):
+                    continue
+                # Extract symbol name from extern declaration
+                # Pattern: extern Type Symbol; or extern Type Symbol[];
+                match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
+                if match:
+                    symbol_name = match.group(2).strip()
+                    _add_or_update_extern(symbol_name, line, externs_path, backups)
+                else:
+                    # Fallback for complex lines
+                    _append_to_file_if_missing(externs_path, line, backups)
 
         # Build
         build_proc = subprocess.run(
@@ -575,7 +599,34 @@ def _resolve_source_path(unit_name):
     parts = unit_name.split('/')
     if len(parts) > 1:
         return os.path.join(_root_dir, f"src/{'/'.join(parts[1:])}.c")
-    return None
+
+
+def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=None):
+    """Find an existing extern for a symbol and update it, or add to default_path."""
+    include_dir = os.path.join(_root_dir, "include")
+    
+    # Search for an existing extern declaration in any header
+    try:
+        # Grep for 'extern ... symbol_name ... ;'
+        # We use a pattern that matches 'extern' and then the symbol name followed by optional array/semicolon
+        pattern = rf'extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
+        result = subprocess.run(
+            ["grep", "-rln", "--include=*.h", pattern, include_dir],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.stdout:
+            for filepath in result.stdout.strip().splitlines():
+                filepath = filepath.strip()
+                if not filepath or not os.path.exists(filepath):
+                    continue
+                print(f"[builder] Updating extern {symbol_name} in {os.path.basename(filepath)}")
+                _append_to_file_if_missing(filepath, new_declaration, backups)
+            return
+    except Exception as e:
+        print(f"[builder] Warning during extern search: {e}")
+
+    # Not found, add to default path
+    _append_to_file_if_missing(default_path, new_declaration, backups)
 
 
 def _commit_code_to_source(src_path, func_name, c_code):
@@ -609,10 +660,10 @@ def _commit_code_to_source(src_path, func_name, c_code):
     return True
 
 
-def _append_to_file_if_missing(file_path, new_lines_text):
+def _append_to_file_if_missing(file_path, headers, backups=None):
     """Append lines to a file if they are not already present.
 
-    Each line from new_lines_text is checked individually.
+    Each line from headers is checked individually.
     Only lines not already in the file are appended.
     """
     file_path = os.path.join(_root_dir, file_path) if not os.path.isabs(file_path) else file_path
@@ -626,15 +677,44 @@ def _append_to_file_if_missing(file_path, new_lines_text):
         existing_content = f.read()
 
     lines_to_add = []
-    for line in new_lines_text.strip().splitlines():
-        stripped = line.strip()
-        if not stripped:
+    for line in headers.strip().splitlines():
+        line = line.strip()
+        if not line:
             continue
         # Skip comments
-        if stripped.startswith("//") or stripped.startswith("/*"):
+        if line.startswith("//") or line.startswith("/*"):
             continue
-        # Check if this declaration already exists (ignoring whitespace)
-        if stripped in existing_content:
+
+        # Detect extern redefinitions
+        # Pattern: extern Type Symbol; or extern Type Symbol[];
+        extern_match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
+        if extern_match:
+            new_type = extern_match.group(1).strip()
+            symbol_name = extern_match.group(2).strip()
+
+            # Search existing content for this symbol name
+            # Pattern: extern ... Symbol ... ;
+            # Use a regex that is slightly more robust than simple string search
+            existing_extern_pattern = rf'(?m)^extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
+            existing_match = re.search(existing_extern_pattern, existing_content)
+
+            if existing_match:
+                existing_line = existing_match.group(0)
+                # If the line is exactly the same, skip adding it
+                if existing_line.strip() == line:
+                    continue
+
+                # If the symbol matches but the line is different (different type/array), replace it
+                print(f"[builder] Redefining {symbol_name} in {os.path.basename(file_path)}")
+                existing_content = (
+                    existing_content[:existing_match.start()]
+                    + line
+                    + existing_content[existing_match.end():]
+                )
+                continue
+
+        # Check if this exact line already exists
+        if line in existing_content:
             continue
         lines_to_add.append(line)
 
@@ -646,7 +726,7 @@ def _append_to_file_if_missing(file_path, new_lines_text):
             last_endif = existing_content.rfind("#endif")
             new_content = (
                 existing_content[:last_endif]
-                + "\n".join(lines_to_add) + "\n\n"
+                + "\n" + "\n".join(lines_to_add) + "\n\n"
                 + existing_content[last_endif:]
             )
         else:
@@ -656,6 +736,10 @@ def _append_to_file_if_missing(file_path, new_lines_text):
             f.write(new_content)
 
         print(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
+    elif existing_content != (backups.get(file_path) if backups else None):
+        # If we replaced lines but didn't add any new ones, we still need to write
+        with open(file_path, "w") as f:
+            f.write(existing_content)
     else:
         print(f"[builder] No new lines to add to {os.path.basename(file_path)}")
 
@@ -687,6 +771,7 @@ def _apply_struct_update(type_name, new_definition, backups=None):
         return None
 
     if not result.stdout:
+        print(f"[builder] Struct {type_name} not found, treating as a new addition")
         return None
 
     # Try each matching file

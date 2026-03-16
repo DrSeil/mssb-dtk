@@ -3,6 +3,31 @@
 from typing import Annotated, TypedDict, List, Optional
 from langgraph.graph.message import add_messages
 
+def merge_struct_updates(old: list, new: list) -> list:
+    """Merge struct updates by type_name, latest wins."""
+    if not old: old = []
+    if not new: return old
+    # Create a dict keyed by type_name to handle updates
+    updates_dict = {u['type_name']: u for u in old}
+    for u in new:
+        updates_dict[u['type_name']] = u
+    return list(updates_dict.values())
+
+def merge_unique_lines(old: str, new: str) -> str:
+    """Merge multi-line strings, keeping only unique lines."""
+    if not old: old = ""
+    if not new: return old
+    old_lines = [l.strip() for l in old.splitlines() if l.strip()]
+    new_lines = [l.strip() for l in new.splitlines() if l.strip()]
+    
+    seen = set(old_lines)
+    result = list(old_lines)
+    for line in new_lines:
+        if line not in seen:
+            result.append(line)
+            seen.add(line)
+    return "\n".join(result)
+
 
 class AttemptRecord(TypedDict):
     """One iteration's code + result, so the LLM can see its history."""
@@ -28,8 +53,8 @@ class DecompState(TypedDict):
 
     # --- Code being iterated ---
     current_c_code: str         # latest C code attempt
-    externs: str                # extern declarations extracted from m2c
-    local_headers: str          # local header additions from m2c
+    externs: Annotated[str, merge_unique_lines]                # extern declarations
+    local_headers: Annotated[str, merge_unique_lines]          # local header additions
 
     # --- Reference material ---
     m2c_output: str             # initial M2C skeleton
@@ -56,3 +81,4 @@ class DecompState(TypedDict):
     last_prompt: str            # the full prompt sent to the LLM
     last_raw_response: str      # the unparsed LLM response
     current_asm: str            # latest compiled assembly for current C code
+    struct_updates: Annotated[List[dict], merge_struct_updates]  # list of {'type_name': str, 'definition': str}

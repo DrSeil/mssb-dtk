@@ -145,6 +145,7 @@ def main():
         "current_c_code": "",
         "externs": "",
         "local_headers": "",
+        "struct_updates": [],
         "m2c_output": "",
         "ghidra_output": "",
         "feedback": "",
