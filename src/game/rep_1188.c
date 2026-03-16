@@ -4,7 +4,6 @@
 #include "game/UnknownHomes_Game.h"
 #include "static/UnknownHomes_Static.h"
 
-extern u8 aILevel[4];
 // .text:0x0006D6D4 size:0x290 mapped:0x806AC768
 void fn_3_6D6D4(void) {
     return;

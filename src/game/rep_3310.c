@@ -2,8 +2,6 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
-extern f32 lbl_3_data_2262C;
-
 // .text:0x00116840 size:0x190 mapped:0x807558D4
 void fn_3_116840(void) {
     return;
@@ -149,8 +147,6 @@ void fn_3_1194AC(void) {
 void fn_3_1194FC(void) {
     return;
 }
-
-extern f32 lbl_3_data_22650[];
 
 // .text:0x00119854 size:0x24 mapped:0x807588E8
 // Register Mismatch

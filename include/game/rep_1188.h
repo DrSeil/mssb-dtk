@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 
+extern u8 aILevel[4];
+
 void fn_3_6D6D4(void);
 void fn_3_6D964(void);
 void setInMemBatterConstants(int rosterID);

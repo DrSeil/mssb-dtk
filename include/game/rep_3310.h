@@ -4,6 +4,8 @@
 #include "mssbTypes.h"
 #include "game/rep_37A8.h"
 
+extern f32 lbl_3_data_2262C;
+extern f32 lbl_3_data_22650[];
 void fn_3_116840(void);
 void fn_3_1169D0(void);
 void fn_3_116B38(void);

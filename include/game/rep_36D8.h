@@ -11,6 +11,7 @@ typedef struct unk_13d5e8_struct {
 } unk_13d5e8_struct;
 
 s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
+extern f32 lbl_3_rodata_3728;
 void fn_3_13D618(void);
 s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
 void fn_3_13DA50(void);

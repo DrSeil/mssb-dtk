@@ -11,8 +11,6 @@ void fn_3_13D578(void) {
     return;
 }
 
-extern f32 lbl_3_rodata_3728;
-
 // .text:0x0013D5E8 size:0x30 mapped:0x8077C67C
 //Two instructions swapped order
 s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {
@@ -37,9 +35,6 @@ f32 scale;
 void fn_3_13D618(void) {
     return;
 }
-
-// .text:0x0013DA20 size:0x30 mapped:0x8077CAB4
-extern f32 lbl_3_rodata_3728;
 
 // .text:0x0013DA20 size:0x30 mapped:0x8077CAB4
 // Same issue as fn_3_13D5E8.

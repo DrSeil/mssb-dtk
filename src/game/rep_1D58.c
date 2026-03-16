@@ -3,7 +3,7 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
-extern u8 lbl_3_data_11168[16];
+
 
 static struct StadiumObject* lbl_3_bss_190C;
 static u8 lbl_3_bss_1902;
@@ -223,7 +223,7 @@ void fn_3_B97C8(struct StadiumObject* arg0) {
 }
 
 // .text:0x000B97DC size:0x10C mapped:0x806F8870
-extern void fn_3_B97DC(s32 arg0, s32 arg1){
+void fn_3_B97DC(s32 arg0, s32 arg1) {
     return;
 }
 

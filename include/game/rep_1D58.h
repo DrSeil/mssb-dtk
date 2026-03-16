@@ -6,6 +6,8 @@
 
 typedef struct StadiumObject StadiumObject;
 
+extern u8 lbl_3_data_11168[16];
+
 
 void fn_3_B7FC8(void);
 void fn_3_B80D0(void);

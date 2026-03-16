@@ -90,9 +90,7 @@ void fn_3_A36BC(void) {
 // .text:0x000A372C size:0x3C mapped:0x806E27C0
 
 #include "types.h"
-
-extern InMemBallType g_Ball;
-extern f32 lbl_3_rodata_1998;
+#include "game/UnknownHomes_Game.h"
 
 /**
  * @address 000A372C

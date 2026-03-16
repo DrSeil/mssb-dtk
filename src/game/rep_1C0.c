@@ -1,9 +1,6 @@
 #include "game/rep_1C0.h"
 #include "header_rep_data.h"
 
-extern u8 lbl_803CBBC0;
-extern struct LBL_3_DATA_A10* lbl_3_data_A10[2];
-extern void fn_80052694(struct Fn_80052694_Arg*);
 
 static struct FanObject* lbl_3_bss_18[6];
 
@@ -78,10 +75,6 @@ void fn_3_5BAC(void) {
 }
 
 // .text:0x00005BCC size:0x24 mapped:0x80644C60
-typedef struct Fn3_5BCCArg {
-    u8 _pad[0x8];
-    struct Fn_80052694_Arg* unk_0x8;
-} Fn3_5BCCArg;
 
 void fn_3_5BCC(Fn3_5BCCArg* arg0) {
     Fn3_5BCCArg* s = arg0;

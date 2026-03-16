@@ -6,8 +6,15 @@
 typedef struct FanObject FanObject;
 typedef struct LBL_3_DATA_A10 LBL_3_DATA_A10;
 typedef struct Fn_80052694_Arg Fn_80052694_Arg;
-typedef struct Fn3_5BCCArg Fn3_5BCCArg;
-struct Fn3_5BCCArg;
+
+typedef struct Fn3_5BCCArg {
+    u8 _pad[0x8];
+    struct Fn_80052694_Arg* unk_0x8;
+} Fn3_5BCCArg;
+
+extern u8 lbl_803CBBC0;
+extern struct LBL_3_DATA_A10* lbl_3_data_A10[2];
+extern void fn_80052694(struct Fn_80052694_Arg*);
 
 struct FanObject* setFanObjPtr(void);
 void fn_3_35E4(struct FanObject* arg0);
