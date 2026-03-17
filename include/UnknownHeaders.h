@@ -377,21 +377,20 @@ void fn_800BD670(s32 fieldVal, s32 arg1, hugeAnimStruct* globalPtr);
 extern f32 lbl_3_rodata_1414;
 
 typedef struct UnknownStruct_350E4 {
-    /* 0x00 */ void* src;           // lwz r4, 0x00(r4)
-    /* 0x04 */ void* dest;          // lwz r3, 0x04(r4)
-    /* 0x08 */ u8 _pad_new[0x30 - 0x08];
-    /* 0x30 */ u32 memcpyCount;     // lwz r0, 0x30(r4)
-    /* 0x34 */ u8 _pad_new2[0x3C - 0x34];
-    /* 0x3C */ u32* unk3C;         /* 0x3C - Pointer to u32 array */
-    /* 0x40 */ u16* unk40;         /* 0x40 - Pointer to u16 array */
-    /* 0x44 */ u32* unk44;         /* 0x44 - Pointer to u32 array base */
-    /* 0x48 */ u8 _pad1[0x66 - 0x48];
-    /* 0x66 */ s16 unk66;           // lha r0, 0x66(r3)
-    /* 0x68 */ s16 unk68;           // sth r0, 0x68(r3)
-    /* 0x6A */ u8 _pad_6A[0x6C - 0x6A];
-    /* 0x6C */ u8 unk6C;           /* 0x6C */
-    /* 0x6D */ u8 _pad2[0xC0 - 0x6D];
-    /* 0x sample C0 */ u8 targetByte;      /* 0xC0 */
+    /* 0x000 */ void* src;
+    /* 0x004 */ void* dest;
+    /* 0x008 */ u8 _pad_0x8[0x28];
+    /* 0x030 */ u32 memcpyCount;
+    /* 0x034 */ u8 _pad_0x34[0x8];
+    /* 0x03C */ u32* unk3C;
+    /* 0x040 */ u16* unk40;
+    /* 0x044 */ u32* unk44;
+    /* 0x048 */ VecXYZ* unk48;
+    /* 0x04C */ u8 _pad_0x4c[0x1A];
+    /* 0x066 */ s16 unk66;
+    /* 0x068 */ s16 unk68;
+    /* 0x06A */ u8 _pad_0x6a[0x2];
+    /* 0x06C */ u8 unk6C;
 } UnknownStruct_350E4;
 
 extern UnknownStruct_350E4 lbl_3_common_bss_350E4[];

@@ -106,8 +106,15 @@ u32 fn_3_B85A8(s32 index, u32* outPtr) {
 }
 
 // .text:0x000B85DC size:0x7C mapped:0x806F7670
-void fn_3_B85DC(void) {
-    return;
+
+void fn_3_B85DC(s32 index, void* dest, void* src2, void* src) {
+    UnknownStruct_350E4* base = &lbl_3_common_bss_350E4[0];
+    u32 offset1 = index * 0x18;
+    u32 offset2 = (index << 1) + 1;
+    offset2 *= 0x0C;
+    
+    memcpy(dest, (u8*)base->unk48 + offset1, 0x0C);
+    memcpy(src2, (u8*)base->unk48 + offset2, 0x0C);
 }
 
 // .text:0x000B8658 size:0x24 mapped:0x806F76EC
