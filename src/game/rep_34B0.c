@@ -78,8 +78,15 @@ void fn_3_1307D0(void) {
 }
 
 // .text:0x00130A80 size:0x4C mapped:0x8076FB14
+
+
+
 void fn_3_130A80(void) {
-    return;
+    g_Minigame.bB_bombBarrelID = -1;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+    fn_3_5A6D4(8);
 }
 
 // .text:0x00130ACC size:0x1A0 mapped:0x8076FB60
