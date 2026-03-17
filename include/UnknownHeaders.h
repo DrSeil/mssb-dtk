@@ -639,4 +639,5 @@ s32 val4; // 0x10
 s32 val5; // 0x14
 } GameStateBss;
 extern GameStateBss lbl_3_bss_D6F0;
+extern f32 lbl_3_rodata_B20;
 #endif

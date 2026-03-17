@@ -578,8 +578,23 @@ void fn_3_3C1A8(void) {
 }
 
 // .text:0x0003C220 size:0x50 mapped:0x8067B2B4
-void fn_3_3C220(void) {
-    return;
+
+
+void fn_3_3C220(s32 index) {
+    // 1. Force mulli r5, r3, 0x268 by calculating the offset first
+    s32 offset = index * 0x268; 
+    
+    // 2. Define r31 as the base address + the pre-calculated offset
+    // This anchors r31 and forces the lis r4 / addi r0 sequence for g_Fielders
+    Fielder* fielder = (Fielder*)((u8*)g_Fielders + offset);
+    
+    // fn_3_53130 returns an int in r3, which is then used by cmpwi
+    if (fn_3_53130(index) == 0) {
+        // Use a local to ensure a single lfs f0 is used for both stores
+        f32 val = lbl_3_rodata_B20;
+        fielder->unk50 = val;
+        fielder->unk68 = val;
+    }
 }
 
 // .text:0x0003C270 size:0x214 mapped:0x8067B304
@@ -1033,7 +1048,7 @@ void fn_3_530EC(int index) {
 }
 
 // .text:0x00053130 size:0x5FC mapped:0x806921C4
-void fn_3_53130(void) {
+int fn_3_53130(s32 temp) {
     return;
 }
 
