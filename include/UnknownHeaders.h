@@ -58,6 +58,33 @@ typedef struct unkAnimSubstruct {
     /* 0xD1 */ u8    field16_0xd1;
 } unkAnimSubstruct; /* size: 0xD2 */
 
+typedef struct AnimLevel4 {
+    u8 _pad[0x20];
+    s16 field_0x20;
+} AnimLevel4;
+
+typedef struct AnimLevel3 {
+    u8 _pad[0x0C];
+    AnimLevel4* ptr0C;
+} AnimLevel3;
+
+typedef struct AnimLevel2 {
+    u8 _pad[0x08];
+    AnimLevel3* ptr08;
+} AnimLevel2;
+
+
+
+typedef struct AnimLevel1 {
+    u8 _pad0[0x14]; // Padding to reach the 0x90-0xC0 block
+    AnimLevel2* ptr14; // Targeted by lwz r3, 0x14(r3)
+    u8 _pad1[0x90 - 0x18]; // Padding to reach the 0x90-0xC0 block
+    /* 0x90 */ void* field7_0x90;     // First pointer at 0x90
+    /* 0x94 */ void* field7_0x94;     // Second pointer at 0x94
+    /* 0x98 */ u8    animFlags;       // Offset 0x98 - Target for lbz
+    /* 0x99 */ u8    _pad2[0xD2 - 0x99]; // Padding to complete the struct size of 0xD2
+} AnimLevel1; 
+
 typedef struct HugeAnimEntry2D94 {
     // Not confident of these
     /* 0x00 */ void* stadiumFileHeaderPointer;
@@ -73,7 +100,7 @@ typedef struct HugeAnimEntry2D94 {
 } HugeAnimEntry2D94;
 typedef struct HugeAnimEntry68 {
     u8 _pad0[0x34];
-    unkAnimSubstruct* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
+    AnimLevel1* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
     u8 _pad1[0x58]; // (0x90 - 0x38) bytes to make the struct size exactly 0x90
 } HugeAnimEntry68;
 
@@ -455,7 +482,7 @@ extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
 extern void fn_3_5A6D4(s32);
-extern f32 fn_800B4A94(unkAnimSubstruct* arg0, hugeAnimStruct* arg1);
+extern f32 fn_800B4A94(AnimLevel1* arg0, hugeAnimStruct* arg1);
 typedef struct Struct_14D6D4_Node {
 struct Struct_14D6D4_Node* next; // 0x00
 u8 _pad0[0x40];                  // Padding to 0x44

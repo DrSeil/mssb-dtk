@@ -111,8 +111,10 @@ void fn_3_11887C(void) {
 }
 
 // .text:0x0011897C size:0x4C mapped:0x80757A10
-void fn_3_11897C(void) {
-    return;
+
+void fn_3_11897C(s32 index) {
+    AnimLevel1* layer1 = (AnimLevel1*)(g_hugeAnimStruct.entries_68[index].unk34);
+    layer1->ptr14->ptr08->ptr0C->field_0x20 = (s16)lbl_3_data_22670[((u8*)&g_Minigame)[index * 0x38 - 0x1C44]];
 }
 
 // .text:0x001189C8 size:0x150 mapped:0x80757A5C

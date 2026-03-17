@@ -26,7 +26,7 @@ void fn_3_118614(void);
 void fn_3_11874C(void);
 void fn_3_11881C(void);
 void fn_3_11887C(void);
-void fn_3_11897C(void);
+void fn_3_11897C(s32 index);
 void fn_3_1189C8(void);
 void fn_3_118B18(void);
 void fn_3_1192B8(void);
@@ -62,4 +62,5 @@ void fn_3_11CF84(void);
 void fn_3_11D1B0(void);
 void fn_3_11D2C8(void);
 
+extern u8 lbl_3_data_22670[];
 #endif // !__GAME_rep_3310_H_
