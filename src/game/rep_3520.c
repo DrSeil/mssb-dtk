@@ -293,8 +293,17 @@ void fn_3_1391C0(void) {
 }
 
 // .text:0x00139700 size:0x4C mapped:0x80778794
+
+
+
 void fn_3_139700(void) {
-    return;
+    if ((u8) g_Minigame._B6C._40[0] != 0) {
+        if ((u8) g_Minigame.turnOverStatus != 0) {
+            g_Minigame._B6C._40[0] = 0;
+            return;
+        }
+        fn_3_1391C0();
+    }
 }
 
 // .text:0x0013974C size:0xBC mapped:0x807787E0
