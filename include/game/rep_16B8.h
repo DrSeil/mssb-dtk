@@ -48,4 +48,5 @@ void fn_3_9698C(void);
 void fn_3_96CA4(void);
 
 extern int lbl_3_data_F3F0;
+// No local headers needed.
 #endif // !__GAME_rep_16B8_H_

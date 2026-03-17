@@ -2450,11 +2450,12 @@ typedef struct Fielder {
     /* 0x068 */ f32 unk68;
     /* 0x06C */ u8 _pad1[0x1B6 - 0x6C];
     /* 0x1B6 */ s16 unk1B6;
-    /* 0x1B8 */ u8 _pad2[0x25B - 0x1B8];
+    /* 0x1B8 */ u8 _pad2[0x1C7 - 0x1B8];
+    /* 0x1C7 */ u8 unk1C7;
+    /* 0x1C8 */ u8 _pad3[0x25B - 0x1C8];
     /* 0x25B */ u8 unk_25B;
-    /* 0x25C */ u8 _pad3[0x42F - 0x25C]; // Extended padding to reach 0x42F
-    /* 0x42F */ u8 unk42F;               // This is the byte loaded into r9
-} Fielder;
+    /* 0x25C */ u8 _pad4[0x268 - 0x25C];
+    } Fielder; // sizeof == 0x268
 
 extern Fielder g_Fielders[];
 

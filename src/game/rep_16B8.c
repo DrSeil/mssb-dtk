@@ -34,8 +34,13 @@ void fn_3_91C70(void) {
 }
 
 // .text:0x00091CCC size:0x50 mapped:0x806D0D60
+
 void fn_3_91CCC(void) {
-    return;
+    void *drawingItem = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 || lbl_3_common_bss_32724.transitionToMenuAnimation != 0) {
+        fn_80034CEC((u32)drawingItem);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x00091D1C size:0x130 mapped:0x806D0DB0

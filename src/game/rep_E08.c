@@ -77,7 +77,7 @@ void fn_3_62E04(s32 index) {
 // .text:0x00062E28 size:0x48 mapped:0x806A1EBC
 
 void fn_3_62E28(void) {
-    AnimateCharacter(1, 0x3D, 1, 1, 1, 0, g_Fielders[0].unk42F, 0);
+    AnimateCharacter(1, 0x3D, 1, 1, 1, 0, g_Fielders[1].unk1C7, 0);
 }
 
 // .text:0x00062E70 size:0x33C mapped:0x806A1F04

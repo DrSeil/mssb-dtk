@@ -506,14 +506,17 @@ typedef struct CommonBss_32724 {
     /* 0x70 */ u8 _pad1[0x20];   // Pad to 0x90
     /* 0x90 */ s16 unk_90;
     /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u8 _pad2[0x15];
+    /* 0x94 */ u8 _pad2[0x2];
+    /* 0x96 */ u8 someStatusInd;
+    /* 0x97 */ u8 _pad3[0x12];
     /* 0xA9 */ u8 unk_A9;
-    /* 0xAA */ u8 _pad3[0x0B];
+    /* 0xAA */ u8 _pad4[0x0B];
     /* 0xB5 */ u8 unk_B5;
-    /* 0xB6 */ u8 _pad4[0x15];   // Pad to 0xCB (0xCB - 0xB6 = 0x15)
+    /* 0xB6 */ u8 _pad5[0x15];   // Pad to 0xCB (0xCB - 0xB6 = 0x15)
     /* 0xCB */ u8 flagCB;        // New flag
-    /* 0xCC */ u8 flagCC;        // New flag
-    /* 0xCD */ u8 _pad5[0x06];   // Pad to 0xD3 (0xD3 - 0xCD = 0x06)
+    /* 0xCC */ u8 flagCC;  
+    /* 0xCD */ u8 transitionToMenuAnimation;      // New flag
+    /* 0xCD */ u8 _pad6[0x05];   // Pad to 0xD3 (0xD3 - 0xCD = 0x06)
     /* 0xD3 */ u8 unk_D3;
     /* 0xD4 */ u8 someFlag;
 } CommonBss_32724;
@@ -640,4 +643,5 @@ s32 val5; // 0x14
 } GameStateBss;
 extern GameStateBss lbl_3_bss_D6F0;
 extern f32 lbl_3_rodata_B20;
+void fn_800B0A14_removeQueue(void);
 #endif
