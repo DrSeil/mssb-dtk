@@ -60,7 +60,7 @@ void fn_3_104740(void);
 void fn_3_1048E0(void);
 void fn_3_104A3C(Vec *dst, const Mtx44 mtx);
 void fn_3_104A88(Vec *dst, Mtx44 mtx);
-void fn_3_104AD4(void);
+void fn_3_104AD4(Vec *dst, Mtx44 mtx);
 void fn_3_104B20(VecXYZ* dst, SourceObj_104B20* src);
 void fn_3_104B3C(void);
 void fn_3_1054CC(void);
@@ -84,4 +84,5 @@ void fn_3_106BA0(void);
 // No local headers needed.
 /* --- The Function --- */
 extern Vec lbl_3_data_20FF8;
+extern Vec lbl_3_data_20FEC;
 #endif // !__GAME_rep_3090_H_

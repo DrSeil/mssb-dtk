@@ -211,8 +211,20 @@ void fn_3_104A88(Vec *dst, Mtx44 mtx) {
 }
 
 // .text:0x00104AD4 size:0x4C mapped:0x80743B68
-void fn_3_104AD4(void) {
-    return;
+
+
+
+void fn_3_104AD4(Vec *dst, Mtx44 mtx) {
+    // Register Steering: Assigning the input r3 to a local forces r31 usage
+    Vec *v = dst;
+
+    // Call results in: 
+    // r3 = mtx, r4 = &global, r5 = v (r31)
+    PSMTX44MultVec(mtx, &lbl_3_data_20FEC, v);
+
+    // Call results in:
+    // r3 = v (r31), r4 = v (r31)
+    PSVECNormalize(v, v);
 }
 
 // .text:0x00104B20 size:0x1C mapped:0x80743BB4
