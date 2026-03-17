@@ -19,6 +19,7 @@ import decomp_helper
 import gen_prompt
 import feedback_diff
 from . import struct_utils
+from .state import merge_unique_symbols
 
 
 # ---------------------------------------------------------------------------
@@ -263,6 +264,16 @@ def refactorer_node(state, escalate_after=5):
     print(f"[refactorer] === LLM FUNCTION ===")
     print(func_code)
     print(f"[refactorer] === END LLM FUNCTION ===")
+    
+    if len(func_code) < 10:
+        print("[refactorer] WARNING: LLM returned empty or trivial code.")
+        return {
+            "status": "error",
+            "feedback": "LLM returned empty or trivial code.",
+            "messages": [("ai", f"Iteration {iteration + 1}: LLM returned empty code.")],
+            "last_prompt": prompt,
+            "last_raw_response": raw_response,
+        }
     if struct_updates:
         print(f"[refactorer] === LLM STRUCT UPDATES ({len(struct_updates)}) ===")
         for upd in struct_updates:
@@ -306,8 +317,26 @@ def builder_node(state):
     unit_name = state["unit_name"]
     iteration = state.get("iterations", 0)
     current_code = state.get("current_c_code", "")
-
     print(f"[builder] Build + score iteration {iteration + 1} for {func_name}...")
+    
+    if not current_code or len(current_code.strip()) < 10:
+        _log = print
+        _log("[builder] Skipping build: current_c_code is empty or too short.")
+        return {
+            "status": "error",
+            "feedback": "LLM returned empty or incomplete code.",
+            "build_log": "Empty code - build skipped.",
+            "match_percent": 0.0,
+            "iterations": iteration + 1,
+            "attempts": state.get("attempts", []) + [{
+                "c_code": current_code,
+                "match_percent": 0.0,
+                "feedback": "Empty code",
+                "build_error": "Empty code",
+            }],
+            "status": "running",
+            "messages": [("ai", f"Iteration {iteration + 1}: LLM returned empty code.")],
+        }
 
     # Use the DecompOrchestrator from aidecomp for build-and-score
     # We import it here to avoid circular deps at module load
@@ -393,15 +422,16 @@ def builder_node(state):
     # Merge reactive fixes back into state so they persist
     fixes = result.get("fixes", [])
     if fixes:
+        new_local_headers = state.get("local_headers", "")
         for fix in fixes:
             if fix["type"] == "header_rectification":
                 # If it's the main header for this unit, add it to local_headers
-                # state.py:merge_unique_symbols will handle merging/replacing.
                 if fix["file"] == state.get("header_path") or os.path.basename(fix["file"]) == os.path.basename(state.get("header_path", "")):
-                    res["local_headers"] = fix["content"]
+                    new_local_headers = merge_unique_symbols(new_local_headers, fix["content"])
             elif fix["type"] == "missing_include":
                 # Missing includes in source go to local_headers too (M2C logic)
-                res["local_headers"] = fix["content"]
+                new_local_headers = merge_unique_symbols(new_local_headers, fix["content"])
+        res["local_headers"] = new_local_headers
 
     _write_attempt_log(state, attempt, iteration + 1)
 
@@ -607,7 +637,10 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                      redecl_match = re.match(r"#\s+identifier '([^']+)' redeclared", msg_line)
                 
                 if redecl_match:
-                    ident = redecl_match.group(1)
+                    ident = redecl_match.group(1).strip()
+                    # Strip arguments from identifier if present
+                    if '(' in ident:
+                        ident = ident.split('(')[0].strip()
                     _log(f"[builder] Auto-fix reacting to redeclaration of: {ident}")
                     
                     # Try to find the new declaration in the compiler output

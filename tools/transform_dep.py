@@ -28,6 +28,9 @@ def in_wsl() -> bool:
 def import_d_file(in_file: str) -> str:
     out_text = ""
 
+    if not os.path.exists(in_file):
+        return ""
+
     with open(in_file) as file:
         for idx, line in enumerate(file):
             if idx == 0:
