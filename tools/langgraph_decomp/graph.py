@@ -19,6 +19,7 @@ from .nodes import (
     refactorer_node,
     builder_node,
     committer_node,
+    summarizer_node,
 )
 
 
@@ -33,9 +34,9 @@ def check_progress(state: DecompState) -> str:
     if state.get("match_percent", 0) >= 100.0:
         return "committer"
     if state.get("iterations", 0) >= MAX_ITERATIONS:
-        return END
+        return "summarizer"
     if state.get("status") == "error":
-        return END
+        return "summarizer"
     return "refactorer"
 
 
@@ -70,6 +71,7 @@ def build_graph(
     builder.add_node("refactorer", _refactorer)
     builder.add_node("builder", builder_node)
     builder.add_node("committer", committer_node)
+    builder.add_node("summarizer", summarizer_node)
 
     # Edges
     builder.add_edge(START, "source_finder")
@@ -80,8 +82,9 @@ def build_graph(
     # Conditional edge from builder
     builder.add_conditional_edges("builder", check_progress)
 
-    # Committer goes to END
-    builder.add_edge("committer", END)
+    # Committer and summarizer flow
+    builder.add_edge("committer", "summarizer")
+    builder.add_edge("summarizer", END)
 
     # Compile with checkpointer
     checkpointer = MemorySaver()

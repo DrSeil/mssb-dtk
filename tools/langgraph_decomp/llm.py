@@ -100,7 +100,7 @@ CRITICAL RULES:
 """
 
 
-def get_local_llm() -> BaseChatModel:
+def get_local_llm(json_mode: bool = True) -> BaseChatModel:
     """Create an OpenAI-compatible chat model for local inference (LM Studio/Ollama)."""
     
     # 1. Get the model name. 
@@ -109,18 +109,20 @@ def get_local_llm() -> BaseChatModel:
     # 2. Get the Base URL. 
     base_url = os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:1234/v1")
 
+    kwargs = {"temperature": 0.1, "callbacks": [StdOutCallbackHandler()]}
+    # Some local servers don't support json_object, so we use text and rely on our parser
+    if json_mode:
+        kwargs["model_kwargs"] = {"response_format": {"type": "text"}}
+
     return ChatOpenAI(
         model=model,
         base_url=base_url,
         api_key="lm-studio",
-        temperature=0.1,
-        # Some local servers don't support json_object, so we use text and rely on our parser
-        model_kwargs={"response_format": {"type": "text"}},
-        callbacks=[StdOutCallbackHandler()]
+        **kwargs
     )
 
 
-def get_cloud_llm() -> BaseChatModel:
+def get_cloud_llm(json_mode: bool = True) -> BaseChatModel:
     """Create a cloud LLM for escalated attempts (OpenRouter or Gemini)."""
     provider = os.environ.get("LLM_CLOUD_PROVIDER", "openrouter").lower()
 
@@ -147,22 +149,115 @@ def get_cloud_llm() -> BaseChatModel:
         if not api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable is required for OpenRouter")
 
+        kwargs = {"temperature": 0.1, "callbacks": [StdOutCallbackHandler()]}
+        if json_mode:
+            kwargs["model_kwargs"] = {"response_format": {"type": "json_object"}}
+
         return ChatOpenAI(
             model=model,
             openai_api_key=api_key,
             openai_api_base="https://openrouter.ai/api/v1",
-            temperature=0.1,
-            model_kwargs={"response_format": {"type": "json_object"}},
-            callbacks=[StdOutCallbackHandler()]
+            **kwargs
         )
 
 
-def get_llm(tier: str) -> BaseChatModel:
+def get_llm(tier: str, json_mode: bool = True) -> BaseChatModel:
     """Get the appropriate LLM for the given tier."""
     if tier == "local":
-        return get_local_llm()
+        return get_local_llm(json_mode)
     else:
-        return get_cloud_llm()
+        return get_cloud_llm(json_mode)
+
+
+# ---------------------------------------------------------------------------
+# Key Learnings Summarization
+# ---------------------------------------------------------------------------
+
+def get_key_learnings_prompt() -> str:
+    """Read key learnings from the project root if it exists."""
+    learnings_path = os.path.join(_root_dir, "key_learnings.md")
+    if os.path.exists(learnings_path):
+        with open(learnings_path, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            if content:
+                return f"\n\n## Key Learnings from Previous Runs\n{content}\nTake these lessons into account when generating code and structs."
+    return ""
+
+
+def summarize_key_learnings(state: dict) -> str:
+    """Analyze attempt history and extract actionable architectural insights."""
+    attempts = state.get("attempts", [])
+    if not attempts:
+        return state
+
+    print("[summarizer] Analyzing execution history for key learnings...")
+    
+    # Format the attempt history
+    history_text = ""
+    for i, att in enumerate(attempts):
+        score = att.get("match_percent", 0.0)
+        err = att.get("build_error", "")
+        # If there's a build error, score is effectively 0 for learning purposes
+        if err:
+            score = 0.0
+        
+        history_text += f"\n--- Attempt {i+1} ---\n"
+        history_text += f"Score: {score:.1f}%\n"
+        if err:
+            history_text += f"Build Error:\n{err}\n"
+        else:
+            history_text += f"Diff Feedback length: {len(att.get('feedback', ''))} chars\n"
+        # Truncate C code to prevent massive context blows
+        code = att.get("c_code", "")
+        if len(code) > 1000:
+            code = code[:500] + "... [truncated] ..." + code[-500:]
+        history_text += f"Code Snippet:\n{code}\n"
+        updates = att.get("struct_updates", [])
+        if updates:
+            history_text += f"Struct Updates: {json.dumps(updates)}\n"
+
+    prompt = f"""You are an expert compiler analyst and reverse engineer.
+You just finished an automated decompilation run for a GameCube function targeting Metrowerks CodeWarrior GC/1.3.2.
+
+Here is the history of all code attempts, struct updates, and their resulting scores or compiler errors.
+
+{history_text}
+
+Analyze this history and extract ONLY SUBSTANTIAL, GENERALIZABLE LEARNINNGS.
+For example:
+- Did you learn something about how padding or `_pad` fields must be handled?
+- Did you learn how certain macros (e.g. `g_d_GameSettings`) behave in this codebase?
+- Did you learn a strict compiler rule or quirky C89 typing requirement that caused build failures?
+
+DO NOT mention specific addresses, function names (unless it's a global macro/util), or minor syntax typos.
+DO NOT summarize the function's logic.
+ONLY output bullet points of rules and project-specific architectural traits that you should remember for completely different files.
+
+If there are no substantial new learnings to generalize, output exactly the word "NONE".
+
+Otherwise, output a concise markdown list of your new findings."""
+
+    # We use JSON mode if enabled, but for summarization plain text is much better.
+    # However, OpenRouter sometimes enforces JSON if we told it to, so we override it for the summarizer.
+    llm = get_llm(state.get("llm_tier", "cloud"), json_mode=False)
+    
+    from langchain_core.messages import SystemMessage
+    try:
+        response = llm.invoke([SystemMessage(content=prompt)])
+        content = str(response.content).strip()
+        print(f"[summarizer] LLM response: {content[:100]}...")
+        
+        if content and content.upper() != "NONE":
+            learnings_path = os.path.join(_root_dir, "key_learnings.md")
+            print(f"[summarizer] Appending {len(content)} chars of new learnings to key_learnings.md")
+            with open(learnings_path, "a", encoding="utf-8") as f:
+                f.write(f"\n### Learnings from {state.get('function_name', 'run')}\n{content}\n")
+        else:
+            print("[summarizer] No substantial learnings found.")
+    except Exception as e:
+        print(f"[summarizer] Failed to extract learnings: {e}")
+
+    return state
 
 
 # ---------------------------------------------------------------------------
@@ -611,7 +706,7 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
     print(f"[LLM] Invoking {tier} LLM...")
 
     messages = [
-        SystemMessage(content=SYSTEM_PROMPT),
+        SystemMessage(content=SYSTEM_PROMPT + get_key_learnings_prompt()),
         HumanMessage(content=user_prompt),
     ]
 
@@ -649,17 +744,17 @@ def parse_llm_response(raw: str) -> dict:
             return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Failed parse"}
 
     result = {
-        "function": data.get("function_code", ""),
+        "function": clean_code_block(data.get("function_code", "")),
         "updates": data.get("struct_modifications", []),
-        "header": data.get("header_additions", ""),
-        "externs": data.get("extern_declarations", ""),
+        "header": clean_code_block(data.get("header_additions", "")),
+        "externs": clean_code_block(data.get("extern_declarations", "")),
         "explanation": data.get("explanation", "")
     }
 
     return result
 
 
-def _clean_code_block(text: str) -> str:
+def clean_code_block(text: str) -> str:
     """Clean a code block: strip fences, whitespace, and filter out natural language."""
     text = text.strip()
     # Remove markdown code fences if present (robust version)
@@ -677,6 +772,12 @@ def _clean_code_block(text: str) -> str:
         "no new", "no changes", "none needed", "no additional",
         "no extern", "no header", "not needed", "nothing to add",
         "no modifications", "n/a", "no updates", "already defined", "already declared",
+        "New prototypes or structs to ADD to the header",
+        "Extern variables to ADD",
+        "The complete C code for the function",
+        "Name of the struct to modify",
+        "Brief summary of changes",
+        "C type", "field_name", "0xXXX"
     ]
     lower = text.lower().strip()
 

@@ -390,6 +390,19 @@ def builder_node(state):
         )],
     }
 
+    # Merge reactive fixes back into state so they persist
+    fixes = result.get("fixes", [])
+    if fixes:
+        for fix in fixes:
+            if fix["type"] == "header_rectification":
+                # If it's the main header for this unit, add it to local_headers
+                # state.py:merge_unique_symbols will handle merging/replacing.
+                if fix["file"] == state.get("header_path") or os.path.basename(fix["file"]) == os.path.basename(state.get("header_path", "")):
+                    res["local_headers"] = fix["content"]
+            elif fix["type"] == "missing_include":
+                # Missing includes in source go to local_headers too (M2C logic)
+                res["local_headers"] = fix["content"]
+
     _write_attempt_log(state, attempt, iteration + 1)
 
     return res
@@ -452,11 +465,20 @@ def _write_attempt_log(state, attempt, iteration):
     for log_line in attempt.get("process_log", []):
         content.append(log_line)
 
+    with open(log_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(content))
     print(f"[builder] Logged attempt to {log_file}")
 
 
-def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _log=print) -> bool:
-    """Attempt to parse compiler errors and automatically fix the source file."""
+def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _log=print, fixes_acc=None) -> bool:
+    """Attempt to parse compiler errors and automatically fix the source file.
+    
+    If fixes_acc is provided (a list), it will be populated with dicts describing
+    the fixes made (e.g. {'type': 'header_rectification', 'file': '...', 'content': '...'}).
+    """
+    if fixes_acc is None:
+        fixes_acc = []
+        
     try:
         import re
         import subprocess
@@ -564,6 +586,7 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                             inc_line = f'#include "{rel_inc}"\n'
                             if inc_line.strip() not in src_content:
                                 _log(f"[builder] Auto-fixing missing include -> {inc_line.strip()}")
+                                fixes_acc.append({"type": "missing_include", "file": source_path, "content": inc_line.strip()})
                                 if source_path not in backups:
                                     backups[source_path] = src_content
                                 
@@ -577,6 +600,86 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                                 fixed_something = True
                     except Exception:
                         pass
+
+                # Case 3: identifier 'X' redeclared
+                redecl_match = re.match(r"#\s+identifier '([^']+)\(\)' redeclared", msg_line)
+                if not redecl_match:
+                     redecl_match = re.match(r"#\s+identifier '([^']+)' redeclared", msg_line)
+                
+                if redecl_match:
+                    ident = redecl_match.group(1)
+                    _log(f"[builder] Auto-fix reacting to redeclaration of: {ident}")
+                    
+                    # Try to find the new declaration in the compiler output
+                    # Sometimes the compiler prints "now declared as: '...'"
+                    # But the builder node already knows the 'headers' it just tried to add.
+                    # Actually, the builder_node logic HAS the state.
+                    
+                    # We need to find WHERE it was redeclared. The compiler output has:
+                    # #      In: include\game\rep_1D58.h
+                    file_context = ""
+                    # We need to find WHERE it was redeclared. The compiler output has:
+                    # #      In: include\game\rep_1D58.h
+                    # #    File: src\game\rep_1D58.c
+                    file_context = ""
+                    for j in range(i, i-20, -1):
+                        if j >= 0:
+                            if "#      In:" in lines[j]:
+                                file_context = lines[j].split("In:")[1].strip()
+                                break
+                            if "#    File:" in lines[j]:
+                                file_context = lines[j].split("File:")[1].strip()
+                                break
+                    
+                    header_site = None
+                    if file_context and file_context.endswith(".h"):
+                        header_site = os.path.join(_root_dir, file_context) if not os.path.isabs(file_context) else file_context
+                    
+                    if not header_site:
+                        # Fallback: grep for it in include/
+                        _log(f"[builder] Fallback searching for {ident} in include/")
+                        include_dir = os.path.join(_root_dir, "include")
+                        try:
+                            # Match Type Ident(args);
+                            redecl_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(ident)}\s*\(.*?\)\s*;?'
+                            res = subprocess.run(
+                                ["grep", "-rln", "-P", "--include=*.h", redecl_pattern, include_dir],
+                                capture_output=True, text=True, timeout=5
+                            )
+                            if res.stdout:
+                                header_site = res.stdout.splitlines()[0].strip()
+                                _log(f"[builder] Found {ident} in {os.path.basename(header_site)}")
+                        except Exception:
+                            pass
+
+                    if header_site and os.path.exists(header_site):
+                        # Find the NEW declaration we just tried to add
+                        with open(source_path, "r") as f:
+                            current_src = f.read()
+                        
+                        # Find the declaration in the source (current_src)
+                        # Regex for: void ident(args) {
+                        src_decl_match = re.search(rf'(?m)^([\w\s\*]+?)\s+{re.escape(ident)}\s*\((.*?)\)\s*\{{', current_src)
+                        if src_decl_match:
+                            new_decl = f"{src_decl_match.group(1)} {ident}({src_decl_match.group(2)});"
+                            
+                            if header_site not in backups:
+                                with open(header_site, "r") as f:
+                                    backups[header_site] = f.read()
+                            
+                            h_content = backups[header_site]
+                            
+                            # Find existing in header
+                            h_decl_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(ident)}\s*\(.*?\)\s*;?'
+                            h_match = re.search(h_decl_pattern, h_content)
+                            if h_match:
+                                _log(f"[builder] Rectifying header {os.path.basename(header_site)}: {h_match.group(0).strip()} -> {new_decl}")
+                                fixes_acc.append({"type": "header_rectification", "file": header_site, "content": new_decl})
+                                h_content = h_content[:h_match.start()] + new_decl + h_content[h_match.end():]
+                                with open(header_site, "w") as f:
+                                    f.write(h_content)
+                                fixed_something = True
+
 
         if fixed_something:
             with open(source_path, "w") as f:
@@ -596,6 +699,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
     This writes code temporarily, builds, scores, and reverts.
     """
     process_log = []
+    fixes_acc = []
     def _log(msg):
         print(msg)
         process_log.append(msg)
@@ -723,7 +827,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         # --- Auto-fix Logic ---
         if build_proc.returncode != 0:
             combined_error_output = (build_proc.stdout or "") + (build_proc.stderr or "")
-            if _attempt_auto_fix(combined_error_output, source_path, backups, _log):
+            if _attempt_auto_fix(combined_error_output, source_path, backups, _log, fixes_acc):
                 _log("[builder] Re-running build after auto-fix...")
                 build_proc = subprocess.run(
                     ["ninja"], capture_output=True, text=True, timeout=120,
@@ -786,6 +890,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             "current_asm": current_asm,
             "unit": unit_name,
             "process_log": process_log,
+            "fixes": fixes_acc,
         }
 
     except subprocess.TimeoutExpired as e:
@@ -950,6 +1055,18 @@ def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
         line = line.strip()
         if not line:
             continue
+            
+        # EXTRA SAFETY: skip prompt placeholders that might have leaked
+        placeholders = [
+            "Extern variables to ADD",
+            "New prototypes or structs to ADD to the header",
+            "The complete C code for the function",
+            "Name of the struct to modify",
+            "// M2C could not decompile",
+            "Brief summary of changes",
+        ]
+        if any(p in line for p in placeholders):
+            continue
         # Skip comments
         if line.startswith("//") or line.startswith("/*"):
             continue
@@ -994,6 +1111,34 @@ def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
                 )
                 continue
 
+        # Detect function redefinitions (prototypes)
+        # Pattern: Type func(args);
+        func_match = re.match(r'^([\w\s\*]+?)\s+(\w+)\s*\((.*?)\)\s*;', line)
+        if func_match:
+            new_ret_type = func_match.group(1).strip()
+            func_name = func_match.group(2).strip()
+            new_args = func_match.group(3).strip()
+
+            # Search existing content for this function name
+            # Pattern: Type Symbol(args);
+            existing_func_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(func_name)}\s*\(.*?\)\s*;?'
+            existing_match = re.search(existing_func_pattern, existing_content)
+            if existing_match:
+                existing_line = existing_match.group(0)
+                if existing_line.strip().replace(' ', '') == line.replace(' ', ''):
+                    continue
+
+                # Replacement logic: If NEW has args and OLD is (void) or (), definitely replace.
+                # If both have args, replace if they differ.
+                _log(f"[builder] Updating function prototype {func_name} in {os.path.basename(file_path)}: {existing_line.strip()} -> {line.strip()}")
+                existing_content = (
+                    existing_content[:existing_match.start()]
+                    + line
+                    + existing_content[existing_match.end():]
+                )
+                continue
+
+
         # Check if this exact line already exists
         if line in existing_content:
             continue
@@ -1015,7 +1160,6 @@ def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
 
         with open(file_path, "w") as f:
             f.write(new_content)
-
         _log(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
     elif existing_content != (backups.get(file_path) if backups else None):
         # If we replaced lines but didn't add any new ones, we still need to write
@@ -1119,10 +1263,20 @@ def committer_node(state):
             _append_to_file_if_missing(externs_path, externs)
 
         # Rebuild to make sure it sticks
-        subprocess.run(
+        build_proc = subprocess.run(
             ["ninja"], capture_output=True, text=True, timeout=120,
             cwd=_root_dir,
         )
+        if build_proc.returncode != 0:
+            print("[committer] Final build failed, attempting reactive auto-fix...")
+            # We don't need fixes_acc here because we are already in the final phase
+            _attempt_auto_fix(build_proc.stdout + build_proc.stderr, source_path, {}, print)
+            # Rebuild one last time
+            subprocess.run(
+                ["ninja"], capture_output=True, text=True, timeout=120,
+                cwd=_root_dir,
+            )
+
         print(f"[committer] Successfully committed {func_name} to {source_path}")
         return {
             "status": "matched",
@@ -1134,3 +1288,14 @@ def committer_node(state):
             "status": "error",
             "feedback": f"Failed to commit {func_name} to source.",
         }
+
+
+# ---------------------------------------------------------------------------
+# Node F: Summarizer (Key Learnings)
+# ---------------------------------------------------------------------------
+
+def summarizer_node(state):
+    """Summarize substantial key learnings from this run and append them globally."""
+    from .llm import summarize_key_learnings
+    return summarize_key_learnings(state)
+

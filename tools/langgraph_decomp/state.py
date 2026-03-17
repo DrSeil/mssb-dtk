@@ -2,25 +2,35 @@
 
 from typing import Annotated, TypedDict, List, Optional
 from langgraph.graph.message import add_messages
+from .llm import clean_code_block
 
 def merge_struct_updates(old: list, new: list) -> list:
     """Merge struct updates by type_name, latest wins."""
     if not old: old = []
     if not new: return old
     # Create a dict keyed by type_name to handle updates
-    updates_dict = {u['type_name']: u for u in old}
+    updates_dict = {}
+    for u in old:
+        if u.get('type_name') == "Name of the struct to modify":
+            continue
+        updates_dict[u['type_name']] = u
+        
     for u in new:
+        if u.get('type_name') == "Name of the struct to modify":
+            continue
         updates_dict[u['type_name']] = u
     return list(updates_dict.values())
 
 import re
 
 def merge_unique_symbols(old: str, new: str) -> str:
-    """Merge multi-line strings, keeping only the latest declaration per symbol."""
-    if not old: old = ""
-    if not new: return old
-    
     # Combined list of all lines
+    old = clean_code_block(old)
+    new = clean_code_block(new)
+    
+    if not new: return old
+    if not old: return new
+    
     all_lines = old.splitlines() + new.splitlines()
     
     # Map symbol name -> full line
@@ -30,8 +40,9 @@ def merge_unique_symbols(old: str, new: str) -> str:
     
     # Improved regex to find symbol name in a declaration
     # Matches 'extern Type Name;' or 'Type Name;' or 'extern Type Name[size];'
-    # Captures name into group 2
-    decl_pattern = re.compile(r'(?:extern\s+)?(?:[a-zA-Z_0-9]+\s+)+([a-zA-Z_0-9]+)(?:\[.*?\])?\s*;')
+    # or 'void Func(Args);'
+    # Captures name into group 1
+    decl_pattern = re.compile(r'(?:extern\s+)?(?:[a-zA-Z_0-9]+\s+)+([a-zA-Z_0-9]+)(?:\[.*?\])?(?:\s*\(.*?\))?\s*;')
 
     for line in all_lines:
         stripped = line.strip()
