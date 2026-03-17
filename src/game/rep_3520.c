@@ -83,8 +83,18 @@ void fn_3_135520(void) {
 }
 
 // .text:0x00135600 size:0x4C mapped:0x80774694
-void fn_3_135600(void) {
-    return;
+
+// Reg Swap
+void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ) {
+
+    f32 diffZ = z - lbl_3_data_21A48.z;
+
+    f32 diffX = x - lbl_3_data_21A48.x;
+
+    *outX = (diffX * g_Minigame.unk1DF0) - (diffZ * g_Minigame.unk1DEC);
+
+    *outZ = (diffX * g_Minigame.unk1DEC) + (diffZ * g_Minigame.unk1DF0);
+
 }
 
 // .text:0x0013564C size:0x4C mapped:0x807746E0

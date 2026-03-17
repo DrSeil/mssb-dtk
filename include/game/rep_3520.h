@@ -22,7 +22,7 @@ void fn_3_134D4C(void);
 void fn_3_1350BC(void);
 void fn_3_1354BC(void);
 void fn_3_135520(void);
-void fn_3_135600(void);
+void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ);
 void fn_3_13564C(void);
 void fn_3_135698(void);
 void fn_3_1356F8(void);
@@ -80,4 +80,5 @@ void fn_3_13C468(void);
 
 extern s16 lbl_3_bss_B702;
 extern s16 lbl_3_data_21AF0;
+// No local headers needed.
 #endif // !__GAME_rep_3520_H_

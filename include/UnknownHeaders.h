@@ -625,4 +625,5 @@ Struct_800D249C_C4 *ptr_0xC4; // Offset 0xC4
 extern f64 lbl_3_rodata_2800;
 extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
+extern VecXYZ lbl_3_data_21A48;
 #endif
