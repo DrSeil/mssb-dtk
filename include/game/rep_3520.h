@@ -23,7 +23,7 @@ void fn_3_1350BC(void);
 void fn_3_1354BC(void);
 void fn_3_135520(void);
 void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ);
-void fn_3_13564C(void);
+s32 fn_3_13564C(f32 val1, f32 val2);
 void fn_3_135698(void);
 void fn_3_1356F8(void);
 void fn_3_1357A4(void);

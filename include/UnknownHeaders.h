@@ -626,4 +626,5 @@ extern f64 lbl_3_rodata_2800;
 extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
 extern VecXYZ lbl_3_data_21A48;
+extern f32 lbl_3_rodata_35D0;
 #endif

@@ -98,8 +98,22 @@ void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ) {
 }
 
 // .text:0x0013564C size:0x4C mapped:0x807746E0
-void fn_3_13564C(void) {
-    return;
+
+
+s32 fn_3_13564C(f32 val1, f32 val2) {
+    if (val1 >= lbl_3_rodata_35D0) {
+        if (val2 >= lbl_3_rodata_35D0) {
+            return 0;
+        } else {
+            return 3;
+        }
+    } else {
+        if (val2 >= lbl_3_rodata_35D0) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
 }
 
 // .text:0x00135698 size:0x60 mapped:0x8077472C
