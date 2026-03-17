@@ -594,8 +594,11 @@ typedef struct castleThwompObj {
 u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 
 typedef struct Scores {
-    /* 0x00 */ s32 highscore;    // Matches 'lwz r3, 0x0(r4)'
-    /* 0x04 */ u8 _pad[166];     // Padding to reach 0xAA (0xAA - 0x04 = 166)
+    /* 0x00 */ s32 highscore;    // This might be Inning
+/* 0x04 */ s16 ScoreTeam0;    // Target for lha r7, 0x4(r6)
+    u8 _pad0[0x2A - 0x06];        // 0x06 to 0x29
+    /* 0x2A */ s16 ScoreTeam1;
+    u8 _pad1[0xAA - 0x2C];        // Padding to reach 0xAA (0xAA - 0x04 = 166)
     /* 0xAA */ u8 threshold;     // Matches 'lbz r0, 0xaa(r4)'
     /* 0xAB */ u8 _pad2[24];     // Padding to reach your original 0xC3
     /* 0xC3 */ u8 someFlag;
@@ -627,4 +630,13 @@ extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
 extern VecXYZ lbl_3_data_21A48;
 extern f32 lbl_3_rodata_35D0;
+typedef struct GameStateBss {
+s32 val0; // 0x00
+s32 val1; // 0x04
+s32 val2; // 0x08
+s32 val3; // 0x0C
+s32 val4; // 0x10
+s32 val5; // 0x14
+} GameStateBss;
+extern GameStateBss lbl_3_bss_D6F0;
 #endif

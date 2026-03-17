@@ -1,4 +1,5 @@
 #include "game/rep_4138.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x0016D810 size:0x1A0 mapped:0x807AC8A4
@@ -35,4 +36,35 @@ void fn_3_16E2FC(u16 *ptr, s32 index) {
 // .text:0x0016E328 size:0x10 mapped:0x807AD3BC
 void fn_3_16E328(void) {
     lbl_3_bss_D6EC = TRUE;
+}
+
+void fn_3_16E1A0(void) {
+    // Note: Local variables to hold loaded values. 
+    // This prevents the compiler from storing too early.
+    s32 s1, s0, inn;
+    s32 str, bal, out;
+
+    // Register Steering: Initialization order anchors r6, r5, and r8.
+    Scores* scores = &g_Scores;           // Anchors scores base to r6
+    Strikes* strikes = &g_Strikes;        // Anchors strikes base to r5
+    GameStateBss* dest = &lbl_3_bss_D6F0; // Anchors destination base to r8
+    
+    // PERFORM ALL LOADS FIRST
+    // The sequence of 'lha' and 'lwz' must match the target register indices
+    s1 = scores->ScoreTeam1; // lha r9, 0x2a(r6)
+    s0 = scores->ScoreTeam0; // lha r7, 0x4(r6)
+    inn = scores->highscore;    // lwz r6, 0x0(r6) -- Note r6 is overwritten here;
+    
+    str = strikes->strikes;  // lwz r4, 0x0(r5)
+    bal = strikes->balls;    // lwz r3, 0x4(r5)
+    out = strikes->outs;     // lwz r0, 0x8(r5)
+
+    // PERFORM ALL STORES SECOND
+    // stw r9, 0x0(r8) -> stw r7, 0x4(r8) ...
+    dest->val0 = s1;
+    dest->val1 = s0;
+    dest->val2 = inn;
+    dest->val3 = str;
+    dest->val4 = bal;
+    dest->val5 = out;
 }

@@ -2,6 +2,7 @@
 #define __GAME_rep_4138_H_
 
 #include "mssbTypes.h"
+#include "static/UnknownHomes_Static.h"
 
 extern u16 *lbl_3_bss_D6E4;
 extern s32 lbl_3_bss_D6E8;
@@ -13,4 +14,5 @@ void fn_3_16DB6C(void);
 void fn_3_16E2FC(u16 *ptr, s32 index);
 void fn_3_16E328(void);
 
+void fn_3_16E1A0(void);
 #endif // !__GAME_rep_4138_H_

@@ -66,7 +66,9 @@ typedef struct Camera {
 } Camera;
 
 typedef struct Strikes {
-    u8 _pad[0xC];        /* 0x00 */
+    /* 0x00 */ s32 strikes;      // Target for lwz r4, 0x0(r5)
+    /* 0x04 */ s32 balls;        // Target for lwz r3, 0x4(r5)
+    /* 0x08 */ s32 outs;
     s32 unk_C;           /* 0x0C */
     u8 _pad18[0x8];      /* 0x10 - Padding to reach 0x18 */
     s16 unk_18[3];       /* 0x18 - Array of strike values */
