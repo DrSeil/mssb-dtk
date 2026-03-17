@@ -18,6 +18,7 @@ sys.path.insert(0, _tools_dir)
 import decomp_helper
 import gen_prompt
 import feedback_diff
+from . import struct_utils
 
 
 # ---------------------------------------------------------------------------
@@ -108,19 +109,33 @@ def decompiler_node(state):
         print(f"[decompiler] M2C failed, using empty skeleton")
         m2c_output = f"// M2C could not decompile {func_name}\n"
 
-    # Split M2C output into externs / headers / body
-    # Import the split function from server.py or implement locally
-    split = _split_m2c_draft(m2c_output, func_name)
+    # Remove any ? placeholders from M2C output early to avoid build errors.
+    # M2C headers with '?' are almost always garbage that conflicts with real types.
+    m2c_clean = []
+    for line in m2c_output.splitlines():
+        if '?' in line:
+            # If it's a function prototype guess, try to fix it to void
+            if '(' in line and ')' in line:
+                line = re.sub(r'\?\s+([a-zA-Z_0-9]+)\(', r'void \1(', line)
+            
+            # If it still has a '?', and it's not in a comment, skip it
+            if '?' in re.sub(r'/\*.*?\*/', '', line):
+                print(f"[decompiler] Scrubbing garbage line: {line.strip()}")
+                continue
+        m2c_clean.append(line)
+    m2c_refined = "\n".join(m2c_clean)
 
-    current_c_code = split.get("body", m2c_output)
+    split = _split_m2c_draft(m2c_refined, func_name)
+
+    current_c_code = split.get("body", m2c_refined)
     externs = split.get("externs", "")
     local_headers = split.get("headers", "")
 
-    print(f"[decompiler] M2C output: {len(m2c_output)} chars, "
+    print(f"[decompiler] M2C output: {len(m2c_refined)} chars, "
           f"body: {len(current_c_code)} chars")
 
     return {
-        "m2c_output": m2c_output,
+        "m2c_output": m2c_refined,
         "current_c_code": current_c_code,
         "externs": externs,
         "local_headers": local_headers,
@@ -218,7 +233,6 @@ def refactorer_node(state, escalate_after=5):
         func_lines.append(line)
     func_code = "\n".join(func_lines).strip()
 
-    # Post-process: strip #ifndef/#define/#endif guards and #include from header additions
     header_lines = []
     for line in header_adds.splitlines():
         stripped = line.strip()
@@ -226,11 +240,25 @@ def refactorer_node(state, escalate_after=5):
             continue
         if stripped.startswith("#include"):
             continue
+        if '?' in line:
+            print(f"[refactorer] Filtering out invalid header line: {line}")
+            continue
         header_lines.append(line)
     header_adds = "\n".join(header_lines).strip()
 
+    extern_lines = []
+    for line in extern_adds.splitlines():
+        if '?' in line:
+            print(f"[refactorer] Filtering out invalid extern line: {line}")
+            continue
+        extern_lines.append(line)
+    extern_adds = "\n".join(extern_lines).strip()
+
+    # If there are struct updates, the state["struct_updates"] is now a list of mod actions.
+    # We should merge them or just pass them along to the builder.
+    
     print(f"[refactorer] Got {len(func_code)} chars function, "
-          f"{len(struct_updates)} struct updates, "
+          f"{len(struct_updates)} struct modifications, "
           f"{len(header_adds)} chars header, {len(extern_adds)} chars externs from {tier} LLM")
     print(f"[refactorer] === LLM FUNCTION ===")
     print(func_code)
@@ -238,9 +266,9 @@ def refactorer_node(state, escalate_after=5):
     if struct_updates:
         print(f"[refactorer] === LLM STRUCT UPDATES ({len(struct_updates)}) ===")
         for upd in struct_updates:
-            print(f"  @@@ {upd['type_name']}")
-            print(upd['definition'])
-            print(f"  @@@ END")
+            print(f"  Type: {upd.get('type_name')}")
+            for action in upd.get('actions', []):
+                print(f"    - {json.dumps(action)}")
         print(f"[refactorer] === END STRUCT UPDATES ===")
     if header_adds:
         print(f"[refactorer] === LLM HEADER ADDITIONS ===")
@@ -336,6 +364,8 @@ def builder_node(state):
         "feedback": feedback_text,
         "current_asm": current_asm,
         "build_error": build_error,
+        "struct_updates": state.get("struct_updates", []),
+        "process_log": result.get("process_log", []),
     }
 
     new_status = "running"
@@ -405,7 +435,9 @@ def _write_attempt_log(state, attempt, iteration):
     content.append(f"\n--- STRUCT UPDATES ---\n")
     updates = state.get("struct_updates", [])
     for upd in updates:
-        content.append(f"@@@ {upd.get('type_name')}\n{upd.get('definition')}\n@@@ END")
+        content.append(f"Type: {upd.get('type_name')}")
+        for action in upd.get('actions', []):
+            content.append(f"  - {json.dumps(action)}")
 
     content.append(f"\n\nBUILD LOG")
     content.append(f"=========\n")
@@ -415,16 +447,159 @@ def _write_attempt_log(state, attempt, iteration):
     content.append(f"================\n")
     content.append(attempt.get("feedback", "No diff feedback (matched or build error)"))
 
-    with open(log_file, "w") as f:
-        f.write("\n".join(content))
+    content.append(f"\nBUILDER PROCESS LOG")
+    content.append(f"===================\n")
+    for log_line in attempt.get("process_log", []):
+        content.append(log_line)
+
     print(f"[builder] Logged attempt to {log_file}")
 
+
+def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _log=print) -> bool:
+    """Attempt to parse compiler errors and automatically fix the source file."""
+    try:
+        import re
+        import subprocess
+        from tools.langgraph_decomp import struct_utils
+        from tools.langgraph_decomp.llm import _extract_struct_block
+        
+        _log("[builder] Checking if auto-fix is possible for compiler errors...")
+        
+        fixed_something = False
+        
+        with open(source_path, "r") as f:
+            src_content = f.read()
+
+        lines = compiler_output.splitlines()
+        for i, line in enumerate(lines):
+            if line.startswith("#   Error:"):
+                msg_line = lines[i+1] if i+1 < len(lines) else ""
+                code_line = lines[i-1] if i > 0 else ""
+                
+                # Case 1: 'unk[Hex]' is not a struct/union/class member
+                msg_match = re.match(r"#\s+'([^']+)' is not a struct/union/class member", msg_line)
+                if msg_match:
+                    field = msg_match.group(1)
+                    if field.startswith("unk"):
+                        offset_hex = field[3:]
+                        try:
+                            offset = int(offset_hex, 16)
+                        except ValueError:
+                            continue
+                        
+                        code_text = code_line.split(":", 1)[1].strip() if ":" in code_line else code_line
+                        var_match = re.search(r"(\w+)\s*(?:\.|->)\s*" + re.escape(field), code_text)
+                        if var_match:
+                            var_name = var_match.group(1)
+                            _log(f"[builder] Auto-fix matching variable: {var_name}")
+                            
+                            # 1. find type of variable
+                            type_pattern = rf'\b\w+\s*\*?\s+{re.escape(var_name)}\b.*?;'
+                            include_dir = os.path.join(_root_dir, "include")
+                            src_dir = os.path.join(_root_dir, "src")
+                            type_str = None
+                            try:
+                                result = subprocess.run(
+                                    ["grep", "-rE", type_pattern, include_dir, src_dir],
+                                    capture_output=True, text=True, timeout=5
+                                )
+                                for hit in result.stdout.splitlines():
+                                    if "extern " in hit or "struct " in hit or "typedef " in hit:
+                                        type_match = re.search(rf'(?:extern\s+)?([\w\s\*]+?)\s+{re.escape(var_name)}\b', hit.split(':', 1)[-1])
+                                        if type_match:
+                                            t = type_match.group(1).strip()
+                                            if t not in ('struct', 'typedef'):
+                                                type_str = t.replace('const', '').replace('volatile', '').replace('*', '').strip()
+                                                break
+                            except Exception:
+                                pass
+                            
+                            if type_str:
+                                # 2. find struct field mapping
+                                struct_pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_str)}\b'
+                                try:
+                                    result = subprocess.run(
+                                        ["grep", "-rln", "-P", "--include=*.h", struct_pattern, include_dir],
+                                        capture_output=True, text=True, timeout=5
+                                    )
+                                    if result.stdout:
+                                        s_filepath = result.stdout.splitlines()[0].strip()
+                                        block = _extract_struct_block(s_filepath, type_str)
+                                        if block:
+                                            fields = struct_utils.parse_struct_fields(block)
+                                            found_field_name = None
+                                            for fld in fields:
+                                                if fld.offset <= offset < fld.offset + fld.size:
+                                                    if not fld.is_padding:
+                                                        found_field_name = fld.name
+                                                        break
+                                            
+                                            if found_field_name:
+                                                _log(f"[builder] Auto-fixing {field} -> {found_field_name} (struct {type_str})")
+                                                if source_path not in backups:
+                                                    backups[source_path] = src_content
+                                                # regex replace whole word only for var_name.field
+                                                src_content = re.sub(rf'\b{re.escape(var_name)}\s*\.\s*{re.escape(field)}\b', f'{var_name}.{found_field_name}', src_content)
+                                                src_content = re.sub(rf'\b{re.escape(var_name)}\s*->\s*{re.escape(field)}\b', f'{var_name}->{found_field_name}', src_content)
+                                                fixed_something = True
+                                except Exception:
+                                    pass
+
+                # Case 2: undefined identifier 'X'
+                undef_match = re.match(r"#\s+undefined identifier '([^']+)'", msg_line)
+                if undef_match:
+                    ident = undef_match.group(1)
+                    _log(f"[builder] Auto-fix searching for undefined identifier: {ident}")
+                    include_dir = os.path.join(_root_dir, "include")
+                    try:
+                        # Match extern <type> ident, or #define ident, or struct ident
+                        decl_pattern = rf'(?:extern|#define|struct|typedef|enum)\s+(?:[\w\s\*\[\]]+)?\b{re.escape(ident)}\b'
+                        result = subprocess.run(
+                            ["grep", "-rln", "-P", "--include=*.h", decl_pattern, include_dir],
+                            capture_output=True, text=True, timeout=5
+                        )
+                        if result.stdout:
+                            header_path = result.stdout.splitlines()[0].strip()
+                            rel_inc = os.path.relpath(header_path, include_dir)
+                            inc_line = f'#include "{rel_inc}"\n'
+                            if inc_line.strip() not in src_content:
+                                _log(f"[builder] Auto-fixing missing include -> {inc_line.strip()}")
+                                if source_path not in backups:
+                                    backups[source_path] = src_content
+                                
+                                # insert after first #include or at top
+                                inc_match = re.search(r'^#include.*?\n', src_content, re.MULTILINE)
+                                if inc_match:
+                                    # Insert after the last import instead? Or just after the first match.
+                                    src_content = src_content[:inc_match.end()] + inc_line + src_content[inc_match.end():]
+                                else:
+                                    src_content = inc_line + src_content
+                                fixed_something = True
+                    except Exception:
+                        pass
+
+        if fixed_something:
+            with open(source_path, "w") as f:
+                f.write(src_content)
+        
+        return fixed_something
+    except Exception as e:
+        import traceback
+        _log(f"[builder] Auto-fix encountered an exception: {e}")
+        _log(traceback.format_exc())
+        return False
+    
 
 def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=None):
     """Run build + objdiff scoring, similar to DecompOrchestrator but standalone.
 
     This writes code temporarily, builds, scores, and reverts.
     """
+    process_log = []
+    def _log(msg):
+        print(msg)
+        process_log.append(msg)
+
     if state is None:
         state = {}
     # Resolve source path from unit name
@@ -450,25 +625,50 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         if not _commit_code_to_source(source_path, func_name, c_code):
             return {"status": "error", "log": f"Could not find {func_name} stub in {source_path}"}
 
-        # Apply struct updates (find and replace existing definitions)
+        # Apply struct modifications using struct_utils
         struct_updates = state.get("struct_updates", [])
         if struct_updates:
-            for upd in struct_updates:
-                type_name = upd["type_name"]
-                new_def = upd["definition"]
-                print(f"[builder] Applying struct update for {type_name}")
-                # _apply_struct_update returns the filepath it modified
-                updated = _apply_struct_update(type_name, new_def, backups)
-                if updated:
-                    print(f"[builder] Updated {type_name} in {updated}")
-                else:
-                    # FALLBACK: If update failed (type not found), add it to the primary header
-                    print(f"[builder] WARNING: Could not find {type_name} to update, adding to {header_path}")
-                    _append_to_file_if_missing(header_path, new_def, backups)
+            # struct_updates is now a list of {type_name: str, actions: list}
+            for update in struct_updates:
+                type_name = update.get("type_name")
+                actions = update.get("actions", [])
+                if not type_name or not actions:
+                    continue
+                
+                _log(f"[builder] Applying struct modifications for {type_name} via struct_utils")
+                
+                # 1. Find the file containing the struct
+                filepath = _find_struct_file(type_name)
+                if not filepath:
+                    _log(f"[builder] WARNING: Could not find file for {type_name}")
+                    continue
+                
+                # 2. Extract current definition
+                if filepath not in backups:
+                     with open(filepath, "r") as f:
+                         backups[filepath] = f.read()
+                
+                current_file_content = backups[filepath]
+                # We need a way to extract JUST the struct block.
+                # Use a helper or regex.
+                from .llm import _extract_struct_block
+                old_struct_def = _extract_struct_block(filepath, type_name)
+                if not old_struct_def:
+                    _log(f"[builder] WARNING: Could not extract {type_name} from {filepath}")
+                    continue
+                
+                # 3. Use struct_utils to reconcile
+                new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions)
+                
+                # 4. Replace in file
+                new_content = current_file_content.replace(old_struct_def, new_struct_def)
+                with open(filepath, "w") as f:
+                    f.write(new_content)
+                _log(f"[builder] Updated {type_name} in {filepath}")
 
         # Apply header additions (prototypes, struct defs)
         if headers and headers.strip():
-            print(f"[builder] Applying header additions to {header_path}")
+            _log(f"[builder] Applying header additions to {header_path}")
             for line in headers.strip().splitlines():
                 line = line.strip()
                 if not line or line.startswith("//") or line.startswith("/*"):
@@ -476,14 +676,29 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 # If it's an extern, handle it globally
                 match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
                 if match:
+                    type_str = match.group(1).strip()
                     symbol_name = match.group(2).strip()
-                    _add_or_update_extern(symbol_name, line, header_path, backups)
+                    _add_or_update_extern(symbol_name, line, header_path, backups, type_str=type_str, _log=_log)
                 else:
-                    _append_to_file_if_missing(header_path, line, backups)
+                    _append_to_file_if_missing(header_path, line, backups, _log=_log)
 
         # Apply extern additions
         if externs and externs.strip():
-            print(f"[builder] Applying extern additions/updates")
+            _log(f"[builder] Applying extern additions/updates")
+            # Ensure the source file includes UnknownHeaders.h if we are adding externs to it
+            with open(source_path, "r") as f:
+                src_content = f.read()
+            if 'include "UnknownHeaders.h"' not in src_content:
+                _log(f"[builder] Adding missing #include \"UnknownHeaders.h\" to {source_path}")
+                # Insert after the first include or at the top
+                inc_match = re.search(r'^#include.*?\n', src_content)
+                if inc_match:
+                    new_src = src_content[:inc_match.end()] + '#include "UnknownHeaders.h"\n' + src_content[inc_match.end():]
+                else:
+                    new_src = '#include "UnknownHeaders.h"\n' + src_content
+                with open(source_path, "w") as f:
+                    f.write(new_src)
+
             for line in externs.strip().splitlines():
                 line = line.strip()
                 if not line or line.startswith("//") or line.startswith("/*"):
@@ -492,8 +707,9 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 # Pattern: extern Type Symbol; or extern Type Symbol[];
                 match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
                 if match:
+                    type_str = match.group(1).strip()
                     symbol_name = match.group(2).strip()
-                    _add_or_update_extern(symbol_name, line, externs_path, backups)
+                    _add_or_update_extern(symbol_name, line, externs_path, backups, type_str=type_str, _log=_log)
                 else:
                     # Fallback for complex lines
                     _append_to_file_if_missing(externs_path, line, backups)
@@ -503,12 +719,24 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             ["ninja"], capture_output=True, text=True, timeout=120,
             cwd=_root_dir,
         )
+        
+        # --- Auto-fix Logic ---
+        if build_proc.returncode != 0:
+            combined_error_output = (build_proc.stdout or "") + (build_proc.stderr or "")
+            if _attempt_auto_fix(combined_error_output, source_path, backups, _log):
+                _log("[builder] Re-running build after auto-fix...")
+                build_proc = subprocess.run(
+                    ["ninja"], capture_output=True, text=True, timeout=120,
+                    cwd=_root_dir,
+                )
+        # ----------------------
+        
         if build_proc.returncode != 0:
             combined = (build_proc.stdout or "") + (build_proc.stderr or "")
-            print(f"[builder] === FULL BUILD ERROR ===")
-            print(combined)
-            print(f"[builder] === END BUILD ERROR ===")
-            return {"status": "build_error", "log": combined}
+            _log(f"[builder] === FULL BUILD ERROR ===")
+            _log(combined)
+            _log(f"[builder] === END BUILD ERROR ===")
+            return {"status": "build_error", "log": combined, "process_log": process_log}
 
         # Score via objdiff
         objdiff_cmd = [
@@ -521,7 +749,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         )
         if obj_proc.returncode != 0:
             combined = (obj_proc.stdout or "") + (obj_proc.stderr or "")
-            return {"status": "objdiff_error", "log": combined}
+            return {"status": "objdiff_error", "log": combined, "process_log": process_log}
 
         data = json.loads(obj_proc.stdout)
 
@@ -557,12 +785,13 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             "asm_diff": asm_diff,
             "current_asm": current_asm,
             "unit": unit_name,
+            "process_log": process_log,
         }
 
     except subprocess.TimeoutExpired as e:
-        return {"status": "build_timeout", "log": f"Process timed out: {e}"}
+        return {"status": "build_timeout", "log": f"Process timed out: {e}", "process_log": process_log}
     except Exception as e:
-        return {"status": "error", "log": str(e)}
+        return {"status": "error", "log": str(e), "process_log": process_log}
     finally:
         # Always revert
         for p, content in backups.items():
@@ -601,32 +830,72 @@ def _resolve_source_path(unit_name):
         return os.path.join(_root_dir, f"src/{'/'.join(parts[1:])}.c")
 
 
-def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=None):
+def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=None, type_str=None, _log=print):
     """Find an existing extern for a symbol and update it, or add to default_path."""
     include_dir = os.path.join(_root_dir, "include")
     
+    # If a type_str is provided, check if we need to include a header for it
+    if type_str:
+        # Extract base type
+        base_type = re.sub(r'[\*\s]', '', type_str)
+        base_type = base_type.replace('const', '').replace('volatile', '').strip()
+        
+        # If it's not a primitive type, try to find where it's defined
+        if base_type and base_type not in ('void', 'int', 'char', 'short', 'long',
+                                         'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                         's32', 's64', 'f32', 'f64', 'BOOL'):
+            try:
+                # Search for struct definition
+                pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(base_type)}\b'
+                result = subprocess.run(
+                    ["grep", "-rln", "-P", "--include=*.h", pattern, include_dir],
+                    capture_output=True, text=True, timeout=5
+                )
+                if result.stdout:
+                    for filepath in result.stdout.strip().splitlines():
+                        filepath = filepath.strip()
+                        if not filepath or not os.path.exists(filepath):
+                            continue
+                        # If the type is defined in a DIFFERENT header than where we are adding the extern,
+                        # we must include that header in the target header.
+                        target_header = os.path.join(_root_dir, default_path)
+                        if os.path.abspath(filepath) != os.path.abspath(target_header):
+                            rel_inc = os.path.relpath(filepath, include_dir)
+                            inc_line = f'#include "{rel_inc}"'
+                            _log(f"[builder] Type {base_type} found in {rel_inc}. Adding include to {default_path}")
+                            _append_to_file_if_missing(default_path, inc_line, backups, _log=_log)
+            except Exception as e:
+                _log(f"[builder] Warning during type search: {e}")
+
     # Search for an existing extern declaration in any header
     try:
         # Grep for 'extern ... symbol_name ... ;'
         # We use a pattern that matches 'extern' and then the symbol name followed by optional array/semicolon
         pattern = rf'extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
         result = subprocess.run(
-            ["grep", "-rln", "--include=*.h", pattern, include_dir],
+            ["grep", "-rln", "-P", "--include=*.h", pattern, include_dir],
             capture_output=True, text=True, timeout=5
         )
         if result.stdout:
+            found_globally = False
             for filepath in result.stdout.strip().splitlines():
                 filepath = filepath.strip()
                 if not filepath or not os.path.exists(filepath):
                     continue
-                print(f"[builder] Updating extern {symbol_name} in {os.path.basename(filepath)}")
-                _append_to_file_if_missing(filepath, new_declaration, backups)
-            return
+                if filepath == os.path.join(_root_dir, default_path):
+                    found_globally = True
+                _log(f"[builder] Updating extern {symbol_name} in {os.path.basename(filepath)}")
+                _append_to_file_if_missing(filepath, new_declaration, backups, _log=_log)
+            
+            if found_globally:
+                return
+            
+            _log(f"[builder] Extern {symbol_name} found elsewhere but NOT in {default_path}. Adding to {default_path} for visibility.")
     except Exception as e:
-        print(f"[builder] Warning during extern search: {e}")
+        _log(f"[builder] Warning during extern search: {e}")
 
     # Not found, add to default path
-    _append_to_file_if_missing(default_path, new_declaration, backups)
+    _append_to_file_if_missing(default_path, new_declaration, backups, _log=_log)
 
 
 def _commit_code_to_source(src_path, func_name, c_code):
@@ -660,7 +929,7 @@ def _commit_code_to_source(src_path, func_name, c_code):
     return True
 
 
-def _append_to_file_if_missing(file_path, headers, backups=None):
+def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
     """Append lines to a file if they are not already present.
 
     Each line from headers is checked individually.
@@ -669,7 +938,7 @@ def _append_to_file_if_missing(file_path, headers, backups=None):
     file_path = os.path.join(_root_dir, file_path) if not os.path.isabs(file_path) else file_path
 
     if not os.path.exists(file_path):
-        print(f"[builder] Warning: {file_path} does not exist, creating it")
+        _log(f"[builder] Warning: {file_path} does not exist, creating it")
         with open(file_path, "w") as f:
             f.write("")
 
@@ -704,8 +973,20 @@ def _append_to_file_if_missing(file_path, headers, backups=None):
                 if existing_line.strip() == line:
                     continue
 
-                # If the symbol matches but the line is different (different type/array), replace it
-                print(f"[builder] Redefining {symbol_name} in {os.path.basename(file_path)}")
+                # --- SYMBOL PROTECTION ---
+                # Detect the types in both lines
+                # Pattern: extern Type Symbol ... ;
+                existing_type_match = re.match(r'^extern\s+([\w\s\*]+?)\s+\w+', existing_line)
+                if existing_type_match:
+                    existing_type = existing_type_match.group(1).strip()
+                    # If the existing type is already something specific (not 'u32' or '?'),
+                    # and the new type is just 'u32', DO NOT REDEFINE.
+                    if existing_type not in ['u32', '?', 'void'] and new_type in ['u32', '?', 'void']:
+                        _log(f"[builder] Protecting existing type '{existing_type}' for {symbol_name} (ignoring '{new_type}')")
+                        continue
+
+                # If the symbol matches but the line is different, replace it
+                _log(f"[builder] Redefining {symbol_name} in {os.path.basename(file_path)}: {existing_line.strip()} -> {line.strip()}")
                 existing_content = (
                     existing_content[:existing_match.start()]
                     + line
@@ -735,103 +1016,45 @@ def _append_to_file_if_missing(file_path, headers, backups=None):
         with open(file_path, "w") as f:
             f.write(new_content)
 
-        print(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
+        _log(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
     elif existing_content != (backups.get(file_path) if backups else None):
         # If we replaced lines but didn't add any new ones, we still need to write
         with open(file_path, "w") as f:
             f.write(existing_content)
     else:
-        print(f"[builder] No new lines to add to {os.path.basename(file_path)}")
+        _log(f"[builder] No new lines to add to {os.path.basename(file_path)}")
 
 
-def _apply_struct_update(type_name, new_definition, backups=None):
-    """Find and replace an existing struct/typedef definition across all include files.
-
-    Searches include/ directory for the type, extracts the full block, and replaces it.
-    If backups dict is provided, backs up the file before modifying.
-    Returns the file path if successful, None otherwise.
-    """
-    include_dir = os.path.join(_root_dir, "include")
-
-    # Search for the type definition
+def _find_struct_file(type_name):
+    """Find which header file contains the struct definition."""
+    # Common headers
+    headers = [
+        "include/UnknownHeaders.h",
+        "include/game/GameInitVariables.h",
+    ]
+    
+    # Grep for it
+    pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{type_name}\b'
+    
+    # Use grep -l to find files
     try:
-        result = subprocess.run(
-            ["grep", "-rln", "--include=*.h",
-             f"struct _*{type_name}", include_dir],
-            capture_output=True, text=True, timeout=5
+        res = subprocess.run(
+            ["grep", "-rl", pattern, "include"],
+            capture_output=True, text=True, cwd=_root_dir
         )
-        if not result.stdout:
-            # Try typedef
-            result = subprocess.run(
-                ["grep", "-rln", "--include=*.h",
-                 f"typedef.*{type_name}", include_dir],
-                capture_output=True, text=True, timeout=5
-            )
-    except Exception:
-        return None
-
-    if not result.stdout:
-        print(f"[builder] Struct {type_name} not found, treating as a new addition")
-        return None
-
-    # Try each matching file
-    for filepath in result.stdout.strip().splitlines():
-        filepath = filepath.strip()
-        if not filepath or not os.path.exists(filepath):
-            continue
-
-        try:
-            with open(filepath, "r") as f:
-                content = f.read()
-        except Exception:
-            continue
-
-        # Find the struct/typedef block for this type
-        pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_name)}\b'
-        match = re.search(pattern, content)
-        if not match:
-            continue
-
-        start = match.start()
-        # Find opening brace
-        brace_pos = content.find('{', start)
-        if brace_pos == -1:
-            continue
-
-        # Find matching closing brace
-        depth = 0
-        end = brace_pos
-        for i in range(brace_pos, len(content)):
-            if content[i] == '{':
-                depth += 1
-            elif content[i] == '}':
-                depth -= 1
-                if depth == 0:
-                    end = i
-                    break
-
-        # Find semicolon after closing brace (and optional type name + comment)
-        rest = content[end+1:]
-        semi_match = re.match(r'[^;]*;[^\n]*', rest)
-        if semi_match:
-            end = end + 1 + semi_match.end()
-        else:
-            end += 1
-
-        old_block = content[start:end]
-        print(f"[builder] Replacing {len(old_block)} chars in {os.path.basename(filepath)}")
-
-        # Backup the file before modifying (if backups dict provided)
-        if backups is not None and filepath not in backups:
-            backups[filepath] = content
-
-        # Replace
-        new_content = content[:start] + new_definition.strip() + content[end:]
-        with open(filepath, "w") as f:
-            f.write(new_content)
-
-        return filepath
-
+        if res.returncode == 0:
+            files = res.stdout.strip().splitlines()
+            if files:
+                return os.path.join(_root_dir, files[0])
+    except:
+        pass
+        
+    for h in headers.copy():
+        path = os.path.join(_root_dir, h)
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                if re.search(pattern, f.read()):
+                    return path
     return None
 
 
@@ -860,18 +1083,28 @@ def committer_node(state):
     success = _commit_code_to_source(source_path, func_name, current_code)
 
     if success:
-        # Apply struct updates permanently
+        # Apply struct modifications permanently
         struct_updates = state.get("struct_updates", [])
         if struct_updates:
-            for upd in struct_updates:
-                type_name = upd["type_name"]
-                new_def = upd["definition"]
-                print(f"[committer] Permanently applying struct update for {type_name}")
-                updated = _apply_struct_update(type_name, new_def)
-                if updated:
-                    print(f"[committer] Updated {type_name} in {updated}")
-                else:
-                    print(f"[committer] WARNING: Could not find {type_name} to update")
+            for update in struct_updates:
+                type_name = update.get("type_name")
+                actions = update.get("actions", [])
+                if not type_name or not actions:
+                    continue
+                
+                print(f"[committer] Permanently applying struct modifications for {type_name}")
+                filepath = _find_struct_file(type_name)
+                if filepath:
+                    from .llm import _extract_struct_block
+                    with open(filepath, "r") as f:
+                        content = f.read()
+                    old_struct_def = _extract_struct_block(filepath, type_name)
+                    if old_struct_def:
+                        new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions)
+                        new_content = content.replace(old_struct_def, new_struct_def)
+                        with open(filepath, "w") as f:
+                            f.write(new_content)
+                        print(f"[committer] Updated {type_name} in {filepath}")
 
         # Apply header additions
         headers = state.get("local_headers", "")

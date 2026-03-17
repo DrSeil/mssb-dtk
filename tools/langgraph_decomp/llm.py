@@ -15,7 +15,9 @@ Environment variables:
 
 import os
 import sys
-from typing import Optional
+import json
+import re
+from typing import Optional, List, Dict
 
 from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -56,89 +58,65 @@ You receive:
 6. The current header file for context.
 7. The compiled assembly resulting from your current C code attempt.
 
-You must respond with FIVE clearly labeled sections. Use these exact markers:
+RESPOND ONLY WITH A VALID JSON OBJECT. Do not include any text outside the JSON.
+The JSON schema must be:
+{{
+  "explanation": "Brief summary of changes",
+  "function_code": "The complete C code for the function",
+  "struct_modifications": [
+    {{
+      "type_name": "Name of the struct to modify",
+      "actions": [
+        {{
+          "action": "add_field",
+          "type": "C type",
+          "name": "field_name",
+          "offset": "0xXXX"
+        }}
+      ]
+    }}
+  ],
+  "header_additions": "New prototypes or structs to ADD to the header",
+  "extern_declarations": "Extern variables to ADD"
+}}
 
-[EXPLANATION]
-<a brief summary of your changes and reasoning>
-
-[FUNCTION]
-<ONLY the requested function implementation — nothing else>
-
-[UPDATES]
-Use this section to UPDATE existing struct/typedef definitions. For each update:
-@@@ TypeName
-<full replacement typedef/struct definition>
-@@@ END
-You may include multiple @@@ blocks. Leave this section empty if no updates needed.
-
-[HEADER]
-<ONLY new lines to ADD to the existing header file — NOT the entire header file>
-<leave empty if no header changes needed>
-
-[EXTERNS]
-<ONLY new extern declarations to ADD to UnknownHeaders.h>
-<leave empty if no extern changes needed>
+STRUCT MODIFICATION RULES:
+- If a struct needs a new field, DO NOT try to calculate padding manually.
+- Instead, use the `struct_modifications` section to specify the field and its offset.
+- Our specialized tool will handle the padding and alignment for you.
+- ONLY specify fields that are missing or need renaming.
+- NEVER specify modifications for fields that ALREADY EXIST in the struct at the requested offset. Use the existing field name exactly as defined.
+- Fields MUST exist in the provided codebase context or be added via header_additions.
+- Hex offsets MUST be absolute (e.g., 0x479).
 
 CRITICAL RULES:
 - The code must compile with Metrowerks CodeWarrior GC/1.3.2.
-- [FUNCTION] must contain ONLY the single requested function. Do NOT implement other
-  functions like helper functions or called functions — those already exist elsewhere.
-- [FUNCTION] must NOT contain #include directives — includes are handled by the build system.
-- [HEADER] must contain ONLY new lines to ADD. Do NOT reproduce the entire header file.
-  Do NOT include #ifndef guards, #define, #endif, or existing lines.
-- NEVER output `?` as a type. M2C uses `?` as a placeholder — you must replace ALL `?` with
-  real C types like `void`, `int`, `s32`, `u8`, `f32`, etc.
-- NEVER use `(? (*)())` casts. Use proper function pointer types like `void (*)(void)`.
-- NEVER use pointer arithmetic with manual offsets. Always use proper struct field access.
-- Declare any new extern variables or function prototypes that the function needs.
-- If the function calls another function, add its prototype to [HEADER] or [EXTERNS].
-- Read build errors carefully — if a symbol is undeclared, add it to [EXTERNS].
-- Read diff feedback carefully — instruction mismatches tell you exactly what's wrong.
-
-STRUCT MODIFICATION RULES:
-- You will be provided with existing struct definitions from the codebase.
-- To UPDATE an existing struct, use the [UPDATES] section with @@@ TypeName markers.
-  Provide the COMPLETE replacement typedef. The system will find and replace it.
-- You ARE ALLOWED to ADD new fields to existing structs to match assembly offsets.
-- You ARE ALLOWED to define NEW nested structs inside existing structs, or as separate
-  typedefs, when the assembly suggests a sub-structure at a particular offset.
-- You ARE ALLOWED to replace padding with properly typed nested struct fields.
-  For example, if `artificial_padding(0, 0x70a, void*)` covers offsets 0x04-0x710,
-  you can replace part of that padding with a named sub-struct at the right offset.
-- You MUST NEVER remove or rename existing named fields from a struct.
-- Use `unk_XX` naming for new unknown fields, where XX is the hex byte offset.
-- Use padding arrays like `u8 _padXX[size]` for gaps between known fields.
-- If the assembly accesses offset 0x714 as a u32, but the struct only goes to 0x710,
-  add fields to fill the gap.
-- Put NEW struct/typedef definitions or NEW function prototypes in the [HEADER] section. 
-  Use standard C syntax. Do NOT use @@@ markers here.
-- Put UPDATED existing struct/typedef definitions in the [UPDATES] section ONLY. 
-  You MUST use the @@@ TypeName ... @@@ END syntax here.
-- Put NEW extern declarations (like `extern s32 lbl_3_data_BF6C;`) in the [EXTERNS] section.
-  Use standard C syntax. Do NOT use @@@ markers here.
+- `function_code` must contain ONLY the single requested function.
+- Do NOT include #include directives in `function_code`.
+- NEVER output `?` as a type. Replace ALL `?` with real C types.
+- NEVER include assembly instructions or comments in `function_code`.
+- Declare any new symbols in `extern_declarations` or `header_additions`.
+- Read build errors and diff feedback carefully to guide your fixes.
 """
-
-
 
 
 def get_local_llm() -> BaseChatModel:
     """Create an OpenAI-compatible chat model for local inference (LM Studio/Ollama)."""
     
     # 1. Get the model name. 
-    # For LM Studio, this can often be any string, but Ollama needs the specific name.
     model = os.environ.get("LOCAL_LLM_MODEL", "deepseek-coder-v2")
     
     # 2. Get the Base URL. 
-    # LM Studio default: http://localhost:1234/v1
-    # Ollama default:    http://localhost:11434/v1
     base_url = os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:1234/v1")
 
     return ChatOpenAI(
         model=model,
         base_url=base_url,
-        api_key="lm-studio", # Required by the class, but ignored by local servers
-        temperature=0.2,
-        callbacks=[StdOutCallbackHandler()] # This prints the execution flow to console
+        api_key="lm-studio",
+        temperature=0.1,
+        # Some local servers don't support json_object, so we use text and rely on our parser
+        model_kwargs={"response_format": {"type": "text"}},
+        callbacks=[StdOutCallbackHandler()]
     )
 
 
@@ -157,8 +135,8 @@ def get_cloud_llm() -> BaseChatModel:
         return ChatGoogleGenerativeAI(
             model=model,
             google_api_key=api_key,
-            temperature=0.2,
-            callbacks=[StdOutCallbackHandler()] # This prints the execution flow to console
+            temperature=0.1,
+            callbacks=[StdOutCallbackHandler()]
         )
     else:
         # OpenRouter via OpenAI-compatible API
@@ -173,17 +151,18 @@ def get_cloud_llm() -> BaseChatModel:
             model=model,
             openai_api_key=api_key,
             openai_api_base="https://openrouter.ai/api/v1",
-            temperature=0.2,
+            temperature=0.1,
+            model_kwargs={"response_format": {"type": "json_object"}},
             callbacks=[StdOutCallbackHandler()]
         )
 
 
 def get_llm(tier: str) -> BaseChatModel:
     """Get the appropriate LLM for the given tier."""
-    # if tier == "local":
-    #     return get_local_llm()
-    # else:
-    return get_cloud_llm()
+    if tier == "local":
+        return get_local_llm()
+    else:
+        return get_cloud_llm()
 
 
 # ---------------------------------------------------------------------------
@@ -230,10 +209,12 @@ def resolve_symbol_definitions(state: dict) -> str:
         # Extract base type (strip pointers, const, etc.)
         base_type = re.sub(r'[\*\s]', '', type_name)
         base_type = base_type.replace('const', '').replace('volatile', '').strip()
-        if base_type and base_type not in ('void', 'int', 'char', 'short', 'long',
-                                           'u8', 'u16', 'u32', 'u64', 's8', 's16',
-                                           's32', 's64', 'f32', 'f64', 'BOOL'):
-            types_to_resolve.add(base_type)
+        # Only add valid identifier names (skip '?' etc)
+        if base_type and re.match(r'^[a-zA-Z_]\w*$', base_type):
+            if base_type not in ('void', 'int', 'char', 'short', 'long',
+                               'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                               's32', 's64', 'f32', 'f64', 'BOOL'):
+                types_to_resolve.add(base_type)
 
     # Find function calls: "bl FuncName" in ASM
     for match in re.finditer(r'bl\s+(\w+)', asm):
@@ -267,7 +248,8 @@ def resolve_symbol_definitions(state: dict) -> str:
             if not os.path.exists(search_path):
                 continue
             try:
-                cmd = ["grep", "-rn"]
+                # Use -w for word boundaries to avoid partial matches
+                cmd = ["grep", "-rnw"]
                 for ext in file_extensions:
                     cmd.extend(["--include", ext])
                 cmd.extend([pattern, search_path])
@@ -279,7 +261,6 @@ def resolve_symbol_definitions(state: dict) -> str:
         return results
 
     # First, search the source file specifically for static declarations
-    # These are critical because the LLM must NOT redeclare them
     source_defs = []
     if source_path and os.path.exists(source_path):
         try:
@@ -303,10 +284,12 @@ def resolve_symbol_definitions(state: dict) -> str:
                         )
                         if static_match:
                             stype = static_match.group(1)
-                            if stype not in ('static', 'extern', 'void', 'int', 'char',
-                                           'u8', 'u16', 'u32', 'u64', 's8', 's16',
-                                           's32', 's64', 'f32', 'f64', 'BOOL'):
-                                types_to_resolve.add(stype)
+                            # Only add valid identifier names
+                            if stype and re.match(r'^[a-zA-Z_]\w*$', stype):
+                                if stype not in ('static', 'extern', 'void', 'int', 'char',
+                                               'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                               's32', 's64', 'f32', 'f64', 'BOOL'):
+                                    types_to_resolve.add(stype)
                         break  # Only first declaration per symbol
         except Exception:
             pass
@@ -333,11 +316,12 @@ def resolve_symbol_definitions(state: dict) -> str:
                             type_str = ext_match.group(1).strip()
                             base = re.sub(r'[\*\s]', '', type_str)
                             base = base.replace('const', '').replace('volatile', '').strip()
-                            if base and base not in ('void', 'int', 'char',
-                                'u8', 'u16', 'u32', 'u64', 's8', 's16',
-                                's32', 's64', 'f32', 'f64', 'BOOL'):
-                                types_to_resolve.add(base)
-                    break
+                            # Only add valid identifier names
+                            if base and re.match(r'^[a-zA-Z_]\w*$', base):
+                                if base not in ('void', 'int', 'char',
+                                    'u8', 'u16', 'u32', 'u64', 's8', 's16',
+                                    's32', 's64', 'f32', 'f64', 'BOOL'):
+                                    types_to_resolve.add(base)
         else:
             # Try searching .c files too for non-static symbols
             lines = _grep_symbol(sym, file_extensions=["*.c"])
@@ -346,8 +330,6 @@ def resolve_symbol_definitions(state: dict) -> str:
                     if 'static' not in line and sym in line:
                         resolved_symbols.add(sym)
                         break
-
-    # For each type that needs resolution, extract its full struct definition
 
     # For each type that needs resolution, extract its full struct definition
     resolved_defs = []  # (file, definition_text) pairs
@@ -362,7 +344,7 @@ def resolve_symbol_definitions(state: dict) -> str:
         lines = _grep_symbol(type_name, pattern=f"struct _*{type_name}")
         if not lines:
             lines = _grep_symbol(type_name, pattern=f"typedef.*{type_name}")
-
+        
         if lines:
             for line in lines:
                 filepath = line.split(':')[0]
@@ -551,7 +533,18 @@ def build_refactor_prompt(state: dict) -> str:
         for i, attempt in enumerate(attempts):
             pct = attempt.get("match_percent", 0)
             sections.append(f"### Attempt {i + 1} ({pct:.1f}% match)\n")
-            sections.append(f"```c\n{attempt.get('c_code', '').strip()}\n```\n")
+            
+            updates = attempt.get("struct_updates", [])
+            if updates:
+                sections.append("**Struct Updates Tried:**\n")
+                # Handle old format (typedef) or new format (modification actions)
+                if updates and isinstance(updates[0], dict) and 'actions' in updates[0]:
+                    sections.append(f"Applied modifications: {json.dumps(updates, indent=2)}\n")
+                else:
+                    for upd in updates:
+                        sections.append(f"@@@ {upd['type_name']}\n{upd['definition']}\n@@@ END\n")
+
+            sections.append(f"**Function Code Tried:**\n```c\n{attempt.get('c_code', '').strip()}\n```\n")
 
             build_err = attempt.get("build_error", "")
             if build_err:
@@ -588,26 +581,8 @@ def build_refactor_prompt(state: dict) -> str:
 
     sections.append(
         "\n## Instruction\n"
-        f"You MUST respond with FIVE sections using these exact markers:\n\n"
-        f"[EXPLANATION]\n"
-        f"A brief summary of your changes.\n\n"
-        f"[FUNCTION]\n"
-        f"ONLY the implementation of `{state['function_name']}`. "
-        f"Do NOT implement any other functions. Do NOT include #include directives.\n\n"
-        f"[UPDATES]\n"
-        f"To update EXISTING structs/typedefs, use:\n"
-        f"@@@ TypeName\n"
-        f"<complete replacement typedef/struct>\n"
-        f"@@@ END\n"
-        f"Leave empty if no updates needed.\n\n"
-        f"[HEADER]\n"
-        f"ONLY new additions (new struct defs, new prototypes). "
-        f"Do NOT reproduce the entire header file. No #ifndef guards.\n\n"
-        f"[EXTERNS]\n"
-        f"ONLY new extern declarations. Leave empty if none needed.\n\n"
-        f"CRITICAL: Replace ALL `?` types with real C types (void, s32, u8, f32, etc).\n"
-        f"CRITICAL: The code MUST compile. Declare all needed symbols.\n"
-        f"Fix all issues identified in the feedback above."
+        f"Analyze the assembly and previous feedback to matching C code."
+        "\nRespond in JSON format as specified in the system prompt."
     )
 
     return "\n".join(sections)
@@ -658,106 +633,36 @@ def parse_llm_response(raw: str) -> dict:
     """Parse the LLM's structured response into sections.
 
     Returns dict with keys: 'function', 'updates', 'header', 'externs', 'explanation'
-    'updates' is a list of {'type_name': str, 'definition': str} dicts.
+    'updates' is a list of struct modification actions.
     """
-    import re
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        # Fallback for non-JSON responses (try to find JSON block)
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if match:
+            try:
+                data = json.loads(match.group(0))
+            except:
+                return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Fallback parse"}
+        else:
+            return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Failed parse"}
 
-    # Strip any wrapping markdown code fences
-    if raw.startswith("```"):
-        lines = raw.split("\n")
-        if lines[-1].strip() == "```":
-            lines = lines[1:-1]
-        elif lines[0].strip().startswith("```"):
-            lines = lines[1:]
-        raw = "\n".join(lines)
-
-    result = {"function": "", "updates": [], "header": "", "externs": "", "explanation": ""}
-
-    # Try to parse structured sections using markers
-    if "[FUNCTION]" in raw:
-        markers = [
-            ("[EXPLANATION]", "explanation"),
-            ("[FUNCTION]", "function"),
-            ("[UPDATES]", "_updates_raw"),
-            ("[HEADER]", "header"),
-            ("[EXTERNS]", "externs"),
-        ]
-
-        # Find positions of all markers
-        positions = []
-        for marker, key in markers:
-            idx = raw.find(marker)
-            if idx != -1:
-                positions.append((idx, len(marker), key))
-
-        # Sort by position
-        positions.sort(key=lambda x: x[0])
-
-        # Extract content between consecutive markers
-        raw_sections = {}
-        for i, (pos, marker_len, key) in enumerate(positions):
-            content_start = pos + marker_len
-            if i + 1 < len(positions):
-                content_end = positions[i + 1][0]
-            else:
-                content_end = len(raw)
-            raw_sections[key] = raw[content_start:content_end]
-
-        result["function"] = _clean_code_block(raw_sections.get("function", ""))
-        result["header"] = _clean_code_block(raw_sections.get("header", ""))
-        result["externs"] = _clean_code_block(raw_sections.get("externs", ""))
-        result["explanation"] = raw_sections.get("explanation", "").strip()
-
-        # Parse [UPDATES] section: extract @@@ TypeName / @@@ END blocks
-        updates_raw = raw_sections.get("_updates_raw", "")
-        if updates_raw:
-            result["updates"] = _parse_update_blocks(updates_raw)
-    else:
-        # Fallback: treat the entire response as the function
-        result["function"] = _clean_code_block(raw)
+    result = {
+        "function": data.get("function_code", ""),
+        "updates": data.get("struct_modifications", []),
+        "header": data.get("header_additions", ""),
+        "externs": data.get("extern_declarations", ""),
+        "explanation": data.get("explanation", "")
+    }
 
     return result
-
-
-def _parse_update_blocks(text: str) -> list:
-    """Parse @@@ TypeName / @@@ END blocks from [UPDATES] section.
-
-    Returns list of {'type_name': str, 'definition': str} dicts.
-    """
-    import re
-    updates = []
-
-    # Find all @@@ TypeName ... @@@ END blocks
-    # Pattern: @@@ followed by a type name, then content, then @@@ END
-    # Use [\r\n]+ to be robust against line endings
-    pattern = r'@@@\s*(\w+)\s*[\r\n]+(.*?)@@@\s*END'
-    for match in re.finditer(pattern, text, re.DOTALL):
-        type_name = match.group(1).strip()
-        definition = match.group(2).strip()
-
-        # Clean markdown fences from definition
-        definition = _clean_code_block(definition)
-
-        if type_name and definition:
-            updates.append({
-                "type_name": type_name,
-                "definition": definition,
-            })
-
-    # Also check for natural language "no updates" responses
-    if not updates:
-        cleaned = _clean_code_block(text)
-        if not cleaned:  # was filtered as natural language
-            return []
-
-    return updates
 
 
 def _clean_code_block(text: str) -> str:
     """Clean a code block: strip fences, whitespace, and filter out natural language."""
     text = text.strip()
     # Remove markdown code fences if present (robust version)
-    # First, try to strip them from the start and end
     if text.startswith("```"):
         lines = text.split("\n")
         if lines[-1].strip() == "```":
@@ -766,32 +671,23 @@ def _clean_code_block(text: str) -> str:
             lines = lines[1:]
         text = "\n".join(lines).strip()
     
-    # Finally, remove any stray backticks that might have leaked in
     text = text.replace("```", "").strip()
 
-    # Detect natural language responses that aren't code
-    # Common LLM responses when no changes are needed
     no_change_phrases = [
         "no new", "no changes", "none needed", "no additional",
         "no extern", "no header", "not needed", "nothing to add",
-        "no modifications", "n/a", "no declarations", "not required",
-        "no updates", "already defined", "already declared",
+        "no modifications", "n/a", "no updates", "already defined", "already declared",
     ]
     lower = text.lower().strip()
 
-    # Check for "no changes needed" type responses FIRST
     for phrase in no_change_phrases:
         if phrase in lower:
-            # Make sure it's not actual code that happens to contain these words
-            # Real code has semicolons, braces, or preprocessor directives
             has_code = any(c in text for c in ['{', '}', ';', '#define', '#include'])
             if not has_code:
                 return ""
 
-    # If text has no C code markers at all and is short, it's probably explanation
     if lower and not any(c in text for c in ['{', '}', ';', '#', '(']):
         if len(text) < 150 and text.count('\n') < 3:
             return ""
-
 
     return text

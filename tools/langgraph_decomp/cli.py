@@ -10,6 +10,7 @@ Usage:
 import argparse
 import json
 import os
+import shutil
 import sys
 import time
 
@@ -103,7 +104,17 @@ def main():
         '--debug', action='store_true',
         help='Show FULL debug output: complete LLM prompts, responses, build errors, and diffs',
     )
+    parser.add_argument(
+        '--clear-checkpoints', action='store_true',
+        help='Clear the persistent LangGraph checkpoints before running',
+    )
     args = parser.parse_args()
+
+    if args.clear_checkpoints:
+        checkpoints_dir = os.path.join(_root_dir, ".langgraph_checkpoints")
+        if os.path.exists(checkpoints_dir):
+            shutil.rmtree(checkpoints_dir)
+            print("Cleared persistent checkpoints.")
 
     # Determine target function
     if args.function:

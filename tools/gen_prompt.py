@@ -98,6 +98,8 @@ CODE_RULES = """\
 - All struct field accesses must use `->` or `.` operators.
 - When you see `*(type*)((u8*)ptr + 0xNN)`, create a struct with a field at that offset.
 - Use `u8 _pad[0xNN];` for unknown fields between known offsets.
+- CRITICAL: When accessing fields of an existing struct from the provided definitions, YOU MUST use the EXACT field names provided. DO NOT invent new field names (e.g. do not invent `unk55` if `_55` already exists at offset 0x55).
+- Treat the given struct definitions as the ultimate truth. NEVER change the names, types, or offsets of existing struct fields. Only ADD clearly missing fields.
 - Check the existing header file for the source file — structs may already be defined.
 - ADD PROTOTYPES: If you call a function (like `_OSAllocFromHeap` or `void* memcpy`) that is not in the provided headers, you MUST add its prototype to the [HEADER] or [EXTERNS] section.
 - ALWAYS use project types (`u32`, `s16`, `f32`, etc.) instead of standard `long`, `short`, `float`."""
