@@ -192,8 +192,22 @@ void fn_3_104A3C(Vec *dst, const Mtx44 mtx) {
 }
 
 // .text:0x00104A88 size:0x4C mapped:0x80743B1C
-void fn_3_104A88(void) {
-    return;
+
+void fn_3_104A88(Vec *dst, Mtx44 mtx) {
+    // Register Steering: Assigning r3 to a local here forces the use of r31
+    Vec *v = dst; 
+
+    // Assembly shows:
+    // mr r3, r4 (mtx)
+    // mr r4, r0 (global vec)
+    // mr r5, r31 (dst)
+    PSMTX44MultVec(mtx, &lbl_3_data_20FF8, v);
+
+    // PSVECNormalize(v, v);
+    // Assembly shows:
+    // mr r3, r31
+    // mr r4, r31
+    PSVECNormalize(v, v);
 }
 
 // .text:0x00104AD4 size:0x4C mapped:0x80743B68
