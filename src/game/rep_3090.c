@@ -1,6 +1,7 @@
 #include "game/rep_3090.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "stl/mem.h"
 
 // .text:0x000FC448 size:0x4F0 mapped:0x8073B4DC
 void fn_3_FC448(void) {
@@ -266,8 +267,15 @@ void fn_3_105ACC(void) {
 }
 
 // .text:0x00105BD8 size:0x50 mapped:0x80744C6C
-void fn_3_105BD8(void) {
-    return;
+void fn_3_105BD8(Struct_105BD8* arg0) {
+    f32 val;
+    memset(arg0, 0, 0x88);
+    val = lbl_3_rodata_30FC;
+    arg0->field_0x3C = val;
+    arg0->field_0x28 = val;
+    arg0->field_0x14 = val;
+    arg0->field_0x00 = val;
+    arg0->field_0x40 = val;
 }
 
 // .text:0x00105C28 size:0x5C mapped:0x80744CBC

@@ -65,9 +65,22 @@ void fn_3_104B20(VecXYZ* dst, SourceObj_104B20* src);
 void fn_3_104B3C(void);
 void fn_3_1054CC(void);
 void fn_3_1054D0(void);
+// Struct for fn_3_105BD8
+typedef struct Struct_105BD8 {
+    /* 0x00 */ f32 field_0x00;
+    /* 0x04 */ u8 _pad1[0x10];
+    /* 0x14 */ f32 field_0x14;
+    /* 0x18 */ u8 _pad2[0x10];
+    /* 0x28 */ f32 field_0x28;
+    /* 0x2C */ u8 _pad3[0x10];
+    /* 0x3C */ f32 field_0x3C;
+    /* 0x40 */ f32 field_0x40;
+    /* 0x44 */ u8 _pad4[0x44];
+} Struct_105BD8; // Size: 0x88 (136 bytes)
+
 void fn_3_105A10(void);
 void fn_3_105ACC(void);
-void fn_3_105BD8(void);
+void fn_3_105BD8(Struct_105BD8* arg0);
 void fn_3_105C28(void);
 void fn_3_105C84(void);
 void fn_3_105CDC(void);
@@ -85,4 +98,5 @@ void fn_3_106BA0(void);
 /* --- The Function --- */
 extern Vec lbl_3_data_20FF8;
 extern Vec lbl_3_data_20FEC;
+extern f32 lbl_3_rodata_30FC;
 #endif // !__GAME_rep_3090_H_
