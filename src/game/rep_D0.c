@@ -5,6 +5,15 @@
 #include "static/UnknownHomes_Static.h"
 #include "game/rep_1D58.h"
 
+// .text:0x000008D4 size:0x40 mapped:0x8063F968
+BALL_COLLISION_TYPE fn_3_8D4(VecSrcDst* inVec, CollisionStruct* outCollision) {
+    if (g_UNK_StadiumDetails.pCollisionBoxes != NULL) {
+        return didCollideWithBoundingBoxes(inVec, outCollision, g_UNK_StadiumDetails.pCollisionBoxes,
+                                           g_UNK_StadiumDetails.numCollisionBoxes);
+    }
+    return 0;
+}
+
 // .text:0x00000914 size:0x158 mapped:0x8063F9A8
 BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollision, int collisionCheckType,
                                    BOOL useBallCoords) {

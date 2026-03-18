@@ -23,9 +23,9 @@ typedef struct _CollisionBox {
 
 typedef struct _UNK_StadiumCollision {
     void* _00;
-    artificial_padding(0, 0x70a, void*);
-    s16 numCollisionBoxes;
-    CollisionBox* pCollisionBoxes;
+    artificial_padding(0, 0x778, void*);
+    CollisionBox* pCollisionBoxes; // 0x778
+    s16 numCollisionBoxes; // 0x77c
 } UNK_StadiumCollision; // size: 0x780
 
 typedef struct _TriangleCollisionStruct {
@@ -68,6 +68,7 @@ typedef enum _BALL_COLLISION_TYPE {
     BALL_COLLISION_TYPE_FOUL = 0x80,
 } BALL_COLLISION_TYPE;
 
+BALL_COLLISION_TYPE fn_3_8D4(VecSrcDst* inVec, CollisionStruct* outCollision);
 BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollision, int collisionCheckType, BOOL useBallCoords);
 BALL_COLLISION_TYPE checkStatiumHazardCollisions(VecSrcDst* inVec, CollisionStruct* outCollision, Vec* v);
 BALL_COLLISION_TYPE didCollideWithBoundingBoxes(VecSrcDst* inVec, CollisionStruct* outCollision, CollisionBox* boxes,
