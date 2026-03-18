@@ -16,9 +16,19 @@ extern u8 lbl_803CBBC0;
 extern struct LBL_3_DATA_A10* lbl_3_data_A10[2];
 extern void fn_80052694(struct Fn_80052694_Arg*);
 
+typedef struct _CompressedDiskRead {
+    u32 OriginalSize_CompressedFlagInTopBits_;
+    u32 diskLocation;
+    u32 compressedSize;
+    u32 padding;
+} CompressedDiskRead;
+
+void* ARAMTransfer(CompressedDiskRead *compressedStruct, void *readDestination, u8 loadInfo, void *aramAddress);
+
 struct FanObject* setFanObjPtr(void);
 void fn_3_35E4(struct FanObject* arg0);
 void fn_3_35F0(void);
+void fn_3_64DC(void);
 void fn_3_38E8(struct LBL_3_DATA_A10* arg0);
 void fn_3_3904(void);
 void fn_3_3BE8(void);

@@ -2,6 +2,7 @@
 #include "header_rep_data.h"
 #include "Dolphin/GX/GXFrameBuffer.h"
 #include "game/rep_D0.h"
+#include "game/game_batter.h"
 
 extern u32 fn_80009028(void);
 
@@ -22,6 +23,14 @@ void fn_3_35F0(void) {
     if (fn_80009028() == 0) {
         GXSetCopyClear(g_UNK_StadiumDetails.clearColor, 0xFFFFFF);
     }
+}
+
+extern CompressedDiskRead lbl_3_data_7EC[];
+
+// .text:0x000064DC size:0x54 mapped:0x80645570
+void fn_3_64DC(void) {
+    u32 index = g_d_GameSettings.StadiumID * 3 + g_d_GameSettings.miniGameStadiumIndicator;
+    ARAMTransfer(&lbl_3_data_7EC[index], NULL, 0, NULL);
 }
 
 // .text:0x000038E8 size:0x1C
