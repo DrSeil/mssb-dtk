@@ -141,7 +141,7 @@ void fn_3_156D04(void);
 void fn_3_15730C(void);
 void fn_3_1573AC(void);
 void fn_3_157570(void);
-void fn_3_157588(void);
+void fn_3_157588(s32 arg);
 void fn_3_1575F0(void);
 void fn_3_15767C(void);
 void fn_3_1578F8(void);

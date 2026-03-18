@@ -637,8 +637,12 @@ void fn_3_157570(void) {
 }
 
 // .text:0x00157588 size:0x68 mapped:0x8079661C
-void fn_3_157588(void) {
-    return;
+void fn_3_157588(s32 arg) {
+    UnknownStruct_B850 *temp_r3;
+
+    temp_r3 = (UnknownStruct_B850 *)fn_80033A24(fn_3_15767C, 0x80, 0, (arg + 6) / 7, 1, 0x28);
+    lbl_3_bss_B850 = temp_r3;
+    temp_r3->someFlag = 0;
 }
 
 // .text:0x001575F0 size:0x8C mapped:0x80796684
