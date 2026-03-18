@@ -18,6 +18,7 @@ extern void fn_80052694(struct Fn_80052694_Arg*);
 
 struct FanObject* setFanObjPtr(void);
 void fn_3_35E4(struct FanObject* arg0);
+void fn_3_35F0(void);
 void fn_3_38E8(struct LBL_3_DATA_A10* arg0);
 void fn_3_3904(void);
 void fn_3_3BE8(void);

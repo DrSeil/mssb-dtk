@@ -1,6 +1,9 @@
 #include "game/rep_1C0.h"
 #include "header_rep_data.h"
+#include "Dolphin/GX/GXFrameBuffer.h"
+#include "game/rep_D0.h"
 
+extern u32 fn_80009028(void);
 
 static struct FanObject* lbl_3_bss_18[6];
 
@@ -12,6 +15,13 @@ struct FanObject* setFanObjPtr(void) {
 // .text:0x000035E4 size:0xC
 void fn_3_35E4(struct FanObject* arg0) {
     lbl_3_bss_18[0] = arg0;
+}
+
+// .text:0x000035F0 size:0x48 mapped:0x80642684
+void fn_3_35F0(void) {
+    if (fn_80009028() == 0) {
+        GXSetCopyClear(g_UNK_StadiumDetails.clearColor, 0xFFFFFF);
+    }
 }
 
 // .text:0x000038E8 size:0x1C
