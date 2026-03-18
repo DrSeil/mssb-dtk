@@ -1,4 +1,5 @@
 #include "game/rep_23E8.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000CB738 size:0x9C mapped:0x8070A7CC
