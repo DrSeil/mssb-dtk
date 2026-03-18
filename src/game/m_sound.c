@@ -2,6 +2,24 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
+extern void fn_3_8B094(void);
+static QueueEntry* lbl_3_bss_1768;
+
+// .text:0x0008B258 size:0x8C mapped:0x806CA2EC
+void fn_3_8B258(void) {
+    return;
+}
+
+// .text:0x0008B2E4 size:0x34 mapped:0x806CA378
+void fn_3_8B2E4(void) {
+    lbl_3_bss_1768 = fn_800B0A5C_insertQueue(fn_3_8B094, 0);
+}
+
+// .text:0x0008B318 size:0x400 mapped:0x806CA3AC
+void fn_3_8B318(void) {
+    return;
+}
+
 // .text:0x0008B718 size:0xC4 mapped:0x806CA7AC
 void fn_3_8B718(void) {
     return;
