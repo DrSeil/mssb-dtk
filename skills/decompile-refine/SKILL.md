@@ -41,5 +41,11 @@ Repeat up to 10 times:
 ### 5. ROData Ordering
 - Floating-point literals are stored in the order they appear in C. Order your code's float references to match the assembly's order.
 
-### 6. Casting
+### 6. Casting and Type Matching
 - Use explicit casts to match sign-extension instructions like `extsh` (sign-extend halfword).
+- **Match Register Loads**: Use `u16` to trigger `lhz` (load halfword zero) or `s16` to trigger `lha` (load halfword algebraic/sign-extended).
+
+### 8. Signed Division by Constant
+- The compiler optimizes signed division by a constant using `mulhw` (multiply high word) followed by shifts and adds.
+- If you see `mulhw` followed by `add` and `srawi`, it's likely a signed division in C.
+- Example: `(arg + 6) / 7` matches a specific `mulhw` sequence for division by 7.

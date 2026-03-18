@@ -1,20 +1,8 @@
-#!/usr/bin/env python3
-"""Find the easiest unmatched functions to decompile, ranked by size.
-
-Smaller functions are generally easier to match. This tool parses
-report.json to find unmatched functions and sorts them by code size.
-
-Usage:
-    python3 tools/score_functions.py
-    python3 tools/score_functions.py --module game
-    python3 tools/score_functions.py --max-size 200
-    python3 tools/score_functions.py --min-size 8 --max-size 100 --limit 20
-"""
-
 import json
 import argparse
 import os
 import sys
+import re
 
 
 def main():
@@ -54,6 +42,11 @@ def main():
         action="store_true",
         help="Only show functions with real names (not fn_XXXXXXXX)",
     )
+    parser.add_argument(
+        "--unstarted",
+        action="store_true",
+        help="Only show functions that aren't in any .c file yet (auto-generated units)",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.report):
@@ -66,11 +59,25 @@ def main():
     with open(args.report, "r") as f:
         data = json.load(f)
 
+    # Load objdiff.json if it exists to help with source path detection
+    objdiff_data = {}
+    if os.path.exists("objdiff.json"):
+        try:
+            with open("objdiff.json", "r") as f:
+                objdiff_data = json.load(f)
+        except Exception:
+            pass
+
+    unit_to_source = {}
+    for unit in objdiff_data.get("units", []):
+        unit_to_source[unit.get("name")] = unit.get("metadata", {}).get("source_path")
+
     candidates = []
 
     for unit in data.get("units", []):
         unit_name = unit.get("name", "unknown")
         unit_measures = unit.get("measures", {})
+        unit_metadata = unit.get("metadata", {})
 
         # Skip fully matched units
         if unit_measures.get("matched_code_percent", 0) == 100.0:
@@ -78,15 +85,31 @@ def main():
 
         # Determine category from unit name
         category = "dol"
-        if unit_name.startswith("game/"):
+        u_lower = unit_name.lower()
+        if unit_name.startswith("game/") or "/game/" in unit_name or "_game_" in unit_name:
             category = "game"
-        elif unit_name.startswith("menus/"):
+        elif unit_name.startswith("menus/") or "/menus/" in unit_name or "_menus_" in unit_name:
             category = "menus"
-        elif unit_name.startswith("challenge/"):
+        elif unit_name.startswith("challenge/") or "/challenge/" in unit_name or "_challenge_" in unit_name:
+            category = "challenge"
+        elif "game" in u_lower:
+            category = "game"
+        elif "menu" in u_lower:
+            category = "menus"
+        elif "challenge" in u_lower:
             category = "challenge"
 
         if args.module and category != args.module:
             continue
+
+        # Skip if already has a source file and user only wants unstarted
+        if args.unstarted:
+            # Check auto_generated flag first
+            if not unit_metadata.get("auto_generated", False):
+                # If not auto-generated, it might already be in splits and have a C file
+                source_path = unit_to_source.get(unit_name)
+                if source_path and os.path.exists(source_path):
+                    continue
 
         for func in unit.get("functions", []):
             size = int(func.get("size", 0))
@@ -102,20 +125,26 @@ def main():
             if args.named_only and func_name.startswith("fn_"):
                 continue
 
-            # Check if function is already matched
-            func_measures = func.get("measures", {})
-            if func_measures.get("matched_code_percent", 0) == 100.0:
+            # Get match percent (prioritize fuzzy_match_percent as the server does)
+            match_pct = func.get("fuzzy_match_percent")
+            if match_pct is None:
+                func_measures = func.get("measures", {})
+                match_pct = func_measures.get("matched_code_percent", 0.0)
+
+            if match_pct is None:
+                match_pct = 0.0
+
+            # Skip if already 100% matched
+            if match_pct >= 100.0:
                 continue
 
-            # If function has no measures, check unit-level match
-            # (no measures typically means undecompiled)
             candidates.append(
                 {
                     "name": func_name,
                     "size": size,
                     "unit": unit_name,
                     "category": category,
-                    "match_pct": func_measures.get("matched_code_percent", 0),
+                    "match_pct": match_pct,
                 }
             )
 
@@ -131,8 +160,13 @@ def main():
     print(f"{'Function':<40} {'Size':>6} {'Match%':>7} {'Category':<10} Unit")
     print("-" * 100)
     for c in shown:
+        # Avoid rounding 99.99% to 100.0%
+        pct_str = f"{c['match_pct']:>6.1f}%"
+        if c['match_pct'] < 100.0 and pct_str.strip() == "100.0%":
+            pct_str = " 99.9%*"
+            
         print(
-            f"{c['name']:<40} {c['size']:>6} {c['match_pct']:>6.1f}% {c['category']:<10} {c['unit']}"
+            f"{c['name']:<40} {c['size']:>6} {pct_str} {c['category']:<10} {c['unit']}"
         )
 
     total = len(candidates)

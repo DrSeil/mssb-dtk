@@ -9,22 +9,17 @@ This skill guides the initial steps of decompiling a function in the `mssb-dtk` 
 
 ## Workflow
 
-### 1. Locate and Extract Assembly
-Run `./decomp.sh <function_name>` to identify the source file, module, and target assembly.
+### 1. Run Comprehensive Initialization
+Run the initialization script from the root to gather ALL context in one call:
+`python3 skills/decompile-init/scripts/initialize_function.py <function_name>`
 
-### 2. Gather Context
-Run `python3 tools/kappa_context.py <function_name>` to gather:
-- Function signatures
-- Symbols (labels and functions)
-- Assembly listing
-- External dependencies (branch calls)
+This will automatically:
+- Identify the source file and target assembly.
+- Gathers dependencies (bl calls) and symbols (labels).
+- Generates an initial C implementation using `m2c`.
 
-### 3. Generate Initial C Implementation
-Use the `m2c` helper to get a starting point:
-`./decomp.sh --m2c <function_name>`
-
-### 4. Setup Environment
-1. Identify the target source file (e.g., `src/game/game_batter.c`).
+### 2. Setup Environment
+1. Identify the target source file from the script output (e.g., `src/game/game_batter.c`).
 2. Add the function prototype and the `m2c` generated code to the file.
 3. Ensure necessary headers are included (e.g., `include/game/UnknownHomes_Game.h`).
 
