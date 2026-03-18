@@ -20,21 +20,21 @@ struct ActLayout;
 struct AnimBank;
 struct starAnimationRelated;
 
-/* AnimationStruct - 0x27C bytes, used in arrays within hugeAnimStruct.
+/* AnimationStruct - 0x27C u8s, used in arrays within hugeAnimStruct.
  * Full field definitions available in in_game.h.
- * Using opaque byte array to guarantee exact size for struct layout. */
+ * Using opaque u8 array to guarantee exact size for struct layout. */
 typedef struct AnimationStruct {
     u8 data[0x27C];
 } AnimationStruct; /* size: 0x27C */
 
-/* EOSPad - 2-byte struct used for alignment padding */
+/* EOSPad - 2-u8 struct used for alignment padding */
 typedef struct EOSPad {
     u8 pad[2];
 } EOSPad;
 
-/* unkAnimSubstruct - 0xD2 bytes.
+/* unkAnimSubstruct - 0xD2 u8s.
  * Full field definitions available in in_game.h.
- * Using opaque byte array to prevent compiler alignment padding. */
+ * Using opaque u8 array to prevent compiler alignment padding. */
 typedef struct unkAnimSubstruct {
     /* 0x00 */ void* field0_0x0[4];
     /* 0x10 */ u8    field1_0x10[28];
@@ -93,15 +93,15 @@ typedef struct HugeAnimEntry2D94 {
     /* 0x24 */ s32 unk24;
     
     // --- THE TARGET BYTE ---
-    /* 0x26 */ u8 unk_26; // The byte zeroed in fn_3_116B38
+    /* 0x26 */ u8 unk_26; // The u8 zeroed in fn_3_116B38
     // -----------------------
     
-    /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 bytes)
+    /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 u8s)
 } HugeAnimEntry2D94;
 typedef struct HugeAnimEntry68 {
     u8 _pad0[0x34];
     AnimLevel1* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
-    u8 _pad1[0x58]; // (0x90 - 0x38) bytes to make the struct size exactly 0x90
+    u8 _pad1[0x58]; // (0x90 - 0x38) u8s to make the struct size exactly 0x90
 } HugeAnimEntry68;
 
 typedef struct hugeAnimStruct {
@@ -452,12 +452,16 @@ typedef struct {
 extern UnknownStructB7 lbl_3_data_4444;
 
 typedef struct CommonBss_35154 {
-    /* 0x000 */ u32 firstMember; // Previously inside _pad0
+    /* 0x000 */ u32 firstMember;
     /* 0x004 */ u8 _pad0[0x3AC - 4];
     /* 0x3AC */ u32 bitfield;
     /* 0x3B0 */ u8 _pad_extra[0x54];
     /* 0x404 */ s16 someHalfword;
-    /* 0x406 */ u8 _pad2[0x2E];
+    /* 0x406 */ u8 _pad2[6];
+    /* 0x40C */ u32 array_40c[1]; // Array starting at 0x40c
+    /* 0x410 */ u8 _pad_mid[0x8];
+    /* 0x418 */ u8 someFlag_418;  // stb r0, 0x418(r5)
+    /* 0x419 */ u8 _pad_end[0x1B];
     /* 0x434 */ f32 unk_434;
     /* 0x438 */ f32 unk_438;
     /* 0x43C */ f32 unk_43C;
@@ -468,6 +472,41 @@ typedef struct CommonBss_35154 {
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
 extern void fn_80034CEC(u32);
+typedef struct UnknownBss_803C6CF8 {
+    u8 _pad[0x715];
+    s8 allowLoad;
+} UnknownBss_803C6CF8;
+
+extern UnknownBss_803C6CF8 lbl_803C6CF8;
+
+typedef struct DrawingSceneStruct {
+    void* aFunctionPointer;
+    struct {
+        struct DrawingSceneStruct *Prev;
+        struct DrawingSceneStruct *Next;
+    } Link;
+    struct DrawingSceneStruct *currentDrawingItem;
+    short loadingState;
+    u16 priority;
+    u16 unkIndex;
+    u16 unkIndex2; // Combination of field6_0x16 and field7_0x17
+    u8 loadingStateRelated[2];
+    short field9_0x1a;
+    u16 eventID;
+    u16 fielderIndex;
+    u8 field12_0x20[2];
+    short drawingState;
+    u8 field14_0x24[4];
+    u8 field15_0x28;
+    u8 field16_0x29;
+    u8 field17_0x2a;
+    u8 field18_0x2b;
+    short field19_0x2c;
+} DrawingSceneStruct;
+
+extern DrawingSceneStruct *lbl_803CC1B8;
+extern void (*lbl_3_data_11390[])(u32);
+extern void fn_800B0A14_removeQueue(void);
 // The assembly passes the index in r4
 extern VecXZ lbl_3_data_111C8[];
 // Extern function prototype based on bl fn_8003A688
@@ -578,7 +617,7 @@ typedef struct castleThwompObj {
     /* 0xB0 */ u8 state;
     /* 0xB1 */ u8 framesOnGround;
     /* 0xB2 */ u8 checkForSlamInd;
-    /* 0xB3 */ u8 field27_0xb3;      // Exactly 4 bytes total here
+    /* 0xB3 */ u8 field27_0xb3;      // Exactly 4 u8s total here
 
     /* 0xB4 */ VecXYZ rotation;       // Starts at 180 (0xB4)
     
@@ -610,10 +649,8 @@ typedef struct Scores {
 extern Scores g_Scores;
 extern VecXZ lbl_3_data_446C;
 extern int lbl_3_data_F350;
-// A pointer to a function pointer
-extern void (**lbl_803CC1B8)(void);/* --- Prototypes --- */
 // r3 = value, r4 = address, r5 = address
-void fn_80034E20(void (*first_arg)(void), int *second_arg, void (**third_arg)(void));
+void fn_80034E20(void (*first_arg)(void), int *second_arg, void **third_arg);
 extern int lbl_3_data_E120;
 extern int lbl_3_data_C1EC;
 // Identified as Vec3f_807d2604 in Ghidra

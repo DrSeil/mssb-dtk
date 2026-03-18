@@ -139,7 +139,14 @@ void fn_3_BD6AC(void) {
 
 // .text:0x000BD758 size:0x78 mapped:0x806FC7EC
 void fn_3_BD758(void) {
-    return;
+    UnknownBss_803C6CF8* bss = &lbl_803C6CF8;
+    DrawingSceneStruct* current = lbl_803CC1B8;
+    
+    if (bss->allowLoad == 1) {
+        lbl_3_common_bss_35154.someFlag_418 = 0;
+        lbl_3_data_11390[current->unkIndex](lbl_3_common_bss_35154.array_40c[current->unkIndex2]);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000BD7D0 size:0x8 mapped:0x806FC864
