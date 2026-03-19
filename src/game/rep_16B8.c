@@ -192,7 +192,9 @@ void fn_3_95568(void) {
 
 // .text:0x000955CC size:0x54 mapped:0x806D4660
 void fn_3_955CC(void) {
-    return;
+    fn_80034E20((void (*)(void)) lbl_803CC1B8, (int *) &lbl_3_data_E0E0, (void **) &lbl_803CC1B8);
+    playSoundEffect(0x1A9);
+    lbl_803CC1B8->aFunctionPointer = (void *) fn_3_95568;
 }
 
 // .text:0x00095620 size:0x350 mapped:0x806D46B4
