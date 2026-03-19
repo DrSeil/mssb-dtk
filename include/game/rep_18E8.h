@@ -21,7 +21,7 @@ void fn_3_A32B8(void);
 void fn_3_A3374(void);
 void fn_3_A36BC(void);
 s32 fn_3_A372C(void);
-void fn_3_A3768(void);
+s32 fn_3_A3768(void);
 void fn_3_A37BC(void);
 void fn_3_A384C(void);
 void fn_3_A3B30(void);
@@ -65,5 +65,7 @@ void fn_3_AAFF0(void);
 void fn_3_AB554(void);
 void fn_3_AB5B0(void);
 void fn_3_ABDD0(void);
+
+extern f32 lbl_3_rodata_19B8;
 
 #endif // !__GAME_rep_18E8_H_

@@ -122,8 +122,14 @@ s32 fn_3_A372C(void) {
 }
 
 // .text:0x000A3768 size:0x54 mapped:0x806E27FC
-void fn_3_A3768(void) {
-    return;
+s32 fn_3_A3768(void) {
+    if (g_Ball.ballAngleFromHome >= 0x380
+        && g_Ball.ballAngleFromHome < 0x640
+        && g_Ball.ballZoneAwayFromHome <= 1
+        && g_Ball.AtBat_Contact_BallPos.z > (lbl_3_rodata_19B8 + g_Ball.AtBat_Contact_BallPos.x)) {
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x000A37BC size:0x90 mapped:0x806E2850
