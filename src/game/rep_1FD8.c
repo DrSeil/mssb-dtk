@@ -1,9 +1,18 @@
 #include "game/rep_1FD8.h"
 #include "header_rep_data.h"
+#include "UnknownHeaders.h"
 
 // .text:0x000C1964 size:0x10 mapped:0x807009F8
 void fn_3_C1964(void) {
     lbl_3_bss_9D9C = 1;
+}
+
+// .text:0x000C1974 size:0x54 mapped:0x80700A08
+void fn_3_C1974(u8 *arg0) {
+    QueueEntry *q = fn_800B0A5C_insertQueue(fn_3_C2644, 4);
+    q->unk10 = 0;
+    lbl_3_bss_9D98 = arg0 + 0x3C4;
+    lbl_3_bss_9D9C = 0;
 }
 
 // .text:0x000C19C8 size:0x250 mapped:0x80700A5C

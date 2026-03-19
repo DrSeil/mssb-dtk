@@ -6,8 +6,10 @@
 extern s32 lbl_3_bss_9D9C;
 extern u8 lbl_3_bss_9DE7;
 extern u8 lbl_3_bss_9D82;
+extern u8 *lbl_3_bss_9D98;
 
 void fn_3_C1964(void);
+void fn_3_C1974(u8 *arg0);
 void fn_3_C19C8(void);
 void fn_3_C1C18(void);
 void fn_3_C2244(void);
