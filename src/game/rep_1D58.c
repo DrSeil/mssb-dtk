@@ -40,8 +40,9 @@ void fn_3_B8298(void) {
 }
 
 // .text:0x000B8414 size:0x50 mapped:0x806F74A8
-void fn_3_B8414(void) {
-    return;
+void fn_3_B8414(f32* arg0, f32* arg1) {
+    memcpy(arg0, &lbl_3_bss_1910.unk0, 0xC);
+    memcpy(arg1, &lbl_3_bss_1910.unkC, 0xC);
 }
 
 // .text:0x000B8464 size:0x110 mapped:0x806F74F8
