@@ -145,8 +145,17 @@ void fn_3_F0FA4(void) {
 }
 
 // .text:0x000F13F8 size:0x50 mapped:0x8073048C
-void fn_3_F13F8(void) {
-    return;
+void fn_3_F13F8(OuterStruct_F13F8* arg0) {
+    InnerStruct_F13F8* p = arg0->unk74;
+    DeepStruct_F13F8* q = p->unk0;
+    u32 i;
+
+    for (i = 0; i < (u32)q->unk6; i++) {
+        ElemStruct_F13F8* elem = q->unk18[i];
+        elem->unk60 = 0;
+        elem->unkA4 = 0;
+    }
+    arg0->unk74->unk58 = 0;
 }
 
 // .text:0x000F1448 size:0xD0 mapped:0x807304DC

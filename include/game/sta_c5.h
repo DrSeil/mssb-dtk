@@ -3,6 +3,31 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    u8 _pad0[0x60];
+    u8 unk60;       // 0x60
+    u8 _pad1[0x43];
+    u8 unkA4;       // 0xA4
+} ElemStruct_F13F8;
+
+typedef struct {
+    u8 _pad0[0x6];
+    u16 unk6;       // 0x6 - element count
+    u8 _pad1[0x10];
+    ElemStruct_F13F8** unk18; // 0x18 - array of element pointers
+} DeepStruct_F13F8;
+
+typedef struct {
+    DeepStruct_F13F8* unk0; // 0x0
+    u8 _pad1[0x54];
+    u8 unk58;               // 0x58
+} InnerStruct_F13F8;
+
+typedef struct {
+    u8 _pad0[0x74];
+    InnerStruct_F13F8* unk74; // 0x74
+} OuterStruct_F13F8;
+
 extern u8 lbl_3_bss_AEE8;
 
 void fn_3_EE100(void);
@@ -30,7 +55,7 @@ void fn_3_F0184(void);
 void fn_3_F0224(void);
 void fn_3_F082C(void);
 void fn_3_F0FA4(void);
-void fn_3_F13F8(void);
+void fn_3_F13F8(OuterStruct_F13F8* arg0);
 void fn_3_F1448(void);
 void fn_3_F1518(void);
 void fn_3_F1674(void);
