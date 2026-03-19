@@ -24,6 +24,18 @@ typedef struct BaseStruct_E6638 {
     OuterStruct_E6638* field_0x74;  // 0x74
 } BaseStruct_E6638;
 
+typedef struct {
+    u8 _pad0[0xA4];
+    u32 unkA4;      // 0xA4
+    u8 _pad1[0xC];  // 0xA8..0xB3
+    u8* unkB4;      // 0xB4
+    u8 _pad2[0x4];  // 0xB8..0xBB
+    u8* unkBC;      // 0xBC
+    u8 _pad3[0x2];  // 0xC0..0xC1
+    u8 unkC2;       // 0xC2
+} Struct_E6528;
+
+extern u8 lbl_3_data_19024;
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
 void fn_3_E59B4(void);
@@ -35,7 +47,7 @@ void fn_3_E5E70(void);
 void fn_3_E5FEC(void);
 void fn_3_E6410(void);
 void fn_3_E64A8(void);
-void fn_3_E6528(void);
+void fn_3_E6528(Struct_E6528* arg0);
 void fn_3_E6578(void);
 void fn_3_E6638(BaseStruct_E6638* arg0);
 void fn_3_E6684(void);

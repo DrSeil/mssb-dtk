@@ -1,5 +1,6 @@
 #include "game/sta_c6.h"
 #include "UnknownHeaders.h"
+#include "stl/mem.h"
 #include "header_rep_data.h"
 
 // .text:0x000E59B4 size:0x68 mapped:0x80724A48
@@ -48,8 +49,10 @@ void fn_3_E64A8(void) {
 }
 
 // .text:0x000E6528 size:0x50 mapped:0x807255BC
-void fn_3_E6528(void) {
-    return;
+void fn_3_E6528(Struct_E6528* arg0) {
+    memcpy(&arg0->unkA4, arg0->unkB4, 4);
+    arg0->unkBC = &lbl_3_data_19024 + 0x64;
+    arg0->unkC2 = 0;
 }
 
 // .text:0x000E6578 size:0xC0 mapped:0x8072560C
