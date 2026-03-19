@@ -184,13 +184,17 @@ void fn_3_14BCB0(void) {
 }
 
 // .text:0x0014BECC size:0x47C mapped:0x8078AF60
-void fn_3_14BECC(void) {
+void fn_3_14BECC(void* arg0, void* arg1) {
     return;
 }
 
 // .text:0x0014C348 size:0x50 mapped:0x8078B3DC
-void fn_3_14C348(void) {
-    return;
+void fn_3_14C348(void* arg0, void* arg1) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 2 &&
+        arg0 != NULL) {
+        fn_3_14BECC(arg0, arg1);
+    }
 }
 
 // .text:0x0014C398 size:0x24 mapped:0x8078B42C
