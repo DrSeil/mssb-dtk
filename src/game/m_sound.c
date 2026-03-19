@@ -112,7 +112,11 @@ void fn_3_8DA80(void) {
 
 // .text:0x0008F1C8 size:0x54 mapped:0x806CE25C
 void fn_3_8F1C8(void) {
-    return;
+    lbl_3_common_bss_34C58._20 = -1;
+    lbl_3_common_bss_34C58._22 = -1;
+    lbl_3_common_bss_34C58._29 = 0;
+    lbl_3_common_bss_34C58._2A = 0;
+    lbl_3_bss_1768 = fn_800B0A5C_insertQueue(fn_3_8B094, 0);
 }
 
 // .text:0x0008F21C size:0x9F0 mapped:0x806CE2B0
