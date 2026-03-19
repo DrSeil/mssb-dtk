@@ -5,6 +5,8 @@
 #include "Dolphin/vec.h"
 #include "Dolphin/mtx.h"
 
+#include "Dolphin/GX/GXTypes.h"
+
 typedef struct _VecSrcDst {
     Vec src, dst;
 } VecSrcDst;
@@ -23,7 +25,9 @@ typedef struct _CollisionBox {
 
 typedef struct _UNK_StadiumCollision {
     void* _00;
-    artificial_padding(0, 0x778, void*);
+    artificial_padding(0, 0x76c, void*);
+    GXColor clearColor; // 0x76c
+    u8 _pad_770[0x778 - 0x770];
     CollisionBox* pCollisionBoxes; // 0x778
     s16 numCollisionBoxes; // 0x77c
 } UNK_StadiumCollision; // size: 0x780

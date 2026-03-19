@@ -12,9 +12,12 @@ typedef struct unk_13d5e8_struct {
 
 s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
 extern f32 lbl_3_rodata_3728;
+extern f32 lbl_3_rodata_3734;
+extern f32 lbl_3_rodata_3738;
+extern f32 lbl_3_rodata_373C;
 void fn_3_13D618(void);
 s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b);
-void fn_3_13DA50(void);
+f32 fn_3_13DA50(s8 index, f32 targetPos, s8 *result);
 void fn_3_13DC48(void);
 void fn_3_13DDE0(void);
 void fn_3_13DEA4(void);

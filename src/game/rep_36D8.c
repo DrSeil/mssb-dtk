@@ -1,5 +1,6 @@
 #include "game/rep_36D8.h"
-#include "header_rep_data.h"
+#include "UnknownHeaders.h"
+#include "game/rep_1838.h"
 
 // .text:0x0013C7BC size:0xDBC mapped:0x8077B850
 void fn_3_13C7BC(void) {
@@ -55,8 +56,76 @@ s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {
 }
 
 // .text:0x0013DA50 size:0x1F8 mapped:0x8077CAE4
-void fn_3_13DA50(void) {
-    return;
+f32 fn_3_13DA50(s8 index, f32 targetPos, s8 *result) {
+    f32 zero = lbl_3_rodata_3734; // Load f0 early
+    f32 wrappedTarget = targetPos; // fmr f3, f1
+    InMemRunnerType *runner = &g_Runners[index];
+    f32 fractionalBasesRan = runner->fractionalBasesRan; // lfs f4
+    f32 wrappedRunner;
+    f32 dist1;
+    f32 dist2;
+
+    wrappedRunner = fractionalBasesRan; // fmr f2, f4
+    if (fractionalBasesRan < zero) {
+        wrappedRunner = fractionalBasesRan + lbl_3_rodata_3738;
+    } else if (fractionalBasesRan >= lbl_3_rodata_3738) {
+        wrappedRunner = fractionalBasesRan - lbl_3_rodata_3738;
+    }
+
+    if (targetPos < zero) {
+        wrappedTarget = targetPos + lbl_3_rodata_3738;
+    } else if (targetPos >= lbl_3_rodata_3738) {
+        wrappedTarget = targetPos - lbl_3_rodata_3738;
+    }
+
+    if (wrappedRunner > wrappedTarget) {
+        dist1 = (lbl_3_rodata_3738 + wrappedTarget) - wrappedRunner;
+    } else {
+        dist1 = wrappedTarget - wrappedRunner;
+    }
+
+    if (runner->runningDirectionCode == 3) {
+        dist1 += lbl_3_rodata_373C;
+    }
+
+    if (fractionalBasesRan < zero) {
+        fractionalBasesRan += lbl_3_rodata_3738;
+    } else if (fractionalBasesRan >= lbl_3_rodata_3738) {
+        fractionalBasesRan -= lbl_3_rodata_3738;
+    }
+
+    if (targetPos < zero) {
+        targetPos += lbl_3_rodata_3738;
+    } else if (targetPos >= lbl_3_rodata_3738) {
+        targetPos -= lbl_3_rodata_3738;
+    }
+
+    if (fractionalBasesRan < targetPos) {
+        dist2 = (lbl_3_rodata_3738 + fractionalBasesRan) - targetPos;
+    } else {
+        dist2 = fractionalBasesRan - targetPos;
+    }
+
+    if (runner->runningDirectionCode == 1) {
+        dist2 += lbl_3_rodata_373C;
+    }
+
+    if (dist1 < dist2) {
+        *result = 1;
+        return dist1;
+    }
+    
+    if (dist1 > dist2) {
+        *result = 3;
+        return dist2;
+    }
+
+    if (RandomInt_Game(2) == 0) {
+        *result = 3;
+    } else {
+        *result = 1;
+    }
+    return dist1;
 }
 
 // .text:0x0013DC48 size:0x198 mapped:0x8077CCDC
