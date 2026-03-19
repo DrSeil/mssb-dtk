@@ -602,11 +602,16 @@ typedef enum barrelState {
 } barrelState;
 
 // --- The Main Object Struct ---
+typedef struct ThwompActData {
+    u8 _00[0x5C];
+    f32 unk5C;
+} ThwompActData;
+
 typedef struct castleThwompObj {
     /* 0x00 */ Control control;      // Ghidra says Length 52 (0x34)
     /* 0x34 */ u8 pad[8];           // Length 16 (0x10)
     /* 0x44 */ Mtx mtx;              // Length 48 (0x30)
-    /* 0x74 */ ActLayout ***actPtr;  // Length 4
+    /* 0x74 */ ThwompActData *actPtr; // Length 4
     /* 0x78 */ s32 vertexData;       // Length 4
     /* 0x7C */ void (*functionPtr)(void *);
     /* 0x80 */ void (*unkFunctionPtr)(void *);
@@ -622,12 +627,12 @@ typedef struct castleThwompObj {
     /* 0x99 */ u8 hasBeenResetAfterLiveBallInd;
     /* 0x9A */ u8 field17_0x9a[2];
     /* 0x9C */ VecXYZ position;       // Length 12 (Ends at 0xA8)
-    
+
     /* 0xA8 */ u8 id;
     /* 0xA9 */ u8 starCollectedStatus;
     /* 0xAA */ u8 field21_0xaa;
     /* 0xAB */ u8 field22_0xab;
-    /* 0xAC */ f32 y_fallingIncrement; // Length 4 (Ends at 0xB0)
+    /* 0xAC */ s32 unkAC;             // Length 4 (Ends at 0xB0)
 
     /* 0xB0 */ u8 state;
     /* 0xB1 */ u8 framesOnGround;
@@ -635,7 +640,7 @@ typedef struct castleThwompObj {
     /* 0xB3 */ u8 field27_0xb3;      // Exactly 4 u8s total here
 
     /* 0xB4 */ VecXYZ rotation;       // Starts at 180 (0xB4)
-    
+
     /* 0xC0 */ f32 alsoRotation_maybe;
     /* 0xC4 */ u8 objectState;
     /* 0xC5 */ u8 maybeObjsToScale;

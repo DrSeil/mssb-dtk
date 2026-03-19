@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 #include "C3/control.h"
+#include "game/rep_1D58.h"
 
 
 // .text:0x000E1FA8 size:0x8C mapped:0x8072103C
@@ -95,8 +96,11 @@ void fn_3_E3B88(void) {
 }
 
 // .text:0x000E4554 size:0x54 mapped:0x807235E8
-void fn_3_E4554(void) {
-    return;
+void fn_3_E4554(castleThwompObj *arg) {
+    arg->unkAC = lbl_3_bss_AE18;
+    fn_3_B97DC((s32)arg->actPtr, arg->unkAC);
+    arg->rotation.y = arg->actPtr->unk5C;
+    arg->field37_0xcb = 0;
 }
 
 // .text:0x000E45A8 size:0x48 mapped:0x8072363C
