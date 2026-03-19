@@ -6,6 +6,7 @@
 
 extern f32 lbl_3_data_2262C;
 extern f32 lbl_3_data_22650[];
+extern u8 lbl_3_data_2265C[];
 void fn_3_116840(void);
 void fn_3_1169D0(void);
 void fn_3_116B38(void);
@@ -31,7 +32,7 @@ void fn_3_1189C8(void);
 void fn_3_118B18(void);
 void fn_3_1192B8(void);
 void fn_3_119468(s32 index);
-void fn_3_1194AC(void);
+void fn_3_1194AC(s32 index);
 void fn_3_1194FC(void);
 f32 fn_3_119854(u32 index);
 void fn_3_119878(void);

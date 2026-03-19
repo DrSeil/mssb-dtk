@@ -141,8 +141,10 @@ void fn_3_119468(s32 index) {
 }
 
 // .text:0x001194AC size:0x50 mapped:0x80758540
-void fn_3_1194AC(void) {
-    return;
+void fn_3_1194AC(s32 index) {
+    HugeAnimEntry68* entries = g_hugeAnimStruct.entries_68;
+    entries[index].unk34->unk18->field_0->field_14->ptr08->ptr0C->field_0x20 =
+        (s16)lbl_3_data_2265C[((u8*)&g_Minigame)[index + 0x1AFF]];
 }
 
 // .text:0x001194FC size:0x358 mapped:0x80758590

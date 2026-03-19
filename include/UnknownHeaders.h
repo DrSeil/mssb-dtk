@@ -80,10 +80,20 @@ typedef struct AnimLevel2 {
 
 
 
+typedef struct AnimObjSub {
+    u8 _pad[0x14];
+    AnimLevel2* field_14;
+} AnimObjSub;
+
+typedef struct AnimObj {
+    AnimObjSub* field_0;
+} AnimObj;
+
 typedef struct AnimLevel1 {
     u8 _pad0[0x14]; // Padding to reach the 0x90-0xC0 block
     AnimLevel2* ptr14; // Targeted by lwz r3, 0x14(r3)
-    u8 _pad1[0x90 - 0x18]; // Padding to reach the 0x90-0xC0 block
+    AnimObj* unk18;    // offset 0x18
+    u8 _pad1[0x90 - 0x1C]; // Padding to reach the 0x90-0xC0 block
     /* 0x90 */ void* field7_0x90;     // First pointer at 0x90
     /* 0x94 */ void* field7_0x94;     // Second pointer at 0x94
     /* 0x98 */ u8    animFlags;       // Offset 0x98 - Target for lbz
