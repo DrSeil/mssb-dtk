@@ -54,8 +54,12 @@ void fn_3_11F480(void) {
 }
 
 // .text:0x0011F4B4 size:0x54 mapped:0x8075E548
-void fn_3_11F4B4(void) {
-    return;
+void fn_3_11F4B4(s32 arg1, s32 arg2) {
+    s32 step;
+    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_CHAINCHOMP_SPRINT)
+        return;
+    step = (arg2 != 0) ? 2 : 0;
+    g_Minigame.targetPointsArray[arg1] += lbl_3_data_21884[step].unk1;
 }
 
 // .text:0x0011F508 size:0x270 mapped:0x8075E59C

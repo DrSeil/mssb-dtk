@@ -19,4 +19,7 @@ void fn_3_114A88(void);
 
 #include "stl/mem.h"
 #include "game/UnknownHomes_Game.h"
+
+extern f32 lbl_3_data_21674;
+
 #endif // !__GAME_rep_3290_H_

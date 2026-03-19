@@ -3,10 +3,16 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    s8 _0;
+    u8 unk1;
+} ChainChompSprintEntry;
+extern ChainChompSprintEntry lbl_3_data_21884[4];
+
 void fn_3_11EC28(void);
 void fn_3_11F02C(void);
 void fn_3_11F480(void);
-void fn_3_11F4B4(void);
+void fn_3_11F4B4(s32 arg1, s32 arg2);
 void fn_3_11F508(void);
 void fn_3_11F778(void);
 void fn_3_11FA58(void);
