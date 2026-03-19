@@ -12,7 +12,7 @@ void fn_3_C0D10(void);
 void fn_3_C0DD8(void);
 void fn_3_C0F8C(void);
 void fn_3_C1004(void);
-void fn_3_C11CC(void);
+void fn_3_C11CC(s32 arg0, s32 arg1);
 void fn_3_C1344(void);
 void fn_3_C1770(void);
 

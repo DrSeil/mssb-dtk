@@ -55,7 +55,7 @@ void fn_3_C1004(void) {
 }
 
 // .text:0x000C11CC size:0x178 mapped:0x80700260
-void fn_3_C11CC(void) {
+void fn_3_C11CC(s32 arg0, s32 arg1) {
     return;
 }
 

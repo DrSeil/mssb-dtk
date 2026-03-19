@@ -1,4 +1,7 @@
 #include "game/rep_2308.h"
+#include "game/rep_1F58.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_static.h"
 #include "header_rep_data.h"
 
 // .text:0x000CABF0 size:0x210 mapped:0x80709C84
@@ -22,8 +25,11 @@ void fn_3_CB1B0(void) {
 }
 
 // .text:0x000CB234 size:0x50 mapped:0x8070A2C8
-void fn_3_CB234(void) {
-    return;
+void fn_3_CB234(s32 arg0, s32 arg1) {
+    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES ||
+        (g_Minigame.GameMode_MiniGame != 1 && g_Minigame.GameMode_MiniGame != 3)) {
+        fn_3_C11CC(arg0, arg1);
+    }
 }
 
 // .text:0x000CB284 size:0xC0 mapped:0x8070A318
