@@ -11,9 +11,9 @@ This skill guides the iterative process of building, diffing, and fixing C code 
 
 Repeat up to 10 times:
 
-1. **Build**: Run `ninja`.
-2. **Fix Build Errors**: If compilation fails, fix the C code.
-3. **Diff**: Run `python3 tools/feedback_diff.py <function_name>`.
+1. **Build**: Run `ninja build/GYQE01/src/<module>/<file>.o` for faster verification of your changes.
+2. **Fix Build Errors/Warnings**: If compilation fails or reports "missing prototype," update the source and header.
+3. **Diff**: Run `python3 tools/feedback_diff.py <function_name>`. This is the primary verification tool.
 4. **Check Result**: If `MATCH!`, proceed to `decompile-commit`.
 5. **Analyze Feedback**: Use the line-by-line assembly diff to identify:
    - Register mismatches (e.g., using `r31` instead of `r30`).
@@ -21,6 +21,13 @@ Repeat up to 10 times:
    - Constant mismatches (e.g., float ordering in `.rodata`).
    - Offset mismatches (incorrect struct field access).
 6. **Apply Refinements**: Update C code based on feedback.
+
+### If Stuck (After 10 Iterations)
+
+If you cannot achieve a match after 10 iterations, skip the function to move on to easier targets:
+1. **Run Skip Script**: `./tools/skip_function.py <function_name>`
+   - This will save your current progress to a branch `skip/<function_name>` and add the function to `config/skip_list.txt`.
+2. **Pick a New Function**: Run `python3 tools/score_functions.py` to find the next easiest function. The skipped function will be filtered out.
 
 ## Key Refinement Principles
 
@@ -41,11 +48,8 @@ Repeat up to 10 times:
 ### 5. ROData Ordering
 - Floating-point literals are stored in the order they appear in C. Order your code's float references to match the assembly's order.
 
-### 6. Casting and Type Matching
-- Use explicit casts to match sign-extension instructions like `extsh` (sign-extend halfword).
-- **Match Register Loads**: Use `u16` to trigger `lhz` (load halfword zero) or `s16` to trigger `lha` (load halfword algebraic/sign-extended).
-
-### 8. Signed Division by Constant
-- The compiler optimizes signed division by a constant using `mulhw` (multiply high word) followed by shifts and adds.
-- If you see `mulhw` followed by `add` and `srawi`, it's likely a signed division in C.
-- Example: `(arg + 6) / 7` matches a specific `mulhw` sequence for division by 7.
+### 7. Permuter for Register Steering
+- If manual anchoring fails, use the permuter: `python3 tools/permuter.py <function_name>`.
+- **Iteration Limit**: By default, it runs for 100 attempts. You can override this with `-n <number>` (e.g., `-n 500`).
+- The permuter will generate context automatically and try various code transformations.
+- Check `nonmatching/<function_name>/output-<score>-<count>/source.c` for successful attempts.

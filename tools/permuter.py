@@ -98,6 +98,7 @@ def main():
     parser = argparse.ArgumentParser(description='Run decomp-permuter for a function')
     parser.add_argument('function', help='Function name to permute')
     parser.add_argument('-j', '--jobs', type=int, default=1, help='Number of jobs')
+    parser.add_argument('-n', '--iterations', type=int, default=100, help='Number of iterations (default 100)')
     args, unknown = parser.parse_known_args()
 
     info = get_function_info(args.function)
@@ -281,7 +282,7 @@ def main():
     print(f"Starting permuter in {perm_dir}...")
     permuter_path = Path("tools/decomp-permuter/permuter.py").absolute()
     
-    cmd = [sys.executable, str(permuter_path), ".", "-j", str(args.jobs)] + unknown
+    cmd = [sys.executable, str(permuter_path), ".", "-j", str(args.jobs), "-n", str(args.iterations)] + unknown
     subprocess.run(cmd, cwd=perm_dir)
 
 if __name__ == "__main__":

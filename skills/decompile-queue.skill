@@ -1,0 +1,31 @@
+## Decompile Queue Management
+
+This skill manages a queue of functions to decompile, prioritizing those in rep_xx files.
+
+### Queue Functions
+- `list_queue()`: List all functions in the queue
+- `add_to_queue(function_name)`: Add a function to the queue
+- `process_queue()`: Process all functions in the queue
+- `get_next_function()`: Get the next function to process
+
+### Queue Logic
+1. Scan rep_xx files for function names
+2. Prioritize functions in rep_xx files
+3. Process functions in order of priority
+4. Track processed functions to avoid duplicates
+
+### Integration with decompile-init
+- Check queue before decompiling
+- Add functions to queue if not already present
+- Notify when queue is empty
+
+### Example Usage
+```
+# Add a function to the queue
+add_to_queue("fn_3_105BD8")
+
+# Process the queue
+process_queue()
+
+# List current queue
+list_queue()

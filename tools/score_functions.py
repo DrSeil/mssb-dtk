@@ -11,8 +11,8 @@ def main():
     )
     parser.add_argument(
         "--report",
-        default="report.json",
-        help="Path to report.json (default: report.json)",
+        default="build/GYQE01/report.json",
+        help="Path to report.json (default: build/GYQE01/report.json)",
     )
     parser.add_argument(
         "--module",
@@ -58,6 +58,15 @@ def main():
 
     with open(args.report, "r") as f:
         data = json.load(f)
+
+    # Load skip list
+    skip_list = set()
+    if os.path.exists("config/skip_list.txt"):
+        with open("config/skip_list.txt", "r") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    skip_list.add(line)
 
     # Load objdiff.json if it exists to help with source path detection
     objdiff_data = {}
@@ -123,6 +132,10 @@ def main():
                 continue
 
             if args.named_only and func_name.startswith("fn_"):
+                continue
+
+            # Skip if in skip list
+            if func_name in skip_list:
                 continue
 
             # Get match percent (prioritize fuzzy_match_percent as the server does)
