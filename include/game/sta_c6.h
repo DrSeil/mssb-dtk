@@ -3,6 +3,27 @@
 
 #include "mssbTypes.h"
 
+// Structs for fn_3_E6638
+typedef struct InnerStruct_E6638 {
+    u8 _pad[0x14];
+    u32 field_0x14;  // 0x14
+    u32 field_0x18;  // 0x18
+} InnerStruct_E6638;
+
+typedef struct MiddleStruct_E6638 {
+    u8 _pad[0x18];
+    InnerStruct_E6638** array;  // 0x18 - array of pointers
+} MiddleStruct_E6638;
+
+typedef struct OuterStruct_E6638 {
+    MiddleStruct_E6638* field_0x00;  // 0x00
+} OuterStruct_E6638;
+
+typedef struct BaseStruct_E6638 {
+    u8 _pad[0x74];
+    OuterStruct_E6638* field_0x74;  // 0x74
+} BaseStruct_E6638;
+
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
 void fn_3_E59B4(void);
@@ -16,7 +37,7 @@ void fn_3_E6410(void);
 void fn_3_E64A8(void);
 void fn_3_E6528(void);
 void fn_3_E6578(void);
-void fn_3_E6638(void);
+void fn_3_E6638(BaseStruct_E6638* arg0);
 void fn_3_E6684(void);
 void fn_3_E671C(void);
 void fn_3_E6798(void);

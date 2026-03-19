@@ -58,8 +58,15 @@ void fn_3_E6578(void) {
 }
 
 // .text:0x000E6638 size:0x4C mapped:0x807256CC
-void fn_3_E6638(void) {
-    return;
+void fn_3_E6638(BaseStruct_E6638* arg0) {
+    arg0->field_0x74->field_0x00->array[0]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[0]->field_0x18;
+
+    arg0->field_0x74->field_0x00->array[1]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[1]->field_0x18;
+
+    arg0->field_0x74->field_0x00->array[2]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[2]->field_0x18;
 }
 
 // .text:0x000E6684 size:0x98 mapped:0x80725718
