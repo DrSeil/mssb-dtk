@@ -3,6 +3,7 @@
 
 #include "mssbTypes.h"
 
+void fn_3_141C44(void);
 void fn_3_141C8C(void);
 void fn_3_141F30(void);
 void fn_3_142030(void);
@@ -36,7 +37,10 @@ void fn_3_146408(void);
 void fn_3_146928(void);
 void fn_3_1469CC(void);
 void fn_3_146A90(void);
+void fn_800B993C(void);
 void fn_800B9948(void (*callback)(void));
+
+extern u8 lbl_3_bss_B7C1;
 
 
 #endif // !__GAME_rep_37A8_H_

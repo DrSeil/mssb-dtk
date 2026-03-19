@@ -1,6 +1,15 @@
 #include "game/rep_37A8.h"
 #include "header_rep_data.h"
 
+// .text:0x00141C44 size:0x48 mapped:0x80780CD8
+void fn_3_141C44(void) {
+    lbl_3_bss_B7C1 += 1;
+    if (lbl_3_bss_B7C1 >= 6U) {
+        lbl_3_bss_B7C1 = 0;
+        fn_800B993C();
+    }
+}
+
 // .text:0x00141C8C size:0x2A4 mapped:0x80780D20
 void fn_3_141C8C(void) {
     return;
