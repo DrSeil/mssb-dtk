@@ -444,13 +444,17 @@ void fn_3_151204(void) {
 }
 
 // .text:0x00151694 size:0x7C mapped:0x80790728
-void fn_3_151694(void) {
+void fn_3_151694(void* arg0, void* arg1) {
     return;
 }
 
 // .text:0x00151710 size:0x50 mapped:0x807907A4
-void fn_3_151710(void) {
-    return;
+void fn_3_151710(void* arg0, void* arg1) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 2 &&
+        arg0 != NULL) {
+        fn_3_151694(arg0, arg1);
+    }
 }
 
 // .text:0x00151760 size:0x38 mapped:0x807907F4
