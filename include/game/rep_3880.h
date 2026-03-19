@@ -93,7 +93,7 @@ void fn_3_14DCE0(void);
 void fn_3_14DD04(void);
 void fn_3_14DF6C(void);
 void fn_3_14E234(void);
-void fn_3_14E7C0(void);
+void fn_3_14E7C0(void* arg0);
 void fn_3_14E810(void);
 void fn_3_14E894(void);
 void fn_3_14E920(void);

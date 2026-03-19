@@ -330,8 +330,12 @@ void fn_3_14E234(void) {
 }
 
 // .text:0x0014E7C0 size:0x50 mapped:0x8078D854
-void fn_3_14E7C0(void) {
-    return;
+void fn_3_14E7C0(void* arg0) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 6 &&
+        arg0 != NULL) {
+        fn_3_14E234();
+    }
 }
 
 // .text:0x0014E810 size:0x84 mapped:0x8078D8A4
