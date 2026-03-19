@@ -1,6 +1,11 @@
 #include "game/rep_1E08.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_static.h"
+#include "game/rep_1FD8.h"
+#include "game/sta_c2.h"
+#include "game/sta_c4.h"
 
 // .text:0x000BA538 size:0x2BC mapped:0x806F95CC
 void fn_3_BA538(void) {
@@ -250,7 +255,13 @@ void fn_3_BF070(void) {
 
 // .text:0x000BF158 size:0x54 mapped:0x806FE1EC
 void fn_3_BF158(void) {
-    return;
+    if (g_d_GameSettings.StadiumID == STADIUM_ID_BOWSERS_CASTLE) {
+        fn_3_C39C8();
+    } else if (g_d_GameSettings.StadiumID == STADIUM_ID_WARIO_PALACE) {
+        fn_3_CE8E4();
+    } else if (g_d_GameSettings.StadiumID == STADIUM_ID_PEACH_GARDEN) {
+        fn_3_F8ABC();
+    }
 }
 
 // .text:0x000BF1AC size:0x60 mapped:0x806FE240
