@@ -159,7 +159,18 @@ void fn_3_14B9A0(void* arg0, void* arg1) {
 
 // .text:0x0014B9F0 size:0x50 mapped:0x8078AA84
 void fn_3_14B9F0(void) {
-    return;
+    struct Struct_800339F0_Result* result;
+    ListNode_14B9F0* node;
+
+    result = fn_800339F0(0, 0x22);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            node->field_0x4A = 0;
+            node = node->next;
+        } while (node != NULL);
+    }
+    pitchingMachinePitching(0x22);
 }
 
 // .text:0x0014BA40 size:0x270 mapped:0x8078AAD4

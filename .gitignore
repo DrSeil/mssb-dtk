@@ -36,6 +36,7 @@ compile_commands.json
 report.json
 logs/**
 nonmatching/**
+attempts/**
 
 tools/aidecomp/.venv/**
 
