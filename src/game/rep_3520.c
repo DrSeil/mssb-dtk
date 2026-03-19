@@ -168,7 +168,13 @@ void fn_3_135F4C(void) {
 
 // .text:0x00135FF4 size:0x54 mapped:0x80775088
 void fn_3_135FF4(void) {
-    return;
+    // Almost matches - register allocation differs (r4/r5/r0 swap for counter and _17C0 temporaries)
+    if ((u32)(lbl_3_data_21A3C[g_Minigame._1D73].val * 0x3C) == (u32)g_Minigame._17C0) {
+        g_Minigame._1D72 = 1;
+        g_Minigame._1D62 = 0;
+        g_Minigame._1D48 = lbl_3_rodata_35D0;
+        g_Minigame._1D73 += 1;
+    }
 }
 
 // .text:0x00136048 size:0x74 mapped:0x807750DC

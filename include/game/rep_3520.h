@@ -8,6 +8,12 @@ typedef struct UnknownObj_134908 {
     s16 value;
 } UnknownObj_134908;
 
+typedef struct {
+    s16 val;
+    s16 _2;
+} StarDashTimingEntry;
+extern StarDashTimingEntry lbl_3_data_21A3C[2];
+
 void fn_3_133200(void);
 void fn_3_133320(void);
 void fn_3_13334C(void);
