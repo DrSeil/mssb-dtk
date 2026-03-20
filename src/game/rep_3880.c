@@ -423,7 +423,20 @@ void fn_3_150070(void) {
 
 // .text:0x001500C8 size:0x58 mapped:0x8078F15C
 void fn_3_1500C8(void) {
-    return;
+    struct Struct_800339F0_Result* result;
+    ListNode_14B9F0* node;
+
+    result = fn_800339F0(0, 0x1D);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            node->field_0x4A = 0;
+            node->field_0x48 = 0;
+            node->field_0x4C = 0;
+            node = node->next;
+        } while (node != NULL);
+    }
+    pitchingMachinePitching(0x1D);
 }
 
 // .text:0x00150120 size:0x3CC mapped:0x8078F1B4
