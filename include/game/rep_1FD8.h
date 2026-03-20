@@ -2,6 +2,8 @@
 #define __GAME_rep_1FD8_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
+#include "game/sta_c2.h"
 
 extern s32 lbl_3_bss_9D9C;
 extern u8 lbl_3_bss_9DE7;
@@ -48,7 +50,7 @@ void fn_3_C5DDC(void);
 void fn_3_C625C(void);
 void fn_3_C63D0(void);
 void fn_3_C71CC(void);
-void fn_3_C7444(void);
+void fn_3_C7444(ActorObject* arg0);
 void fn_3_C749C(void);
 void fn_3_C75B8(void);
 void fn_3_C77AC(void);

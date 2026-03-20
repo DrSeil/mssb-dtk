@@ -207,7 +207,22 @@ void fn_3_C71CC(void) {
 }
 
 // .text:0x000C7444 size:0x58 mapped:0x807064D8
-void fn_3_C7444(void) {
+void fn_3_C7444(ActorObject* arg0) {
+    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
+    int state = arg0->state;
+    AnimLevel1* level1 = has->entries_18->unk34;
+    AnimLevel2* level2 = level1->ptr14;
+    AnimLevel4* level4 = level2->ptr10;
+    AnimObject* obj = level4->ptr04;
+
+    if (state == 0) {
+        obj->flags &= ~0x1FFF;
+        obj->flags |= 2;
+        return;
+    } else {
+        obj->flags &= ~0x1FFF;
+        return;
+    }
     return;
 }
 

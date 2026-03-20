@@ -106,7 +106,15 @@ void fn_3_94194(void) {
 
 // .text:0x00094708 size:0x58 mapped:0x806D379C
 void fn_3_94708(void) {
-    return;
+
+
+     void* drawingItem;
+    u8 status = lbl_3_common_bss_32724.someStatusInd;
+    drawingItem = lbl_803CC1B8;
+    if (status != 0 || g_GameLogic._125 > 9) {
+        fn_80034CEC((u32)drawingItem);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x00094760 size:0x158 mapped:0x806D37F4
@@ -180,7 +188,13 @@ void fn_3_953FC(void) {
 
 // .text:0x000954C4 size:0x58 mapped:0x806D4558
 void fn_3_954C4(void) {
-    return;
+    void* drawingItem;
+    u8 status = lbl_3_common_bss_32724.someStatusInd;
+    drawingItem = lbl_803CC1B8;
+    if (status != 0 || g_GameLogic.gameStatus != 22) {
+        fn_80034CEC((u32)drawingItem);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x0009551C size:0x4C mapped:0x806D45B0

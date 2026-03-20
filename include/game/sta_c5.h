@@ -71,7 +71,7 @@ void fn_3_F2FFC(void);
 void fn_3_F31E0(void);
 void fn_3_F37BC(void);
 void fn_3_F38D4(void);
-void fn_3_F3A04(void);
+void fn_3_F3A04(OuterStruct_F13F8* arg0);
 void fn_3_F3A5C(void);
 void fn_3_F3AE0(void);
 void fn_3_F3BB0(void);

@@ -234,8 +234,11 @@ void fn_3_F38D4(void) {
 }
 
 // .text:0x000F3A04 size:0x58 mapped:0x80732A98
-void fn_3_F3A04(void) {
-    return;
+void fn_3_F3A04(OuterStruct_F13F8* arg0) {
+    u32 i;
+    for (i = 0; i < (u32)arg0->unk74->unk0->unk6; i++) {
+        // Empty loop
+    }
 }
 
 // .text:0x000F3A5C size:0x84 mapped:0x80732AF0

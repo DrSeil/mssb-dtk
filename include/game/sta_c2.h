@@ -18,6 +18,8 @@ typedef struct BoneWrapper {
 typedef struct ActorObject {
     u8 _pad0[0x74];
     BoneWrapper* wrapper; // Offset 0x74
+    u8 _pad1[0xB0 - 0x78]; // 0x78 to 0xB0
+    u8 state;             // Offset 0xB0
 } ActorObject;
 
 void fn_3_CB8A8(void);

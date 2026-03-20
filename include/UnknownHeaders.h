@@ -63,41 +63,35 @@ typedef struct unkAnimSubstruct {
     /* 0xD1 */ u8    field16_0xd1;
 } unkAnimSubstruct; /* size: 0xD2 */
 
+typedef struct AnimObject {
+    u8 _pad0[0x4];
+    u32 flags; // 0x4
+} AnimObject;
+
 typedef struct AnimLevel4 {
-    u8 _pad[0x20];
-    s16 field_0x20;
+    u8 _pad[0x4];
+    AnimObject* ptr04; // 0x4
 } AnimLevel4;
 
 typedef struct AnimLevel3 {
-    u8 _pad[0x0C];
-    AnimLevel4* ptr0C;
+    u8 _pad[0x10];
+    AnimLevel4* ptr10; // offset 0x10
 } AnimLevel3;
 
 typedef struct AnimLevel2 {
-    u8 _pad[0x08];
-    AnimLevel3* ptr08;
+    u8 _pad[0x10];
+    AnimLevel4* ptr10; // offset 0x10
 } AnimLevel2;
 
-
-
-typedef struct AnimObjSub {
-    u8 _pad[0x14];
-    AnimLevel2* field_14;
-} AnimObjSub;
-
-typedef struct AnimObj {
-    AnimObjSub* field_0;
-} AnimObj;
-
 typedef struct AnimLevel1 {
-    u8 _pad0[0x14]; // Padding to reach the 0x90-0xC0 block
-    AnimLevel2* ptr14; // Targeted by lwz r3, 0x14(r3)
-    AnimObj* unk18;    // offset 0x18
-    u8 _pad1[0x90 - 0x1C]; // Padding to reach the 0x90-0xC0 block
-    /* 0x90 */ void* field7_0x90;     // First pointer at 0x90
-    /* 0x94 */ void* field7_0x94;     // Second pointer at 0x94
-    /* 0x98 */ u8    animFlags;       // Offset 0x98 - Target for lbz
-    /* 0x99 */ u8    _pad2[0xD2 - 0x99]; // Padding to complete the struct size of 0xD2
+    u8 _pad0[0x14]; 
+    AnimLevel2* ptr14; // offset 0x14
+    AnimObject* unk18;    // offset 0x18
+    u8 _pad1[0x90 - 0x1C];
+    /* 0x90 */ void* field7_0x90;
+    /* 0x94 */ void* field7_0x94;
+    /* 0x98 */ u8    animFlags;
+    /* 0x99 */ u8    _pad2[0xD2 - 0x99];
 } AnimLevel1; 
 
 typedef struct HugeAnimEntry2D94 {
@@ -126,7 +120,7 @@ typedef struct hugeAnimStruct {
     /* 0x000C */ s32 field3_0xc;
     /* 0x0010 */ s32 field4_0x10;
     /* 0x0014 */ s32 field5_0x14;
-    /* 0x0018 */ s32 field6_0x18;
+    /* 0x0018 */ HugeAnimEntry68* entries_18;
     /* 0x001C */ s32 field7_0x1c;
     /* 0x0020 */ s32 field8_0x20;
     /* 0x0024 */ s32 field9_0x24;
