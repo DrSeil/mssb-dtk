@@ -705,6 +705,7 @@ extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
 extern VecXYZ lbl_3_data_21A48;
 extern f32 lbl_3_rodata_35D0;
+extern f32 lbl_3_rodata_3638;
 typedef struct GameStateBss {
 s32 val0; // 0x00
 s32 val1; // 0x04

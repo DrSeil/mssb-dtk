@@ -2,6 +2,7 @@
 #define __GAME_rep_3520_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 typedef struct UnknownObj_134908 {
     u8 _pad0[4];
@@ -73,7 +74,7 @@ void fn_3_13A724(void);
 void fn_3_13A89C(void);
 void fn_3_13AA78(void);
 void fn_3_13ACB4(void);
-void fn_3_13ADC0(void);
+void fn_3_13ADC0(VecXYZ* dst, VecXYZ* a, VecXYZ* b);
 void fn_3_13AE1C(void);
 void fn_3_13AFE4(void);
 void fn_3_13B284(void);
