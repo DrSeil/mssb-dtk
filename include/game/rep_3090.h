@@ -84,7 +84,23 @@ typedef struct Struct_105BD8 {
 void fn_3_105A10(void);
 void fn_3_105ACC(void);
 void fn_3_105BD8(Struct_105BD8* arg0);
-void fn_3_105C28(void);
+typedef struct {
+    u16 key;
+    u16 val;
+} LookupEntry_105C28;
+
+typedef struct {
+    u16 count;
+    u16 _pad;
+    LookupEntry_105C28 entries[1];
+} LookupTable_105C28;
+
+typedef struct {
+    u8 _pad0[0x8];
+    LookupTable_105C28* table;
+} Struct_105C28;
+
+u32 fn_3_105C28(Struct_105C28* arg0, u32 arg1);
 void fn_3_105C84(void);
 void fn_3_105CDC(void);
 void fn_3_105E00(void);

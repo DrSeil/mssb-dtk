@@ -288,8 +288,25 @@ void fn_3_105BD8(Struct_105BD8* arg0) {
 }
 
 // .text:0x00105C28 size:0x5C mapped:0x80744CBC
-void fn_3_105C28(void) {
-    return;
+u32 fn_3_105C28(Struct_105C28* arg0, u32 arg1) {
+    LookupTable_105C28* tbl = arg0->table;
+    u16 hi = (u16)(arg1 >> 16);
+    u16 lo = (u16)arg1;
+    u16 found = 0;
+    u16 count = tbl->count;
+    LookupEntry_105C28* entry = tbl->entries;
+    LookupEntry_105C28* last;
+    u16 next_key;
+    do {
+        last = entry;
+        if (entry->key == hi && lo == 0) {
+            found = entry->val;
+        }
+        next_key = (++entry)->key;
+        if (next_key > hi) break;
+        count--;
+    } while ((u16)count != 0);
+    return found | ((u32)last->val << 16);
 }
 
 // .text:0x00105C84 size:0x58 mapped:0x80744D18
