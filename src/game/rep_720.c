@@ -150,8 +150,18 @@ void fn_3_15144(void) {
 }
 
 // .text:0x00015220 size:0x5C mapped:0x806542B4
-void fn_3_15220(void) {
-    return;
+void fn_3_15220(s32 arg0) {
+    if (g_FieldingLogic._pad3[3] == 0) {
+        return;
+    }
+    if (arg0 == 0) {
+        g_pCamera->unkABA = 1;
+        return;
+    }
+    if (g_pCamera->unkA82 != 0) {
+        return;
+    }
+    g_pCamera->unkA82 = g_Stats.unk24;
 }
 
 // .text:0x0001527C size:0x6C mapped:0x80654310
