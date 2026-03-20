@@ -63,6 +63,15 @@ typedef struct Camera {
     /* 0xAC5 */ u8 cameraFlag;
     /* 0xAC6 */ u8 _pad5[0xAD8 - 0xAC6];
     /* 0xAD8 */ u8 cameraFlag2;
+    /* 0xAD9 */ u8 _pad6[0x2840 - 0xAD9];
+    /* 0x2840 */ f32 unk2840;
+    /* 0x2844 */ f32 unk2844;
+    /* 0x2848 */ f32 unk2848;
+    /* 0x284C */ f32 unk284C;
+    /* 0x2850 */ f32 unk2850;
+    /* 0x2854 */ f32 unk2854;
+    /* 0x2858 */ u8 _pad7[0x2878 - 0x2858];
+    /* 0x2878 */ f32 unk2878;
 } Camera;
 
 typedef struct Strikes {

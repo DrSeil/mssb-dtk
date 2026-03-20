@@ -361,7 +361,13 @@ void fn_3_17760(void) {
 
 // .text:0x00017804 size:0x58 mapped:0x80656898
 void fn_3_17804(void) {
-    return;
+    g_pCamera->unk2840 = 0.0f;
+    g_pCamera->unk2844 = 0.0f;
+    g_pCamera->unk2848 = 0.0f;
+    g_pCamera->unk284C = 0.0f;
+    g_pCamera->unk2850 = 0.0f;
+    g_pCamera->unk2854 = 1.0f;
+    g_pCamera->unk2878 = 1.0f;
 }
 
 // .text:0x0001785C size:0x294 mapped:0x806568F0
