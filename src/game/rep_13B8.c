@@ -371,8 +371,14 @@ void fn_3_8913C(void) {
 }
 
 // .text:0x00089864 size:0x58 mapped:0x806C88F8
-void fn_3_89864(void) {
-    return;
+void fn_3_89864(s32 idx, s32 delta) {
+    InMemRunnerType* runner = &g_Runners[idx];
+    runner->currentBase += delta;
+    runner->nextBase = (runner->currentBase + 1) & 3;
+    if (runner->currentBase >= 4) {
+        runner->runnerOnFieldOrOutOrScored = RUNNER_STATUS_SCORED_DURING_PLAY;
+        g_Scores.field_0x9C++;
+    }
 }
 
 // .text:0x000898BC size:0x58 mapped:0x806C8950

@@ -657,12 +657,14 @@ u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 
 
 typedef struct Scores {
     /* 0x00 */ s32 highscore;    // This might be Inning
-/* 0x04 */ s16 ScoreTeam0;    // Target for lha r7, 0x4(r6)
+    /* 0x04 */ s16 ScoreTeam0;    // Target for lha r7, 0x4(r6)
     u8 _pad0[0x2A - 0x06];        // 0x06 to 0x29
     /* 0x2A */ s16 ScoreTeam1;
-    u8 _pad1[0xAA - 0x2C];        // Padding to reach 0xAA (0xAA - 0x04 = 166)
+    u8 _pad1[0x9C - 0x2C];        // Pad to 0x9C
+    /* 0x9C */ s16 field_0x9C;
+    u8 _pad2[0xAA - 0x9E];        // Pad to 0xAA
     /* 0xAA */ u8 threshold;     // Matches 'lbz r0, 0xaa(r4)'
-    /* 0xAB */ u8 _pad2[24];     // Padding to reach your original 0xC3
+    /* 0xAB */ u8 _pad3[24];     // Padding to reach your original 0xC3
     /* 0xC3 */ u8 someFlag;
 } Scores;
 
