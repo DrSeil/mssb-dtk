@@ -9,8 +9,10 @@
 // Linked list node used by fn_3_14B9F0
 typedef struct ListNode_14B9F0 {
     struct ListNode_14B9F0* next;  // 0x00
-    u8 _pad[0x46];                  // 0x04-0x49
+    u8 _pad[0x44];                  // 0x04-0x47
+    u16 field_0x48;                 // 0x48
     u16 field_0x4A;                 // 0x4A
+    u8 field_0x4C;                  // 0x4C
 } ListNode_14B9F0;
 
 // Return type from fn_800339F0
