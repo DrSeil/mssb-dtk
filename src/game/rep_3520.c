@@ -364,8 +364,8 @@ void fn_3_13ACB4(void) {
 
 // .text:0x0013ADC0 size:0x5C mapped:0x80779E54
 void fn_3_13ADC0(VecXYZ* dst, VecXYZ* a, VecXYZ* b) {
-    f32 dot = (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
-    f32 scale = dot * lbl_3_rodata_3638;
+    f32 scale = (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
+    scale = scale * lbl_3_rodata_3638;
     dst->x = a->x - (scale * b->x);
     dst->y = a->y - (scale * b->y);
     dst->z = a->z - (scale * b->z);
