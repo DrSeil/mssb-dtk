@@ -90,7 +90,13 @@ void fn_3_93D5C(void) {
 
 // .text:0x0009413C size:0x58 mapped:0x806D31D0
 void fn_3_9413C(void) {
-    return;
+    void* drawingItem;
+    u8 status = lbl_3_common_bss_32724.someStatusInd;
+    drawingItem = lbl_803CC1B8;
+    if (status != 0 || g_GameLogic.gameStatus != 9) {
+        fn_80034CEC((u32)drawingItem);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x00094194 size:0x574 mapped:0x806D3228
