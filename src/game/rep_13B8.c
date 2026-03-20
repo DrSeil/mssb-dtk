@@ -382,8 +382,13 @@ void fn_3_89864(s32 idx, s32 delta) {
 }
 
 // .text:0x000898BC size:0x58 mapped:0x806C8950
-void fn_3_898BC(void) {
-    return;
+void fn_3_898BC(s32 idx, s32 rosterIdx) {
+    InMemRunnerType* runner = &g_Runners[idx];
+    runner->rosterID = rosterIdx;
+    runner->battingHand = inMemRoster[g_GameLogic.teamBatting][rosterIdx].stats.FieldingArm;
+    if (runner->battingHand == 2) {
+        runner->battingHand = BATTING_HAND_RIGHT;
+    }
 }
 
 // .text:0x00089914 size:0xA8 mapped:0x806C89A8

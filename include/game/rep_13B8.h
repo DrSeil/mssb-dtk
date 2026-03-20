@@ -71,7 +71,7 @@ void fn_3_89028(void);
 void fn_3_8911C(void);
 void fn_3_8913C(void);
 void fn_3_89864(s32 idx, s32 delta);
-void fn_3_898BC(void);
+void fn_3_898BC(s32 idx, s32 rosterIdx);
 void fn_3_89914(void);
 void fn_3_899BC(void);
 void fn_3_8A1D8(void);
