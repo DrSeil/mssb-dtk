@@ -1335,9 +1335,8 @@ extern ChallengeTrackingStruct starMissionCompletionTracker[54];
 typedef struct _SomeStarDashStruct {
     /*0x000*/ s16 _0[2];
     /*0x004*/ u8 _4[6];
-    /*0x00A*/ u8 _pad_A[2]; // 2 bytes of padding for f32 alignment
-    /*0x00C*/ f32 _A;
-    /*0x00E*/ u8 pad[24];
+    /*0x00A*/ u8 _A[4];  // float stored unaligned at 0x0A
+    /*0x00E*/ u8 pad[26];
 } SomeStarDashStruct; // size: 0x28
 
 typedef struct _UnkStarDashFloatStruct {
@@ -1547,17 +1546,8 @@ typedef struct _MiniGameStruct {
     /*0x0BC*/ f32 _BC;
     /*0x0C0*/ f32 _C0;
     /*0x0C4*/ s32 _C4;
-
-    /*0x0CA*/ SomeStarDashStruct _CA;
-    /*0x0F2*/ SomeStarDashStruct _F2;
-    /*0x11A*/ SomeStarDashStruct _11A;
-    /*0x142*/ SomeStarDashStruct _142;
-    /*0x16A*/ SomeStarDashStruct _16A;
-    /*0x192*/ SomeStarDashStruct _192;
-    /*0x1BA*/ SomeStarDashStruct _1BA;
-    /*0x1E2*/ SomeStarDashStruct _1E2;
-    /*0x20A*/ SomeStarDashStruct _20A;
-    /*0x230*/ s16 _230;
+    /*0x0C8*/ u8 _padC8[2];
+    /*0x0CA*/ SomeStarDashStruct _CA[9]; // _CA[0].._CA[8], stride 0x28, ends at 0x232
     /*0x232*/ s16 _232[2];
     /*0x236*/ u8 _236[2];
     /*0x238*/ UnkStarDashFloatStruct _238;

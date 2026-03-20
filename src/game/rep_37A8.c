@@ -1,4 +1,5 @@
 #include "game/rep_37A8.h"
+#include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
 
 // .text:0x00141C44 size:0x48 mapped:0x80780CD8
@@ -71,13 +72,21 @@ void fn_3_1430D0(void) {
 }
 
 // .text:0x00143358 size:0x3BC mapped:0x807823EC
-void fn_3_143358(void) {
+void fn_3_143358(s32 slotIdx) {
     return;
 }
 
 // .text:0x00143714 size:0x5C mapped:0x807827A8
 void fn_3_143714(void) {
-    return;
+    s32 i;
+
+    i = 0;
+    do {
+        if (g_Minigame._CA[i]._4[0] != 0) {
+            fn_3_143358(i);
+        }
+        i += 1;
+    } while (i < 40);
 }
 
 // .text:0x00143770 size:0x27C mapped:0x80782804

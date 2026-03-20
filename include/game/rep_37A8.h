@@ -16,7 +16,7 @@ void fn_3_142C18(void);
 void fn_3_142CA8(void);
 void fn_3_142DB4(void);
 void fn_3_1430D0(void);
-void fn_3_143358(void);
+void fn_3_143358(s32 slotIdx);
 void fn_3_143714(void);
 void fn_3_143770(void);
 void fn_3_1439EC(void);
