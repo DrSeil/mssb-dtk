@@ -3,8 +3,14 @@
 #include "header_rep_data.h"
 
 // .text:0x0006A2A4 size:0x5C mapped:0x806A9338
-void fn_3_6A2A4(void) {
-    return;
+void fn_3_6A2A4(s8 arg1) {
+    ActRelatedSub *sub = &g_hugeAnimStruct.actRelatedPtr[arg1 - 0x1f].sub;
+    lbl_3_common_bss_32724.someFlag = 1;
+    sub->flag5b = 2;
+    (sub + 1)->prevFloat = 0.0f;
+    sub->flag59 = 1;
+    sub->float54 = 1.0f;
+    sub->flag5a = 1;
 }
 
 // .text:0x0006A300 size:0x100 mapped:0x806A9394

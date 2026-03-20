@@ -133,6 +133,23 @@ typedef struct HugeAnimEntry68 {
     u8 _pad1[0x58]; // (0x90 - 0x38) u8s to make the struct size exactly 0x90
 } HugeAnimEntry68;
 
+typedef struct ActRelatedSub {
+    /* +0x00 */ f32 prevFloat;    // (sub+1)->prevFloat = r6+0x5c (next sub's first field)
+    /* +0x04 */ u8 _pad04[0x50];  // 0x04-0x53
+    /* +0x54 */ f32 float54;      // r6+0x54
+    /* +0x58 */ u8 _pad58;
+    /* +0x59 */ u8 flag59;        // r6+0x59
+    /* +0x5a */ u8 flag5a;        // r6+0x5a
+    /* +0x5b */ u8 flag5b;        // r6+0x5b
+    // sizeof = 0x5c
+} ActRelatedSub;
+
+typedef struct ActRelatedEntry {
+    /* 0x00 */ u8 _pad0[0x34];    // 0x00-0x33
+    /* 0x34 */ ActRelatedSub sub; // r6 = &entries[idx].sub, sizeof = 0x5c
+    // sizeof = 0x34 + 0x5c = 0x90
+} ActRelatedEntry;
+
 typedef struct hugeAnimStruct {
     /* 0x0000 */ u8 field0_0x0[4];
     /* 0x0004 */ struct StadiumFileHeader* stadiumFileHeaderPointer;
@@ -159,7 +176,7 @@ typedef struct hugeAnimStruct {
     /* 0x0058 */ s32 field22_0x58;
     /* 0x005C */ s32 field23_0x5c;
     /* 0x0060 */ void* ctrlOrBonePtr;
-    /* 0x0064 */ struct ACTBone* actRelatedPtr;
+    /* 0x0064 */ ActRelatedEntry* actRelatedPtr;
     /* 0x0068 */ HugeAnimEntry68* entries_68;
     /* 0x006C */ void* unkPtr;
     /* 0x0070 */ s32 field28_0x70;

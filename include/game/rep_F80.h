@@ -4,7 +4,7 @@
 #include "mssbTypes.h"
 #include "UnknownHeaders.h"
 
-void fn_3_6A2A4(void);
+void fn_3_6A2A4(s8 arg1);
 void fn_3_6A300(void);
 void fn_3_6A400(void);
 void fn_3_6A414(void);
