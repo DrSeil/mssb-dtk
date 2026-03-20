@@ -8,6 +8,7 @@
 
 typedef void (*QueueCallback)(void);
 void fn_800528AC(void (*callback)(void));
+void fn_80011604(s8 arg1, void (*func)(void));
 
 // Forward declaration for fn_800339F0 return type
 struct Struct_800339F0_Result;

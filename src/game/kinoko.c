@@ -1,5 +1,21 @@
 #include "game/kinoko.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
+
+static KinokoState lbl_3_bss_BA00;
+
+// .text:0x001695A4 size:0x5C mapped:0x807A8638
+void fn_3_1695A4(s8 arg1, u8 arg2) {
+    KinokoState *state = &lbl_3_bss_BA00;
+    if (arg2 == 0) {
+        state->ptr0 = &state->_unk08[0x98];
+        state->ptr4 = &state->_unk08[0x24];
+    } else {
+        state->ptr0 = &state->_unk08[0x58];
+        state->ptr4 = &state->_unk08[0x4];
+    }
+    fn_80011604(arg1, fn_3_16917C);
+}
 
 // .text:0x00169600 size:0x204 mapped:0x807A8694
 void fn_3_169600(void) {
