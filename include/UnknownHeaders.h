@@ -63,8 +63,10 @@ typedef struct unkAnimSubstruct {
     /* 0xD1 */ u8    field16_0xd1;
 } unkAnimSubstruct; /* size: 0xD2 */
 
+struct AnimObj_field0;
+
 typedef struct AnimObject {
-    u8 _pad0[0x4];
+    struct AnimObj_field0* field_0; // 0x0
     u32 flags; // 0x4
 } AnimObject;
 
@@ -78,10 +80,27 @@ typedef struct AnimLevel3 {
     AnimLevel4* ptr10; // offset 0x10
 } AnimLevel3;
 
+typedef struct AnimL2_0C {
+    u8 _pad[0x20];
+    s16 field_0x20; // offset 0x20
+} AnimL2_0C;
+
+typedef struct AnimL2_08 {
+    u8 _pad[0xC];
+    AnimL2_0C* ptr0C; // offset 0xC
+} AnimL2_08;
+
 typedef struct AnimLevel2 {
-    u8 _pad[0x10];
+    u8 _pad0[0x8];
+    AnimL2_08* ptr08; // offset 0x8
+    u8 _pad1[0x4];
     AnimLevel4* ptr10; // offset 0x10
 } AnimLevel2;
+
+typedef struct AnimObj_field0 {
+    u8 _pad[0x14];
+    AnimLevel2* field_14; // offset 0x14
+} AnimObj_field0;
 
 typedef struct AnimLevel1 {
     u8 _pad0[0x14]; 
