@@ -3,6 +3,13 @@ import sys
 import os
 import re
 
+PRIMITIVE_TYPES = {
+    "u8", "s8", "u16", "s16", "u32", "s32", "u64", "s64",
+    "f32", "f64", "BOOL", "void", "char", "int", "short",
+    "long", "float", "double", "byte", "uint", "ushort",
+    "pointer", "undefined", "bool",
+}
+
 def get_function_asm(func_name):
     try:
         result = subprocess.run(["python3", "tools/decomp_helper.py", func_name], capture_output=True, text=True, check=True)
@@ -54,16 +61,29 @@ def find_symbol_type(symbol, include_dir):
         if result.returncode == 0 and result.stdout.strip():
             for line in result.stdout.splitlines():
                 line = line.strip().rstrip(';')
-                # Extract type: "extern TypeName sym" or "extern TypeName* sym" or "extern struct T sym"
                 m = re.match(r"extern\s+(.*?)\s*\*?\s*\b" + re.escape(symbol) + r"\b", line)
                 if m:
                     raw_type = m.group(1).strip().rstrip('*').strip()
-                    # Strip leading "struct " keyword if present
                     raw_type = re.sub(r"^struct\s+", "", raw_type).strip()
                     return raw_type, line
     except Exception:
         pass
     return None, None
+
+def extract_pointer_types_from_body(body):
+    """Extract type names of pointer fields from a struct body string."""
+    types = set()
+    # Match "struct TypeName *field" or "TypeName *field" or "TypeName* field"
+    for m in re.finditer(r"\bstruct\s+(\w+)\s*\*", body):
+        types.add(m.group(1))
+    for m in re.finditer(r"\b(\w+)\s*\*+\s+\w+\s*;", body):
+        t = m.group(1)
+        if t not in ("struct", "const", "unsigned", "signed") and not t.startswith("P"):
+            types.add(t)
+    # Also match typedef pointer types like "TypeName* field" without struct keyword
+    for m in re.finditer(r"\b(\w+)\s*\*\s*\w+\s*[;\[]", body):
+        types.add(m.group(1))
+    return types - PRIMITIVE_TYPES
 
 def find_struct_body(type_name, search_paths):
     """Find and return the struct definition body for a given type name."""
@@ -75,7 +95,6 @@ def find_struct_body(type_name, search_paths):
         except Exception:
             continue
 
-        # Look for "struct TypeName {" or "} TypeName;" (typedef end) or "typedef struct ... TypeName {"
         start_line = None
         for i, line in enumerate(lines):
             if re.search(rf"\bstruct\s+{re.escape(type_name)}\s*\{{", line) or \
@@ -85,10 +104,8 @@ def find_struct_body(type_name, search_paths):
                 break
 
         if start_line is None:
-            # Try "typedef struct { ... } TypeName;"
             for i, line in enumerate(lines):
                 if re.search(rf"\}}\s*{re.escape(type_name)}\s*;", line):
-                    # Find the matching opening brace
                     for j in range(i, -1, -1):
                         if "typedef struct" in lines[j]:
                             start_line = j
@@ -96,7 +113,6 @@ def find_struct_body(type_name, search_paths):
                     break
 
         if start_line is not None:
-            # Collect lines until matching closing brace
             body = []
             depth = 0
             for i in range(start_line, min(start_line + 120, len(lines))):
@@ -107,6 +123,28 @@ def find_struct_body(type_name, search_paths):
             return path, start_line + 1, "\n".join(body)
 
     return None, None, None
+
+def print_struct_recursive(type_name, search_paths, seen_types, indent=0, max_depth=3):
+    """Find, print, and recursively resolve pointer types within a struct."""
+    if type_name in seen_types or type_name in PRIMITIVE_TYPES or indent // 2 >= max_depth:
+        return
+    seen_types.add(type_name)
+
+    path, lineno, body = find_struct_body(type_name, search_paths)
+    if not body:
+        return
+
+    src = os.path.relpath(path) if path else "?"
+    prefix = "  " * indent
+    print(f"\n{prefix}// Struct: {type_name} ({src}:{lineno})")
+    for line in body.splitlines():
+        print(f"{prefix}{line}")
+
+    # Recurse into pointer member types
+    pointer_types = extract_pointer_types_from_body(body)
+    for pt in sorted(pointer_types):
+        if pt not in seen_types and pt not in PRIMITIVE_TYPES:
+            print_struct_recursive(pt, search_paths, seen_types, indent + 2, max_depth)
 
 def find_callers(func_name, asm_dir):
     """Find all functions in the asm directory that call func_name via bl."""
@@ -128,68 +166,90 @@ def find_callers(func_name, asm_dir):
 
             current_fn = None
             for line in lines:
-                fn_match = re.match(r"\.fn\s+(\S+)", line)
+                fn_match = re.match(r"\.fn\s+(\S+?),?\s", line)
                 if fn_match:
                     current_fn = fn_match.group(1)
                 if current_fn and re.search(rf"\bbl\s+{re.escape(func_name)}\b", line):
-                    callers.append(current_fn)
+                    callers.append((current_fn, asm_file))
 
     except Exception:
         pass
-    return sorted(set(callers))
+    # Deduplicate by function name, keeping first file seen
+    seen = {}
+    for fn, f in callers:
+        if fn not in seen:
+            seen[fn] = f
+    return sorted(seen.items())
+
+def get_caller_snippet(func_name, caller_fn, asm_file, context_before=15, context_after=3):
+    """Return lines around the bl <func_name> call in caller_fn's assembly."""
+    try:
+        with open(asm_file, 'r', errors='replace') as f:
+            lines = f.readlines()
+    except Exception:
+        return []
+
+    in_fn = False
+    fn_lines = []
+    for line in lines:
+        if re.match(rf"\.fn\s+{re.escape(caller_fn)}[,\s]", line):
+            in_fn = True
+            continue
+        if in_fn and re.match(r"\.endfn\s+", line):
+            break
+        if in_fn:
+            fn_lines.append(line.rstrip())
+
+    bl_pattern = re.compile(rf"\bbl\s+{re.escape(func_name)}\b")
+    snippets = []
+    for i, line in enumerate(fn_lines):
+        if bl_pattern.search(line):
+            start = max(0, i - context_before)
+            end = min(len(fn_lines), i + context_after + 1)
+            snippet = fn_lines[start:end]
+            # Mark the bl line
+            bl_idx = i - start
+            snippet[bl_idx] = ">>> " + snippet[bl_idx]
+            snippets.append(snippet)
+    return snippets
 
 def extract_access_patterns(asm_lines):
     """Extract all load/store offset accesses, grouped by base register."""
-    # Map from register -> what global it was last loaded from
     reg_source = {}
-    accesses = []  # (instruction, offset, base_reg, source_symbol)
-
-    load_store_re = re.compile(
-        r"(l[bhwf]z?u?x?|s[bhwf]x?u?|stfs?|lfs?|l[fd]s?u?|stfd?)\s+\w+,\s*(-?(?:0x[0-9a-fA-F]+|\d+))\((\w+)\)"
-    )
-    global_re = re.compile(r"(lbl_[0-9A-Fa-f_]+|g_[a-zA-Z0-9_]+)@[hl]")
-    addi_re = re.compile(r"addi\s+(\w+),\s*(\w+),\s*([^\s]+)@[hl]")
-    mulli_re = re.compile(r"mulli\s+\w+,\s*\w+,\s*(0x[0-9a-fA-F]+|\d+)")
+    accesses = []
 
     strides = []
     for line in asm_lines:
-        # Track global address loads: "addi rN, rM, symbol@l" or "lis rN, symbol@ha"
-        lis_match = re.search(r"lis\s+(\w+),\s*(lbl_[0-9A-Fa-f_]+|g_[a-zA-Z0-9_]+)@ha", line)
+        lis_match = re.search(r"lis\s+(\w+),\s*(lbl_[a-zA-Z0-9_]+|g_[a-zA-Z0-9_]+)@ha", line)
         if lis_match:
             reg_source[lis_match.group(1)] = lis_match.group(2)
 
-        addi_match = re.search(r"addi\s+(\w+),\s*(\w+),\s*(lbl_[0-9A-Fa-f_]+|g_[a-zA-Z0-9_]+)@l", line)
+        addi_match = re.search(r"addi\s+(\w+),\s*(\w+),\s*(lbl_[a-zA-Z0-9_]+|g_[a-zA-Z0-9_]+)@l", line)
         if addi_match:
             reg_source[addi_match.group(1)] = addi_match.group(3)
 
-        # lwzu: "lwzu rN, symbol@l(rM)" — the base gets updated to rN
-        lwzu_match = re.search(r"lwzu\s+(\w+),\s*(lbl_[0-9A-Fa-f_]+|g_[a-zA-Z0-9_]+)@l\((\w+)\)", line)
+        lwzu_match = re.search(r"lwzu\s+(\w+),\s*(lbl_[a-zA-Z0-9_]+|g_[a-zA-Z0-9_]+)@l\((\w+)\)", line)
         if lwzu_match:
             reg_source[lwzu_match.group(3)] = lwzu_match.group(2)
             reg_source[lwzu_match.group(1)] = lwzu_match.group(2)
 
-        # Track load-with-update of a dereffed pointer
-        # "lwz rN, 0x0(rM)" where rM is a known global -> rN = *global
         lwz_match = re.search(r"lwz\s+(\w+),\s*(0x[0-9a-fA-F]+|\d+)\((\w+)\)", line)
         if lwz_match:
             dest, off, base = lwz_match.group(1), lwz_match.group(2), lwz_match.group(3)
             if off in ("0x0", "0") and base in reg_source:
                 reg_source[dest] = f"*{reg_source[base]}"
 
-        # mulli strides
         mulli_match = re.search(r"mulli\s+\w+,\s*\w+,\s*(0x[0-9a-fA-F]+|\d+)", line)
         if mulli_match:
             stride = mulli_match.group(1)
             strides.append(int(stride, 16) if stride.startswith("0x") else int(stride))
 
-        # Load/store with offset
         ls_match = re.search(
             r"\b(l[bhw]zu?|lha|lf[sd]u?|st[bhw]u?|stf[sd]u?)\s+\w+,\s*(-?(?:0x[0-9a-fA-F]+|\d+))\((\w+)\)",
             line
         )
         if ls_match:
             instr, offset, base = ls_match.group(1), ls_match.group(2), ls_match.group(3)
-            # Convert offset to int
             neg = offset.startswith('-')
             abs_off = offset.lstrip('-')
             off_int = int(abs_off, 16) if abs_off.startswith("0x") else int(abs_off)
@@ -201,7 +261,6 @@ def extract_access_patterns(asm_lines):
     return accesses, strides
 
 def summarize_accesses(accesses, strides):
-    """Group accesses by source symbol and print a summary."""
     from collections import defaultdict
     grouped = defaultdict(list)
     for instr, off, base, source in accesses:
@@ -210,9 +269,9 @@ def summarize_accesses(accesses, strides):
     lines = []
     for source, items in sorted(grouped.items()):
         offsets = sorted(set(items), key=lambda x: x[1])
-        offset_strs = [f"  0x{off:X} ({instr})" for instr, off in offsets]
         lines.append(f"  {source}:")
-        lines.extend(offset_strs)
+        for instr, off in offsets:
+            lines.append(f"    0x{off:X} ({instr})" if off >= 0 else f"    -0x{-off:X} ({instr})")
 
     if strides:
         stride_strs = [f"0x{s:X}" for s in sorted(set(strides))]
@@ -240,15 +299,21 @@ def main():
         print("Could not retrieve ASM lines.")
         sys.exit(1)
 
-    # --- Callers ---
+    # --- Callers + snippets ---
     asm_dir = "build/GYQE01/game/asm"
     callers = find_callers(func_name, asm_dir)
     if callers:
         print(f"\nCallers ({len(callers)}):")
-        for c in callers[:10]:
-            print(f"  {c}")
-        if len(callers) > 10:
-            print(f"  ... and {len(callers) - 10} more")
+        shown = callers[:3]
+        for caller_fn, asm_file in shown:
+            print(f"\n  [{caller_fn}]")
+            snippets = get_caller_snippet(func_name, caller_fn, asm_file)
+            for snippet in snippets:
+                for sl in snippet:
+                    print(f"    {sl}")
+        if len(callers) > 3:
+            remaining = [c for c, _ in callers[3:]]
+            print(f"\n  ... and {len(callers) - 3} more: {', '.join(remaining)}")
     else:
         print("\nCallers: none found in game asm")
 
@@ -259,7 +324,7 @@ def main():
         sig = find_signature(dep, include_dir)
         print(f"  {sig}")
 
-    # --- Symbols + struct definitions ---
+    # --- Symbols + recursive struct definitions ---
     lbls = set()
     for line in asm_lines:
         match = re.search(r"\b(lbl_[a-zA-Z0-9_]+|g_[a-zA-Z0-9_]+)\b", line)
@@ -275,16 +340,9 @@ def main():
         else:
             print(f"  {lbl}  // type unknown")
 
-        # Look up struct definition for this type
-        if type_name and type_name not in seen_types and type_name not in {"u8", "s8", "u16", "s16", "u32", "s32", "f32", "f64", "BOOL", "void"}:
-            seen_types.add(type_name)
-            path, lineno, body = find_struct_body(type_name, struct_search_paths)
-            if body:
-                src = os.path.relpath(path) if path else "?"
-                print(f"\n  // Struct definition: {type_name} (from {src}:{lineno})")
-                for struct_line in body.splitlines():
-                    print(f"  {struct_line}")
-                print()
+        if type_name and type_name not in seen_types and type_name not in PRIMITIVE_TYPES:
+            print_struct_recursive(type_name, struct_search_paths, seen_types, indent=1)
+            print()
 
     # --- Access pattern summary ---
     accesses, strides = extract_access_patterns(asm_lines)
