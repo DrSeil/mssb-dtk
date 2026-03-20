@@ -19,128 +19,18 @@
 - **Platform-specific constraints**: The use of PowerPC-specific features (Gekko processor, register constraints) indicates that any decompiled code must maintain platform-specific calling conventions and register usage patterns.
 
 ### Learnings from fn_3_2ACD8
-30");
-    register void* r29 asm("r29");
-    register void* r0 asm("r0");
-    register void* r1 asm("r1");
-    
-    r30 = (void*)arg1;
-    r5 = (void*)(arg0 * 0x268);
-    r4 = (void*)g_Fielders;
-    r0 = (void*)((u8*)r4 + (u32)r5);
-    r31 = r0;
-    if ((s32)r30 < 1) {
-        return;
-    }
-    fn_3_2BB04();
-    if ((s32)r3 != 0) {
-        return;
-    }
-    r3 = (void*)g_Ball;
-    r4 = (void*)((u8*)r3 + ((u32)r30 << 4));
-    r0 = (void*)0x1;
-    r3 = (void*)((u8*)r4 + 0x354);
-    r4 = (void*)((u8*)r4 + 0x35C);
-    r31->unk14 = *(f32*)r3;
-    r31->unk1C = *(f32*)r4;
-    r31->unk216 = (u8)r0;
-}
-Struct Updates: [{"type_name": "Fielder", "actions": [{"action": "add_field", "type": "f32", "name": "unk14", "offset": "0x14"}, {"action": "add_field", "type": "f32", "name": "unk1C", "offset": "0x1C"}, {"action": "add_field", "type": "u8", "name": "unk216", "offset": "0x216"}]}]
-
---- Attempt 4 ---
-Score: 0.0%
-Build Error:
-[1/31] MWCC build/GYQE01/src/game/rep_720.o
-[2/31] MWCC build/GYQE01/src/game/rep_1038.o
-[3/31] MWCC build/GYQE01/src/game/rep_1200.o
-[4/31] MWCC build/GYQE01/src/game/rep_13B8.o
-[5/31] MWCC build/GYQE01/src/game/rep_16B8.o
-[6/31] MWCC build/GYQE01/src/game/rep_18E8.o
-[7/31] MWCC build/GYQE01/src/game/rep_1CB8.o
-[8/31] MWCC build/GYQE01/src/game/rep_1E08.o
-[9/31] MWCC build/GYQE01/src/game/rep_1F58.o
-[10/31] MWCC build/GYQE01/src/game/rep_23E8.o
-[11/31] MWCC build/GYQE01/src/game/rep_2528.o
-[12/31] MWCC build/GYQE01/src/game/rep_2A28.o
-[13/31] MWCC build/GYQE01/src/game/rep_2B48.o
-[14/31] MWCC build/GYQE01/src/game/rep_2C88.o
-[15/31] MWCC build/GYQE01/src/game/rep_2D88.o
-[16/31] MWCC build/GYQE01/src/game/rep_2F08.o
-[17/31] MWCC build/GYQE01/src/game/rep_3008.o
-[18/31] MWCC build/GYQE01/src/game/rep_3108.o
-[19/31] MWCC build/GYQE01/src/game/rep_3208.o
-[20/31] MWCC build/GYQE01/src/game/rep_3308.o
-[21/31] MWCC build/GYQE01/src/game/rep_3408.o
-[22/31] MWCC build/GYQE01/src/game/rep_3508.o
-[23/31] MWCC build/GYQE01/src/game/rep_3608.o
-[24/31] MWCC build/GYQE01/src/game/rep_3708.o
-[25/31] MWCC build/GYQE01/src/game/rep_3808.o
-[26/31] MWCC build/GYQE01/src/game/rep_3908.o
-[27/31] MWCC build/GYQE01/src/game/rep_3A08.o
-[28/31] MWCC build/GYQE01/src/game/rep_3B08.o
-[29/31] MWCC build/GYQE01/src/game/rep_3C08.o
-[30/31] MWCC build/GYQE01/src/game/rep_3D08.o
-[31/31] MWCC build/GYQE01/src/game/rep_3E08.o
-[1/31] MWCC build/GYQE01/src/game/rep_EA0.o
-[2/31] MWCC build/GYQE01/src/game/rep_A00.o
-[3/31] MWCC build/GYQE01/src/game/rep_E08.o
-[4/31] MWCC build/GYQE01/src/game/rep_F80.o
-[5/31] MWCC build/GYQE01/src/game/rep_AC8.o
-FAILED: build/GYQE01/src/game/rep_AC8.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/rep_AC8.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/rep_AC8.d build/GYQE01/src/game/rep_AC8.d
-### mwcceppc.exe Compiler:
-#    File: src\game\rep_AC8.c
-# ---------------------------
-#     118: register void* r5 asm("r5");
-#   Error:                       ^
-#   cannot declare global register variables after code has been generated.
-#   Too many errors printed, aborting program
-
-User break, cancelled...
-[6/31] MWCC build/GYQE01/src/game/m_sound.o
-ninja: build stopped: subcommand failed.
-
-Code Snippet:
-void fn_3_2ACD8(s32 arg0, s32 arg1) {
-    register void* r5 asm("r5");
-    register void* r3 asm("r3");
-    register void* r4 asm("r4");
-    register void* r31 asm("r31");
-    register void* r30 asm("r30");
-    register void* r29 asm("r29");
-    register void* r0 asm("r0");
-    register void* r1 asm("r1");
-    
-    r30 = (void*)arg1;
-    r5 = (void*)(arg0 * 0x268);
-    r4 = (void*)g_Fielders;
-    r0 = (void*)((u8*)r4 + (u32)r5);
-    r31 = r0;
-    if ((s32)r30 < 1) {
-        return;
-    }
-    fn_3_2BB04();
-    if ((s32)r3 != 0) {
-        return;
-    }
-    r3 = (void*)g_Ball;
-    r4 = (void*)((u8*)r3 + ((u32)r30 << 4));
-    r0 = (void*)0x1;
-    r3 = (void*)((u8*)r4 + 0x354);
-    r4 = (void*)((u8*)r4 + 0x35C);
-    r31->unk14 = *(f32*)r3;
-    r31->unk1C = *(f32*)r4;
-    r31->unk216 = (u8)r0;
-}
-Struct
+- Global register variables must be declared at the very top of the function to avoid "cannot declare global register variables after code has been generated" errors.
+- Strides for arrays can be determined by observing `mulli` instructions (e.g., `mulli ..., 0x268` confirms a struct size of `0x268`).
 
 ### Learnings from fn_3_104A88
-- The compiler enforces strict C89 typing rules, particularly around implicit conversions between pointer types. Passing a `const float (*)[4][4]` where a `const float (*)[4]` is expected will cause a build failure, requiring explicit casting or restructuring of data layouts.
+- The compiler enforces strict C89 typing rules, particularly around implicit conversions between pointer types.
+- External symbol declarations in shared headers must be properly terminated with a semicolon.
+- Shared headers like `UnknownHeaders.h` are foundational; errors here block the entire project build.
 
-- External symbol declarations in shared headers (e.g., `extern const Vec3f lbl_3_data_20FF8;`) must be properly terminated with a semicolon. Missing semicolons in header files will cause cascading compilation failures across multiple translation units.
-
-- The build system appears to use a shared header (`UnknownHeaders.h`) that is included by many source files. Errors in this header (such as syntax issues) will block compilation of all dependent files, indicating the importance of header stability.
-
-- The codebase likely uses a custom memory layout or data section (e.g., `lbl_3_data_20FF8`) that must be defined elsewhere in the project. References to undefined external data symbols will fail unless the corresponding data is properly declared and linked.
-
-- The compiler's error handling is strict and will abort on the first fatal error, preventing partial builds. This suggests that fixing one error may not immediately resolve build issues if other dependent errors exist.
+### Session Learnings (March 2026)
+- **Instruction Scheduling vs. Logic**: Logically correct C code (verified by data flow analysis) may still fail to match 100% due to MWCC 2.6's aggressive instruction interleaving. The compiler often moves loads earlier to hide pipeline stalls. If logical attempts fail, focus on reordering C statements or using temporary variables to guide the scheduler.
+- **Register Swapping**: Even with perfect logic, the compiler may choose to swap the registers assigned to local variables (e.g., `r5` vs `r6`). This can sometimes be resolved by changing the order of variable declarations or initialization.
+- **Handling Identical Functions (Folding)**: The compiler may "fold" identical functions into a single implementation to save space. To verify matching for one of several identical functions, temporarily change a constant or add a unique global access to force the compiler to treat them as distinct entities.
+- **Function Address Gaps**: When a function is missing from a source file, always check `symbols.txt` for its address and `splits.txt` for its expected file. Gaps between matched functions in the `.text` section must be filled with stubs to maintain correct address offsets and ordering.
+- **Pointer Arithmetic vs. Array Indexing**: The target assembly's register reloads often depend on whether a value was accessed via `array[i]` or `*ptr++`. Matching reloads (e.g., re-loading `z1` from an array after a pointer increment) requires mirroring the assembly's access pattern exactly in C.
+- **Mandatory Prototypes**: MWCC 2.6 requires prototypes for all functions (due to `-requireprotos`). Adding or updating headers is a required step for every matched function.
