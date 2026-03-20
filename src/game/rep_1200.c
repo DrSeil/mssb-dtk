@@ -191,7 +191,18 @@ void fn_3_73FAC(void) {
 
 // .text:0x000740D0 size:0x58 mapped:0x806B3164
 void fn_3_740D0(void) {
-    return;
+    g_Pitcher.nonCaptainStarPitchTriggeredType = g_Pitcher.nonCaptainStarPitch;
+    switch (g_Pitcher.nonCaptainStarPitch) {
+        case 1:
+            g_Pitcher.specialPitchTypeCode = 0x10;
+            break;
+        case 2:
+            g_Pitcher.specialPitchTypeCode = 0x11;
+            break;
+        case 3:
+            g_Pitcher.specialPitchTypeCode = 0x12;
+            break;
+    }
 }
 
 // .text:0x00074128 size:0x99C mapped:0x806B31BC
