@@ -158,7 +158,15 @@ void fn_3_7372C(void) {
 
 // .text:0x00073850 size:0x58 mapped:0x806B28E4
 void fn_3_73850(void) {
-    return;
+    s32 i;
+
+    g_Strikes.outs++;
+    for (i = 0; i < 3; i++) {
+        if (g_Strikes.unk_18[i] == -1) {
+            g_Strikes.unk_18[i] = 0;
+            return;
+        }
+    }
 }
 
 // .text:0x000738A8 size:0x540 mapped:0x806B293C
