@@ -41,8 +41,10 @@ void fn_3_8B890(void) {
 }
 
 // .text:0x0008B964 size:0x58 mapped:0x806CA9F8
-void fn_3_8B964(void) {
-    return;
+void fn_3_8B964(VecXYZ* pos, VecXYZ* vel, VecXYZ* orient) {
+    if (lbl_3_common_bss_32B20.field_0x8 != 0) {
+        sndUpdateListener(&lbl_3_common_bss_32B20, pos, vel, orient, &lbl_3_data_8D70, 0x7F, 0);
+    }
 }
 
 // .text:0x0008B9BC size:0xA4 mapped:0x806CAA50
