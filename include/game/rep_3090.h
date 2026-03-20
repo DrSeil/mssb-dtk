@@ -8,7 +8,8 @@
 
 
 typedef struct Struct_DE94_Inner {
-    /* 0x000 */ u8 _pad0[0x18];
+    /* 0x000 */ u8 _pad0[0x14];
+    /* 0x014 */ s32 field_0x14;
     /* 0x018 */ u32 field_0x18;
     /* 0x01C */ u8 _pad1[0x04];
     /* 0x020 */ u32 field_0x20;
@@ -17,9 +18,11 @@ typedef struct Struct_DE94_Inner {
     /* 0x11C */ u32 field_0x11C;   // 0x11C (Replaced _pad3)
     /* 0x120 */ u8 _pad3[0x04];    // (Adjusted padding)
     /* 0x124 */ u32 field_0x124;
-    /* 0x128 */ u8 _pad4[0x889];   // Align to 0x9B1 (0x128 + 0x889 = 0x9B1)
+    /* 0x128 */ u8 _pad4[0x883];
+    /* 0x9AB */ u8 field_0x9AB;
+    /* 0x9AC */ u8 _pad5[0x05];
     /* 0x9B1 */ u8 field_0x9B1;    // 0x9B1 (Corrected from 0x9B6)
-    /* 0x9B2 */ u8 _pad5[0x4];     // Remaining space to field_0x9B6
+    /* 0x9B2 */ u8 _pad6[0x4];     // Remaining space to field_0x9B6
     /* 0x9B6 */ u8 field_0x9B6;
 } Struct_DE94_Inner;
 
@@ -48,7 +51,7 @@ void fn_3_FDA1C(void);
 void fn_3_FDB30(void);
 BOOL fn_3_100018(void);
 void fn_3_100038(void);
-void fn_3_10007C(void);
+BOOL fn_3_10007C(void);
 void fn_3_1000D8(void);
 void fn_3_101CC4(void);
 void fn_3_103C30(void);
@@ -93,6 +96,11 @@ u32 fn_3_10698C(u32* list);
 void* fn_3_1069B0(void* base, s32 index);
 void fn_3_1069C0(void);
 void fn_3_106BA0(void);
+
+extern struct {
+    u8 _00[0x28];
+    u8 _28;
+} lbl_80366158;
 
 // No local headers needed.
 /* --- The Function --- */

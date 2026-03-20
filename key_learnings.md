@@ -34,3 +34,9 @@
 - **Function Address Gaps**: When a function is missing from a source file, always check `symbols.txt` for its address and `splits.txt` for its expected file. Gaps between matched functions in the `.text` section must be filled with stubs to maintain correct address offsets and ordering.
 - **Pointer Arithmetic vs. Array Indexing**: The target assembly's register reloads often depend on whether a value was accessed via `array[i]` or `*ptr++`. Matching reloads (e.g., re-loading `z1` from an array after a pointer increment) requires mirroring the assembly's access pattern exactly in C.
 - **Mandatory Prototypes**: MWCC 2.6 requires prototypes for all functions (due to `-requireprotos`). Adding or updating headers is a required step for every matched function.
+
+### Register Allocation & Address Load Ordering (MWCC 2.6)
+- **Symbol Encounter Order**: Register assignment for global addresses (`lis/addi ha/l`) is driven by the order in which the compiler's parser/optimizer first encounters each symbol's address being used.
+- **Strategic Interleaving**: To control which global gets which register (e.g., `r3` vs `r4`), it's often necessary to separate declarations from assignments and interleave them (e.g., `void* v1; u8 v2 = global1; v1 = global2;`). This forces the compiler to see `global1`'s address first, assigning it to a lower register like `r3` before it sees `global2`.
+- **Register/ASM Tag Ineffectiveness**: The `register` keyword and `asm("rN")` tags are often ignored or overridden by MWCC 2.6's optimizer and scheduler. They should not be used as a primary solution for register mismatches; instead, focus on restructuring the C code's variable initialization and usage patterns.
+- **OR-ing Condition Sensitivity**: In functions with multiple `if` conditions joined by `||`, the compiler's choice of `bne` (if any condition is true) vs `beq` (if all conditions are false) can drastically affect register reuse and instruction hoisting.

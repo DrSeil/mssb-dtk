@@ -119,8 +119,17 @@ void fn_3_100038(void) {
 }
 
 // .text:0x0010007C size:0x5C mapped:0x8073F110
-void fn_3_10007C(void) {
-    return;
+BOOL fn_3_10007C(void) {
+    Struct_DE94_Inner* ptr = lbl_3_common_bss_DE94;
+    if (ptr->field_0x9AB == 1) {
+        if (ptr->field_0x14 != 0) {
+            lbl_80366158._28 = 1;
+            return FALSE;
+        }
+        lbl_80366158._28 = 0;
+        return TRUE;
+    }
+    return TRUE;
 }
 
 // .text:0x001000D8 size:0x1BEC mapped:0x8073F16C
