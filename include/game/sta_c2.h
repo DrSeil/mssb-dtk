@@ -81,7 +81,7 @@ void fn_3_D141C(void);
 void fn_3_D173C(void);
 void fn_3_D1848(void);
 void fn_3_D196C(void);
-void fn_3_D1AC4(void);
+void fn_3_D1AC4(ActorObject* arg0);
 void fn_3_D1B24(void);
 void fn_3_D1F2C(void);
 void fn_3_D2220(void);

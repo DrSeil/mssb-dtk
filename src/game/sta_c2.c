@@ -291,8 +291,21 @@ void fn_3_D196C(void) {
 }
 
 // .text:0x000D1AC4 size:0x60 mapped:0x80710B58
-void fn_3_D1AC4(void) {
-    return;
+void fn_3_D1AC4(ActorObject* arg0) {
+    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
+    u8 byte_ca = arg0->field_0xca;
+    AnimLevel1* level1 = has->entries_18->field_0x0;
+    AnimLevel2* level2 = level1->ptr14;
+    AnimLevel4* level4 = level2->ptr10;
+    AnimObject* obj = level4->ptr04;
+
+    if (byte_ca == 0) {
+        obj->field_0x74 &= ~0x1FFF;
+        obj->field_0x74 |= 0x3;
+    } else {
+        obj->field_0x74 &= ~0x1FFF;
+        obj->field_0x74 |= 0x2;
+    }
 }
 
 // .text:0x000D1B24 size:0x408 mapped:0x80710BB8
