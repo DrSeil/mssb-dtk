@@ -3,10 +3,12 @@
 
 #include "mssbTypes.h"
 #include "UnknownHeaders.h"
+#include "game/rep_1C0.h"
 
 extern u8 lbl_3_bss_995C;
 extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
+extern CompressedDiskRead lbl_3_data_11380;
 extern s32 lbl_3_data_1146C[];
 
 typedef struct Rep1E08Obj {
@@ -65,7 +67,7 @@ void fn_3_BF1AC(void);
 void fn_3_BF20C(void);
 void fn_3_BF238(void);
 void fn_3_BF6C0(void);
-void fn_3_BF878(void);
+s32 fn_3_BF878(void);
 void fn_3_BF8F8(void);
 void fn_3_BFB3C(void);
 void fn_3_BFDA4(void);

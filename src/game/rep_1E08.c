@@ -301,8 +301,14 @@ void fn_3_BF6C0(void) {
 }
 
 // .text:0x000BF878 size:0x80 mapped:0x806FE90C
-void fn_3_BF878(void) {
-    return;
+s32 fn_3_BF878(void) {
+    if (lbl_803C6CF8.allowLoad == 1) {
+        lbl_3_common_bss_35154.field_0x8 = ARAMTransfer(&lbl_3_data_11380, 0, 0, 0);
+        fn_800B0A5C_insertQueue(fn_3_BF6C0, 0);
+        lbl_3_common_bss_35154.unk_3b0 = 1;
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x000BF8F8 size:0x244 mapped:0x806FE98C

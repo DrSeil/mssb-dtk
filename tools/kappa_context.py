@@ -124,8 +124,8 @@ def find_struct_body(type_name, search_paths):
 
     return None, None, None
 
-def print_struct_recursive(type_name, search_paths, seen_types, indent=0, max_depth=3):
-    """Find, print, and recursively resolve pointer types within a struct."""
+def print_struct_recursive(type_name, search_paths, seen_types, indent=0, max_depth=1, accessed_offsets=None, window=8):
+    """Find, print (filtered to accessed offsets), and optionally recurse pointer types."""
     if type_name in seen_types or type_name in PRIMITIVE_TYPES or indent // 2 >= max_depth:
         return
     seen_types.add(type_name)
@@ -136,9 +136,44 @@ def print_struct_recursive(type_name, search_paths, seen_types, indent=0, max_de
 
     src = os.path.relpath(path) if path else "?"
     prefix = "  " * indent
+    lines = body.splitlines()
+
     print(f"\n{prefix}// Struct: {type_name} ({src}:{lineno})")
-    for line in body.splitlines():
-        print(f"{prefix}{line}")
+
+    if not accessed_offsets:
+        for line in lines:
+            print(f"{prefix}{line}")
+    else:
+        # Parse field offsets from /*0xOFF*/ comments
+        field_offsets = []
+        for line in lines:
+            m = re.search(r"/\*0x([0-9A-Fa-f]+)\*/", line)
+            field_offsets.append(int(m.group(1), 16) if m else None)
+
+        # Determine which field lines to show
+        show_set = set()
+        for i, off in enumerate(field_offsets):
+            if off is not None:
+                for acc_off in accessed_offsets:
+                    if abs(off - acc_off) <= window:
+                        show_set.add(i)
+                        break
+
+        skipped = 0
+        for i, line in enumerate(lines):
+            if field_offsets[i] is None:
+                # Structural line (typedef header / closing brace) — always show
+                if skipped > 0:
+                    print(f"{prefix}    // ... ({skipped} fields)")
+                    skipped = 0
+                print(f"{prefix}{line}")
+            elif i in show_set:
+                if skipped > 0:
+                    print(f"{prefix}    // ... ({skipped} fields)")
+                    skipped = 0
+                print(f"{prefix}{line}")
+            else:
+                skipped += 1
 
     # Recurse into pointer member types
     pointer_types = extract_pointer_types_from_body(body)
@@ -299,6 +334,13 @@ def main():
         print("Could not retrieve ASM lines.")
         sys.exit(1)
 
+    # --- Access patterns (computed early for struct filtering) ---
+    accesses, strides = extract_access_patterns(asm_lines)
+    symbol_accessed_offsets = {}
+    for _instr, off, _base, source in accesses:
+        if off >= 0:
+            symbol_accessed_offsets.setdefault(source, set()).add(off)
+
     # --- Callers + snippets ---
     asm_dir = "build/GYQE01/game/asm"
     callers = find_callers(func_name, asm_dir)
@@ -307,7 +349,7 @@ def main():
         shown = callers[:3]
         for caller_fn, asm_file in shown:
             print(f"\n  [{caller_fn}]")
-            snippets = get_caller_snippet(func_name, caller_fn, asm_file)
+            snippets = get_caller_snippet(func_name, caller_fn, asm_file, context_before=8)
             for snippet in snippets:
                 for sl in snippet:
                     print(f"    {sl}")
@@ -341,11 +383,11 @@ def main():
             print(f"  {lbl}  // type unknown")
 
         if type_name and type_name not in seen_types and type_name not in PRIMITIVE_TYPES:
-            print_struct_recursive(type_name, struct_search_paths, seen_types, indent=1)
+            accessed = symbol_accessed_offsets.get(lbl)
+            print_struct_recursive(type_name, struct_search_paths, seen_types, indent=1, accessed_offsets=accessed)
             print()
 
     # --- Access pattern summary ---
-    accesses, strides = extract_access_patterns(asm_lines)
     if accesses or strides:
         print("\nAccess patterns (offsets by base):")
         for line in summarize_accesses(accesses, strides):

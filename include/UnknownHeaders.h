@@ -489,9 +489,12 @@ extern UnknownStructB7 lbl_3_data_4444;
 
 typedef struct CommonBss_35154 {
     /* 0x000 */ u32 firstMember;
-    /* 0x004 */ u8 _pad0[0x3AC - 4];
+    /* 0x004 */ u8 _pad_1[4];
+    /* 0x008 */ void* field_0x8;
+    /* 0x00C */ u8 _pad0[0x3AC - 0xC];
     /* 0x3AC */ u32 bitfield;
-    /* 0x3B0 */ u8 _pad_extra[0x54];
+    /* 0x3B0 */ u8 unk_3b0;
+    /* 0x3B1 */ u8 _pad_extra[0x53];
     /* 0x404 */ s16 someHalfword;
     /* 0x406 */ u8 _pad2[6];
     /* 0x40C */ u32 array_40c[1]; // Array starting at 0x40c
