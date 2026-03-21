@@ -305,8 +305,12 @@ void fn_3_14D710(void) {
 }
 
 // .text:0x0014DC80 size:0x60 mapped:0x8078CD14
-void fn_3_14DC80(void) {
-    return;
+void fn_3_14DC80(s32 arg) {
+    // NONMATCHING: logic correct; target uses bge+b+bl for last check, ours generates blt+bl
+    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
+    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_BARREL_BATTER) return;
+    if ((s8)arg >= 15) return;
+    if ((s8)arg >= 0) fn_3_14D710();
 }
 
 // .text:0x0014DCE0 size:0x24 mapped:0x8078CD74

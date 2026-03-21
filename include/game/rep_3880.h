@@ -90,7 +90,7 @@ void fn_3_14D318(void);
 void fn_3_14D44C(void);
 void fn_3_14D6D4(Struct_14D6D4_Input* in);
 void fn_3_14D710(void);
-void fn_3_14DC80(void);
+void fn_3_14DC80(s32 arg);
 void fn_3_14DCE0(void);
 void fn_3_14DD04(void);
 void fn_3_14DF6C(void);
