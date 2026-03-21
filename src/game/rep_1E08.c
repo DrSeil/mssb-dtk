@@ -126,9 +126,9 @@ void fn_3_BD434(s32 arg0, s32 arg1) {
     i = 0;
     lbl_3_common_bss_35154.unk_3cc = 0x1518;
     lbl_3_common_bss_35154.unk_3c8 = 0;
-    lbl_3_common_bss_35154.unk_3d0 = 0.3125f;
-    lbl_3_common_bss_35154.unk_3d4 = 0.0002f;
-    lbl_3_common_bss_35154.unk_3d8 = 0.5f;
+    lbl_3_common_bss_35154.unk_3d0 = lbl_3_rodata_1F18;
+    lbl_3_common_bss_35154.unk_3d4 = lbl_3_rodata_1F1C;
+    lbl_3_common_bss_35154.unk_3d8 = lbl_3_rodata_1E64;
 
     while (arr->flag < 4) {
         arr++;
@@ -139,7 +139,7 @@ void fn_3_BD434(s32 arg0, s32 arg1) {
     lbl_3_common_bss_35154.unk_3bc = lbl_3_common_bss_35154.unk_3b8[i].x;
     lbl_3_common_bss_35154.unk_3c0 = lbl_3_common_bss_35154.unk_3b8[i].y;
     lbl_3_common_bss_35154.unk_3c4 = lbl_3_common_bss_35154.unk_3b8[i].z;
-    lbl_3_common_bss_35154.unk_3dc = 128.0f;
+    lbl_3_common_bss_35154.unk_3dc = lbl_3_rodata_1F20;
 }
 
 // .text:0x000BD4F0 size:0x14 mapped:0x806FC584
