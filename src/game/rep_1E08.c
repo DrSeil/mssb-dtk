@@ -234,8 +234,17 @@ void fn_3_BE140(void) {
 }
 
 // .text:0x000BE174 size:0x60 mapped:0x806FD208
-void fn_3_BE174(void) {
-    return;
+void fn_3_BE174(s32 arg, f32 v1, f32 v2, f32 v3) {
+    QueueEntry* entry;
+    lbl_3_common_bss_35154.bitfield |= 1;
+    lbl_3_common_bss_35154.unk_41C = v1;
+    lbl_3_common_bss_35154.unk_420 = v2;
+    lbl_3_common_bss_35154.unk_424 = v3;
+    lbl_3_common_bss_35154.unk_419 = (u8)arg;
+    if (arg == 4) {
+        entry = fn_800B0A5C_insertQueue(fn_3_BDF74, 3);
+        entry->unk10 = 2;
+    }
 }
 
 // .text:0x000BE1D4 size:0xE24 mapped:0x806FD268

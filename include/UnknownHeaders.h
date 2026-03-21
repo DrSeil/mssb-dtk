@@ -519,7 +519,12 @@ typedef struct CommonBss_35154 {
     /* 0x40C */ u32 array_40c[1]; // Array starting at 0x40c
     /* 0x410 */ u8 _pad_mid[0x8];
     /* 0x418 */ u8 someFlag_418;  // stb r0, 0x418(r5)
-    /* 0x419 */ u8 _pad_end[0x1B];
+    /* 0x419 */ u8 unk_419;
+    /* 0x41A */ u8 _pad_e[0x2];
+    /* 0x41C */ f32 unk_41C;
+    /* 0x420 */ f32 unk_420;
+    /* 0x424 */ f32 unk_424;
+    /* 0x428 */ u8 _pad_end[0xC];
     /* 0x434 */ f32 unk_434;
     /* 0x438 */ f32 unk_438;
     /* 0x43C */ f32 unk_43C;

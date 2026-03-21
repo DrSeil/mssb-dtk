@@ -49,7 +49,7 @@ void fn_3_BDCA4(void);
 void fn_3_BDE14(void);
 void fn_3_BDF74(void);
 void fn_3_BE140(void);
-void fn_3_BE174(void);
+void fn_3_BE174(s32 arg, f32 v1, f32 v2, f32 v3);
 void fn_3_BE1D4(void);
 void fn_3_BEFF8(void);
 void fn_3_BF070(void);
