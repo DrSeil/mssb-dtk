@@ -108,7 +108,11 @@ void fn_3_14F24(void) {
 
 // .text:0x00014F68 size:0x60 mapped:0x80653FFC
 void fn_3_14F68(void) {
-    return;
+    if (g_FieldingLogic.unk133 != 2) return;
+    if (g_pCamera->unkAC4 != 0) return;
+    g_pCamera->unkAC4 = g_FieldingLogic.unk114;
+    g_pCamera->unkA9A = g_Ball.fielderWBallIndex;
+    g_pCamera->unkA98 = (s16)g_Stats.unk24;
 }
 
 // .text:0x00014FC8 size:0x3C mapped:0x8065405C
