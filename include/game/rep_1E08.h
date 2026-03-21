@@ -65,6 +65,7 @@ void fn_3_BFDA4(void);
 void fn_3_C0134(void);
 void fn_3_C0770(void);
 void fn_3_C07A0(void);
+void fn_3_C07B0(void);
 
 // No local headers needed.
 #endif // !__GAME_rep_1E08_H_

@@ -678,6 +678,7 @@ typedef struct castleThwompObj {
     /* 0xCC */ u8 field38_0xcc[28];
 } castleThwompObj;
 
+s32 fn_80033928(s32 arg0);
 u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 
 typedef struct Scores {

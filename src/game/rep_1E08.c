@@ -339,3 +339,10 @@ void fn_3_C0770(void) {
 void fn_3_C07A0(void) {
     lbl_3_bss_995C = 3;
 }
+
+// .text:0x000C07B0 size:0x60 mapped:0x806FF844
+void fn_3_C07B0(void) {
+    if (fn_80033928(0x10) != 0 || fn_80033A24(fn_3_C0134, 0x80, 0, 0, 0, 0x10) != 0) {
+        lbl_3_bss_995C = 0;
+    }
+}
