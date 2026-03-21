@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
+
 // .text:0x0014737C size:0x3FC mapped:0x80786410
 void fn_3_14737C(void) {
     return;
@@ -421,7 +422,7 @@ void fn_3_14F930(void) {
 }
 
 // .text:0x00150010 size:0x60 mapped:0x8078F0A4
-// NONMATCHING: bge+b+bl branch pattern (known uncontrollable — see fn_3_14DC80)
+// NONMATCHING: bge+b+bl branch layout uncontrollable at -O4 (tried: macro, explicit goto)
 void fn_3_150010(s32 arg) {
     if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
     if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_STAR_DASH) return;
