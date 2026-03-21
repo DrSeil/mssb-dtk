@@ -47,6 +47,7 @@ void fn_3_96914(void);
 void fn_3_9698C(void);
 void fn_3_96CA4(void);
 
+extern int lbl_3_data_F390;
 extern int lbl_3_data_F3F0;
 extern s32 lbl_3_data_E0E0;
 // No local headers needed.

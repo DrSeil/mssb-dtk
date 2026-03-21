@@ -30,7 +30,9 @@ void fn_3_91B9C(void) {
 
 // .text:0x00091C70 size:0x5C mapped:0x806D0D04
 void fn_3_91C70(void) {
-    return;
+    fn_80034E20((void*)lbl_803CC1B8, (int*)&lbl_3_data_F390, (void**)&lbl_803CC1B8);
+    lbl_3_common_bss_32724._pad4[6] = 1;
+    lbl_803CC1B8->aFunctionPointer = (void*)fn_3_91B9C;
 }
 
 // .text:0x00091CCC size:0x50 mapped:0x806D0D60
