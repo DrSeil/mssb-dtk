@@ -117,8 +117,21 @@ void fn_3_C4068(void) {
 }
 
 // .text:0x000C40EC size:0x60 mapped:0x80703180
-void fn_3_C40EC(void) {
-    return;
+void fn_3_C40EC(ActorObject* arg0) {
+    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
+    u8 byte_a9 = arg0->field_0xa9;
+    AnimLevel1* level1 = has->entries_18->field_0x4;
+    AnimLevel2* level2 = level1->ptr14;
+    AnimLevel4* level4 = level2->ptr10;
+    AnimObject* obj = level4->ptr04;
+
+    if (byte_a9 != 6) {
+        obj->flags &= ~0x1FFF;
+        obj->flags |= 0x19;
+    } else {
+        obj->flags &= ~0x1FFF;
+        obj->flags |= 0x1a;
+    }
 }
 
 // .text:0x000C414C size:0x158 mapped:0x807031E0

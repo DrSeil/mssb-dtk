@@ -134,9 +134,11 @@ typedef struct HugeAnimEntry2D94 {
     /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 u8s)
 } HugeAnimEntry2D94;
 typedef struct HugeAnimEntry68 {
-    u8 _pad0[0x34];
+    u8 _pad0[0x4];
+    AnimLevel1* field_0x4;  // offset 0x4
+    u8 _pad1[0x2C];         // 0x08-0x33
     AnimLevel1* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
-    u8 _pad1[0x58]; // (0x90 - 0x38) u8s to make the struct size exactly 0x90
+    u8 _pad2[0x58]; // (0x90 - 0x38) u8s to make the struct size exactly 0x90
 } HugeAnimEntry68;
 
 typedef struct ActRelatedSub {

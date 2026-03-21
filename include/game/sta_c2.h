@@ -17,9 +17,11 @@ typedef struct BoneWrapper {
 // Main structure passed to fn_3_CFA8C
 typedef struct ActorObject {
     u8 _pad0[0x74];
-    BoneWrapper* wrapper; // Offset 0x74
-    u8 _pad1[0xB0 - 0x78]; // 0x78 to 0xB0
-    u8 state;             // Offset 0xB0
+    BoneWrapper* wrapper;       // Offset 0x74
+    u8 _pad1[0xa9 - 0x78];     // 0x78 to 0xa8
+    u8 field_0xa9;              // Offset 0xa9
+    u8 _pad2[0xB0 - 0xAA];     // 0xaa to 0xaf
+    u8 state;                   // Offset 0xB0
 } ActorObject;
 
 void fn_3_CB8A8(void);
