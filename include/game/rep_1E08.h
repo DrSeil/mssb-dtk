@@ -6,6 +6,12 @@
 
 extern u8 lbl_3_bss_995C;
 extern s16 lbl_3_bss_9952;
+extern s32 lbl_3_data_17000[];
+
+typedef struct Rep1E08Obj {
+    u8 _pad[0x252];
+    u8 field_0x252; // 0x252
+} Rep1E08Obj;
 
 void pitchingMachinePitching(s32 param);
 
@@ -26,7 +32,7 @@ void fn_3_BBBC4(void);
 void fn_3_BBF94(void);
 void fn_3_BC224(void);
 void fn_3_BC25C(void);
-void fn_3_BC274(void);
+s32 fn_3_BC274(Rep1E08Obj* arg0, VecXZ* arg1, VecXZ* arg2);
 void fn_3_BC2DC(void);
 void fn_3_BC6D8(void);
 void fn_3_BC850(s32 dummy, s32 index);
