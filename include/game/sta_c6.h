@@ -96,8 +96,8 @@ void fn_3_E7424(void);
 void fn_3_E751C(void);
 void fn_3_E763C(void);
 void fn_3_E7A2C(void);
-void fn_3_E7B20(void);
-void fn_3_E8AC8(void);
+u8 fn_3_E7B20(u32 arg0, u32 arg1);
+int fn_3_E8AC8(void);
 void fn_3_E8B24(void);
 
 #endif // !__GAME_sta_c6_H_

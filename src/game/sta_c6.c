@@ -1,5 +1,6 @@
 #include "game/sta_c6.h"
 #include "UnknownHeaders.h"
+#include "static/UnknownHomes_Static.h"
 #include "stl/mem.h"
 #include "header_rep_data.h"
 
@@ -171,13 +172,16 @@ void fn_3_E7A2C(void) {
 }
 
 // .text:0x000E7B20 size:0xFA8 mapped:0x80726BB4
-void fn_3_E7B20(void) {
-    return;
+u8 fn_3_E7B20(u32 arg0, u32 arg1) {
+    return 0;
 }
 
 // .text:0x000E8AC8 size:0x5C mapped:0x80727B5C
-void fn_3_E8AC8(void) {
-    return;
+int fn_3_E8AC8(void) {
+    if (g_d_GameSettings.StadiumID != 6) {
+        return 0;
+    }
+    return (u8)fn_3_E7B20(lbl_3_common_bss_350E4[0].unk38, lbl_3_common_bss_350E4[0].unk34) != 0;
 }
 
 // .text:0x000E8B24 size:0x5F8 mapped:0x80727BB8

@@ -454,7 +454,8 @@ typedef struct UnknownStruct_350E4 {
     /* 0x004 */ void* dest;
     /* 0x008 */ u8 _pad_0x8[0x28];
     /* 0x030 */ u32 memcpyCount;
-    /* 0x034 */ u8 _pad_0x34[0x8];
+    /* 0x034 */ u32 unk34;
+    /* 0x038 */ u32 unk38;
     /* 0x03C */ u32* unk3C;
     /* 0x040 */ u16* unk40;
     /* 0x044 */ u32* unk44;
