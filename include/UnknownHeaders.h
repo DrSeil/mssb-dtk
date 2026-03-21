@@ -554,7 +554,7 @@ extern void fn_800B0A14_removeQueue(void);
 // The assembly passes the index in r4
 extern VecXZ lbl_3_data_111C8[];
 // Extern function prototype based on bl fn_8003A688
-extern void fn_8003A688(f32, f32);
+extern void fn_8003A688(s32, f32, f32);
 extern u8 lbl_3_bss_B894[0xF];
 typedef struct CommonBss32A94 {
 u8 _pad0[0x2];

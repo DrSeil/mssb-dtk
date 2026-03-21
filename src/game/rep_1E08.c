@@ -90,17 +90,8 @@ void fn_3_BC6D8(void) {
  * @address 000BC850
  */
 
-void fn_3_BC850(s32 index) {
-    /* * dummy is r3 (ignored)
-     * index is r4
-     * * Target sequence logic:
-     * slwi r0, r4, 3   -> index * sizeof(VecXZ)
-     * lis r5, ha       -> Base address start
-     * add r4, r5, r0   -> r4 = calculated address of element
-     * lfsx f1, r5, r0  -> load .x using index
-     * lfs f2, 0x4(r4)  -> load .z using displacement from r4
-     */
-    fn_8003A688(lbl_3_data_111C8[index].x, lbl_3_data_111C8[index].z);
+void fn_3_BC850(s32 dummy, s32 index) {
+    fn_8003A688(dummy, lbl_3_data_111C8[index].x, lbl_3_data_111C8[index].z);
 
 }
 
