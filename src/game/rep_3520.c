@@ -117,8 +117,11 @@ s32 fn_3_13564C(f32 val1, f32 val2) {
 }
 
 // .text:0x00135698 size:0x60 mapped:0x8077472C
-void fn_3_135698(void) {
-    return;
+s32 fn_3_135698(Struct_135698_Item* a, Struct_135698_Item* b) {
+    if (a->field_0x11 && !b->field_0x11) return -1;
+    if (!a->field_0x11 && b->field_0x11) return 1;
+    if (a->field_0x0 < b->field_0x0) return -1;
+    return (a->field_0x0 > b->field_0x0);
 }
 
 // .text:0x001356F8 size:0xAC mapped:0x8077478C

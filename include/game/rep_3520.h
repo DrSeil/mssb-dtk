@@ -31,7 +31,13 @@ void fn_3_1354BC(void);
 void fn_3_135520(void);
 void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ);
 s32 fn_3_13564C(f32 val1, f32 val2);
-void fn_3_135698(void);
+typedef struct {
+    f32 field_0x0;
+    u8 _pad[0xD];
+    u8 field_0x11;
+} Struct_135698_Item;
+
+s32 fn_3_135698(Struct_135698_Item* a, Struct_135698_Item* b);
 void fn_3_1356F8(void);
 void fn_3_1357A4(void);
 void fn_3_13583C(void);
