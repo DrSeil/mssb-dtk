@@ -4,6 +4,26 @@
 #include "mssbTypes.h"
 
 // Structs for fn_3_E6638
+typedef struct OuterPtr_E6798 {
+    struct NodeArray_E6798* unk0;  // +0x00
+} OuterPtr_E6798;
+
+typedef struct ElemNode_E6798 {
+    u8 _pad[0x14];
+    u32 unk14;  // +0x14
+    u32 unk18;  // +0x18
+} ElemNode_E6798;
+
+typedef struct NodeArray_E6798 {
+    u8 _pad[0x18];
+    ElemNode_E6798** unk18;  // +0x18
+} NodeArray_E6798;
+
+typedef struct Arg0_E6798 {
+    u8 _pad[0x74];
+    OuterPtr_E6798* unk74;  // +0x74
+} Arg0_E6798;
+
 typedef struct InnerStruct_E6638 {
     u8 _pad[0x14];
     u32 field_0x14;  // 0x14
@@ -45,6 +65,7 @@ typedef struct {
     Inner_E5E14* unk4;  // +0x04
 } Arg0_E5E14;
 
+extern u8 lbl_3_data_196B4;
 extern u8 lbl_3_data_19024;
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
@@ -62,7 +83,7 @@ void fn_3_E6578(void);
 void fn_3_E6638(BaseStruct_E6638* arg0);
 void fn_3_E6684(void);
 void fn_3_E671C(void);
-void fn_3_E6798(void);
+void fn_3_E6798(Arg0_E6798* arg0);
 void fn_3_E67F4(void);
 void fn_3_E68A8(void);
 void fn_3_E698C(void);
