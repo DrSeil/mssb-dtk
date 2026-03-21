@@ -383,8 +383,14 @@ void fn_3_14F3CC(void) {
 }
 
 // .text:0x0014F544 size:0x60 mapped:0x8078E5D8
-void fn_3_14F544(void) {
-    return;
+void fn_3_14F544(Struct_14F544_Arg* arg) {
+    // NONMATCHING: lfd f2 (bias double load) scheduled 2 instructions too early
+    f32 val;
+    arg->field_0x4A = (s16)lbl_3_data_26C94.field_0x1C;
+    arg->field_0x43 = (u8)lbl_3_data_26C94.field_0x14;
+    val = (f32)lbl_3_data_26C94.field_0x8 / lbl_3_rodata_3930;
+    arg->field_0x3C = val;
+    arg->field_0x38 = val;
 }
 
 // .text:0x0014F5A4 size:0x32C mapped:0x8078E638

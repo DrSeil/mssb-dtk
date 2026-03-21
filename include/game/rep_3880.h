@@ -104,7 +104,29 @@ void fn_3_14E9F0(void);
 void fn_3_14EAF4(void);
 void fn_3_14ED24(void);
 void fn_3_14F3CC(void);
-void fn_3_14F544(void);
+typedef struct {
+    u8 _pad0[0x38];
+    f32 field_0x38;
+    f32 field_0x3C;
+    u8 _pad1[0x3];
+    u8 field_0x43;
+    u8 _pad2[0x6];
+    s16 field_0x4A;
+} Struct_14F544_Arg;
+
+typedef struct {
+    u8 _pad0[0x8];
+    s32 field_0x8;
+    u8 _pad1[0x8];
+    u32 field_0x14;
+    u8 _pad2[0x4];
+    u32 field_0x1C;
+    u8 _pad3[0x4];
+} Struct_26C94;
+extern Struct_26C94 lbl_3_data_26C94;
+extern f32 lbl_3_rodata_3930;
+
+void fn_3_14F544(Struct_14F544_Arg* arg);
 void fn_3_14F5A4(void);
 void fn_3_14F8D0(void);
 void fn_3_14F930(void);
