@@ -247,7 +247,12 @@ void fn_3_BE1D4(void) {
 
 // .text:0x000BEFF8 size:0x78 mapped:0x806FE08C
 void fn_3_BEFF8(void) {
-    return;
+    DrawingSceneStruct* scene = lbl_803CC1B8;
+    lbl_3_common_bss_35154.firstMember = (u32)scene;
+    fn_80034E20((void(*)(void))scene, (int*)lbl_3_data_1146C, (void**)&lbl_3_common_bss_35154);
+    scene->unk18 = 0;
+    lbl_803CC1B8->aFunctionPointer = (void*)fn_3_BE1D4;
+    lbl_3_common_bss_35154.bitfield = 0;
 }
 
 // .text:0x000BF070 size:0xE8 mapped:0x806FE104

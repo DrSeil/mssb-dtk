@@ -7,6 +7,7 @@
 extern u8 lbl_3_bss_995C;
 extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
+extern s32 lbl_3_data_1146C[];
 
 typedef struct Rep1E08Obj {
     u8 _pad[0x252];
