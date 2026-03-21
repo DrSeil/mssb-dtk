@@ -26,7 +26,7 @@ void fn_3_152E8(void);
 void fn_3_1537C(void);
 void fn_3_153F0(void);
 void fn_3_15458(void);
-void fn_3_154C4(void);
+void fn_3_154C4(s32 arg);
 void fn_3_15524(void);
 void fn_3_15A98(void);
 void fn_3_15D28(void);
@@ -87,8 +87,10 @@ void fn_3_1CE90(void);
 
 extern s32 lbl_3_bss_44;
 typedef struct Stats {
-u8 _pad[0x24];
-u32 unk24;
+    u8 _pad[0x24];
+    u32 unk24;
+    u8 _pad2[0x36 - 0x28];
+    u8 unk36;
 } Stats;
 extern Stats g_Stats;
 // No local headers needed.

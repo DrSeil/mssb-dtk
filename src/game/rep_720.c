@@ -194,8 +194,14 @@ void fn_3_15458(void) {
 }
 
 // .text:0x000154C4 size:0x60 mapped:0x80654558
-void fn_3_154C4(void) {
-    return;
+void fn_3_154C4(s32 arg) {
+    if (g_Pitcher.windupCountdownUntilBallReleased != 1) return;
+    if (arg == 0) {
+        g_pCamera->unkAB4 = 1;
+        return;
+    }
+    if (g_Stats.unk36 != 0) return;
+    g_pCamera->unkA74 = (s16)g_Stats.unk24;
 }
 
 // .text:0x00015524 size:0x574 mapped:0x806545B8

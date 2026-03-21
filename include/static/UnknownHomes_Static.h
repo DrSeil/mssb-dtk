@@ -51,7 +51,9 @@ extern GameInitVariables g_d_GameSettings;
 typedef struct Camera {
     /* 0x000 */ u8 _pad0[0xA50];
     /* 0xA50 */ s32 unk_A50;
-    /* 0xA54 */ u8 _pad1[0xA82 - 0xA54];
+    /* 0xA54 */ u8 _pad1[0xA74 - 0xA54];
+    /* 0xA74 */ s16 unkA74;
+    /* 0xA76 */ u8 _pad1c[0xA82 - 0xA76];
     /* 0xA82 */ s16 unkA82;
     /* 0xA84 */ u8 _pad1b[0xA96 - 0xA84];
     /* 0xA96 */ s16 unkA96;       // used in fn_3_14FC8
@@ -61,7 +63,9 @@ typedef struct Camera {
     /* 0xA9E */ u8 _pad3[0xAA4 - 0xA9E];
     /* 0xAA4 */ s16 unkAA4;       // used in fn_3_14E84
     /* 0xAA6 */ s16 unkAA6;       // used in fn_3_14EE8
-    /* 0xAA8 */ u8 _pad4[0xABA - 0xAA8];
+    /* 0xAA8 */ u8 _pad4[0xAB4 - 0xAA8];
+    /* 0xAB4 */ u8 unkAB4;
+    /* 0xAB5 */ u8 _pad4c[0xABA - 0xAB5];
     /* 0xABA */ u8 unkABA;
     /* 0xABB */ u8 _pad4b[0xAC4 - 0xABB];
     /* 0xAC4 */ u8 unkAC4;
