@@ -240,5 +240,10 @@ void fn_3_128C18(void) {
 
 // .text:0x00129370 size:0x60 mapped:0x80768404
 void fn_3_129370(void) {
-    return;
+    // NONMATCHING: target assembly shows 2-arg call (no r5 setup), but fn_80034E20 is
+    // declared with 3 args globally; local redeclaration is rejected by CW
+    fn_80034E20((void (*)(void))lbl_803CC1B8, (int*)&lbl_3_data_A9F8, (void**)&lbl_803CC1B8);
+    lbl_803CC1B8->unk18 = 0;
+    lbl_803CC1B8->unk1a = 0;
+    lbl_803CC1B8->aFunctionPointer = (void*)fn_3_128C18;
 }

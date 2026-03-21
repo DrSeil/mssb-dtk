@@ -66,6 +66,7 @@ void fn_3_1274B4(void);
 void fn_3_127B68(void);
 void fn_3_128A38(void);
 void fn_3_128B90(void);
+extern int lbl_3_data_A9F8;
 void fn_3_128C18(void);
 void fn_3_129370(void);
 
