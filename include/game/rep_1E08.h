@@ -9,6 +9,12 @@ extern u8 lbl_3_bss_995C;
 extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
 extern CompressedDiskRead lbl_3_data_11380;
+
+typedef struct DataOuter {
+    DataArrayElement elements[10]; // 10 * 0x10 = 0xa0
+} DataOuter;
+
+extern DataOuter lbl_3_data_12354[];
 extern s32 lbl_3_data_1146C[];
 
 typedef struct Rep1E08Obj {
@@ -43,7 +49,7 @@ void fn_3_BC888(void);
 void fn_3_BCA20(void);
 void fn_3_BD1D4(void);
 void fn_3_BD1D8(void);
-void fn_3_BD434(void);
+void fn_3_BD434(s32 arg0, s32 arg1);
 void fn_3_BD4F0(void);
 void fn_3_BD504(void);
 void fn_3_BD6AC(s32 arg0, f32 f1, f32 f2, f32 f3);

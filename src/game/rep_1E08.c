@@ -117,8 +117,29 @@ void fn_3_BD1D8(void) {
 }
 
 // .text:0x000BD434 size:0xBC mapped:0x806FC4C8
-void fn_3_BD434(void) {
-    return;
+void fn_3_BD434(s32 arg0, s32 arg1) {
+    DataArrayElement* arr;
+    s32 i;
+
+    arr = lbl_3_data_12354[arg0 + arg1 * 7].elements;
+    lbl_3_common_bss_35154.unk_3b8 = arr;
+    i = 0;
+    lbl_3_common_bss_35154.unk_3cc = 0x1518;
+    lbl_3_common_bss_35154.unk_3c8 = 0;
+    lbl_3_common_bss_35154.unk_3d0 = 0.3125f;
+    lbl_3_common_bss_35154.unk_3d4 = 0.0002f;
+    lbl_3_common_bss_35154.unk_3d8 = 0.5f;
+
+    while (arr->flag < 4) {
+        arr++;
+        i++;
+    }
+
+    lbl_3_common_bss_35154.unk_3e0 = 1;
+    lbl_3_common_bss_35154.unk_3bc = lbl_3_common_bss_35154.unk_3b8[i].x;
+    lbl_3_common_bss_35154.unk_3c0 = lbl_3_common_bss_35154.unk_3b8[i].y;
+    lbl_3_common_bss_35154.unk_3c4 = lbl_3_common_bss_35154.unk_3b8[i].z;
+    lbl_3_common_bss_35154.unk_3dc = 128.0f;
 }
 
 // .text:0x000BD4F0 size:0x14 mapped:0x806FC584

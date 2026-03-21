@@ -487,6 +487,15 @@ typedef struct {
 } UnknownStructB7;
 extern UnknownStructB7 lbl_3_data_4444;
 
+typedef struct DataArrayElement {
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
+    /* 0xC */ u8 _pad[2];
+    /* 0xE */ u8 flag;
+    /* 0xF */ u8 _pad2;
+} DataArrayElement; // size: 0x10
+
 typedef struct CommonBss_35154 {
     /* 0x000 */ u32 firstMember;
     /* 0x004 */ u8 _pad_1[4];
@@ -494,7 +503,19 @@ typedef struct CommonBss_35154 {
     /* 0x00C */ u8 _pad0[0x3AC - 0xC];
     /* 0x3AC */ u32 bitfield;
     /* 0x3B0 */ u8 unk_3b0;
-    /* 0x3B1 */ u8 _pad_extra[0x53];
+    /* 0x3B1 */ u8 _pad3b1[7];
+    /* 0x3B8 */ DataArrayElement* unk_3b8;
+    /* 0x3BC */ f32 unk_3bc;
+    /* 0x3C0 */ f32 unk_3c0;
+    /* 0x3C4 */ f32 unk_3c4;
+    /* 0x3C8 */ u32 unk_3c8;
+    /* 0x3CC */ u32 unk_3cc;
+    /* 0x3D0 */ f32 unk_3d0;
+    /* 0x3D4 */ f32 unk_3d4;
+    /* 0x3D8 */ f32 unk_3d8;
+    /* 0x3DC */ f32 unk_3dc;
+    /* 0x3E0 */ u8 unk_3e0;
+    /* 0x3E1 */ u8 _pad3e1[0x23];
     /* 0x404 */ s16 someHalfword;
     /* 0x406 */ u8 _pad2[6];
     /* 0x40C */ u32 array_40c[1]; // Array starting at 0x40c
