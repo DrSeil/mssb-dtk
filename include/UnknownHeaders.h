@@ -429,7 +429,7 @@ typedef struct hugeAnimStruct {
     /* 0x312C */ u8 field292_0x312c[40];
 } hugeAnimStruct; /* size: 0x3154 */
 extern hugeAnimStruct g_hugeAnimStruct;
-void fn_800BD670(s32 fieldVal, s32 arg1, hugeAnimStruct* globalPtr);
+void fn_800BD670(s32 fieldVal, s32 arg1);
 extern f32 lbl_3_rodata_1414;
 
 typedef struct StadiumObjectElem {

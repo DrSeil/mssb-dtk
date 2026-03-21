@@ -172,7 +172,7 @@ void fn_3_BD7DC(s32 arg1) {
     // We pass the global address directly as the 3rd param to keep r5 active.
     // For the 1st param, we access the field in a way that forces the 
     // compiler to anchor the base address into the now-free r3 register.
-    fn_800BD670((&g_hugeAnimStruct)->field28_0x70, arg1, &g_hugeAnimStruct);
+    fn_800BD670(g_hugeAnimStruct.field28_0x70, arg1);
 }
 // .text:0x000BD80C size:0xCC mapped:0x806FC8A0
 void fn_3_BD80C(void) {
