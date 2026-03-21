@@ -18,7 +18,7 @@ BALL_COLLISION_TYPE fn_3_8D4(VecSrcDst* inVec, CollisionStruct* outCollision) {
 BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollision, int collisionCheckType,
                                    BOOL useBallCoords) {
     VecSrcDst p;
-    Vec v;
+    u32 v;
     BALL_COLLISION_TYPE ret = 0;
     if (collisionCheckType) {
         if (useBallCoords && (g_d_GameSettings.StadiumID == STADIUM_ID_WARIO_PALACE ||
@@ -36,7 +36,7 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
             if (collisionCheckType == 2 && (ret & BALL_COLLISION_TYPE_FOUL)) {
                 ret = BALL_COLLISION_TYPE_NONE;
             } else {
-                ret = processStadiumObjectFunction(g_d_GameSettings.StadiumID, (struct StadiumObject*)&v, ret, (struct StadiumObject*)outCollision);
+                ret = processStadiumObjectFunction(g_d_GameSettings.StadiumID, v, ret, outCollision);
             }
         }
     }
@@ -48,7 +48,7 @@ BALL_COLLISION_TYPE checkCollision(VecSrcDst* inVec, CollisionStruct* outCollisi
 }
 
 // .text:0x00000A6C size:0x384 mapped:0x8063FB00
-BALL_COLLISION_TYPE checkStatiumHazardCollisions(VecSrcDst* inVec, CollisionStruct* outCollision, Vec* v) {
+BALL_COLLISION_TYPE checkStatiumHazardCollisions(VecSrcDst* inVec, CollisionStruct* outCollision, u32* v) {
     return;
 }
 

@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "game/UnknownHomes_Game.h"
+#include "game/rep_D0.h"
 #include "C3/control.h"
 #include "Dolphin/mtx.h"
 
@@ -449,8 +450,14 @@ extern hugeAnimStruct g_hugeAnimStruct;
 void fn_800BD670(s32 fieldVal, s32 arg1, hugeAnimStruct* globalPtr);
 extern f32 lbl_3_rodata_1414;
 
+typedef struct StadiumObjectElem {
+    u8 _pad[0x80];
+    BALL_COLLISION_TYPE (*fnPtr)(u32, BALL_COLLISION_TYPE, CollisionStruct*);  /* 0x80 */
+    u8 _pad2[0xE8 - 0x84];
+} StadiumObjectElem;
+
 typedef struct UnknownStruct_350E4 {
-    /* 0x000 */ void* src;
+    /* 0x000 */ StadiumObjectElem* src;
     /* 0x004 */ void* dest;
     /* 0x008 */ u8 _pad_0x8[0x28];
     /* 0x030 */ u32 memcpyCount;

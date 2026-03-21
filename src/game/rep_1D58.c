@@ -173,8 +173,12 @@ void fn_3_B9124(void) {
 }
 
 // .text:0x000B916C size:0x5C mapped:0x806F8200
-int processStadiumObjectFunction(int, struct StadiumObject*, int, struct StadiumObject*) {
-    return;
+BALL_COLLISION_TYPE processStadiumObjectFunction(s32, s32 index, BALL_COLLISION_TYPE ret, CollisionStruct* outCollision) {
+    if (index < (s32)lbl_3_common_bss_350E4[0].memcpyCount) {
+        if (lbl_3_common_bss_350E4[0].src[index].fnPtr != NULL) {
+            lbl_3_common_bss_350E4[0].src[index].fnPtr(index, ret, outCollision);
+        }
+    }
 }
 
 // .text:0x000B91C8 size:0x1D4 mapped:0x806F825C

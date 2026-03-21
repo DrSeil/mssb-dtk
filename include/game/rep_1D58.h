@@ -3,6 +3,7 @@
 
 #include "mssbTypes.h"
 #include "Dolphin/stl.h"
+#include "game/rep_D0.h"
 
 typedef struct StadiumObject StadiumObject;
 
@@ -27,7 +28,7 @@ void fn_3_B8C08(void);
 void fn_3_B902C(void);
 void fn_3_B908C(void);
 void fn_3_B9124(void);
-int processStadiumObjectFunction(int, struct StadiumObject*, int, struct StadiumObject*);
+BALL_COLLISION_TYPE processStadiumObjectFunction(s32, s32 index, BALL_COLLISION_TYPE ret, CollisionStruct* outCollision);
 void fn_3_B91C8(void);
 void fn_3_B939C(void);
 void fn_3_B93C4(void);
