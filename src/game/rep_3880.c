@@ -421,8 +421,12 @@ void fn_3_14F930(void) {
 }
 
 // .text:0x00150010 size:0x60 mapped:0x8078F0A4
-void fn_3_150010(void) {
-    return;
+// NONMATCHING: bge+b+bl branch pattern (known uncontrollable — see fn_3_14DC80)
+void fn_3_150010(s32 arg) {
+    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
+    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_STAR_DASH) return;
+    if ((s8)arg > 4) return;
+    if ((s8)arg >= 0) fn_3_14F930();
 }
 
 // .text:0x00150070 size:0x58 mapped:0x8078F104

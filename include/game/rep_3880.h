@@ -135,7 +135,7 @@ void fn_3_14F544(Struct_14F544_Arg* arg);
 void fn_3_14F5A4(void);
 void fn_3_14F8D0(struct Struct_800339F0_Result* arg);
 void fn_3_14F930(void);
-void fn_3_150010(void);
+void fn_3_150010(s32 arg);
 void fn_3_150070(void);
 void fn_3_1500C8(void);
 void fn_3_150120(void);
