@@ -22,10 +22,12 @@ typedef struct ActorObject {
     u8 field_0xa9;              // Offset 0xa9
     u8 _pad2[0xB0 - 0xAA];     // 0xaa to 0xaf
     u8 state;                   // Offset 0xB0
+    u8 _pad3[0xca - 0xB1];     // 0xb1 to 0xc9
+    u8 field_0xca;              // Offset 0xca
 } ActorObject;
 
 void fn_3_CB8A8(void);
-void fn_3_CBA9C(void);
+void fn_3_CBA9C(ActorObject* arg0);
 void fn_3_CBAFC(void);
 void fn_3_CBC18(void);
 void fn_3_CBF80(void);

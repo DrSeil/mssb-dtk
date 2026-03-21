@@ -75,6 +75,8 @@ struct AnimObj_field0;
 typedef struct AnimObject {
     struct AnimObj_field0* field_0; // 0x0
     u32 flags; // 0x4
+    u8 _pad[0x6C]; // 0x8-0x73
+    u32 field_0x74; // 0x74
 } AnimObject;
 
 typedef struct AnimLevel4 {
@@ -134,7 +136,7 @@ typedef struct HugeAnimEntry2D94 {
     /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 u8s)
 } HugeAnimEntry2D94;
 typedef struct HugeAnimEntry68 {
-    u8 _pad0[0x4];
+    AnimLevel1* field_0x0;  // offset 0x0
     AnimLevel1* field_0x4;  // offset 0x4
     u8 _pad1[0x2C];         // 0x08-0x33
     AnimLevel1* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)

@@ -8,8 +8,21 @@ void fn_3_CB8A8(void) {
 }
 
 // .text:0x000CBA9C size:0x60 mapped:0x8070AB30
-void fn_3_CBA9C(void) {
-    return;
+void fn_3_CBA9C(ActorObject* arg0) {
+    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
+    u8 byte_ca = arg0->field_0xca;
+    AnimLevel1* level1 = has->entries_18->field_0x0;
+    AnimLevel2* level2 = level1->ptr14;
+    AnimLevel4* level4 = level2->ptr10;
+    AnimObject* obj = level4->ptr04;
+
+    if (byte_ca == 0) {
+        obj->field_0x74 &= ~0x1FFF;
+        obj->field_0x74 |= 0x3;
+    } else {
+        obj->field_0x74 &= ~0x1FFF;
+        obj->field_0x74 |= 0x2;
+    }
 }
 
 // .text:0x000CBAFC size:0x11C mapped:0x8070AB90
