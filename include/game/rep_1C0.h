@@ -2,6 +2,7 @@
 #define __GAME_rep_1C0_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 typedef struct FanObject FanObject;
 typedef struct LBL_3_DATA_A10 LBL_3_DATA_A10;
@@ -44,5 +45,6 @@ void fn_3_5BAC(void);
 void fn_3_5BCC(struct Fn3_5BCCArg* arg0);
 void fn_3_5BF0(void);
 void fn_3_5C68(void);
+void fn_3_5E60(void);
 
 #endif // !__GAME_rep_1C0_H_

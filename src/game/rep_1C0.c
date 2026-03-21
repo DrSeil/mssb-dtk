@@ -109,3 +109,12 @@ void fn_3_5BF0(void) {
 void fn_3_5C68(void) {
     return;
 }
+
+// .text:0x00005E60 size:0x60 mapped:0x80644EF4
+void fn_3_5E60(void) {
+    StadiumFileHeader* sfh = g_hugeAnimStruct.stadiumFileHeaderPointer;
+    fn_80035CA4(5);
+    fn_800BCDBC((u8*)sfh + sfh->field_0x10);
+    fn_800BCDBC((u8*)sfh + sfh->field_0x0C);
+    fn_800ACFB0(g_hugeAnimStruct.stadiumFileHeaderPointer);
+}

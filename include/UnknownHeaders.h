@@ -21,7 +21,11 @@ typedef struct Struct_3_2281C_Entry {
 } Struct_3_2281C_Entry;
 
 /* Forward declarations for types used as pointers in hugeAnimStruct */
-struct StadiumFileHeader;
+typedef struct StadiumFileHeader {
+    u8 _pad[0x0C];
+    u32 field_0x0C;   // self-relative offset to sub-object
+    u32 field_0x10;   // self-relative offset to sub-object
+} StadiumFileHeader;
 struct ACTBone;
 struct ActLayout;
 struct AnimBank;
@@ -544,8 +548,8 @@ typedef struct DrawingSceneStruct {
     u16 priority;
     u16 unkIndex;
     u16 unkIndex2; // Combination of field6_0x16 and field7_0x17
-    u8 loadingStateRelated[2];
-    short field9_0x1a;
+    s16 unk18;
+    s16 unk1a;
     u16 eventID;
     u16 fielderIndex;
     u8 field12_0x20[2];
@@ -729,6 +733,8 @@ Struct_800D249C_C4 *ptr_0xC4; // Offset 0xC4
 extern f64 lbl_3_rodata_2800;
 extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
+extern void fn_80035CA4(s32 arg);
+extern void fn_800BCDBC(void* ptr);
 extern VecXYZ lbl_3_data_21A48;
 extern f32 lbl_3_rodata_35D0;
 extern f32 lbl_3_rodata_3638;
