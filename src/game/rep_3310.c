@@ -101,8 +101,16 @@ void fn_3_11874C(void) {
 }
 
 // .text:0x0011881C size:0x60 mapped:0x807578B0
-void fn_3_11881C(void) {
-    return;
+void fn_3_11881C(s32 arg0) {
+    int val;
+    HugeAnimEntry68* entries;
+    if (arg0 - 0xe9 < 4) {
+        val = lbl_3_data_226BC[arg0 - 0xe9];
+    } else {
+        val = lbl_3_data_226BC[4];
+    }
+    entries = g_hugeAnimStruct.entries_68;
+    entries[arg0].unk34->unk18->field_0->field_14->ptr08->ptr0C->field_0x20 = val;
 }
 
 // .text:0x0011887C size:0x100 mapped:0x80757910

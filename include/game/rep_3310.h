@@ -5,6 +5,7 @@
 #include "game/rep_37A8.h"
 
 extern f32 lbl_3_data_2262C;
+extern u8 lbl_3_data_226BC[];
 extern f32 lbl_3_data_22650[];
 extern u8 lbl_3_data_2265C[];
 void fn_3_116840(void);
@@ -25,7 +26,7 @@ void fn_3_1183FC(void);
 void fn_3_118508(void);
 void fn_3_118614(void);
 void fn_3_11874C(void);
-void fn_3_11881C(void);
+void fn_3_11881C(s32 arg0);
 void fn_3_11887C(void);
 void fn_3_11897C(s32 index);
 void fn_3_1189C8(void);
