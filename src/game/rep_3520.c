@@ -156,7 +156,12 @@ void fn_3_135C18(void) {
 
 // .text:0x00135E38 size:0x60 mapped:0x80774ECC
 void fn_3_135E38(void) {
-    return;
+    // NONMATCHING: same instructions, pure register allocation swap (g_Minigame gets r4 vs target r3)
+    fn_3_135C18();
+    if ((u32)(lbl_3_data_21A3C[g_Minigame._1D73 - 1]._2 * 0x3c) == (u32)g_Minigame._17C0) {
+        g_Minigame._1D72 = 3;
+        g_Minigame._1D62 = 0;
+    }
 }
 
 // .text:0x00135E98 size:0xB4 mapped:0x80774F2C
