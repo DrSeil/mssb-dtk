@@ -8,6 +8,7 @@
 #include "game/sta_c4.h"
 #include "game/rep_1F58.h"
 #include "game/rep_F80.h"
+#include "game/rep_3AE8.h"
 
 // .text:0x000BA538 size:0x2BC mapped:0x806F95CC
 void fn_3_BA538(void) {
@@ -131,8 +132,26 @@ void fn_3_BD504(void) {
 }
 
 // .text:0x000BD6AC size:0xAC mapped:0x806FC740
-void fn_3_BD6AC(void) {
-    return;
+void fn_3_BD6AC(s32 arg0, f32 f1, f32 f2, f32 f3) {
+    s32 starType;
+    lbl_3_common_bss_35154.someFlag = 1;
+    lbl_3_common_bss_35154.unk_440 = f1;
+    lbl_3_common_bss_35154.unk_444 = f2;
+    lbl_3_common_bss_35154.unk_448 = f3;
+    lbl_3_common_bss_35154.unk_464 = 0;
+    if (arg0 != 0) {
+        starType = g_Ball.currentStarSwing;
+        if (starType >= 0xd)
+            return;
+        if (starType >= 0xb)
+            fn_3_15BAA0(starType == 0xc);
+        return;
+    }
+    starType = g_Pitcher.starPitchType;
+    if (starType >= 0xd)
+        return;
+    if (starType >= 0xb)
+        fn_3_15BAA0(starType == 0xc);
 }
 
 // .text:0x000BD758 size:0x78 mapped:0x806FC7EC

@@ -11,7 +11,7 @@ typedef struct {
 extern UnknownStruct_2709C lbl_3_data_2709C;
 
 void fn_3_15B79C(void);
-void fn_3_15BAA0(void);
+void fn_3_15BAA0(s32 arg0);
 void fn_3_15C000(void);
 u32 fn_3_15C014(void);
 void fn_3_15C024(void);

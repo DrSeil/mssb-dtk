@@ -509,7 +509,11 @@ typedef struct CommonBss_35154 {
     /* 0x434 */ f32 unk_434;
     /* 0x438 */ f32 unk_438;
     /* 0x43C */ f32 unk_43C;
-    /* 0x440 */ u8 _pad3[0x26];
+    /* 0x440 */ f32 unk_440;
+    /* 0x444 */ f32 unk_444;
+    /* 0x448 */ f32 unk_448;
+    /* 0x44C */ u8 _pad3[0x18];
+    /* 0x464 */ s16 unk_464;
     /* 0x466 */ u8 someFlag;
     /* 0x467 */ u8 unk_467;
     /* 0x468 */ u8 _pad4[0x11];

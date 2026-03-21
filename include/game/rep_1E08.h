@@ -46,7 +46,7 @@ void fn_3_BD1D8(void);
 void fn_3_BD434(void);
 void fn_3_BD4F0(void);
 void fn_3_BD504(void);
-void fn_3_BD6AC(void);
+void fn_3_BD6AC(s32 arg0, f32 f1, f32 f2, f32 f3);
 void fn_3_BD758(void);
 BOOL fn_3_BD7D0(void);
 void fn_3_BD7D8(void);

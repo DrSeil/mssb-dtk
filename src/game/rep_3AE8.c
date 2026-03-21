@@ -7,7 +7,7 @@ void fn_3_15B79C(void) {
 }
 
 // .text:0x0015BAA0 size:0x560 mapped:0x8079AB34
-void fn_3_15BAA0(void) {
+void fn_3_15BAA0(s32 arg0) {
     return;
 }
 
