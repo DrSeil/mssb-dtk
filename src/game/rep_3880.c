@@ -399,8 +399,20 @@ void fn_3_14F5A4(void) {
 }
 
 // .text:0x0014F8D0 size:0x60 mapped:0x8078E964
-void fn_3_14F8D0(void) {
-    return;
+// NONMATCHING: register allocation swap (node↔i in r6/r7, data_26C94↔magic in r4/r5)
+void fn_3_14F8D0(struct Struct_800339F0_Result* arg) {
+    ListNode_14B9F0* node;
+    u32 i = 0;
+    arg->field_0x10 = lbl_3_common_bss_32724.field6C;
+    node = arg->listHead;
+    do {
+        node->field_0x4C = (u8)(i / 18 + 1);
+        node->field_0x4D = (u8)lbl_3_data_26C94.field_0x0;
+        node->field_0x4E = 0;
+        node->field_0x4F = 0;
+        i++;
+        node = node->next;
+    } while (node != NULL);
 }
 
 // .text:0x0014F930 size:0x6E0 mapped:0x8078E9C4
