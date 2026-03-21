@@ -6,6 +6,8 @@
 #include "game/rep_1FD8.h"
 #include "game/sta_c2.h"
 #include "game/sta_c4.h"
+#include "game/rep_1F58.h"
+#include "game/rep_F80.h"
 
 // .text:0x000BA538 size:0x2BC mapped:0x806F95CC
 void fn_3_BA538(void) {
@@ -275,7 +277,15 @@ void fn_3_BF158(void) {
 
 // .text:0x000BF1AC size:0x60 mapped:0x806FE240
 void fn_3_BF1AC(void) {
-    return;
+    int i;
+    minigamesSetSomePointers();
+    fn_3_C0854();
+    fn_3_CABB4();
+    i = 0xc;
+    do {
+        g_hugeAnimStruct.fielderStructs[i].funcPtr_0x5c = NULL;
+    } while (i--);
+    lbl_3_common_bss_35154.unk_479 = 1;
 }
 
 // .text:0x000BF20C size:0x2C mapped:0x806FE2A0

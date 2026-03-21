@@ -31,11 +31,12 @@ struct ActLayout;
 struct AnimBank;
 struct starAnimationRelated;
 
-/* AnimationStruct - 0x27C u8s, used in arrays within hugeAnimStruct.
- * Full field definitions available in in_game.h.
- * Using opaque u8 array to guarantee exact size for struct layout. */
+/* AnimationStruct - 0x27C bytes, used in arrays within hugeAnimStruct.
+ * Full field definitions available in in_game.h. */
 typedef struct AnimationStruct {
-    u8 data[0x27C];
+    u8 _pad[0x5C];
+    void* funcPtr_0x5c; /* 0x5C - function pointer */
+    u8 _rest[0x21C];
 } AnimationStruct; /* size: 0x27C */
 
 /* EOSPad - 2-u8 struct used for alignment padding */
@@ -223,25 +224,7 @@ typedef struct hugeAnimStruct {
     /* 0x020F */ u8 field64_0x20f;
     /* 0x0210 */ u8 field65_0x210;
     /* 0x0211 */ u8 field66_0x211;
-    /* 0x0212 */ EOSPad pad3;
-    /* 0x0214 */ unkAnimSubstruct field68_0x214;
-    /* 0x02E6 */ EOSPad pad4;
-    /* 0x02E8 */ unkAnimSubstruct field70_0x2e8;
-    /* 0x03BA */ EOSPad pad5;
-    /* 0x03BC */ unkAnimSubstruct field72_0x3bc;
-    /* 0x048E */ EOSPad pad6;
-    /* 0x0490 */ unkAnimSubstruct field74_0x490;
-    /* 0x0562 */ EOSPad pad7;
-    /* 0x0564 */ unkAnimSubstruct field76_0x564;
-    /* 0x0636 */ EOSPad pad8;
-    /* 0x0638 */ unkAnimSubstruct field78_0x638;
-    /* 0x070A */ EOSPad pad9;
-    /* 0x070C */ unkAnimSubstruct field80_0x70c;
-    /* 0x07DE */ EOSPad pad10;
-    /* 0x07E0 */ unkAnimSubstruct field82_0x7e0;
-    /* 0x08B2 */ EOSPad pad11;
-    /* 0x08B4 */ unkAnimSubstruct field84_0x8b4;
-    /* 0x0986 */ EOSPad pad12;
+    /* 0x0214 */ unkAnimSubstruct substructs[9];
     /* 0x0988 */ void* field86_0x988;
     /* 0x098C */ u8 field87_0x98c[96];
     /* 0x09EC */ void* field88_0x9ec;
@@ -254,16 +237,7 @@ typedef struct hugeAnimStruct {
     /* 0x0B34 */ u8 field95_0xb34[96];
     /* 0x0B94 */ void* field96_0xb94;
     /* 0x0B98 */ u8 field97_0xb98[108];
-    /* 0x0C04 */ AnimationStruct fielderStructs[10];
-    /* 0x24DC */ u8 field99_0x24dc[8];
-    /* 0x24E4 */ AnimationStruct RunnerStructs[2];
-    /* 0x29DC */ void* field101_0x29dc[9];
-    /* 0x2A00 */ s32 field102_0x2a00;
-    /* 0x2A04 */ s32 field103_0x2a04[11];
-    /* 0x2A30 */ s32 field104_0x2a30[128];
-    /* 0x2C30 */ u8 field105_0x2c30[24];
-    /* 0x2C48 */ u8 field106_0x2c48[4];
-    /* 0x2C4C */ s32 field107_0x2c4c;
+    /* 0x0C04 */ AnimationStruct fielderStructs[13]; /* [0-9]: fielders/pitcher, [10-11]: runners, [12]: extra */
     /* 0x2C50 */ AnimationStruct* AnimationStructPtrs[13];
     /* 0x2C84 */ struct ActLayout** actLayoutPtr;
     /* 0x2C88 */ struct AnimBank* animBankPtr;
@@ -531,10 +505,13 @@ typedef struct CommonBss_35154 {
     /* 0x440 */ u8 _pad3[0x26];
     /* 0x466 */ u8 someFlag;
     /* 0x467 */ u8 unk_467;
+    /* 0x468 */ u8 _pad4[0x11];
+    /* 0x479 */ u8 unk_479;
 } CommonBss_35154;
 
 extern CommonBss_35154 lbl_3_common_bss_35154;
 extern void fn_80034CEC(u32);
+extern void minigamesSetSomePointers(void);
 typedef struct UnknownBss_803C6CF8 {
     u8 _pad[0x715];
     s8 allowLoad;
