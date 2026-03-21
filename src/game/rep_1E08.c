@@ -72,7 +72,7 @@ void fn_3_BC25C(void) {
 
 // .text:0x000BC274 size:0x68 mapped:0x806FB308
 s32 fn_3_BC274(Rep1E08Obj* arg0, VecXZ* arg1, VecXZ* arg2) {
-    return (arg1->z - arg2->z) < (f32)lbl_3_data_17000[(s8)arg0->field_0x252] / 100000.0f;
+    return (arg1->z - arg2->z) < (f32)lbl_3_data_17000[(s8)arg0->field_0x252] / lbl_3_rodata_1EC4;
 }
 
 // .text:0x000BC2DC size:0x3FC mapped:0x806FB370

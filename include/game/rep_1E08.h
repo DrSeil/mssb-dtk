@@ -10,6 +10,7 @@ extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
 extern CompressedDiskRead lbl_3_data_11380;
 extern f32 lbl_3_rodata_1E64;
+extern f32 lbl_3_rodata_1EC4;
 extern f32 lbl_3_rodata_1F18;
 extern f32 lbl_3_rodata_1F1C;
 extern f32 lbl_3_rodata_1F20;
