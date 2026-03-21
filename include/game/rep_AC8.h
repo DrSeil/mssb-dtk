@@ -205,7 +205,13 @@ void fn_3_52F4C(void);
 void fn_3_530EC(int index);
 int fn_3_53130(s32 temp);
 void fn_3_5372C(void);
-void fn_3_53EE8(void);
+typedef struct {
+    u8 _pad[0x98];
+    s32 unk98;
+    u8 _pad2[0xE8 - 0x9C];
+} Struct_3C40;
+extern Struct_3C40 lbl_3_data_3C40;
+void fn_3_53EE8(s32 idx);
 void fn_3_53F48(void);
 void fn_3_544B8(void);
 void fn_3_54900(void);

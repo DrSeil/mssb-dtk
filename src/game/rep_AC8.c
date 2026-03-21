@@ -1058,8 +1058,18 @@ void fn_3_5372C(void) {
 }
 
 // .text:0x00053EE8 size:0x60 mapped:0x80692F7C
-void fn_3_53EE8(void) {
-    return;
+void fn_3_53EE8(s32 idx) {
+    Fielder* f = &g_Fielders[idx];
+    if (idx == -1) return;
+    f->unk1D3 = 0x13;
+    if (lbl_3_data_3C40.unk98 >= 0) {
+        g_FieldingLogic.unk_F8[idx] = (u8)lbl_3_data_3C40.unk98;
+    }
+    f->unk1D5 = 0;
+    f->unk1D6 = 0;
+    f->unk1A4 = 0;
+    f->unk1AC = 0;
+    f->unk1FF = 0;
 }
 
 // .text:0x00053F48 size:0x570 mapped:0x80692FDC
