@@ -320,7 +320,17 @@ void fn_3_AAFF0(void) {
 
 // .text:0x000AB554 size:0x5C mapped:0x806EA5E8
 void fn_3_AB554(void) {
-    return;
+    if (g_FieldingLogic.unk10D != 0) {
+        s16 t = g_Ball.timeSinceBallPickedUp;
+        if (t >= 0 && t < 0x28) {
+            if (g_FieldingLogic.unkC4 >= 0) {
+                g_FieldingLogic.unk10C = 1;
+                g_FieldingLogic.unk10D = 0;
+            }
+        } else {
+            g_FieldingLogic.unk10D = 0;
+        }
+    }
 }
 
 // .text:0x000AB5B0 size:0x820 mapped:0x806EA644
