@@ -35,6 +35,16 @@ typedef struct {
     u8 unkC2;       // 0xC2
 } Struct_E6528;
 
+typedef struct {
+    u8 _pad0[0x6];
+    u8 unk6;   // +0x06
+} Inner_E5E14;
+
+typedef struct {
+    u8 _pad0[0x4];
+    Inner_E5E14* unk4;  // +0x04
+} Arg0_E5E14;
+
 extern u8 lbl_3_data_19024;
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
@@ -42,7 +52,7 @@ void fn_3_E59B4(void);
 void fn_3_E5A1C(void);
 void fn_3_E5A84(void);
 void fn_3_E5CBC(void);
-void fn_3_E5E14(void);
+int fn_3_E5E14(Arg0_E5E14* arg0);
 void fn_3_E5E70(void);
 void fn_3_E5FEC(void);
 void fn_3_E6410(void);

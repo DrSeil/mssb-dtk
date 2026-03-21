@@ -24,8 +24,21 @@ void fn_3_E5CBC(void) {
 }
 
 // .text:0x000E5E14 size:0x5C mapped:0x80724EA8
-void fn_3_E5E14(void) {
-    return;
+int fn_3_E5E14(Arg0_E5E14* arg0) {
+    u8 nibble = (u8)(arg0->unk4->unk6 >> 4);
+    switch (nibble) {
+    case 0:
+    case 3:
+        return 2;
+    case 5:
+        return 4;
+    case 1:
+    case 2:
+    case 4:
+        return 3;
+    default:
+        return 0;
+    }
 }
 
 // .text:0x000E5E70 size:0x17C mapped:0x80724F04
