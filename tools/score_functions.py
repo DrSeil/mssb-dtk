@@ -38,6 +38,11 @@ def main():
         help="Number of results to show (default: 30)",
     )
     parser.add_argument(
+        "--file",
+        default=None,
+        help="Filter by source file name substring (e.g., rep_1E08)",
+    )
+    parser.add_argument(
         "--named-only",
         action="store_true",
         help="Only show functions with real names (not fn_XXXXXXXX)",
@@ -109,6 +114,9 @@ def main():
             category = "challenge"
 
         if args.module and category != args.module:
+            continue
+
+        if args.file and args.file not in unit_name:
             continue
 
         # Skip if already has a source file and user only wants unstarted
