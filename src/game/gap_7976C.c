@@ -92,7 +92,7 @@ void fn_3_7BBC0(void) {
 
 // .text:0x0007BBF8 size:0x14 mapped:0x806BAC8C
 void fn_3_7BBF8(void) {
-    return;
+    g_Stats.unk39 = 1;
 }
 
 // .text:0x0007BC0C size:0x14 mapped:0x806BACA0
