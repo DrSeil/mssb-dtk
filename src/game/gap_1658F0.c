@@ -7,12 +7,12 @@ void fn_3_1658F0(void) {
 
 // .text:0x00165978 size:0x14 mapped:0x807A4A0C
 void fn_3_165978(void) {
-    return;
+    lbl_3_common_bss_37400.field_0x4A = 0;
 }
 
 // .text:0x0016598C size:0x14 mapped:0x807A4A20
 void fn_3_16598C(void) {
-    return;
+    lbl_3_common_bss_37400.field_0x4A = 0;
 }
 
 // .text:0x001659A0 size:0x384 mapped:0x807A4A34
