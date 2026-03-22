@@ -29,8 +29,11 @@ void fn_3_B3C94(u8 arg0) {
 }
 
 // .text:0x000B3CAC size:0x28 mapped:0x806F2D40
-void fn_3_B3CAC(void) {
-    return;
+void fn_3_B3CAC(u8 arg0) {
+    g_GameLogic.secondaryGameMode = arg0;
+    g_Practice.totalFrames = 0;
+    g_Practice.framesInCurrTransitionState = 0;
+    g_Practice.practiceState = 0;
 }
 
 // .text:0x000B3CD4 size:0x314 mapped:0x806F2D68
