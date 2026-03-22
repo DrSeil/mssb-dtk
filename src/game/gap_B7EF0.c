@@ -1,8 +1,15 @@
 #include "game/gap_B7EF0.h"
 
 // .text:0x000B7EF0 size:0x28 mapped:0x806F6F84
-void vecDotProduct(void) {
-    return;
+f32 vecDotProduct(VecXYZ* a, VecXYZ* b) {
+    f32 ay = a->y;
+    f32 by = b->y;
+    f32 ax = a->x;
+    f32 dot = ay * by;
+    f32 bx = b->x;
+    f32 az = a->z;
+    f32 bz = b->z;
+    return dot + ax * bx + az * bz;
 }
 
 // .text:0x000B7F18 size:0x58 mapped:0x806F6FAC
