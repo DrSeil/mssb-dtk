@@ -6,8 +6,8 @@ void fn_3_97144(void) {
 }
 
 // .text:0x000972A0 size:0x28 mapped:0x806D6334
-void fn_3_972A0(void) {
-    return;
+void fn_3_972A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_8003649C(arg0, arg1, arg2, 0x28, arg3);
 }
 
 // .text:0x000972C8 size:0x124 mapped:0x806D635C

@@ -2,6 +2,7 @@
 #define __GAME_gap_BA150_H_
 
 #include "mssbTypes.h"
+#include "game/rep_1E08.h"
 
 void fn_3_BA150(void);
 void fn_3_BA174(void);

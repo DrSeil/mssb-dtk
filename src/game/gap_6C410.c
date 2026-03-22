@@ -12,7 +12,8 @@ void fn_3_6C428(void) {
 
 // .text:0x0006C42C size:0x28 mapped:0x806AB4C0
 void fn_3_6C42C(void) {
-    return;
+    g_hugeAnimStruct.starAnimRelated->state_alt = 0;
+    lbl_3_common_bss_32724.unk_90 = -1;
 }
 
 // .text:0x0006C454 size:0x78 mapped:0x806AB4E8

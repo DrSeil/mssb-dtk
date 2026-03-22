@@ -656,7 +656,10 @@ typedef struct CommonBss_32724 {
     /* 0xA9 */ u8 unk_A9;
     /* 0xAA */ u8 _pad4[0x0B];
     /* 0xB5 */ u8 unk_B5;
-    /* 0xB6 */ u8 _pad5[0x15];   // Pad to 0xCB (0xCB - 0xB6 = 0x15)
+    /* 0xB6 */ u8 _pad5[0x12];   // Pad to 0xC8
+    /* 0xC8 */ u8 field_0xC8;
+    /* 0xC9 */ u8 field_0xC9;
+    /* 0xCA */ u8 field_0xCA;
     /* 0xCB */ u8 flagCB;        // New flag
     /* 0xCC */ u8 flagCC;  
     /* 0xCD */ u8 transitionToMenuAnimation;      // New flag

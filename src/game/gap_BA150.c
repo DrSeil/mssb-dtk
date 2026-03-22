@@ -2,7 +2,7 @@
 
 // .text:0x000BA150 size:0x24 mapped:0x806F91E4
 void fn_3_BA150(void) {
-    return;
+    pitchingMachinePitching(0x19);
 }
 
 // .text:0x000BA174 size:0x2C mapped:0x806F9208
