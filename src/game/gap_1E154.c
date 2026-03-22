@@ -2,7 +2,8 @@
 
 // .text:0x0001E154 size:0x24 mapped:0x8065D1E8
 void fn_3_1E154(void) {
-    return;
+    fn_3_219A0();
+    fn_3_20A60();
 }
 
 // .text:0x0001E178 size:0x1B0 mapped:0x8065D20C

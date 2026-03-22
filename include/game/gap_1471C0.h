@@ -2,6 +2,7 @@
 #define __GAME_gap_1471C0_H_
 
 #include "mssbTypes.h"
+#include "game/rep_1E08.h"
 
 void fn_3_1471C0(void);
 void fn_3_1471C4(void);

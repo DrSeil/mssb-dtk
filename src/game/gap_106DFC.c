@@ -8,6 +8,8 @@ typedef struct {
 } LocalMinigame;
 extern LocalMinigame g_Minigame;
 
+void fn_3_90064(s32 param);
+
 // .text:0x00106DFC size:0x54 mapped:0x80745E90
 void fn_3_106DFC(void) {
     return;
@@ -20,7 +22,7 @@ void fn_3_106E50(void) {
 
 // .text:0x00106EB0 size:0x24 mapped:0x80745F44
 void fn_3_106EB0(void) {
-    return;
+    fn_3_90064(0x30B);
 }
 
 // .text:0x00106ED4 size:0x1A4 mapped:0x80745F68

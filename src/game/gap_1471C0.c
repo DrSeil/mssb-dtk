@@ -12,6 +12,6 @@ void fn_3_1471C4(void) {
 
 // .text:0x00147358 size:0x24 mapped:0x807863EC
 void fn_3_147358(void) {
-    return;
+    pitchingMachinePitching(0x26);
 }
 
