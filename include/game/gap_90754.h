@@ -3,7 +3,13 @@
 
 #include "mssbTypes.h"
 
-void fn_3_90754(void);
+typedef struct {
+    u8 _pad[0x11820];
+    u8 field_0x11820;
+    u8 field_0x11821;
+} Gap90754Struct;
+
+void fn_3_90754(Gap90754Struct* arg0, u8 arg1, u8 arg2);
 void fn_3_90764(void);
 void fn_3_90798(void);
 void fn_3_9081C(void);

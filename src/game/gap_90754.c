@@ -1,8 +1,9 @@
 #include "game/gap_90754.h"
 
 // .text:0x00090754 size:0x10 mapped:0x806CF7E8
-void fn_3_90754(void) {
-    return;
+void fn_3_90754(Gap90754Struct* arg0, u8 arg1, u8 arg2) {
+    arg0->field_0x11820 = arg1;
+    arg0->field_0x11821 = arg2;
 }
 
 // .text:0x00090764 size:0x34 mapped:0x806CF7F8
