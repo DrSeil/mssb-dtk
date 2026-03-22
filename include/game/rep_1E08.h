@@ -12,6 +12,7 @@ extern CompressedDiskRead lbl_3_data_11380;
 extern f32 lbl_3_rodata_1E64;
 extern f32 lbl_3_rodata_1EC4;
 extern f64 lbl_3_rodata_1ED0;
+extern u8 lbl_80366158; // Size and exact type unknown, accessing as byte array
 extern f32 lbl_3_rodata_1F18;
 extern f32 lbl_3_rodata_1F1C;
 extern f32 lbl_3_rodata_1F20;
@@ -57,7 +58,7 @@ void fn_3_BD1D4(void);
 void fn_3_BD1D8(void);
 void fn_3_BD434(s32 arg0, s32 arg1);
 void fn_3_BD4F0(void);
-void fn_3_BD504(void);
+void fn_3_BD504(s32 flag, f32 f1, f32 f2, f32 f3);
 void fn_3_BD6AC(s32 arg0, f32 f1, f32 f2, f32 f3);
 void fn_3_BD758(void);
 BOOL fn_3_BD7D0(void);

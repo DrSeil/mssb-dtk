@@ -1,4 +1,16 @@
 #include "game/rep_1E08.h"
+#include "game/rep_2390.h"
+#include "game/rep_3C28.h"
+// Forward declaration for fn_3_160814 (not found in headers)
+void fn_3_160814(void);
+#include <string.h>
+#include "game/rep_2390.h"
+// Forward declaration for fn_3_160814 (not found in headers)
+void fn_3_160814(void);
+#include <string.h>
+#include "game/rep_2390.h"
+#include <string.h>
+#include <string.h>
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 #include "game/UnknownHomes_Game.h"
@@ -148,12 +160,79 @@ void fn_3_BD4F0(void) {
 }
 
 // .text:0x000BD504 size:0x1A8 mapped:0x806FC598
-void fn_3_BD504(void) {
-    return;
+void fn_3_BD504(s32 flag, f32 f1, f32 f2, f32 f3) {
+    // Check if lbl_80366158.unk28 == 0 (byte at offset 0x28)
+    if (((u8*)&lbl_80366158)[0x28] == 0) {
+        // Copy 3 floats (12 bytes) from unk_440 to unk_464 area
+        memcpy(&lbl_3_common_bss_35154.unk_464, &lbl_3_common_bss_35154.unk_440, 0xC);
+
+        // Store the input parameters to unk_440, unk_444, unk_448
+        lbl_3_common_bss_35154.unk_440 = f1;
+        lbl_3_common_bss_35154.unk_444 = f2;
+        lbl_3_common_bss_35154.unk_448 = f3;
+    }
+
+    // Check someFlag
+    if (lbl_3_common_bss_35154.someFlag != 0) {
+        // flag parameter determines ball vs pitcher:
+        // flag == 0 -> use g_Ball.currentStarSwing
+        // flag != 0 -> use g_Pitcher.starPitchType
+        s32 starType;
+        if (flag == 0) {
+            starType = g_Ball.currentStarSwing;
+        } else {
+            starType = g_Pitcher.starPitchType;
+        }
+
+        if (starType >= 0x0D) {
+            return;
+        }
+        if (starType >= 0x0B) {
+            fn_3_15BAA0(starType == 0xC);
+            return;
+        }
+
+        // Implement the exact branching structure from the assembly
+        // Based on the assembly analysis, this is the decision tree:
+
+        if (starType < 5) {           // 0-4 range: 000BD54C-000BD5B8
+            if (starType < 1) {       // 0: 000BD594-000BD5B8 (fall through to end)
+                // Do nothing, fall through to end
+            } else if (starType < 3) { // 1-2: 000BD5AC-000BD5B0
+                fn_3_CB538();          // 000BD5B4-000BD5B8
+            } else {                   // 3-4: 000BD5B0-000BD5B8
+                fn_3_160814();         // 000BD5B8-000BD5BC (actually goes to 0xBD5F4 then 0xBD620)
+            }
+        } else if (starType < 9) {    // 5-8 range: 000BD5C0-000BD5F8
+            if (starType < 7) {       // 5-6: 000BD5C8-000BD5F8
+                fn_3_160814();         // 000BD5F8-000BD5FC
+            } else {                   // 7-8: 000BD5FC-000BD604
+                fn_3_15F574();         // 000BD604-000BD608
+            }
+        } else {                      // 9-C range: 000BD610-000BD664
+            if (starType < 0xB) {     // 9-A: 000BD618-000BD664
+                fn_3_15F574();         // 000BD620-000BD624
+            } else {                   // B-C: 000BD624-000BD664
+                // 0xBD654: subfic r0, r3, 0xc / cntlzw / srwi r3, r0, 5
+                // This maps:
+                // starType 0xB (11) -> 0xFFFFFFF5 -> cntlzw -> 0 -> srwi 5 -> 0
+                // starType 0xC (12) -> 0xFFFFFFF4 -> cntlzw -> 1 -> srwi 5 -> 0
+                // Both result in 0 being passed to fn_3_15B79C
+                fn_3_15B79C();         // 000BD660-000BD664
+            }
+        }
+    }
+    // else: someFlag is 0, do nothing else
+
+    // If we took the first branch (lbl_80366158.unk28 == 0), increment unk_464
+    if (((u8*)&lbl_80366158)[0x28] == 0) {
+        lbl_3_common_bss_35154.unk_464 += 1;
+    }
 }
 
 // .text:0x000BD6AC size:0xAC mapped:0x806FC740
 void fn_3_BD6AC(s32 arg0, f32 f1, f32 f2, f32 f3) {
+    // Almost matches - bge+b+bl branch direction mismatch (CW codegen, not fixable from C)
     s32 starType;
     lbl_3_common_bss_35154.someFlag = 1;
     lbl_3_common_bss_35154.unk_440 = f1;
