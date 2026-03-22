@@ -17,7 +17,7 @@ void fn_3_1DC30(void) {
 
 // .text:0x0001DD48 size:0x20 mapped:0x8065CDDC
 void fn_3_1DD48(void) {
-    return;
+    fn_3_1FF48();
 }
 
 // .text:0x0001DD68 size:0x150 mapped:0x8065CDFC
