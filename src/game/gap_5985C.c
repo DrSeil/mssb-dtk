@@ -69,8 +69,12 @@ void fn_3_5A6A0(void) {
 }
 
 // .text:0x0005A6D4 size:0x28 mapped:0x80699768
-void fn_3_5A6D4(void) {
-    return;
+void fn_3_5A6D4(u8 arg0, u8 arg1) {
+    g_GameLogic.FrameCountOfCurrentPitch = 0;
+    g_GameLogic.gameStatus_prev = g_GameLogic.gameStatus;
+    g_GameLogic.gameStatus = arg0;
+    g_GameLogic.FrameCountOfCurrentAtBat_Copy = 0;
+    g_GameLogic._125 = 0;
 }
 
 // .text:0x0005A6FC size:0x180 mapped:0x80699790
