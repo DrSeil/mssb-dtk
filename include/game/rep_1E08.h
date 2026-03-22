@@ -43,10 +43,25 @@ void pitchingMachinePitching(s32 param);
 void fn_8006C3F0(s32 arg);
 void fn_8006C43C(s32 arg);
 
+typedef struct {
+    u8 arr0[8];     /* 0x00 - indexed by StadiumID */
+    u8 arr8[24];    /* 0x08 - flat, indexed by StadiumID*3 */
+} Data111A8;
+extern Data111A8 lbl_3_data_111A8;
 
- 
+typedef struct {
+    u32 prefix; /* 4-byte prefix before texture data */
+} TexDataInfo;
 
- 
+typedef struct {
+    u8 _pad[0x18];
+    TexDataInfo* texData; /* 0x18 */
+} TexBundleHeader;
+
+extern void fn_8003A85C(u8 val);
+extern void fn_8003A848(u8 b0, u8 b1, u8 b2);
+extern void fn_8003A6B0(s32 idx, TexDataInfo* texData, f32 f1, f32 f2);
+
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
 void fn_3_BB07C(BssTransRotData* arg0, f32 f1);

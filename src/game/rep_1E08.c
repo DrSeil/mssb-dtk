@@ -403,7 +403,30 @@ void fn_3_BEFF8(void) {
 
 // .text:0x000BF070 size:0xE8 mapped:0x806FE104
 void fn_3_BF070(void) {
-    return;
+    TexDataInfo* texData;
+    VecXZ* defaultCoord;
+    s32 i;
+
+    fn_8003A85C(lbl_3_data_111A8.arr0[g_d_GameSettings.StadiumID]);
+    fn_8003A848(lbl_3_data_111A8.arr8[g_d_GameSettings.StadiumID * 3],
+                lbl_3_data_111A8.arr8[g_d_GameSettings.StadiumID * 3 + 1],
+                lbl_3_data_111A8.arr8[g_d_GameSettings.StadiumID * 3 + 2]);
+
+    texData = ((TexBundleHeader*)lbl_3_common_bss_35154.field_0x8)->texData;
+    defaultCoord = lbl_3_data_111C8;
+    lbl_3_common_bss_35154._pad3b1[0] = 1;
+
+    i = 0;
+    do {
+        AnimationStruct* animPtr = g_hugeAnimStruct.AnimationStructPtrs[i];
+        if (animPtr != NULL) {
+            VecXZ* texCoord = &lbl_3_data_111C8[(s8)animPtr->_rest[0x1F2]];
+            fn_8003A6B0(i, &texData[1], texCoord->x, texCoord->z);
+        } else {
+            fn_8003A6B0(i, &texData[1], lbl_3_data_111C8[0].x, defaultCoord->z);
+        }
+        i++;
+    } while (i < 13);
 }
 
 // .text:0x000BF158 size:0x54 mapped:0x806FE1EC
