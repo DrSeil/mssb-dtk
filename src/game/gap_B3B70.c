@@ -192,8 +192,9 @@ void fn_3_B7620(void) {
 }
 
 // .text:0x000B777C size:0x18 mapped:0x806F6810
-void fn_3_B777C(void) {
-    return;
+void fn_3_B777C(u8 arg0) {
+    g_Practice.__0x1eepadding[1] = arg0;
+    g_Practice.maybeCommandData[2] = 0;
 }
 
 // .text:0x000B7794 size:0x48 mapped:0x806F6828

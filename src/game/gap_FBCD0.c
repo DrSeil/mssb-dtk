@@ -7,7 +7,7 @@ void fn_3_FBCD0(void) {
 
 // .text:0x000FBD58 size:0x18 mapped:0x8073ADEC
 void fn_3_FBD58(void) {
-    return;
+    lbl_3_common_bss_DE94->field_0x9AC = 0;
 }
 
 // .text:0x000FBD70 size:0x3C mapped:0x8073AE04

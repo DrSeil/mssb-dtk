@@ -43,7 +43,7 @@ void fn_3_B6F6C(void);
 void fn_3_B707C(void);
 void fn_3_B7184(void);
 void fn_3_B7620(void);
-void fn_3_B777C(void);
+void fn_3_B777C(u8 arg0);
 void fn_3_B7794(void);
 void fn_3_B77DC(void);
 
