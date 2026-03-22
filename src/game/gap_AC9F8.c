@@ -107,7 +107,9 @@ void fn_3_AFD80(void) {
 
 // .text:0x000AFDA4 size:0x1C mapped:0x806EEE38
 void fn_3_AFDA4(void) {
-    return;
+    lbl_3_common_bss_34C90.field_0x1D5 = 0;
+    lbl_3_common_bss_34C90.field_0x1D6 = 0;
+    lbl_3_common_bss_34C90.field_0x1D7 = 0;
 }
 
 // .text:0x000AFDC0 size:0x4C mapped:0x806EEE54

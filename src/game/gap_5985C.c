@@ -57,7 +57,10 @@ void fn_3_5A28C(void) {
 
 // .text:0x0005A684 size:0x1C mapped:0x80699718
 void fn_3_5A684(void) {
-    return;
+    g_Strikes.strikes = 0;
+    g_Strikes.balls = 0;
+    g_Strikes.outs = 0;
+    g_Strikes.unk_10 = 0;
 }
 
 // .text:0x0005A6A0 size:0x34 mapped:0x80699734

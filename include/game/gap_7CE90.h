@@ -2,6 +2,7 @@
 #define __GAME_gap_7CE90_H_
 
 #include "mssbTypes.h"
+#include "game/rep_720.h"
 
 void fn_3_7CE90(void);
 void fn_3_7CF88(void);

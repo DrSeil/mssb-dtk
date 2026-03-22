@@ -16,8 +16,10 @@ void fn_3_B3C64(void) {
 }
 
 // .text:0x000B3C78 size:0x1C mapped:0x806F2D0C
-void fn_3_B3C78(void) {
-    return;
+void fn_3_B3C78(u8 arg0) {
+    g_Practice.practiceState = 0;
+    g_Practice.tutorialState = arg0;
+    g_Practice.framesSincePracticeMenuDefaultTransition = 0;
 }
 
 // .text:0x000B3C94 size:0x18 mapped:0x806F2D28

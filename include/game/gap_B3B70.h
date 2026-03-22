@@ -8,7 +8,7 @@
 void fn_3_B3B70(void);
 void fn_3_B3BD0(void);
 void fn_3_B3C64(void);
-void fn_3_B3C78(void);
+void fn_3_B3C78(u8 arg0);
 void fn_3_B3C94(u8 arg0);
 void fn_3_B3CAC(void);
 void fn_3_B3CD4(void);

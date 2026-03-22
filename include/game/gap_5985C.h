@@ -3,6 +3,7 @@
 
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 
 void fn_3_5985C(void);
 void fn_3_598D0(void);

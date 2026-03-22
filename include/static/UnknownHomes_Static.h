@@ -88,7 +88,8 @@ typedef struct Strikes {
     /* 0x04 */ s32 balls;        // Target for lwz r3, 0x4(r5)
     /* 0x08 */ s32 outs;
     s32 unk_C;           /* 0x0C */
-    u8 _pad18[0x8];      /* 0x10 - Padding to reach 0x18 */
+    s32 unk_10;          /* 0x10 */
+    u8 _pad14[0x4];      /* 0x14 */
     s16 unk_18[3];       /* 0x18 - Array of strike values */
 } Strikes; // Total size likely 0x1E or padded to 0x20
 

@@ -27,6 +27,8 @@ void fn_3_7D458(void) {
 
 // .text:0x0007D780 size:0x1C mapped:0x806BC814
 void fn_3_7D780(void) {
-    return;
+    g_Stats.unk36 = 0;
+    g_Stats.unk37 = 0;
+    g_Stats.unk38 = 0;
 }
 

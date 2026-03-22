@@ -91,7 +91,8 @@ typedef struct Stats {
     u32 unk24;
     u8 _pad2[0x36 - 0x28];
     u8 unk36;
-    u8 _pad3[2];
+    u8 unk37;
+    u8 unk38;
     u8 unk39;
 } Stats;
 extern Stats g_Stats;

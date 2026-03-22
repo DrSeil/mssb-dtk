@@ -3,6 +3,15 @@
 
 #include "mssbTypes.h"
 
+typedef struct {
+    u8 _pad[0x1D5];
+    u8 field_0x1D5;
+    u8 field_0x1D6;
+    u8 field_0x1D7;
+} Bss34C90Item;
+
+extern Bss34C90Item lbl_3_common_bss_34C90;
+
 void fn_3_AC9F8(void);
 void fn_3_ACAF8(void);
 void fn_3_ACD38(void);
