@@ -12,7 +12,7 @@ void fn_3_B3BD0(void) {
 
 // .text:0x000B3C64 size:0x14 mapped:0x806F2CF8
 void fn_3_B3C64(void) {
-    return;
+    g_GameLogic.framesOfExitingToMenu = 1;
 }
 
 // .text:0x000B3C78 size:0x1C mapped:0x806F2D0C

@@ -2,6 +2,7 @@
 #define __GAME_gap_B3B70_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_B3B70(void);
 void fn_3_B3BD0(void);
