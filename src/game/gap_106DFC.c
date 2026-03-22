@@ -1,5 +1,13 @@
 #include "game/gap_106DFC.h"
 
+typedef struct {
+    u8 _pad[0x1A28];
+    s16 someGraphicFrameCountdown; /* 0x1A28 */
+    u8 _pad2[0x17];
+    u8 _1A41; /* 0x1A41 */
+} LocalMinigame;
+extern LocalMinigame g_Minigame;
+
 // .text:0x00106DFC size:0x54 mapped:0x80745E90
 void fn_3_106DFC(void) {
     return;
@@ -266,8 +274,9 @@ void fn_3_10F3D8(void) {
 }
 
 // .text:0x0010F550 size:0x14 mapped:0x8074E5E4
-void fn_3_10F550(void) {
-    return;
+void fn_3_10F550(u8 arg0, s16 arg1) {
+    g_Minigame._1A41 = arg0;
+    g_Minigame.someGraphicFrameCountdown = arg1;  /* stb then sth */
 }
 
 // .text:0x0010F564 size:0x58 mapped:0x8074E5F8
