@@ -2,6 +2,7 @@
 #define __GAME_gap_5985C_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_5985C(void);
 void fn_3_598D0(void);

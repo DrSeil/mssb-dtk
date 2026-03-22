@@ -117,7 +117,7 @@ void fn_3_5B380(void) {
 
 // .text:0x0005B408 size:0x14 mapped:0x8069A49C
 void fn_3_5B408(void) {
-    return;
+    g_GameLogic.frame_exitMenuShowing = 0;
 }
 
 // .text:0x0005B41C size:0x184 mapped:0x8069A4B0
