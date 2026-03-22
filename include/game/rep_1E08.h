@@ -16,6 +16,7 @@ extern u8 lbl_80366158; // Size and exact type unknown, accessing as byte array
 extern f32 lbl_3_rodata_1F18;
 extern f32 lbl_3_rodata_1F1C;
 extern f32 lbl_3_rodata_1F20;
+extern f32 lbl_3_rodata_1F24;
 
 typedef struct DataOuter {
     DataArrayElement elements[10]; // 10 * 0x10 = 0xa0
@@ -64,7 +65,7 @@ void fn_3_BD758(void);
 BOOL fn_3_BD7D0(void);
 void fn_3_BD7D8(void);
 void fn_3_BD7DC(s32 arg1);
-void fn_3_BD80C(void);
+void fn_3_BD80C(s32 arg0);
 void fn_3_BD8D8(void);
 void fn_3_BD8FC(void);
 void fn_3_BDCA4(void);

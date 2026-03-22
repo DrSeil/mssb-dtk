@@ -160,6 +160,16 @@ typedef struct ActRelatedEntry {
     // sizeof = 0x34 + 0x5c = 0x90
 } ActRelatedEntry;
 
+typedef struct HugeAnimSubObj34 {
+    u8 data[0x10];
+} HugeAnimSubObj34;
+
+typedef struct HugeAnimCtrlObj {
+    u8 _pad[0x34];
+    HugeAnimSubObj34 sub34;  /* 0x34 */
+    Control ctrl;            /* 0x44 */
+} HugeAnimCtrlObj;
+
 typedef struct hugeAnimStruct {
     /* 0x0000 */ u8 field0_0x0[4];
     /* 0x0004 */ struct StadiumFileHeader* stadiumFileHeaderPointer;
@@ -189,7 +199,7 @@ typedef struct hugeAnimStruct {
     /* 0x0064 */ ActRelatedEntry* actRelatedPtr;
     /* 0x0068 */ HugeAnimEntry68* entries_68;
     /* 0x006C */ void* unkPtr;
-    /* 0x0070 */ s32 field28_0x70;
+    /* 0x0070 */ struct HugeAnimCtrlObj* field28_0x70;
     /* 0x0074 */ u8 pad_0x74[56];
     /* 0x00AC */ void* field30_0xac;
     /* 0x00B0 */ void* field31_0xb0;
@@ -400,7 +410,7 @@ typedef struct hugeAnimStruct {
     /* 0x2EC4 */ u8 field263_0x2ec4[8];
     /* 0x2ECC */ s32 field264_0x2ecc[3];
     /* 0x2ED8 */ s32 field265_0x2ed8[102];
-    /* 0x3070 */ void (*funcPtr)(void);
+    /* 0x3070 */ void (*funcPtr)(s32);
     /* 0x3074 */ void (*funcPtr2)(s32);
     /* 0x3078 */ s16 field268_0x3078;
     /* 0x307A */ u8 field269_0x307a;
@@ -429,7 +439,9 @@ typedef struct hugeAnimStruct {
     /* 0x312C */ u8 field292_0x312c[40];
 } hugeAnimStruct; /* size: 0x3154 */
 extern hugeAnimStruct g_hugeAnimStruct;
-void fn_800BD670(s32 fieldVal, s32 arg1);
+void fn_800BD670(HugeAnimCtrlObj* obj, s32 arg1);
+void fn_800BD548(HugeAnimSubObj34* sub, s32 count, void* a, void* b, void* c, void* d, ...);
+void fn_800BD8C4(HugeAnimCtrlObj* obj, s32 arg);
 extern f32 lbl_3_rodata_1414;
 
 typedef struct StadiumObjectElem {
@@ -496,6 +508,16 @@ typedef struct DataArrayElement {
     /* 0xF */ u8 _pad2;
 } DataArrayElement; // size: 0x10
 
+typedef struct BssTransRotData {
+    u8 _pad[4];      /* 0x00 */
+    f32 transX;      /* 0x04 */
+    f32 transY;      /* 0x08 */
+    f32 transZ;      /* 0x0C */
+    f32 rotX;        /* 0x10 */
+    f32 rotY;        /* 0x14 */
+    f32 rotZ;        /* 0x18 */
+} BssTransRotData; /* size: 0x1C */
+
 typedef struct CommonBss_35154 {
     /* 0x000 */ u32 firstMember;
     /* 0x004 */ u8 _pad_1[4];
@@ -515,9 +537,13 @@ typedef struct CommonBss_35154 {
     /* 0x3D8 */ f32 unk_3d8;
     /* 0x3DC */ f32 unk_3dc;
     /* 0x3E0 */ u8 unk_3e0;
-    /* 0x3E1 */ u8 _pad3e1[0x23];
+    /* 0x3E1 */ u8 _pad3e1[3];
+    /* 0x3E4 */ BssTransRotData transRot;
+    /* 0x400 */ u8 _pad400[4];
     /* 0x404 */ s16 someHalfword;
-    /* 0x406 */ u8 _pad2[6];
+    /* 0x406 */ u8 _pad406[4];
+    /* 0x40A */ u8 unk_40a;
+    /* 0x40B */ u8 _pad40b;
     /* 0x40C */ u32 array_40c[1]; // Array starting at 0x40c
     /* 0x410 */ u8 _pad_mid[0x8];
     /* 0x418 */ u8 someFlag_418;  // stb r0, 0x418(r5)

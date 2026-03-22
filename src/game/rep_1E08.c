@@ -285,8 +285,27 @@ void fn_3_BD7DC(s32 arg1) {
     fn_800BD670(g_hugeAnimStruct.field28_0x70, arg1);
 }
 // .text:0x000BD80C size:0xCC mapped:0x806FC8A0
-void fn_3_BD80C(void) {
-    return;
+void fn_3_BD80C(s32 arg0) {
+    // Almost matches - CW collapses bss/transRot into one base register (r30=&bss)
+    // instead of splitting into r5=&bss + r30=&bss.transRot with small offsets
+    CommonBss_35154* bss = &lbl_3_common_bss_35154;
+    BssTransRotData* transRot = &bss->transRot;
+    hugeAnimStruct* has = &g_hugeAnimStruct;
+
+    if (bss->unk_40a != 0) {
+        CTRLSetTranslation(&has->field28_0x70->ctrl,
+            transRot->transX, transRot->transY, transRot->transZ);
+        CTRLSetRotation(&has->field28_0x70->ctrl,
+            lbl_3_rodata_1F24 * transRot->rotX,
+            lbl_3_rodata_1F24 * transRot->rotY,
+            lbl_3_rodata_1F24 * transRot->rotZ);
+        fn_800BD548(&has->field28_0x70->sub34, 4,
+            has->field30_0xac,
+            has->field31_0xb0,
+            has->field32_0xb4,
+            has->field33_0xb8);
+    }
+    fn_800BD8C4(has->field28_0x70, arg0);
 }
 
 // .text:0x000BD8D8 size:0x24 mapped:0x806FC96C
