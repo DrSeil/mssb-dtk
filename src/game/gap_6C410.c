@@ -2,7 +2,7 @@
 
 // .text:0x0006C410 size:0x18 mapped:0x806AB4A4
 void fn_3_6C410(void) {
-    return;
+    g_hugeAnimStruct.starAnimRelated->state_alt = 0;
 }
 
 // .text:0x0006C428 size:0x4 mapped:0x806AB4BC

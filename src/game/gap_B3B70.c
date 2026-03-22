@@ -21,8 +21,9 @@ void fn_3_B3C78(void) {
 }
 
 // .text:0x000B3C94 size:0x18 mapped:0x806F2D28
-void fn_3_B3C94(void) {
-    return;
+void fn_3_B3C94(u8 arg0) {
+    g_Practice.practiceState = arg0;
+    g_Practice.framesInCurrTransitionState = 0;
 }
 
 // .text:0x000B3CAC size:0x28 mapped:0x806F2D40

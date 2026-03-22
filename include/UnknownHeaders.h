@@ -29,7 +29,10 @@ typedef struct StadiumFileHeader {
 struct ACTBone;
 struct ActLayout;
 struct AnimBank;
-struct starAnimationRelated;
+typedef struct starAnimationRelated {
+    u8 _pad[0xC6];
+    u8 state_alt; /* 0xC6 */
+} starAnimationRelated;
 
 /* AnimationStruct - 0x27C bytes, used in arrays within hugeAnimStruct.
  * Full field definitions available in in_game.h. */
@@ -355,7 +358,7 @@ typedef struct hugeAnimStruct {
     /* 0x2D8D */ u8 field208_0x2d8d;
     /* 0x2D8E */ u8 field209_0x2d8e;
     /* 0x2D8F */ u8 field210_0x2d8f;
-    /* 0x2D90 */ struct starAnimationRelated* starAnimRelated;
+    /* 0x2D90 */ starAnimationRelated* starAnimRelated;
     /* 0x2D94 */ HugeAnimEntry2D94* entries_2D94;
     /* 0x2D98 */ s32 field213_0x2d98;
     /* 0x2D9C */ struct ActLayout* ActorPointer;

@@ -107,7 +107,8 @@ void fn_3_5B220(void) {
 
 // .text:0x0005B368 size:0x18 mapped:0x8069A3FC
 void fn_3_5B368(void) {
-    return;
+    g_GameLogic.frames_memoryCardWriteOnMVP = 0;
+    g_GameLogic.endGameStage = 0;
 }
 
 // .text:0x0005B380 size:0x88 mapped:0x8069A414

@@ -2,6 +2,7 @@
 #define __GAME_gap_6C410_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 void fn_3_6C410(void);
 void fn_3_6C428(void);
