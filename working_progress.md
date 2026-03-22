@@ -2,7 +2,7 @@
 
 ## Current Focus
 **File:** `src/game/rep_1E08.c`
-**Next function to attempt:** fn_3_BF070 (232 bytes)
+**Next function to attempt:** fn_3_BDE14 (352 bytes)
 
 ---
 
@@ -14,6 +14,7 @@
 | fn_3_BD6AC | 172 | bge+b+bl branch direction — CW codegen, unfixable |
 | fn_3_BD80C | 204 | bss/transRot base register split (r5+r30 vs r30 only) |
 | fn_3_BB07C | 224 | sin/cos scheduler: lfsu cascade, +1 instruction |
+| fn_3_BF070 | 232 | stmw r27 vs 4 individual stw's — can't get lbl_3_data_111A8 cached in r30 |
 
 ### Matched ✓
 | Function | Notes |
@@ -42,7 +43,6 @@
 ### TODO (ordered by size, attempt in this order)
 | Function | Size | Notes |
 |---|---|---|
-| fn_3_BF070 | 232 | stub |
 | fn_3_BDE14 | 352 | stub |
 | fn_3_BDCA4 | 368 | stub |
 | fn_3_BC6D8 | 376 | stub |
