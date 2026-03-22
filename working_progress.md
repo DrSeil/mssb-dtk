@@ -1,8 +1,8 @@
 # Working Progress
 
 ## Current Focus
-**File:** `src/game/rep_1E08.c`
-**Next function to attempt:** fn_3_BDE14 (352 bytes)
+**Strategy:** Smallest available functions across all game files
+**Next function to attempt:** see score_functions.py output
 
 ---
 
@@ -15,6 +15,7 @@
 | fn_3_BD80C | 204 | bss/transRot base register split (r5+r30 vs r30 only) |
 | fn_3_BB07C | 224 | sin/cos scheduler: lfsu cascade, +1 instruction |
 | fn_3_BF070 | 232 | stmw r27 vs 4 individual stw's — can't get lbl_3_data_111A8 cached in r30 |
+| fn_3_BDE14 | 352 | register allocation: r25-r28+stmw vs r29-r31 individual stw; rodata not cached in f27-f31 |
 
 ### Matched ✓
 | Function | Notes |
