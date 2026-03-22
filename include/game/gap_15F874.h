@@ -7,6 +7,8 @@ typedef struct {
     u8 _pad[0x470];
     u8 field_0x470;
     u8 field_0x471;
+    u8 _pad2[0x7];
+    u8 field_0x479;
 } Bss35154Item;
 
 extern Bss35154Item lbl_3_common_bss_35154;
