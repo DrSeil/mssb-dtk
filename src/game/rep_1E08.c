@@ -335,7 +335,26 @@ void fn_3_BDCA4(void) {
 
 // .text:0x000BDE14 size:0x160 mapped:0x806FCEA8
 void fn_3_BDE14(void) {
-    return;
+    QueueEntry* qEntry;
+    CosSinPair* pair;
+    s32 i;
+
+    qEntry = fn_800B0A5C_insertQueue(fn_3_BDCA4, 3);
+    getAnimRelatedCoordinates(0, 7, &qEntry->vec);
+    qEntry->unk20 = lbl_3_data_A3C[1] - 2;
+    pair = lbl_3_data_11620.a;
+    qEntry->unk24 = (u8*)&lbl_3_data_11620;
+
+    i = 0;
+    do {
+        f32 angle = lbl_3_rodata_1F38 * (f32)rand() / lbl_3_rodata_1EB0;
+        pair->x = (f32)(lbl_3_rodata_1F40 * cos((f64)angle));
+        pair->z = (f32)(lbl_3_rodata_1F40 * sin((f64)angle));
+        i++;
+        pair++;
+    } while (i < 0x60);
+
+    memcpy(lbl_3_data_11620.b, lbl_3_data_11620.a, 0x300);
 }
 
 // .text:0x000BDF74 size:0x1CC mapped:0x806FD008

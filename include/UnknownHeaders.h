@@ -482,8 +482,12 @@ extern Bss_1910 lbl_3_bss_1910;
 extern f32 lbl_3_rodata_1DD0;
 extern f32 lbl_3_rodata_1DD4;
 typedef struct QueueEntry {
-u8 _pad0[0x10];
-s16 unk10;
+    u8 _pad0[0x10];
+    s16 unk10;     /* 0x10 */
+    u8 _pad1[0x02];
+    VecXYZ vec;    /* 0x14 */
+    s32 unk20;     /* 0x20 */
+    u8* unk24;     /* 0x24 */
 } QueueEntry;
 /* extern function with proper types */
 QueueEntry* fn_800B0A5C_insertQueue(QueueCallback callback, s32 priority);

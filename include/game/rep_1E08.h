@@ -21,10 +21,30 @@ typedef struct Data170D8 {
 } Data170D8;
 extern Data170D8 lbl_3_data_170D8;
 extern u8 lbl_80366158; // Size and exact type unknown, accessing as byte array
+extern f32 lbl_3_rodata_1EB0;
 extern f32 lbl_3_rodata_1F18;
 extern f32 lbl_3_rodata_1F1C;
 extern f32 lbl_3_rodata_1F20;
 extern f32 lbl_3_rodata_1F24;
+extern f32 lbl_3_rodata_1F38;
+extern f64 lbl_3_rodata_1F40;
+
+extern u8 lbl_3_data_A3C[];
+
+typedef struct {
+    f32 x;
+    f32 z;
+} CosSinPair;
+
+typedef struct {
+    u8 _pad0[0x4C];
+    CosSinPair a[0x60];   /* 0x4C */
+    u8 _pad1[0x4C];       /* 0x34C */
+    CosSinPair b[0x60];   /* 0x398 */
+    u8 _rest[0x698];      /* 0x698 */
+} Data11620;
+extern Data11620 lbl_3_data_11620;
+
 
 typedef struct DataOuter {
     DataArrayElement elements[10]; // 10 * 0x10 = 0xa0
