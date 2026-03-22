@@ -1,4 +1,5 @@
 #include "game/rep_1E08.h"
+#include <math.h>
 #include "game/rep_2390.h"
 #include "game/rep_3C28.h"
 // Forward declaration for fn_3_160814 (not found in headers)
@@ -33,8 +34,15 @@ void fn_3_BA7F4(void) {
 }
 
 // .text:0x000BB07C size:0xE0 mapped:0x806FA110
-void fn_3_BB07C(void) {
-    return;
+void fn_3_BB07C(BssTransRotData* arg0, f32 f1) {
+    f32 sinVal;
+    f32 cosVal;
+    f32 angle = lbl_3_rodata_1EC0 * f1;
+    sinVal = (f32)sin((f64)angle);
+    cosVal = (f32)cos((f64)angle);
+    arg0->rotX = sinVal * (f32)lbl_3_data_170D8.unk4 / lbl_3_rodata_1EC4;
+    arg0->rotY = cosVal * (f32)lbl_3_data_170D8.unk4 / lbl_3_rodata_1EC4;
+    arg0->rotZ = lbl_3_rodata_1E68;
 }
 
 // .text:0x000BB15C size:0x2F8 mapped:0x806FA1F0

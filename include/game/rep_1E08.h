@@ -10,8 +10,16 @@ extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
 extern CompressedDiskRead lbl_3_data_11380;
 extern f32 lbl_3_rodata_1E64;
+extern f32 lbl_3_rodata_1E68;
+extern f32 lbl_3_rodata_1EC0;
 extern f32 lbl_3_rodata_1EC4;
 extern f64 lbl_3_rodata_1ED0;
+
+typedef struct Data170D8 {
+    u8 _pad[4];
+    s32 unk4;
+} Data170D8;
+extern Data170D8 lbl_3_data_170D8;
 extern u8 lbl_80366158; // Size and exact type unknown, accessing as byte array
 extern f32 lbl_3_rodata_1F18;
 extern f32 lbl_3_rodata_1F1C;
@@ -41,7 +49,7 @@ void fn_8006C43C(s32 arg);
  
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
-void fn_3_BB07C(void);
+void fn_3_BB07C(BssTransRotData* arg0, f32 f1);
 void fn_3_BB15C(void);
 void fn_3_BB454(void);
 void fn_3_BB7F4(void);
