@@ -238,13 +238,10 @@ void fn_3_104AD4(Vec *dst, Mtx44 mtx) {
 }
 
 // .text:0x00104B20 size:0x1C mapped:0x80743BB4
-void fn_3_104B20( VecXYZ* dst,  SourceObj_104B20* src) {
-    f32 z,y,x;
-
-    x = src->pos.x;
-    y = src->pos.y;
-    z = src->pos.z;
-
+void fn_3_104B20(VecXYZ* dst, SourceObj_104B20* src) {
+    f32 z = src->pos.z;
+    f32 y = src->pos.y;
+    f32 x = src->pos.x;
     dst->x = x;
     dst->y = y;
     dst->z = z;
