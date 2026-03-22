@@ -2,12 +2,23 @@
 #define __GAME_gap_AC9F8_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "game/gap_B3B70.h"
 
 typedef struct {
-    u8 _pad[0x1D5];
-    u8 field_0x1D5;
-    u8 field_0x1D6;
-    u8 field_0x1D7;
+    u8 _pad0[0x0C];
+    s16 field_0x0C;  /* 0x0C */
+    s16 field_0x0E;  /* 0x0E */
+    s16 field_0x10;  /* 0x10 */
+    u8 _pad1[0x1BF]; /* 0x12 to 0x1D0 */
+    u8 field_0x1D1;  /* 0x1D1 */
+    u8 field_0x1D2;  /* 0x1D2 */
+    u8 _pad2[0x2];   /* 0x1D3-0x1D4 */
+    u8 field_0x1D5;  /* 0x1D5 */
+    u8 field_0x1D6;  /* 0x1D6 */
+    u8 field_0x1D7;  /* 0x1D7 */
+    u8 _pad3[0x2];   /* 0x1D8-0x1D9 */
+    u8 field_0x1DA;  /* 0x1DA */
 } Bss34C90Item;
 
 extern Bss34C90Item lbl_3_common_bss_34C90;
@@ -32,7 +43,7 @@ void fn_3_AF5A4(void);
 void fn_3_AFA64(void);
 void fn_3_AFB64(void);
 void fn_3_AFD48(void);
-void fn_3_AFD80(void);
+void fn_3_AFD80(u8 arg0);
 void fn_3_AFDA4(void);
 void fn_3_AFDC0(void);
 void fn_3_AFE0C(void);

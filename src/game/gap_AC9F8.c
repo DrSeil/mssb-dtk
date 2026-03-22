@@ -101,8 +101,12 @@ void fn_3_AFD48(void) {
 }
 
 // .text:0x000AFD80 size:0x24 mapped:0x806EEE14
-void fn_3_AFD80(void) {
-    return;
+void fn_3_AFD80(u8 arg0) {
+    lbl_3_common_bss_34C90.field_0x1D1 = arg0;
+    lbl_3_common_bss_34C90.field_0x1D2 = 0;
+    lbl_3_common_bss_34C90.field_0x0C = 0;
+    lbl_3_common_bss_34C90.field_0x0E = 0;
+    lbl_3_common_bss_34C90.field_0x10 = 0;
 }
 
 // .text:0x000AFDA4 size:0x1C mapped:0x806EEE38
@@ -164,7 +168,7 @@ void fn_3_B0874(void) {
 
 // .text:0x000B0A88 size:0x24 mapped:0x806EFB1C
 void fn_3_B0A88(void) {
-    return;
+    fn_3_B3C78(0);
 }
 
 // .text:0x000B0AAC size:0xB0 mapped:0x806EFB40
@@ -324,6 +328,8 @@ void fn_3_B3620(void) {
 
 // .text:0x000B3A28 size:0x24 mapped:0x806F2ABC
 void fn_3_B3A28(void) {
-    return;
+    g_Practice.frames_onPauseScreen = 0;
+    lbl_3_common_bss_34C90.field_0x1D2 = 0;
+    lbl_3_common_bss_34C90.field_0x1DA = 0;
 }
 

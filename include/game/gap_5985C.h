@@ -5,11 +5,13 @@
 #include "game/UnknownHomes_Game.h"
 #include "static/UnknownHomes_Static.h"
 
+void fn_80017D28(s32 arg0);
+
 void fn_3_5985C(void);
 void fn_3_598D0(void);
 void fn_3_59918(void);
 void fn_3_59A90(void);
-void fn_3_59AC0(void);
+void fn_3_59AC0(s32 arg0, s32 arg1, s32 arg2);
 void fn_3_59AE4(void);
 void fn_3_59B20(void);
 void fn_3_59BCC(void);
