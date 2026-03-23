@@ -149,6 +149,16 @@ def main():
         human_in_loop=args.human_in_loop,
     )
 
+    # Detect current branch
+    original_branch = "main"
+    try:
+        import subprocess
+        res = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, cwd=_root_dir)
+        if res.returncode == 0 and res.stdout.strip():
+            original_branch = res.stdout.strip()
+    except:
+        pass
+
     # Initial state
     initial_state = {
         "function_name": func_name,
@@ -159,7 +169,7 @@ def main():
         "unit_name": "",
         "header_path": "",
         "header_content": "",
-        "original_branch": "main",
+        "original_branch": original_branch,
         "current_c_code": "",
         "externs": "",
         "local_headers": "",

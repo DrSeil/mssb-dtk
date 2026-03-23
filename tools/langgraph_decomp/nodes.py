@@ -1519,20 +1519,34 @@ def committer_node(state):
         if original_branch:
             try:
                 tmp_branch = f"decomp/{func_name}"
-                print(f"[committer] Merging {tmp_branch} back to {original_branch}...")
+                print(f"[committer] Merging only relevant files from {tmp_branch} back to {original_branch}...")
                 
-                # Final commit on temp branch
+                # Final commit on temp branch to ensure everything is saved
                 subprocess.run(["git", "add", "-A"], cwd=_root_dir)
-                subprocess.run(["git", "commit", "-m", f"matched {func_name}"], cwd=_root_dir)
+                subprocess.run(["git", "commit", "-m", f"final matched {func_name}"], cwd=_root_dir)
                 
-                # Switch back and merge
+                # Switch back to original branch
                 subprocess.run(["git", "checkout", original_branch], cwd=_root_dir, check=True)
-                subprocess.run(["git", "merge", "--squash", tmp_branch], cwd=_root_dir, check=True)
-                subprocess.run(["git", "commit", "-m", f"matched {func_name}"], cwd=_root_dir, check=True)
+                
+                # Instead of merge --squash, we'll just checkout the specific files we modified
+                # This ensures NO junk files (logs, tags) ever hit the main branch.
+                relevant_files = [source_path, header_path]
+                if externs_path and os.path.exists(externs_path):
+                    relevant_files.append(externs_path)
+                
+                for fpath in relevant_files:
+                    if fpath:
+                        rel_fpath = os.path.relpath(fpath, _root_dir)
+                        print(f"[committer] Checking out {rel_fpath} from {tmp_branch}...")
+                        subprocess.run(["git", "checkout", tmp_branch, "--", rel_fpath], cwd=_root_dir, check=True)
+                
+                # Commit the changes to original branch
+                commit_msg = f"matched {func_name}\n\nIteration attempts on {tmp_branch} were discarded."
+                subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
                 
                 # Delete temp branch
                 subprocess.run(["git", "branch", "-D", tmp_branch], cwd=_root_dir)
-                print(f"[committer] Successfully merged and switched back to {original_branch}")
+                print(f"[committer] Successfully merged results and switched back to {original_branch}")
             except Exception as e:
                 print(f"[committer] Git merge failed: {e}")
 
