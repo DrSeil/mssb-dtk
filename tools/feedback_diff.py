@@ -5,6 +5,60 @@ import argparse
 import os
 import re
 
+def summarize_objdiff_json(data, symbol_name):
+    """Summarize objdiff JSON data into a token-efficient text summary."""
+    left_sym, right_sym = get_symbol_data(data, symbol_name)
+    if not left_sym:
+        return "Target symbol not found in original object."
+    if not right_sym:
+        return "Symbol not found in your compiled object."
+
+    left_insts = left_sym.get("instructions", [])
+    right_insts = right_sym.get("instructions", [])
+    
+    l_base = int(left_sym.get("address", 0))
+    r_base = int(right_sym.get("address", 0))
+
+    mismatches = []
+    # Count total mismatches for the header
+    total_mismatches = 0
+    for inst in right_insts:
+        if inst.get("diff_kind") != "None":
+            total_mismatches += 1
+
+    if total_mismatches == 0:
+        return "MATCH!"
+
+    # Iterate through instructions and find differences
+    # We use a simple index-based comparison for the summary
+    max_idx = max(len(left_insts), len(right_insts))
+    
+    for i in range(max_idx):
+        l_inst = left_insts[i] if i < len(left_insts) else None
+        r_inst = right_insts[i] if i < len(right_insts) else None
+        
+        if not l_inst or not r_inst or r_inst.get("diff_kind") != "None":
+            addr = r_inst.get("address", 0) if r_inst else (l_inst.get("address", 0) if l_inst else 0)
+            rel_addr = addr - r_base if r_inst else (addr - l_base if l_inst else 0)
+            
+            l_op, _ = get_opcode(l_inst) if l_inst else ("<missing>", 0)
+            r_op, _ = get_opcode(r_inst) if r_inst else ("<missing>", 0)
+            
+            l_args = get_normalized_args(l_inst.get("parts", []), l_base, i) if l_inst else []
+            r_args = get_normalized_args(r_inst.get("parts", []), r_base, i) if r_inst else []
+            
+            mismatches.append(
+                f"0x{rel_addr:X}: expected {l_op} {', '.join(l_args)}, "
+                f"got {r_op} {', '.join(r_args)}"
+            )
+            
+            # Limit to 20 mismatches in summary for token efficiency
+            if len(mismatches) >= 20:
+                mismatches.append(f"... and {total_mismatches - 20} more")
+                break
+                
+    return f"{total_mismatches} mismatches:\n" + "\n".join(mismatches)
+
 def run_objdiff(unit, symbol):
     cmd = [
         "objdiff", "diff",

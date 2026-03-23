@@ -80,6 +80,7 @@ class AttemptRecord(TypedDict):
     """One iteration's code + result, so the LLM can see its history."""
     c_code: str           # The C code that was tried
     match_percent: float  # Score achieved (0.0 – 100.0)
+    mismatch_count: int   # Number of differing instructions
     feedback: str         # Instruction-level diff from objdiff
     current_asm: str      # Compiled assembly for this attempt
     build_error: str      # Compiler errors (empty string on success)
@@ -112,6 +113,9 @@ class DecompState(TypedDict):
     feedback: str               # latest text diff from feedback_diff.py
     build_log: str              # compiler output on failure
     match_percent: float        # 0.0 – 100.0
+    mismatch_count: int         # latest number of mismatched instructions
+    prev_match_percent: float   # match percent from previous iteration
+    prev_mismatch_count: int    # mismatch count from previous iteration
 
     # --- History ---
     attempts: List[AttemptRecord]  # full history of prior attempts
@@ -120,7 +124,9 @@ class DecompState(TypedDict):
     # --- Control ---
     iterations: int             # loop counter
     status: str                 # "running" | "matched" | "failed" | "error"
-    llm_tier: str               # "local" | "cloud"
+    llm_tier: str               # "fast" | "deep"
+    prefer_local: bool          # if True, use local model for "fast" tier
+    escalate: bool              # True if escalation is triggered (stagnant or regression)
     debug: bool                 # True for verbose logging
     verbose: bool               # True for extra detail
 
@@ -130,3 +136,5 @@ class DecompState(TypedDict):
     last_raw_response: str      # the unparsed LLM response
     current_asm: str            # latest compiled assembly for current C code
     struct_updates: Annotated[List[dict], merge_struct_updates]  # list of {'type_name': str, 'definition': str}
+    sda_map: str                # info about SDA-relative symbols (r13/r2)
+    error_taxonomy: str         # classification of current failure (e.g. "SDA Access")

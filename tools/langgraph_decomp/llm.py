@@ -96,8 +96,56 @@ CRITICAL RULES:
 - NEVER output `?` as a type. Replace ALL `?` with real C types.
 - NEVER include assembly instructions or comments in `function_code`.
 - Declare any new symbols in `extern_declarations` or `header_additions`.
-- Read build errors and diff feedback carefully to guide your fixes.
+# Read build errors and diff feedback carefully to guide your fixes.
 """
+
+DEEP_SYSTEM_PROMPT = f"""\
+You are a senior decompilation engineer. You are performing a DEEP analysis on a difficult function that has not matched after several attempts.
+
+{BACKGROUND}
+
+{COMPILER_PATTERNS}
+
+## Deep Reasoning Strategy
+1. **Analyze the Control Flow**: Look for mismatches in loop structures or branch destinations.
+2. **Examine the Stack Frame**: Look for mismatches in local variable offsets (sp-relative). This often indicates the wrong order of variable declarations or incorrect sizes for local structs.
+3. **Register Allocation**: Look for mismatches in register selection. This can sometimes be fixed by:
+- Changing the order of local variable declarations.
+- Using `volatile` to prevent optimization.
+- Explicitly casting intermediate results (e.g., to `(u32)` or `(s16)`).
+4. **Logic Mismatch**: Ensure all sign-extensions and masks (rlwinm) are correctly represented in C.
+
+## Your Task
+Analyze the assembly and the history of failed attempts. Identify the root cause of the mismatch and propose a fix.
+
+YOUR RESPONSE MUST FOLLOW THIS PROTOCOL:
+1. Provide a brief analysis and reasoning trace in Markdown.
+2. End your response with EXACTLY ONE JSON block containing your patch instructions.
+
+The JSON schema must be:
+{{
+"explanation": "Brief summary of changes",
+"function_code": "The complete C code for the function",
+"struct_modifications": [
+{{
+  "type_name": "Name of the struct to modify",
+  "actions": [
+    {{
+      "action": "add_field",
+      "type": "C type",
+      "name": "field_name",
+      "offset": "0xXXX"
+    }}
+  ]
+}}
+],
+"header_additions": "New prototypes or structs to ADD to the header",
+"extern_declarations": "Extern variables to ADD"
+}}
+
+JSON block must be enclosed in ```json fences.
+"""
+
 
 
 def get_local_llm(json_mode: bool = True) -> BaseChatModel:
@@ -107,7 +155,7 @@ def get_local_llm(json_mode: bool = True) -> BaseChatModel:
     model = os.environ.get("LOCAL_LLM_MODEL", "deepseek-coder-v2")
     
     # 2. Get the Base URL. 
-    base_url = os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:1234/v1")
+    base_url = os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:11434/v1")
 
     kwargs = {"temperature": 0.1, "callbacks": [StdOutCallbackHandler()]}
     # Some local servers don't support json_object, so we use text and rely on our parser
@@ -122,14 +170,18 @@ def get_local_llm(json_mode: bool = True) -> BaseChatModel:
     )
 
 
-def get_cloud_llm(json_mode: bool = True) -> BaseChatModel:
-    """Create a cloud LLM for escalated attempts (OpenRouter or Gemini)."""
-    provider = os.environ.get("LLM_CLOUD_PROVIDER", "openrouter").lower()
+def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
+    """Create a cloud LLM for attempts (fast cloud or deep cloud)."""
+    provider = os.environ.get("LLM_CLOUD_PROVIDER", "gemini").lower()
 
     if provider == "gemini" or provider == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
 
-        model = os.environ.get("GEMINI_MODEL", "gemini-2.5-pro")
+        if tier == "deep":
+            model = os.environ.get("GEMINI_MODEL_DEEP", "gemini-2.5-pro")
+        else:
+            model = os.environ.get("GEMINI_MODEL_FAST", "gemini-2.0-flash")
+
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY environment variable is required for Gemini")
@@ -144,7 +196,11 @@ def get_cloud_llm(json_mode: bool = True) -> BaseChatModel:
         # OpenRouter via OpenAI-compatible API
         from langchain_openai import ChatOpenAI
 
-        model = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-sonnet-4-20250514")
+        if tier == "deep":
+            model = os.environ.get("OPENROUTER_MODEL_DEEP", "anthropic/claude-3.5-sonnet")
+        else:
+            model = os.environ.get("OPENROUTER_MODEL_FAST", "google/gemini-2.0-flash-001")
+
         api_key = os.environ.get("OPENROUTER_API_KEY")
         if not api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable is required for OpenRouter")
@@ -161,12 +217,11 @@ def get_cloud_llm(json_mode: bool = True) -> BaseChatModel:
         )
 
 
-def get_llm(tier: str, json_mode: bool = True) -> BaseChatModel:
-    """Get the appropriate LLM for the given tier."""
-    if tier == "local":
+def get_llm(tier: str, prefer_local: bool = False, json_mode: bool = True) -> BaseChatModel:
+    """Get the appropriate LLM for the given tier (fast/deep)."""
+    if tier == "fast" and prefer_local:
         return get_local_llm(json_mode)
-    else:
-        return get_cloud_llm(json_mode)
+    return get_cloud_llm(tier, json_mode)
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +319,63 @@ Otherwise, output a concise markdown list of your new findings."""
 # Symbol Resolution — find existing definitions in the codebase
 # ---------------------------------------------------------------------------
 
+def _ensure_tags():
+    """Ensure ctags index is up-to-date for include/ and src/."""
+    tags_file = os.path.join(_root_dir, "tags")
+    
+    # Create .ctags to exclude noise if not present
+    dot_ctags = os.path.join(_root_dir, ".ctags")
+    if not os.path.exists(dot_ctags):
+        with open(dot_ctags, "w") as f:
+            f.write("--exclude=build\n")
+            f.write("--exclude=.git\n")
+            f.write("--exclude=logs\n")
+            f.write("--exclude=tmp\n")
+            f.write("--exclude=*.o\n")
+            f.write("--exclude=*.s\n")
+    
+    # Always regenerate (takes ~130ms) to pick up new additions to headers/source
+    try:
+        subprocess.run(
+            ["ctags", "-R", "--languages=C", "include", "src"],
+            cwd=_root_dir, check=True, capture_output=True
+        )
+    except Exception as e:
+        # If it fails, we'll try to use the existing tags file if it exists
+        if not os.path.exists(tags_file):
+            print(f"[tags] Failed to run ctags and no index found: {e}")
+            return None
+    return tags_file
+
+def _read_tags(symbol: str) -> List[Dict]:
+    """Search for a symbol in the ctags index using readtags binary."""
+    tags_file = _ensure_tags()
+    if not tags_file:
+        return []
+    
+    try:
+        # readtags -t tags -e -Q '(eq? $name "symbol")'
+        result = subprocess.run(
+            ["readtags", "-t", tags_file, "-e", "-Q", f"(eq? $name \"{symbol}\")"],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.returncode != 0:
+            return []
+            
+        matches = []
+        for line in result.stdout.splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 3:
+                matches.append({
+                    "name": parts[0],
+                    "file": os.path.join(_root_dir, parts[1]),
+                    "pattern": parts[2].strip("/^").strip("$/"),
+                    "kind": parts[3] if len(parts) > 3 else "unknown"
+                })
+        return matches
+    except Exception:
+        return []
+
 def resolve_symbol_definitions(state: dict) -> str:
     """Find existing definitions for symbols referenced in M2C output and ASM.
 
@@ -331,6 +443,20 @@ def resolve_symbol_definitions(state: dict) -> str:
     # Helper: run grep across both include/ and src/ (or a specific file)
     def _grep_symbol(sym, pattern=None, file_extensions=None, search_paths=None):
         """Grep for a symbol across include and src directories."""
+        # Try readtags first (Phase 1.2)
+        tag_matches = _read_tags(sym)
+        if tag_matches:
+            results = []
+            for m in tag_matches:
+                # Filter by file extension if requested
+                if file_extensions:
+                    ext = os.path.splitext(m['file'])[1]
+                    if not any(f"*{ext}" == fe for fe in file_extensions):
+                        continue
+                results.append(f"{m['file']}: {m['pattern']}")
+            if results:
+                return results
+
         if pattern is None:
             pattern = sym
         if file_extensions is None:
@@ -590,12 +716,26 @@ def _extract_struct_block(filepath, type_name):
 
     return content[start:end].strip()
 
-def build_refactor_prompt(state: dict) -> str:
+def build_refactor_prompt(state: dict, escalate: bool = False) -> str:
     """Build the user-facing prompt for the refactorer from current state."""
     sections = []
+    func_name = state["function_name"]
+    iteration = state.get("iterations", 0)
+
+    sections.append(f"# Refactor Attempt for `{func_name}` (Iteration {iteration + 1})\n")
+
+    if escalate:
+        sections.append(
+            "## Deep Reasoning Escalation\n"
+            "Progress has stalled or a regression was detected. You must perform a deep analysis:\n"
+            "- **Stack Frame**: Re-examine local variable ordering and alignment padding.\n"
+            "- **Register Allocation**: Consider if changing variable declaration order or using `volatile` would match the target's register selection.\n"
+            "- **Loop Structure**: Re-evaluate `for` vs `while` vs `do-while` and potential unrolling or compiler-generated induction variables.\n"
+            "- **Logic Mismatch**: Ensure all sign-extensions and casts match the assembly instructions (e.g., `extsb`, `rlwinm`).\n"
+        )
 
     # Target assembly
-    sections.append(f"## Target Assembly for `{state['function_name']}`\n")
+    sections.append(f"## Target Assembly for `{func_name}`\n")
     sections.append(f"```asm\n{state.get('asm_text', '').strip()}\n```\n")
 
     # Ghidra reference (if available)
@@ -620,6 +760,12 @@ def build_refactor_prompt(state: dict) -> str:
     symbol_defs = resolve_symbol_definitions(state)
     if symbol_defs:
         sections.append(symbol_defs)
+
+    # SDA Mapping (r13/r2)
+    sda_map = state.get("sda_map", "")
+    if sda_map:
+        sections.append("## SDA Mapping (r13/r2 bases)\n")
+        sections.append(f"```\n{sda_map.strip()}\n```\n")
 
     # Previous attempts with feedback
     attempts = state.get("attempts", [])
@@ -674,6 +820,13 @@ def build_refactor_prompt(state: dict) -> str:
         sections.append("## Latest Build Errors\n")
         sections.append(f"```\n{build_log.strip()}\n```\n")
 
+    # Error Taxonomy / Classification
+    taxonomy = state.get("error_taxonomy", "")
+    if taxonomy:
+        sections.append(f"## Failure Classification: {taxonomy}\n")
+        # Find the hint in the messages if possible, or just state the category
+        sections.append(f"Your previous attempt failed due to a **{taxonomy}** issue. Focus your reasoning on resolving this specific category of mismatch.\n")
+
     sections.append(
         "\n## Instruction\n"
         f"Analyze the assembly and previous feedback to matching C code."
@@ -683,16 +836,18 @@ def build_refactor_prompt(state: dict) -> str:
     return "\n".join(sections)
 
 
-def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
+def invoke_refactor(state: dict, escalate_after: int = 5, escalate: bool = False, prefer_local: bool = False) -> str:
     """Call the appropriate LLM to refactor the C code.
 
-    Returns the raw C code string from the LLM response.
+    Returns (result_dict, tier, user_prompt, raw_response)
     """
     iteration = state.get("iterations", 0)
-    tier = "local" if iteration < escalate_after else "cloud"
+    tier = "fast"
+    if escalate or iteration >= escalate_after:
+        tier = "deep"
 
-    llm = get_llm(tier)
-    user_prompt = build_refactor_prompt(state)
+    llm = get_llm(tier, prefer_local=prefer_local)
+    user_prompt = build_refactor_prompt(state, escalate=(tier == "deep"))
 
     from langchain_core.messages import SystemMessage, HumanMessage
 
@@ -703,10 +858,12 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
         print(user_prompt)
         print(f"[LLM] {'='*60}")
 
-    print(f"[LLM] Invoking {tier} LLM...")
+    display_tier = f"{tier} (local)" if tier == "fast" and prefer_local else tier
+    print(f"[LLM] Invoking {display_tier} LLM (escalate={escalate})...")
 
+    system_prompt = DEEP_SYSTEM_PROMPT if tier == "deep" else SYSTEM_PROMPT
     messages = [
-        SystemMessage(content=SYSTEM_PROMPT + get_key_learnings_prompt()),
+        SystemMessage(content=system_prompt + get_key_learnings_prompt()),
         HumanMessage(content=user_prompt),
     ]
 
@@ -716,6 +873,7 @@ def invoke_refactor(state: dict, escalate_after: int = 5) -> str:
         full_response += content
         print(content, end="", flush=True)
     print() # Final newline after streaming
+    sys.stdout.flush()
     raw = full_response.strip()
 
     # Parse structured response into sections
@@ -730,18 +888,39 @@ def parse_llm_response(raw: str) -> dict:
     Returns dict with keys: 'function', 'updates', 'header', 'externs', 'explanation'
     'updates' is a list of struct modification actions.
     """
+    data = {}
     try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        # Fallback for non-JSON responses (try to find JSON block)
-        match = re.search(r'\{.*\}', raw, re.DOTALL)
-        if match:
+        # Priority 1: Extract JSON from the last fenced block (standard Markdown+JSON mode)
+        json_blocks = re.findall(r'```(?:json)?\s*(\{.*?\})\s*```', raw, re.DOTALL)
+        if json_blocks:
             try:
-                data = json.loads(match.group(0))
-            except:
-                return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Fallback parse"}
-        else:
-            return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Failed parse"}
+                data = json.loads(json_blocks[-1])
+            except json.JSONDecodeError:
+                pass
+        
+        # Priority 2: Try to parse the whole string as JSON (Strict JSON mode)
+        if not data:
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError:
+                pass
+                
+        # Priority 3: Looser regex search for any JSON-like block
+        if not data:
+            match = re.search(r'(\{.*\})', raw, re.DOTALL)
+            if match:
+                try:
+                    data = json.loads(match.group(1))
+                except json.JSONDecodeError:
+                    pass
+                    
+        # If all JSON parsing failed, handle manually or return error
+        if not data:
+             return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": "Failed parse"}
+
+    except Exception as e:
+        print(f"[llm] Fatal error during response parsing: {e}")
+        return {"function": raw, "updates": [], "header": "", "externs": "", "explanation": f"Parse Error: {e}"}
 
     result = {
         "function": clean_code_block(data.get("function_code", "")),

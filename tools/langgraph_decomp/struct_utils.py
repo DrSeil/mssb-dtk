@@ -14,6 +14,63 @@ class StructField:
     def __repr__(self):
         return f"StructField({self.type_str}, {self.name}, {hex(self.offset)}, {hex(self.size)})"
 
+def parse_symbols_txt(file_path: str) -> List[Dict]:
+    """Parse a project symbols.txt file.
+    
+    Format: name = section:address; // type:type size:size scope:scope
+    """
+    symbols = []
+    import os
+    if not os.path.exists(file_path):
+        return symbols
+        
+    pattern = re.compile(r'^(\w+)\s*=\s*(\w+):(0x[0-9A-Fa-f]+);\s*//\s*type:(\w+)(?:\s+size:(0x[0-9A-Fa-f]+))?')
+    
+    with open(file_path, 'r') as f:
+        for line in f:
+            match = pattern.match(line.strip())
+            if match:
+                name, section, addr_str, sym_type, size_str = match.groups()
+                addr = int(addr_str, 16)
+                size = int(size_str, 16) if size_str else 0
+                symbols.append({
+                    'name': name,
+                    'section': section,
+                    'addr': addr,
+                    'type': sym_type,
+                    'size': size
+                })
+    return symbols
+
+def get_sda_mapping(symbols: List[Dict]) -> Dict[str, List[Dict]]:
+    """Group symbols by their SDA base register (r13 or r2).
+    
+    In GameCube (GYQE01):
+    r13 (SDA) typically points to .sdata / .sbss (around 0x804D76C0)
+    r2 (SDA2) typically points to .sdata2 / .sbss2 (around 0x804D2AC0)
+    """
+    sda_r13_base = 0x804D76C0
+    sda_r2_base = 0x804D2AC0
+    
+    mapping = {'r13': [], 'r2': []}
+    
+    # Sections associated with r13
+    r13_sections = {'.sdata', '.sbss', 'sdata', 'sbss'}
+    # Sections associated with r2
+    r2_sections = {'.sdata2', '.sbss2', 'sdata2', 'sbss2'}
+    
+    for sym in symbols:
+        if sym['section'] in r13_sections:
+            offset = sym['addr'] - sda_r13_base
+            sym['sda_offset'] = offset
+            mapping['r13'].append(sym)
+        elif sym['section'] in r2_sections:
+            offset = sym['addr'] - sda_r2_base
+            sym['sda_offset'] = offset
+            mapping['r2'].append(sym)
+            
+    return mapping
+
 def parse_struct_fields(struct_def: str) -> List[StructField]:
     """Parse a struct definition into a list of StructField objects.
     

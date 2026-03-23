@@ -90,7 +90,11 @@ def main():
     )
     parser.add_argument(
         "--escalate-after", type=int, default=5,
-        help="Switch to cloud LLM after N iterations (default: 5)",
+        help="Switch to deep cloud LLM after N iterations (default: 5)",
+    )
+    parser.add_argument(
+        "--use-local", action="store_true",
+        help="Use local LLM (Ollama) instead of fast cloud LLM for initial attempts",
     )
     parser.add_argument(
         "--human-in-loop", action="store_true",
@@ -166,7 +170,9 @@ def main():
         "messages": [],
         "iterations": 0,
         "status": "running",
-        "llm_tier": "local",
+        "llm_tier": "fast",
+        "prefer_local": args.use_local,
+        "escalate": False,
         "debug": args.debug,
         "verbose": args.verbose,
         "explanation": "",
@@ -280,6 +286,7 @@ def _print_node_update(node_name, output, verbose, debug=False):
         parts.append(f"iter={iteration}")
 
     print(" | ".join(parts))
+    sys.stdout.flush()
 
     # Debug mode: show everything
     if debug:

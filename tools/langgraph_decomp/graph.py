@@ -29,14 +29,58 @@ MAX_ITERATIONS = 15
 ESCALATE_AFTER = 5
 
 
+import re
+
+def classifier_node(state: DecompState) -> dict:
+    """Analyze build/diff output to classify the error and provide hints."""
+    match_percent = state.get("match_percent", 0.0)
+    build_log = state.get("build_log", "")
+    feedback = state.get("feedback", "")
+    
+    classification = "Logic Mismatch"
+    hint = ""
+    
+    if build_log:
+        if "undefined identifier" in build_log:
+            classification = "Type Error"
+            hint = "One or more identifiers are undefined. Check for missing includes or extern declarations."
+        elif "redeclared" in build_log:
+            classification = "Type Error"
+            hint = "Symbol redeclaration detected. Check if a prototype in your header conflicts with a definition."
+        else:
+            classification = "Syntax Error"
+            hint = "The code failed to compile. Check for syntax errors or mismatched braces."
+    elif feedback:
+        # Analyze diff for specific patterns
+        if "r13" in feedback or "r2" in feedback:
+            classification = "SDA Access"
+            hint = "Mismatch in SDA (r13/r2) access detected. Verify symbol addresses and ensure they are within SDA boundaries."
+        elif "0x" in feedback and "(sp)" in feedback:
+            classification = "Stack Frame"
+            hint = "Mismatch in stack-relative offsets detected. Check local variable ordering and struct field sizes."
+        elif any(op in feedback for op in ["extsb", "extsh", "rlwinm", "clrlwi"]):
+            classification = "Register Allocation"
+            hint = "Mismatch in sign-extension or bit-masking. Check your casts and intermediate variable types."
+
+    print(f"[classifier] Category: {classification}")
+    
+    return {
+        "error_taxonomy": classification,
+        "messages": [("ai", f"Failure classified as: {classification}. Hint: {hint}")] if hint else []
+    }
+
 def check_progress(state: DecompState) -> str:
     """Conditional edge: decide whether to loop, commit, or stop."""
-    if state.get("match_percent", 0) >= 100.0:
+    if state.get("match_percent", 0) >= 100.0 or state.get("status") == "matched":
         return "committer"
     if state.get("iterations", 0) >= MAX_ITERATIONS:
+        print(f"[graph] Max iterations ({MAX_ITERATIONS}) reached.")
         return "summarizer"
     if state.get("status") == "error":
+        print(f"[graph] Hard error detected, stopping.")
         return "summarizer"
+    
+    # Otherwise, loop back for more refinement
     return "refactorer"
 
 
@@ -70,6 +114,7 @@ def build_graph(
     builder.add_node("decompiler", decompiler_node)
     builder.add_node("refactorer", _refactorer)
     builder.add_node("builder", builder_node)
+    builder.add_node("classifier", classifier_node)
     builder.add_node("committer", committer_node)
     builder.add_node("summarizer", summarizer_node)
 
@@ -78,9 +123,10 @@ def build_graph(
     builder.add_edge("source_finder", "decompiler")
     builder.add_edge("decompiler", "refactorer")
     builder.add_edge("refactorer", "builder")
+    builder.add_edge("builder", "classifier")
 
-    # Conditional edge from builder
-    builder.add_conditional_edges("builder", check_progress)
+    # Conditional edge from classifier (instead of builder)
+    builder.add_conditional_edges("classifier", check_progress)
 
     # Committer and summarizer flow
     builder.add_edge("committer", "summarizer")

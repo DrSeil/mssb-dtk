@@ -8,6 +8,8 @@ import sys
 import subprocess
 import json
 import re
+import tree_sitter_c as tsc
+from tree_sitter import Language, Parser
 
 # Add tools directory to path for imports
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +21,7 @@ import decomp_helper
 import gen_prompt
 import feedback_diff
 from . import struct_utils
+from . import masking
 from .state import merge_unique_symbols
 
 
@@ -70,6 +73,24 @@ def source_finder_node(state):
     # Read existing source file content
     src_path, src_content = gen_prompt.read_source_file(info)
 
+    # Detect stub
+    is_stub = False
+    if src_content:
+        # Match INCLUDE_ASM or an empty/stub function body
+        stub_patterns = [
+            rf"INCLUDE_ASM\(.*{func_name}.*\)",
+            rf"/[/*]\s*STUB\s*[*/]/",
+            rf"/{re.escape(func_name)}\b\s*\([^)]*\)\s*\{{\s*[/*\s]*STUB[*/\s]*\}}",
+            rf"{re.escape(func_name)}\b\s*\([^)]*\)\s*\{{\s*\}}" # Empty body
+        ]
+        for pattern in stub_patterns:
+            if re.search(pattern, src_content, re.DOTALL):
+                is_stub = True
+                break
+    else:
+        # No source content means we need to bootstrap anyway
+        is_stub = True
+
     # Find the ASM path for reference
     rel_path = os.path.splitext(source_file)[0] + ".s"
     if module:
@@ -78,7 +99,33 @@ def source_finder_node(state):
         asm_path = os.path.join(_root_dir, "build/GYQE01/asm", rel_path)
 
     print(f"[source_finder] Found: module={module}, unit={unit_name}, "
-          f"source={source_file}, asm_lines={len(asm_text.splitlines())}")
+          f"source={source_file}, is_stub={is_stub}, asm_lines={len(asm_text.splitlines())}")
+
+    # Phase 1.1: SDA Mapping
+    sda_info = ""
+    symbols_txt = os.path.join(_root_dir, "config/GYQE01", "symbols.txt")
+    if module:
+        module_symbols = os.path.join(_root_dir, "config/GYQE01", module, "symbols.txt")
+        if os.path.exists(module_symbols):
+            symbols_txt = module_symbols
+            
+    if os.path.exists(symbols_txt):
+        print(f"[source_finder] Parsing SDA symbols from {symbols_txt}...")
+        all_syms = struct_utils.parse_symbols_txt(symbols_txt)
+        mapping = struct_utils.get_sda_mapping(all_syms)
+        
+        sda_lines = ["SDA Mapping (Relative to base registers):"]
+        if mapping['r13']:
+            sda_lines.append("r13 (SDA):")
+            for s in mapping['r13'][:50]: # Cap to 50 symbols for token efficiency
+                sda_lines.append(f"  {s['name']} (type:{s['type']}) = r13 + {hex(s['sda_offset'])}")
+        if mapping['r2']:
+            sda_lines.append("r2 (SDA2):")
+            for s in mapping['r2'][:50]:
+                sda_lines.append(f"  {s['name']} (type:{s['type']}) = r2 + {hex(s['sda_offset'])}")
+        
+        if len(sda_lines) > 1:
+            sda_info = "\n".join(sda_lines)
 
     return {
         "module": module,
@@ -90,6 +137,8 @@ def source_finder_node(state):
         "header_path": header_path or "",
         "header_content": header_content or "",
         "ghidra_output": ghidra_output or "",
+        "is_stub": is_stub,
+        "sda_map": sda_info,
         "status": "running",
     }
 
@@ -99,8 +148,19 @@ def source_finder_node(state):
 # ---------------------------------------------------------------------------
 
 def decompiler_node(state):
-    """Run M2C to generate the initial C skeleton."""
+    """Run M2C to generate the initial C skeleton if starting from a stub."""
     func_name = state["function_name"]
+    is_stub = state.get("is_stub", False)
+    
+    # If not a stub and we have code already, don't overwrite it with M2C
+    if not is_stub and state.get("current_c_code"):
+        print(f"[decompiler] Skipping M2C bootstrap: function is not a stub.")
+        return {
+            "iterations": 0,
+            "attempts": [],
+            "messages": [("ai", f"Skipped M2C bootstrap for {func_name} (already has implementation).")],
+        }
+
     print(f"[decompiler] Running M2C for {func_name}...")
 
     # Use gen_prompt.run_m2c which wraps m2c_helper.py
@@ -200,11 +260,15 @@ def refactorer_node(state, escalate_after=5):
 
     func_name = state["function_name"]
     iteration = state.get("iterations", 0)
-    print(f"[refactorer] Iteration {iteration + 1} for {func_name}...")
+    escalate = state.get("escalate", False)
+    prefer_local = state.get("prefer_local", False)
+    print(f"[refactorer] Iteration {iteration + 1} for {func_name} (escalate={escalate}, prefer_local={prefer_local})...")
 
     prompt = ""
     try:
-        llm_result, tier, prompt, raw_response = invoke_refactor(state, escalate_after=escalate_after)
+        llm_result, tier, prompt, raw_response = invoke_refactor(
+            state, escalate_after=escalate_after, escalate=escalate, prefer_local=prefer_local
+        )
     except Exception as e:
         print(f"[refactorer] LLM error: {e}")
         # Try to at least get the prompt if possible
@@ -374,8 +438,37 @@ def builder_node(state):
 
     status_code = result.get("status", "error")
     match_percent = result.get("score", 0.0) * 100.0  # score is 0-1, we want 0-100
+    mismatch_count = result.get("mismatch_count", 0)
+    mismatch_summary = result.get("mismatch_summary", "")
     feedback_text = result.get("asm_diff", "")
     build_log = result.get("log", "")
+
+    # Progress tracking & Escalation detection
+    prev_match = state.get("match_percent", 0.0)
+    prev_mismatch = state.get("mismatch_count", 0)
+    escalate = state.get("escalate", False)
+
+    if status_code == "success":
+        # Check for stagnation or regression
+        # If mismatch count didn't decrease, or match percent didn't increase
+        if iteration > 0: # Only after the first real attempt
+            if mismatch_count >= prev_mismatch and match_percent <= prev_match:
+                print(f"[builder] Progress stagnant ({prev_mismatch} -> {mismatch_count} mismatches).")
+                # If stagnant for 2 consecutive turns (or just 1 for early escalation)
+                # For now, let's escalate immediately on first stagnation to be proactive
+                escalate = True
+            elif mismatch_count > prev_mismatch:
+                print(f"[builder] REGRESSION detected ({prev_mismatch} -> {mismatch_count} mismatches)!")
+                escalate = True
+
+        # Phase 0.2: Git Checkpointing
+        try:
+            print(f"[builder] Checkpointing iteration {iteration + 1}...")
+            subprocess.run(["git", "add", "-A"], cwd=_root_dir, check=True)
+            commit_msg = f"decomp {func_name}: iter {iteration + 1}, {match_percent:.1f}% match ({mismatch_count} mismatches)"
+            subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
+        except Exception as e:
+            print(f"[builder] Git checkpointing failed: {e}")
 
     # Determine build error vs diff feedback
     build_error = ""
@@ -383,6 +476,7 @@ def builder_node(state):
         build_error = build_log
         feedback_text = ""
         match_percent = 0.0
+        mismatch_count = prev_mismatch # Carry over last known count
     elif status_code == "error":
         build_error = build_log or result.get("message", "Unknown error")
 
@@ -390,7 +484,9 @@ def builder_node(state):
     attempt = {
         "c_code": current_code,
         "match_percent": match_percent,
-        "feedback": feedback_text,
+        "mismatch_count": mismatch_count,
+        "mismatch_summary": mismatch_summary,
+        "feedback": feedback_text, # Keep full diff for logs
         "current_asm": current_asm,
         "build_error": build_error,
         "struct_updates": state.get("struct_updates", []),
@@ -403,19 +499,23 @@ def builder_node(state):
     elif status_code == "error":
         new_status = "error"
 
-    print(f"[builder] Result: {match_percent:.1f}% match, status={new_status}")
+    print(f"[builder] Result: {match_percent:.1f}% match ({mismatch_count} mismatches), status={new_status}, escalate={escalate}")
 
     res = {
-        "feedback": feedback_text,
+        "feedback": mismatch_summary or feedback_text, # Use efficient summary for LLM
         "build_log": build_error,
         "match_percent": match_percent,
+        "mismatch_count": mismatch_count,
+        "prev_match_percent": prev_match,
+        "prev_mismatch_count": prev_mismatch,
+        "escalate": escalate,
         "current_asm": current_asm,
         "iterations": iteration + 1,
         "attempts": state.get("attempts", []) + [attempt],
         "status": new_status,
         "messages": [("ai",
-            f"Iteration {iteration + 1}: {match_percent:.1f}% match. "
-            f"Status: {new_status}."
+            f"Iteration {iteration + 1}: {match_percent:.1f}% match ({mismatch_count} mismatches). "
+            f"Status: {new_status}. Escalate: {escalate}"
         )],
     }
 
@@ -749,17 +849,29 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
 
     # Backup originals
     backups = {}
+    masking.clear_registry()
+    
     for p in [source_path, header_path, externs_path]:
         if p and os.path.exists(p):
             with open(p, "r") as f:
-                backups[p] = f.read()
+                content = f.read()
+                backups[p] = content
+                # Mask the original file before we do anything to it
+                masked = masking.mask_text(content)
+                if masked != content:
+                    _log(f"[builder] Masked vendor syntax in {os.path.basename(p)}")
+                    with open(p, "w") as f_masked:
+                        f_masked.write(masked)
 
     try:
         # Write the C code to the source file
         print(f"[builder] === CODE BEING WRITTEN TO {source_path} ===")
-        print(c_code)
+        # Mask the incoming code from LLM too, in case it includes vendor syntax
+        c_code_masked = masking.mask_text(c_code)
+        print(c_code_masked)
         print(f"[builder] === END CODE ===")
-        if not _commit_code_to_source(source_path, func_name, c_code):
+        
+        if not _commit_code_to_source(source_path, func_name, c_code_masked):
             return {"status": "error", "log": f"Could not find {func_name} stub in {source_path}"}
 
         # Apply struct modifications using struct_utils
@@ -851,6 +963,16 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     # Fallback for complex lines
                     _append_to_file_if_missing(externs_path, line, backups)
 
+        # Unmask everything before build
+        for p in [source_path, header_path, externs_path]:
+            if p and os.path.exists(p):
+                with open(p, "r") as f:
+                    masked_content = f.read()
+                unmasked = masking.unmask_text(masked_content)
+                if unmasked != masked_content:
+                    with open(p, "w") as f:
+                        f.write(unmasked)
+
         # Build
         build_proc = subprocess.run(
             ["ninja"], capture_output=True, text=True, timeout=120,
@@ -862,6 +984,17 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             combined_error_output = (build_proc.stdout or "") + (build_proc.stderr or "")
             if _attempt_auto_fix(combined_error_output, source_path, backups, _log, fixes_acc):
                 _log("[builder] Re-running build after auto-fix...")
+                
+                # Unmask AGAIN after auto-fix
+                for p in [source_path, header_path, externs_path]:
+                    if p and os.path.exists(p):
+                        with open(p, "r") as f:
+                            masked_content = f.read()
+                        unmasked = masking.unmask_text(masked_content)
+                        if unmasked != masked_content:
+                            with open(p, "w") as f:
+                                f.write(unmasked)
+
                 build_proc = subprocess.run(
                     ["ninja"], capture_output=True, text=True, timeout=120,
                     cwd=_root_dir,
@@ -890,12 +1023,18 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
 
         data = json.loads(obj_proc.stdout)
 
-        # Extract match percent
+        # Extract match percent and mismatch count
         score = 0.0
+        mismatch_count = 0
         if "right" in data and "symbols" in data["right"]:
             for sym in data["right"]["symbols"]:
                 if sym.get("name") == func_name:
                     score = sym.get("match_percent", 0.0) / 100.0
+                    
+                    # Count mismatches
+                    for inst in sym.get("instructions", []):
+                        if inst.get("diff_kind") != "None":
+                            mismatch_count += 1
                     break
 
         # Get textual diff via feedback_diff
@@ -916,9 +1055,14 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         )
         current_asm = cur_asm_proc.stdout or ""
 
+        # Phase 1.3: Token-Efficient JSON Summarization
+        mismatch_summary = feedback_diff.summarize_objdiff_json(data, func_name)
+
         return {
             "status": "success",
             "score": score,
+            "mismatch_count": mismatch_count,
+            "mismatch_summary": mismatch_summary,
             "asm_diff": asm_diff,
             "current_asm": current_asm,
             "unit": unit_name,
@@ -1037,10 +1181,56 @@ def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=No
 
 
 def _commit_code_to_source(src_path, func_name, c_code):
-    """Temporarily replace a function body in the source file."""
+    """Temporarily replace a function body in the source file using Tree-Sitter."""
     with open(src_path, "r") as f:
         content = f.read()
 
+    try:
+        # Phase 2.2: Tree-Sitter Integration
+        C_LANGUAGE = Language(tsc.language())
+        parser = Parser(C_LANGUAGE)
+        tree = parser.parse(bytes(content, "utf8"))
+        
+        # Query to find function definition by name
+        # (function_definition 
+        #   declarator: (function_declarator 
+        #     declarator: (identifier) @name))
+        query = C_LANGUAGE.query("""
+            (function_definition
+                declarator: (function_declarator
+                    declarator: (identifier) @name)) @func
+        """)
+        
+        captures = query.captures(tree.root_node)
+        target_node = None
+        for node, tag in captures:
+            if tag == 'name' and node.text.decode('utf8') == func_name:
+                # The @func node is the parent in the captures list
+                # In newer tree-sitter versions, captures is a list of (node, tag)
+                # We need to find the function_definition that contains this name
+                parent = node.parent
+                while parent and parent.type != 'function_definition':
+                    parent = parent.parent
+                target_node = parent
+                break
+        
+        if target_node:
+            start_byte = target_node.start_byte
+            end_byte = target_node.end_byte
+            
+            new_content = (
+                content[:start_byte] + 
+                "\n" + c_code.strip() + 
+                content[end_byte:]
+            )
+            with open(src_path, "w") as f:
+                f.write(new_content)
+            return True
+            
+    except Exception as e:
+        print(f"[builder] Tree-Sitter error: {e}, falling back to regex")
+
+    # Regex Fallback
     # Pattern to match function signature and its body
     pattern = (
         rf"(?m)^[ \t]*[^\n;\(]+?\b{re.escape(func_name)}\b"
