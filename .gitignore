@@ -46,3 +46,5 @@ docs/ghidra_annotations.json
 
 # Environment variables (API keys)
 .env
+tags
+decomp_debug.log
