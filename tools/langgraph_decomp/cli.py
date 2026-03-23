@@ -159,6 +159,7 @@ def main():
         "unit_name": "",
         "header_path": "",
         "header_content": "",
+        "original_branch": "main",
         "current_c_code": "",
         "externs": "",
         "local_headers": "",

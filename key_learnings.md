@@ -53,3 +53,6 @@
 - **Strategic Interleaving**: To control which global gets which register (e.g., `r3` vs `r4`), it's often necessary to separate declarations from assignments and interleave them (e.g., `void* v1; u8 v2 = global1; v1 = global2;`). This forces the compiler to see `global1`'s address first, assigning it to a lower register like `r3` before it sees `global2`.
 - **Register/ASM Tag Ineffectiveness**: The `register` keyword and `asm("rN")` tags are often ignored or overridden by MWCC 2.6's optimizer and scheduler. They should not be used as a primary solution for register mismatches; instead, focus on restructuring the C code's variable initialization and usage patterns.
 - **OR-ing Condition Sensitivity**: In functions with multiple `if` conditions joined by `||`, the compiler's choice of `bne` (if any condition is true) vs `beq` (if all conditions are false) can drastically affect register reuse and instruction hoisting.
+
+### Learnings from fn_3_119854
+*   When indexing into a global array, the compiler may truncate the index to a `u8` if it can prove the upper bound of the index is small. This can be observed even when the index is a `u32` variable.

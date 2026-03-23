@@ -186,6 +186,10 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         else:
             model = os.environ.get("GEMINI_MODEL_FAST", "gemini-2.0-flash")
 
+        # Clean "export " prefix if it exists (happens with some .env files)
+        if model.startswith("export "):
+            model = model.replace("export ", "").split("=")[-1].strip()
+
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY environment variable is required for Gemini")
@@ -204,6 +208,10 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
             model = os.environ.get("OPENROUTER_MODEL_DEEP", "anthropic/claude-3.5-sonnet")
         else:
             model = os.environ.get("OPENROUTER_MODEL_FAST", "google/gemini-2.0-flash-001")
+
+        # Clean "export " prefix
+        if model.startswith("export "):
+            model = model.replace("export ", "").split("=")[-1].strip()
 
         api_key = os.environ.get("OPENROUTER_API_KEY")
         if not api_key:

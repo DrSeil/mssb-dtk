@@ -99,6 +99,7 @@ class DecompState(TypedDict):
     unit_name: str              # objdiff unit name
     header_path: str            # include/game/rep_3090.h
     header_content: str         # current header file content
+    original_branch: str        # the branch we started from
 
     # --- Code being iterated ---
     current_c_code: str         # latest C code attempt
