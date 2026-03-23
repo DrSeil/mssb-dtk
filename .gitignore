@@ -37,6 +37,7 @@ report.json
 logs/**
 nonmatching/**
 attempts/**
+.venv/**
 
 tools/aidecomp/.venv/**
 

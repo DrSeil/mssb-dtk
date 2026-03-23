@@ -34,6 +34,21 @@ def source_finder_node(state):
     func_name = state["function_name"]
     print(f"[source_finder] Resolving {func_name}...")
 
+    # Phase 0.4: Isolated Branching
+    original_branch = "main"
+    try:
+        res = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, cwd=_root_dir)
+        original_branch = res.stdout.strip()
+        
+        # Create and switch to temporary branch
+        tmp_branch = f"decomp/{func_name}"
+        print(f"[source_finder] Creating/switching to branch {tmp_branch} (from {original_branch})...")
+        subprocess.run(["git", "checkout", "-b", tmp_branch], capture_output=True, cwd=_root_dir)
+        # If it already exists, just switch to it
+        subprocess.run(["git", "checkout", tmp_branch], capture_output=True, cwd=_root_dir)
+    except Exception as e:
+        print(f"[source_finder] Git branching failed: {e}")
+
     # Locate function in symbols
     info = gen_prompt.locate_function(func_name)
     if not info:
@@ -139,6 +154,7 @@ def source_finder_node(state):
         "ghidra_output": ghidra_output or "",
         "is_stub": is_stub,
         "sda_map": sda_info,
+        "original_branch": original_branch,
         "status": "running",
     }
 
@@ -1501,6 +1517,29 @@ def committer_node(state):
             )
 
         print(f"[committer] Successfully committed {func_name} to {source_path}")
+
+        # Phase 0.4: Isolated Branching - Merge back to original branch
+        original_branch = state.get("original_branch")
+        if original_branch:
+            try:
+                tmp_branch = f"decomp/{func_name}"
+                print(f"[committer] Merging {tmp_branch} back to {original_branch}...")
+                
+                # Final commit on temp branch
+                subprocess.run(["git", "add", "-A"], cwd=_root_dir)
+                subprocess.run(["git", "commit", "-m", f"matched {func_name}"], cwd=_root_dir)
+                
+                # Switch back and merge
+                subprocess.run(["git", "checkout", original_branch], cwd=_root_dir, check=True)
+                subprocess.run(["git", "merge", "--squash", tmp_branch], cwd=_root_dir, check=True)
+                subprocess.run(["git", "commit", "-m", f"matched {func_name}"], cwd=_root_dir, check=True)
+                
+                # Delete temp branch
+                subprocess.run(["git", "branch", "-D", tmp_branch], cwd=_root_dir)
+                print(f"[committer] Successfully merged and switched back to {original_branch}")
+            except Exception as e:
+                print(f"[committer] Git merge failed: {e}")
+
         return {
             "status": "matched",
             "messages": [("ai", f"MATCHED! Committed {func_name} to {source_path}.")],
