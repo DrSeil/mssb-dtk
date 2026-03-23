@@ -2,67 +2,67 @@
 ============================================================
 LangGraph Decompilation Loop
 ============================================================
-  Function:       fn_3_119854
+  Function:       fn_3_21C7C
   Max iterations: 15
   Escalate after: 5
   Human-in-loop:  False
 ============================================================
 
-[source_finder] Resolving fn_3_119854...
-[source_finder] Creating/switching to branch decomp/fn_3_119854 (from decomp/fn_3_119854)...
-[source_finder] Found: module=game, unit=game/game/rep_3310, source=game/rep_3310.c, is_stub=False, asm_lines=12
+[source_finder] Resolving fn_3_21C7C...
+[source_finder] Creating/switching to branch decomp/fn_3_21C7C (from decomp/fn_3_21C7C)...
+[source_finder] Found: module=game, unit=game/game/gap_219CC, source=game/gap_219CC.c, is_stub=False, asm_lines=7
 [source_finder] Parsing SDA symbols from /home/michael/Desktop/mssb-dtk/config/GYQE01/game/symbols.txt...
 🔍 [source_finder] | status=running
-[decompiler] Running M2C for fn_3_119854...
-[decompiler] M2C output: 178 chars, body: 178 chars
+[decompiler] Running M2C for fn_3_21C7C...
+[decompiler] M2C output: 90 chars, body: 90 chars
 ⚙️  [decompiler] | iter=0
-[refactorer] Iteration 1 for fn_3_119854 (escalate=False, prefer_local=False)...
+[refactorer] Iteration 1 for fn_3_21C7C (escalate=False, prefer_local=False)...
 [LLM] Invoking fast LLM (escalate=False)...
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
-
-
 {
-  "explanation": "The function returns the index-th element of the float array lbl_3_data_22650, after clamping the index to a maximum of 2 (if index > 2, it is set to 2). The calculation lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC) simplifies to lbl_3_data_22650 + var_r3*4 because var_r3*4 is already a multiple of 4, so the mask does nothing. Thus the function returns lbl_3_data_22650[index].",
-  "function_code": "f32 fn_3_119854(u32 index) {\n    u32 var_r3;\n    var_r3 = index;\n    if ((u8) var_r3 > 2U) {\n        var_r3 = 2;\n    }\n    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));\n}",
-  "struct_modifications": [],
-  "header_additions": "",
+  "explanation": "The assembly indicates that `lbl_3_common_bss_1323C` is being loaded into `r5`, then `lwz` loads a value from that address into `r0`. This `r0` value is then added to `arg0` (which is in `r3` after the `add` instruction). Finally, `arg1` (in `r4`) is stored at an offset of `0x261` from the result of the addition. The Ghidra decompilation suggests `cameraStruct_` is involved, but the assembly directly uses `lbl_3_common_bss_1323C`. The current C code attempts to use `lbl_3_common_bss_1323C` as a base pointer, but the assembly shows it's being loaded and then added to `arg0`. The `lwz` instruction implies `lbl_3_common_bss_1323C` is a pointer to a structure, and the value loaded from it is used as an offset base. The `stb` instruction stores `arg1` at `0x261` relative to the calculated address. The provided header defines `lbl_3_common_bss_1323C` as `s32`, which is likely incorrect given it's being dereferenced. It should be a pointer to a structure that has a field at offset `0x261`. The `Bss1323CItem` struct in the header has a field `field_0x261` at offset `0x261`. The assembly `lwz r0, lbl_3_common_bss_1323C@l(r5)` suggests `lbl_3_common_bss_1323C` is not directly a pointer but a variable whose address is loaded, and then a value is loaded from that address. The `add r3, r0, r3` instruction means `r3` (which holds `arg0`) is added to `r0` (the value loaded from `lbl_3_common_bss_1323C`). This implies `lbl_3_common_bss_1323C` is a base address, and `arg0` is an offset from that base. The `stb r4, 0x261(r3)` stores `arg1` (in `r4`) at offset `0x261` from the calculated address in `r3`. Therefore, the C code should reflect `*(u8*)((s32)lbl_3_common_bss_1323C + arg0 + 0x261) = arg1;` or, using the struct, `((Bss1323CItem*)lbl_3_common_bss_1323C)[arg0].field_0x261 = arg1;`. However, the assembly `lis r5, lbl_3_common_bss_1323C@ha` and `lwz r0, lbl_3_common_bss_1323C@l(r5)` indicates `lbl_3_common_bss_1323C` is a global variable, not a pointer itself. The value loaded into `r0` is then added to `arg0` (in `r3`). This means `lbl_3_common_bss_1323C` is likely a base address for an array of `Bss1323CItem`s. The `arg0` is the index into this array. The `stb r4, 0x261(r3)` stores `arg1` (in `r4`) at offset `0x261` from the calculated address. This matches the `field_0x261` in `Bss1323CItem`. The `lbl_3_common_bss_1323C` should be declared as a pointer to `Bss1323CItem` in the header, and the C code should use array indexing. The current header declares `lbl_3_common_bss_1323C` as `s32`, which is incorrect for a base address of a struct array. It should be `Bss1323CItem*` or similar.",
+  "function_code": "void fn_3_21C7C(s32 arg0, u8 arg1) {\n    ((Bss1323CItem*)&lbl_3_common_bss_1323C)[arg0].field_0x261 = arg1;\n}",
+  "struct_modifications": [
+    {
+      "type_name": "Bss1323CItem",
+      "actions": [
+        {
+          "action": "add_field",
+          "type": "u8",
+          "name": "field_0x261",
+          "offset": "0x261"
+        }
+      ]
+    }
+  ],
+  "header_additions": "extern Bss1323CItem lbl_3_common_bss_1323C;\n",
   "extern_declarations": ""
 }
 [LLM] Stream complete.
-[refactorer] Got 177 chars function, 0 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] Got 109 chars function, 1 struct modifications, 43 chars header, 0 chars externs from fast LLM
 [refactorer] === LLM FUNCTION ===
-f32 fn_3_119854(u32 index) {
-    u32 var_r3;
-    var_r3 = index;
-    if ((u8) var_r3 > 2U) {
-        var_r3 = 2;
-    }
-    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));
+void fn_3_21C7C(s32 arg0, u8 arg1) {
+    ((Bss1323CItem*)&lbl_3_common_bss_1323C)[arg0].field_0x261 = arg1;
 }
 [refactorer] === END LLM FUNCTION ===
+[refactorer] === LLM STRUCT UPDATES (1) ===
+  Type: Bss1323CItem
+    - {"action": "add_field", "type": "u8", "name": "field_0x261", "offset": "0x261"}
+[refactorer] === END STRUCT UPDATES ===
+[refactorer] === LLM HEADER ADDITIONS ===
+extern Bss1323CItem lbl_3_common_bss_1323C;
+[refactorer] === END HEADER ===
 🤖 [refactorer] | llm=fast
-[builder] Build + score iteration 1 for fn_3_119854...
-[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/rep_3310.c ===
-f32 fn_3_119854(u32 index) {
-    u32 var_r3;
-    var_r3 = index;
-    if ((u8) var_r3 > 2U) {
-        var_r3 = 2;
-    }
-    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));
+[builder] Build + score iteration 1 for fn_3_21C7C...
+[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_219CC.c ===
+void fn_3_21C7C(s32 arg0, u8 arg1) {
+    ((Bss1323CItem*)&lbl_3_common_bss_1323C)[arg0].field_0x261 = arg1;
 }
 [builder] === END CODE ===
+[builder] Applying struct modifications for Bss1323CItem via struct_utils
+[builder] WARNING: Could not find file for Bss1323CItem
+[builder] Applying header additions to /home/michael/Desktop/mssb-dtk/include/game/gap_219CC.h
+[builder] Updating extern lbl_3_common_bss_1323C in gap_219CC.h
+[builder] Redefining lbl_3_common_bss_1323C in gap_219CC.h
 [builder] Checkpointing iteration 1...
-[decomp/fn_3_119854 a205598] decomp fn_3_119854: iter 1, 99.4% match (9 mismatches)
- 4 files changed, 6299 insertions(+), 36 deletions(-)
- create mode 100644 tags
-[builder] Result: 99.4% match (9 mismatches), status=running, escalate=False
-[builder] Logged attempt to /home/michael/Desktop/mssb-dtk/logs/decomp/fn_3_119854/attempt_1.log
-🔨 [builder] | match=99.4% | status=running | iter=1
-[classifier] Category: Logic Mismatch
-   [classifier]
-[refactorer] Iteration 2 for fn_3_119854 (escalate=False, prefer_local=False)...
-[LLM] Invoking fast LLM (escalate=False)...
-[LLM] Requesting stream...
-[LLM] Stream iterator obtained. Waiting for first chunk...

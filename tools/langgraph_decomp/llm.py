@@ -62,6 +62,9 @@ You receive:
 6. The current header file for context.
 7. The compiled assembly resulting from your current C code attempt.
 
+When suggesting `extern_declarations` or `header_additions`, assume that the relevant module's header (e.g., `game/rep_xxxx.h`) is already included where appropriate. You should only declare new items that are not already present in an included header.
+If a symbol is already defined in a header that is included by the current source file, do NOT redeclare it. Focus on incremental updates to existing definitions if necessary.
+
 RESPOND ONLY WITH A VALID JSON OBJECT. Do not include any text outside the JSON.
 The JSON schema must be:
 {{

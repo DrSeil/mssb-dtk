@@ -1269,11 +1269,11 @@ def _commit_code_to_source(src_path, func_name, c_code):
     return True
 
 
-def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
-    """Append lines to a file if they are not already present.
+def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=print):
+    """Append blocks of code to a file if they are not already present.
 
-    Each line from headers is checked individually.
-    Only lines not already in the file are appended.
+    Attempts to parse multi-line blocks (structs, functions) and treat them as units.
+    Only blocks not already in the file are appended.
     """
     file_path = os.path.join(_root_dir, file_path) if not os.path.isabs(file_path) else file_path
 
@@ -1285,13 +1285,30 @@ def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
     with open(file_path, "r") as f:
         existing_content = f.read()
 
-    lines_to_add = []
-    for line in headers.strip().splitlines():
+    # Split into logical blocks
+    # A block is:
+    # 1. A preprocessor directive (#include, etc)
+    # 2. A struct/enum/union definition (multi-line)
+    # 3. A function prototype (can be multi-line but usually ends in ;)
+    # 4. An extern declaration
+    
+    # Simple regex-based block splitting
+    blocks = []
+    
+    # Extract blocks that look like structs/enums
+    # Pattern: typedef struct { ... } Name; or struct Name { ... };
+    struct_pattern = r'(?s)(?:typedef\s+)?(?:struct|enum|union)\s+\w*\s*\{.*?\}(?:\s*\w+)?\s*;'
+    for match in re.finditer(struct_pattern, content_to_add):
+        blocks.append(match.group(0).strip())
+        content_to_add = content_to_add.replace(match.group(0), "")
+
+    # Extract other single-line or semicolon-terminated blocks
+    for line in content_to_add.strip().splitlines():
         line = line.strip()
         if not line:
             continue
-            
-        # EXTRA SAFETY: skip prompt placeholders that might have leaked
+        
+        # EXTRA SAFETY: skip prompt placeholders
         placeholders = [
             "Extern variables to ADD",
             "New prototypes or structs to ADD to the header",
@@ -1305,99 +1322,78 @@ def _append_to_file_if_missing(file_path, headers, backups=None, _log=print):
         # Skip comments
         if line.startswith("//") or line.startswith("/*"):
             continue
+            
+        blocks.append(line)
 
+    blocks_to_add = []
+    for block in blocks:
         # Detect extern redefinitions
-        # Pattern: extern Type Symbol; or extern Type Symbol[];
-        extern_match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
+        extern_match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
         if extern_match:
             new_type = extern_match.group(1).strip()
             symbol_name = extern_match.group(2).strip()
-
-            # Search existing content for this symbol name
-            # Pattern: extern ... Symbol ... ;
-            # Use a regex that is slightly more robust than simple string search
             existing_extern_pattern = rf'(?m)^extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
             existing_match = re.search(existing_extern_pattern, existing_content)
 
             if existing_match:
                 existing_line = existing_match.group(0)
-                # If the line is exactly the same, skip adding it
-                if existing_line.strip() == line:
+                if existing_line.strip() == block:
                     continue
-
-                # --- SYMBOL PROTECTION ---
-                # Detect the types in both lines
-                # Pattern: extern Type Symbol ... ;
                 existing_type_match = re.match(r'^extern\s+([\w\s\*]+?)\s+\w+', existing_line)
                 if existing_type_match:
                     existing_type = existing_type_match.group(1).strip()
-                    # If the existing type is already something specific (not 'u32' or '?'),
-                    # and the new type is just 'u32', DO NOT REDEFINE.
                     if existing_type not in ['u32', '?', 'void'] and new_type in ['u32', '?', 'void']:
-                        _log(f"[builder] Protecting existing type '{existing_type}' for {symbol_name} (ignoring '{new_type}')")
+                        _log(f"[builder] Protecting existing type '{existing_type}' for {symbol_name}")
                         continue
-
-                # If the symbol matches but the line is different, replace it
-                _log(f"[builder] Redefining {symbol_name} in {os.path.basename(file_path)}: {existing_line.strip()} -> {line.strip()}")
+                _log(f"[builder] Redefining {symbol_name} in {os.path.basename(file_path)}")
                 existing_content = (
                     existing_content[:existing_match.start()]
-                    + line
+                    + block
                     + existing_content[existing_match.end():]
                 )
                 continue
 
-        # Detect function redefinitions (prototypes)
-        # Pattern: Type func(args);
-        func_match = re.match(r'^([\w\s\*]+?)\s+(\w+)\s*\((.*?)\)\s*;', line)
+        # Detect function redefinitions
+        func_match = re.match(r'^([\w\s\*]+?)\s+(\w+)\s*\((.*?)\)\s*;', block)
         if func_match:
-            new_ret_type = func_match.group(1).strip()
             func_name = func_match.group(2).strip()
-            new_args = func_match.group(3).strip()
-
-            # Search existing content for this function name
-            # Pattern: Type Symbol(args);
             existing_func_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(func_name)}\s*\(.*?\)\s*;?'
             existing_match = re.search(existing_func_pattern, existing_content)
             if existing_match:
-                existing_line = existing_match.group(0)
-                if existing_line.strip().replace(' ', '') == line.replace(' ', ''):
+                if existing_match.group(0).strip().replace(' ', '') == block.replace(' ', ''):
                     continue
-
-                # Replacement logic: If NEW has args and OLD is (void) or (), definitely replace.
-                # If both have args, replace if they differ.
-                _log(f"[builder] Updating function prototype {func_name} in {os.path.basename(file_path)}: {existing_line.strip()} -> {line.strip()}")
+                _log(f"[builder] Updating prototype {func_name} in {os.path.basename(file_path)}")
                 existing_content = (
                     existing_content[:existing_match.start()]
-                    + line
+                    + block
                     + existing_content[existing_match.end():]
                 )
                 continue
 
-
-        # Check if this exact line already exists
-        if line in existing_content:
+        # For structs and other blocks, check for existence
+        # We use a normalized search (ignoring whitespace differences)
+        normalized_block = re.sub(r'\s+', '', block)
+        normalized_existing = re.sub(r'\s+', '', existing_content)
+        if normalized_block in normalized_existing:
             continue
-        lines_to_add.append(line)
+            
+        blocks_to_add.append(block)
 
-    if lines_to_add:
-        # Find the right place to insert — before the last #endif if present,
-        # otherwise at the end
+    if blocks_to_add:
         if "#endif" in existing_content:
-            # Insert before the last #endif
             last_endif = existing_content.rfind("#endif")
             new_content = (
                 existing_content[:last_endif]
-                + "\n" + "\n".join(lines_to_add) + "\n\n"
+                + "\n" + "\n\n".join(blocks_to_add) + "\n\n"
                 + existing_content[last_endif:]
             )
         else:
-            new_content = existing_content.rstrip() + "\n\n" + "\n".join(lines_to_add) + "\n"
+            new_content = existing_content.rstrip() + "\n\n" + "\n\n".join(blocks_to_add) + "\n"
 
         with open(file_path, "w") as f:
             f.write(new_content)
-        _log(f"[builder] Added {len(lines_to_add)} lines to {os.path.basename(file_path)}")
+        _log(f"[builder] Added {len(blocks_to_add)} blocks to {os.path.basename(file_path)}")
     elif existing_content != (backups.get(file_path) if backups else None):
-        # If we replaced lines but didn't add any new ones, we still need to write
         with open(file_path, "w") as f:
             f.write(existing_content)
     else:
