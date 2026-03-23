@@ -48,3 +48,4 @@ docs/ghidra_annotations.json
 .env
 tags
 decomp_debug.log
+tools/decomp-permuter
