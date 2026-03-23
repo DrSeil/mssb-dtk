@@ -181,6 +181,8 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
     """Create a cloud LLM for attempts (fast cloud or deep cloud)."""
     provider = os.environ.get("LLM_CLOUD_PROVIDER", "gemini").lower()
 
+    _log(f"DEBUG: LLM_CLOUD_PROVIDER from env: {provider}")
+
     if provider == "gemini" or provider == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -192,7 +194,8 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         # Clean "export " prefix if it exists (happens with some .env files)
         if model.startswith("export "):
             model = model.replace("export ", "").split("=")[-1].strip()
-
+        
+        _log(f"DEBUG: Gemini Model (tier={tier}): {model}")
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY environment variable is required for Gemini")
@@ -416,14 +419,17 @@ def resolve_symbol_definitions(state: dict) -> str:
     symbols = set()
     types_to_resolve = set()
 
-    # Extract from M2C output
+    # Extract from M2C output and state
     m2c = state.get("m2c_output", "")
     current = state.get("current_c_code", "")
+    local_headers = state.get("local_headers", "")
+    extern_state = state.get("externs", "")
     asm = state.get("asm_text", "")
-    combined_text = m2c + "\n" + current
+    
+    combined_text = m2c + "\n" + current + "\n" + local_headers + "\n" + extern_state
 
-    # Find extern references: "extern TYPE name;" patterns in M2C
-    for match in re.finditer(r'extern\s+([\w\s\*]+?)\s+(\w+)\s*;', combined_text):
+    # Find extern references: "extern TYPE name;" patterns
+    for match in re.finditer(r'extern\s+([\w\s\*]+?)\s+(\w+)\s*[;\[]', combined_text):
         type_name = match.group(1).strip()
         var_name = match.group(2).strip()
         symbols.add(var_name)
@@ -575,7 +581,19 @@ def resolve_symbol_definitions(state: dict) -> str:
             return
         resolved_types.add(type_name)
 
-        # Search both .h and .c files for struct definitions
+        # 1. Search local_headers FIRST
+        if local_headers:
+            block = _extract_struct_block(None, type_name, content=local_headers)
+            if block:
+                resolved_defs.append(("[LOCAL STATE]", block))
+                # Find nested types in this block
+                for nested in re.finditer(r'\b([A-Z]\w+)\s+\w+', block):
+                    nested_type = nested.group(1)
+                    if nested_type not in ('typedef', 'struct', 'enum', 'union', 'extern', 'void', 'BOOL', 'Vec', 'Mtx', 'TRUE', 'FALSE', 'NULL'):
+                        _resolve_type(nested_type, depth + 1)
+                return
+
+        # 2. Search both .h and .c files for struct definitions
         lines = _grep_symbol(type_name, pattern=f"struct _*{type_name}")
         if not lines:
             lines = _grep_symbol(type_name, pattern=f"typedef.*{type_name}")
@@ -687,13 +705,14 @@ def resolve_symbol_definitions(state: dict) -> str:
     return "\n".join(sections)
 
 
-def _extract_struct_block(filepath, type_name):
-    """Extract a full struct/typedef block from a file by type name."""
-    try:
-        with open(filepath, "r") as f:
-            content = f.read()
-    except Exception:
-        return None
+def _extract_struct_block(filepath, type_name, content=None):
+    """Extract a full struct/typedef block from a file or string by type name."""
+    if content is None:
+        try:
+            with open(filepath, "r") as f:
+                content = f.read()
+        except Exception:
+            return None
 
     import re
 
@@ -798,6 +817,14 @@ def build_refactor_prompt(state: dict, escalate: bool = False) -> str:
                 else:
                     for upd in updates:
                         sections.append(f"@@@ {upd['type_name']}\n{upd['definition']}\n@@@ END\n")
+
+            header_adds = attempt.get("header_additions", "")
+            if header_adds:
+                sections.append(f"**Header Additions Tried:**\n```c\n{header_adds.strip()}\n```\n")
+
+            extern_adds = attempt.get("extern_declarations", "")
+            if extern_adds:
+                sections.append(f"**Extern Declarations Tried:**\n```c\n{extern_adds.strip()}\n```\n")
 
             sections.append(f"**Function Code Tried:**\n```c\n{attempt.get('c_code', '').strip()}\n```\n")
 

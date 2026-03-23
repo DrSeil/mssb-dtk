@@ -480,15 +480,6 @@ def builder_node(state):
                 print(f"[builder] REGRESSION detected ({prev_mismatch} -> {mismatch_count} mismatches)!")
                 escalate = True
 
-        # Phase 0.2: Git Checkpointing
-        try:
-            print(f"[builder] Checkpointing iteration {iteration + 1}...")
-            subprocess.run(["git", "add", "-A"], cwd=_root_dir, check=True)
-            commit_msg = f"decomp {func_name}: iter {iteration + 1}, {match_percent:.1f}% match ({mismatch_count} mismatches)"
-            subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
-        except Exception as e:
-            print(f"[builder] Git checkpointing failed: {e}")
-
     # Determine build error vs diff feedback
     build_error = ""
     if status_code in ("build_error", "build_timeout"):
@@ -509,6 +500,8 @@ def builder_node(state):
         "current_asm": current_asm,
         "build_error": build_error,
         "struct_updates": state.get("struct_updates", []),
+        "header_additions": state.get("local_headers", ""),
+        "extern_declarations": state.get("externs", ""),
         "process_log": result.get("process_log", []),
     }
 
@@ -824,12 +817,21 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                             h_decl_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(ident)}\s*\(.*?\)\s*;?'
                             h_match = re.search(h_decl_pattern, h_content)
                             if h_match:
-                                _log(f"[builder] Rectifying header {os.path.basename(header_site)}: {h_match.group(0).strip()} -> {new_decl}")
-                                fixes_acc.append({"type": "header_rectification", "file": header_site, "content": new_decl})
-                                h_content = h_content[:h_match.start()] + new_decl + h_content[h_match.end():]
-                                with open(header_site, "w") as f:
-                                    f.write(h_content)
-                                fixed_something = True
+                                # Check if the return types are different
+                                header_ret_type = h_match.group(1).strip()
+                                src_ret_type = src_decl_match.group(1).strip()
+                                if header_ret_type != src_ret_type:
+                                    _log(f"[builder] Auto-fixing return type mismatch for {ident}: header has '{header_ret_type}', source has '{src_ret_type}'. Updating source.")
+                                    # We need to replace the return type in the source file
+                                    src_content = re.sub(rf'(?m)^{re.escape(src_ret_type)}\s+{re.escape(ident)}\s*\((.*?)\)\s*\{{', f"{header_ret_type} {ident}({src_decl_match.group(2)}) {{", src_content)
+                                    fixed_something = True
+                                else:
+                                    _log(f"[builder] Rectifying header {os.path.basename(header_site)}: {h_match.group(0).strip()} -> {new_decl}")
+                                    fixes_acc.append({"type": "header_rectification", "file": header_site, "content": new_decl})
+                                    h_content = h_content[:h_match.start()] + new_decl + h_content[h_match.end():]
+                                    with open(header_site, "w") as f:
+                                        f.write(h_content)
+                                    fixed_something = True
 
 
         if fixed_something:
@@ -1076,6 +1078,16 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         # Phase 1.3: Token-Efficient JSON Summarization
         mismatch_summary = feedback_diff.summarize_objdiff_json(data, func_name)
 
+        # Phase 0.2: Git Checkpointing (Moved from builder_node to happen BEFORE revert)
+        try:
+            if score > 0:
+                _log(f"[builder] Checkpointing results before revert...")
+                subprocess.run(["git", "add", "-A"], cwd=_root_dir, check=True)
+                commit_msg = f"decomp {func_name}: {score*100.0:.1f}% match ({mismatch_count} mismatches)"
+                subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
+        except Exception as e:
+            _log(f"[builder] Git checkpointing failed: {e}")
+
         return {
             "status": "success",
             "score": score,
@@ -1288,6 +1300,9 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
     with open(file_path, "r") as f:
         existing_content = f.read()
 
+    if backups is not None and file_path not in backups:
+        backups[file_path] = existing_content
+
     # Split into logical blocks
     # A block is:
     # 1. A preprocessor directive (#include, etc)
@@ -1331,18 +1346,18 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
     blocks_to_add = []
     for block in blocks:
         # Detect extern redefinitions
-        extern_match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
+        extern_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
         if extern_match:
             new_type = extern_match.group(1).strip()
             symbol_name = extern_match.group(2).strip()
-            existing_extern_pattern = rf'(?m)^extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
+            existing_extern_pattern = rf'(?m)^[ \t]*extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
             existing_match = re.search(existing_extern_pattern, existing_content)
 
             if existing_match:
                 existing_line = existing_match.group(0)
                 if existing_line.strip() == block:
                     continue
-                existing_type_match = re.match(r'^extern\s+([\w\s\*]+?)\s+\w+', existing_line)
+                existing_type_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s+\w+', existing_line)
                 if existing_type_match:
                     existing_type = existing_type_match.group(1).strip()
                     if existing_type not in ['u32', '?', 'void'] and new_type in ['u32', '?', 'void']:
@@ -1357,10 +1372,10 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
                 continue
 
         # Detect function redefinitions
-        func_match = re.match(r'^([\w\s\*]+?)\s+(\w+)\s*\((.*?)\)\s*;', block)
+        func_match = re.match(r'^[ \t]*([\w\s\*]+?)\s+(\w+)\s*\((.*?)\)\s*;', block)
         if func_match:
             func_name = func_match.group(2).strip()
-            existing_func_pattern = rf'(?m)^([\w\s\*]+?)\s+{re.escape(func_name)}\s*\(.*?\)\s*;?'
+            existing_func_pattern = rf'(?m)^[ \t]*([\w\s\*]+?)\s+{re.escape(func_name)}\s*\(.*?\)\s*;?'
             existing_match = re.search(existing_func_pattern, existing_content)
             if existing_match:
                 if existing_match.group(0).strip().replace(' ', '') == block.replace(' ', ''):
