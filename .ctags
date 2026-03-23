@@ -1,0 +1,6 @@
+--exclude=build
+--exclude=.git
+--exclude=logs
+--exclude=tmp
+--exclude=*.o
+--exclude=*.s

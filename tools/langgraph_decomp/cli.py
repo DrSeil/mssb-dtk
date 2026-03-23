@@ -13,6 +13,7 @@ import os
 import shutil
 import sys
 import time
+from dotenv import load_dotenv
 
 # Ensure project root is in path
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -69,6 +70,7 @@ def find_auto_target(module="game"):
 
 
 def main():
+    load_dotenv() # Load variables from .env if present
     parser = argparse.ArgumentParser(
         description="LangGraph Decompilation Loop — automated decomp with LLM refinement"
     )

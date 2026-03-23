@@ -1,0 +1,42 @@
+
+============================================================
+LangGraph Decompilation Loop
+============================================================
+  Function:       fn_3_119854
+  Max iterations: 15
+  Escalate after: 5
+  Human-in-loop:  False
+============================================================
+
+[source_finder] Resolving fn_3_119854...
+[source_finder] Creating/switching to branch decomp/fn_3_119854 (from main)...
+[source_finder] Found: module=game, unit=game/game/rep_3310, source=game/rep_3310.c, is_stub=False, asm_lines=12
+[source_finder] Parsing SDA symbols from /home/michael/Desktop/mssb-dtk/config/GYQE01/game/symbols.txt...
+🔍 [source_finder] | status=running
+[decompiler] Running M2C for fn_3_119854...
+[decompiler] M2C output: 178 chars, body: 178 chars
+⚙️  [decompiler] | iter=0
+[refactorer] Iteration 1 for fn_3_119854 (escalate=False, prefer_local=False)...
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+[LLM] Invoking fast LLM (escalate=False)...
+[refactorer] LLM error: Error code: 400 - {'error': {'message': 'nvidia/llama-nemotron-embed-vl-1b-v2:free is an embedding model and cannot be used with the chat/completions endpoint. Use the /embeddings endpoint instead.', 'code': 400}, 'user_id': 'user_39XxcSkExdfw6kKf01lQfC0wJzD'}
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
+🤖 [refactorer] | status=error
+[builder] Build + score iteration 1 for fn_3_119854...
+[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/rep_3310.c ===
+f32 fn_3_119854(u32 index) {
+    u32 var_r3;
+
+    var_r3 = index;
+    if ((u8) var_r3 > 2U) {
+        var_r3 = 2;
+    }
+    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));
+}
+[builder] === END CODE ===
+[builder] Tree-Sitter error: 'tree_sitter.Query' object has no attribute 'captures', falling back to regex
+[builder] Checkpointing iteration 1...

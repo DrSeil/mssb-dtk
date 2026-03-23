@@ -18,6 +18,9 @@ import sys
 import json
 import re
 from typing import Optional, List, Dict
+from dotenv import load_dotenv
+
+load_dotenv() # Load variables from .env if present
 
 from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
