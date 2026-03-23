@@ -273,6 +273,9 @@ def _split_m2c_draft(c_code, func_name):
 def refactorer_node(state, escalate_after=5):
     """Send context + history to the LLM, get improved C code back."""
     from .llm import invoke_refactor
+    
+    # Clear struct updates from previous iterations to prevent state bleed
+    state['struct_updates'] = []
 
     func_name = state["function_name"]
     iteration = state.get("iterations", 0)

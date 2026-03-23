@@ -66,3 +66,94 @@ void fn_3_21C7C(s32 arg0, u8 arg1) {
 [builder] Updating extern lbl_3_common_bss_1323C in gap_219CC.h
 [builder] Redefining lbl_3_common_bss_1323C in gap_219CC.h
 [builder] Checkpointing iteration 1...
+[decomp/fn_3_21C7C 6b2b8e9] decomp fn_3_21C7C: iter 1, 43.0% match (6 mismatches)
+ 4 files changed, 196 insertions(+), 96 deletions(-)
+[builder] Result: 43.0% match (6 mismatches), status=running, escalate=False
+[builder] Logged attempt to /home/michael/Desktop/mssb-dtk/logs/decomp/fn_3_21C7C/attempt_1.log
+🔨 [builder] | match=43.0% | status=running | iter=1
+[classifier] Category: Logic Mismatch
+   [classifier]
+[refactorer] Iteration 2 for fn_3_21C7C (escalate=False, prefer_local=False)...
+[LLM] Invoking fast LLM (escalate=False)...
+[LLM] Requesting stream...
+[LLM] Stream iterator obtained. Waiting for first chunk...
+{
+  "explanation": "The previous attempt used an array indexing approach `((Bss1323CItem*)&lbl_3_common_bss_1323C)[arg0]` which caused the compiler to generate `mulli` and `addi` instructions. The target assembly, however, uses `lis` and `lwz` to load the base address of `lbl_3_common_bss_1323C` and then adds `arg0` to it. This suggests that `lbl_3_common_bss_1323C` is not an array of `Bss1323CItem` but rather a single structure, and `arg0` is an offset into it. The Ghidra decompilation also supports this by showing `cameraStruct_[0x24]._192_4_ + param_1 + 0x261`, where `param_1` is `arg0` and `_192_4_` likely refers to the base address of `lbl_3_common_bss_1323C`.",
+  "function_code": "void fn_3_21C7C(s32 arg0, u8 arg1) {\n    *(u8*)((s32)&lbl_3_common_bss_1323C + arg0 + 0x261) = arg1;\n}",
+  "struct_modifications": [],
+  "header_additions": "",
+  "extern_declarations": "extern s32 lbl_3_common_bss_1323C;\n"
+}
+[LLM] Stream complete.
+[refactorer] Got 102 chars function, 0 struct modifications, 0 chars header, 34 chars externs from fast LLM
+[refactorer] === LLM FUNCTION ===
+void fn_3_21C7C(s32 arg0, u8 arg1) {
+    *(u8*)((s32)&lbl_3_common_bss_1323C + arg0 + 0x261) = arg1;
+}
+[refactorer] === END LLM FUNCTION ===
+[refactorer] === LLM EXTERN ADDITIONS ===
+extern s32 lbl_3_common_bss_1323C;
+[refactorer] === END EXTERNS ===
+🤖 [refactorer] | llm=fast
+[builder] Build + score iteration 2 for fn_3_21C7C...
+[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_219CC.c ===
+void fn_3_21C7C(s32 arg0, u8 arg1) {
+    *(u8*)((s32)&lbl_3_common_bss_1323C + arg0 + 0x261) = arg1;
+}
+[builder] === END CODE ===
+[builder] Applying struct modifications for Bss1323CItem via struct_utils
+[builder] WARNING: Could not find file for Bss1323CItem
+[builder] Applying header additions to /home/michael/Desktop/mssb-dtk/include/game/gap_219CC.h
+[builder] Updating extern lbl_3_common_bss_1323C in gap_219CC.h
+[builder] Redefining lbl_3_common_bss_1323C in gap_219CC.h
+[builder] Applying extern additions/updates
+[builder] Adding missing #include "UnknownHeaders.h" to /home/michael/Desktop/mssb-dtk/src/game/gap_219CC.c
+[builder] Updating extern lbl_3_common_bss_1323C in gap_219CC.h
+[builder] Redefining lbl_3_common_bss_1323C in gap_219CC.h
+[builder] No new lines to add to gap_219CC.h
+[builder] Extern lbl_3_common_bss_1323C found elsewhere but NOT in include/UnknownHeaders.h. Adding to include/UnknownHeaders.h for visibility.
+[builder] Added 1 blocks to UnknownHeaders.h
+[builder] Checking if auto-fix is possible for compiler errors...
+[builder] Auto-fix reacting to redeclaration of: lbl_3_common_bss_1323C
+[builder] === FULL BUILD ERROR ===
+[1/43] MWCC build/GYQE01/src/game/rep_1038.o
+[2/43] MWCC build/GYQE01/src/game/gap_219CC.o
+FAILED: build/GYQE01/src/game/gap_219CC.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_219CC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_219CC.d build/GYQE01/src/game/gap_219CC.d
+### mwcceppc.exe Compiler:
+#      In: include\UnknownHeaders.h
+#    From: src\game\gap_219CC.c
+# -----------------------------
+#     804: extern s32 lbl_3_common_bss_1323C;
+#   Error:                                  ^
+#   identifier 'lbl_3_common_bss_1323C' redeclared
+#   was declared as: 'struct '
+#   now declared as: 'long'
+#   Too many errors printed, aborting program
+
+User break, cancelled...
+[3/43] MWCC build/GYQE01/src/game/rep_A00.o
+[4/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
+[5/43] MWCC build/GYQE01/src/game/rep_720.o
+[6/43] MWCC build/GYQE01/src/game/rep_EA0.o
+[7/43] MWCC build/GYQE01/src/game/gap_6C410.o
+[8/43] MWCC build/GYQE01/src/game/rep_1200.o
+[9/43] MWCC build/GYQE01/src/game/rep_13B8.o
+[10/43] MWCC build/GYQE01/src/game/rep_AC8.o
+[11/43] MWCC build/GYQE01/src/game/rep_1C0.o
+[12/43] MWCC build/GYQE01/src/game/rep_F80.o
+[13/43] MWCC build/GYQE01/src/game/rep_16B8.o
+[14/43] MWCC build/GYQE01/src/game/m_sound.o
+[15/43] MWCC build/GYQE01/src/game/rep_18E8.o
+ninja: build stopped: subcommand failed.
+
+[builder] === END BUILD ERROR ===
+[builder] Result: 0.0% match (6 mismatches), status=running, escalate=False
+[builder] Logged attempt to /home/michael/Desktop/mssb-dtk/logs/decomp/fn_3_21C7C/attempt_2.log
+🔨 [builder] | match=0.0% | status=running | iter=2
+[classifier] Category: Type Error
+   [classifier]
+[refactorer] Iteration 3 for fn_3_21C7C (escalate=False, prefer_local=False)...
+[LLM] Invoking fast LLM (escalate=False)...
+[LLM] Requesting stream...
+[LLM] Stream iterator obtained. Waiting for first chunk...
