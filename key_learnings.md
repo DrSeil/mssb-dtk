@@ -56,3 +56,7 @@
 
 ### Learnings from fn_3_119854
 *   When indexing into a global array, the compiler may truncate the index to a `u8` if it can prove the upper bound of the index is small. This can be observed even when the index is a `u32` variable.
+
+### Learnings from fn_3_21C7C
+*   Direct pointer arithmetic on a global `lbl_` symbol, combined with an offset, is preferred over introducing a struct type and accessing a field within it. This suggests a possible optimization strategy or coding style where flat memory access is favored over struct-based access, even when the memory layout conceptually resembles a struct.
+*   The codebase might use a global array (or a memory region treated as an array) accessed via offsets rather than a struct of arrays.
