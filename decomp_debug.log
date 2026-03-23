@@ -17,20 +17,35 @@ LangGraph Decompilation Loop
 [decompiler] M2C output: 178 chars, body: 178 chars
 ⚙️  [decompiler] | iter=0
 [refactorer] Iteration 1 for fn_3_119854 (escalate=False, prefer_local=False)...
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
 [LLM] Invoking fast LLM (escalate=False)...
-[refactorer] LLM error: Error code: 400 - {'error': {'message': 'nvidia/llama-nemotron-embed-vl-1b-v2:free is an embedding model and cannot be used with the chat/completions endpoint. Use the /embeddings endpoint instead.', 'code': 400}, 'user_id': 'user_39XxcSkExdfw6kKf01lQfC0wJzD'}
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
-[tags] Failed to run ctags and no index found: name 'subprocess' is not defined
-🤖 [refactorer] | status=error
+[LLM] Requesting stream...
+[LLM] Stream iterator obtained. Waiting for first chunk...
+
+
+{
+  "explanation": "The function returns the index-th element of the float array lbl_3_data_22650, after clamping the index to a maximum of 2 (if index > 2, it is set to 2). The calculation lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC) simplifies to lbl_3_data_22650 + var_r3*4 because var_r3*4 is already a multiple of 4, so the mask does nothing. Thus the function returns lbl_3_data_22650[index].",
+  "function_code": "f32 fn_3_119854(u32 index) {\n    u32 var_r3;\n    var_r3 = index;\n    if ((u8) var_r3 > 2U) {\n        var_r3 = 2;\n    }\n    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));\n}",
+  "struct_modifications": [],
+  "header_additions": "",
+  "extern_declarations": ""
+}
+[LLM] Stream complete.
+[refactorer] Got 177 chars function, 0 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] === LLM FUNCTION ===
+f32 fn_3_119854(u32 index) {
+    u32 var_r3;
+    var_r3 = index;
+    if ((u8) var_r3 > 2U) {
+        var_r3 = 2;
+    }
+    return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));
+}
+[refactorer] === END LLM FUNCTION ===
+🤖 [refactorer] | llm=fast
 [builder] Build + score iteration 1 for fn_3_119854...
 [builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/rep_3310.c ===
 f32 fn_3_119854(u32 index) {
     u32 var_r3;
-
     var_r3 = index;
     if ((u8) var_r3 > 2U) {
         var_r3 = 2;
@@ -38,5 +53,4 @@ f32 fn_3_119854(u32 index) {
     return *(lbl_3_data_22650 + ((var_r3 * 4) & 0x3FC));
 }
 [builder] === END CODE ===
-[builder] Tree-Sitter error: 'tree_sitter.Query' object has no attribute 'captures', falling back to regex
 [builder] Checkpointing iteration 1...

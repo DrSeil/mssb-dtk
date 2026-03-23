@@ -9,7 +9,7 @@ import subprocess
 import json
 import re
 import tree_sitter_c as tsc
-from tree_sitter import Language, Parser
+from tree_sitter import Language, Parser, Query, QueryCursor
 
 # Add tools directory to path for imports
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -627,7 +627,6 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
         
     try:
         import re
-        import subprocess
         from tools.langgraph_decomp import struct_utils
         from tools.langgraph_decomp.llm import _extract_struct_block
         
@@ -1208,28 +1207,25 @@ def _commit_code_to_source(src_path, func_name, c_code):
         tree = parser.parse(bytes(content, "utf8"))
         
         # Query to find function definition by name
-        # (function_definition 
-        #   declarator: (function_declarator 
-        #     declarator: (identifier) @name))
-        query = C_LANGUAGE.query("""
+        query = Query(C_LANGUAGE, """
             (function_definition
                 declarator: (function_declarator
                     declarator: (identifier) @name)) @func
         """)
-        
-        captures = query.captures(tree.root_node)
+
+        cursor = QueryCursor(query)
+        captures = cursor.captures(tree.root_node)
         target_node = None
-        for node, tag in captures:
-            if tag == 'name' and node.text.decode('utf8') == func_name:
-                # The @func node is the parent in the captures list
-                # In newer tree-sitter versions, captures is a list of (node, tag)
-                # We need to find the function_definition that contains this name
-                parent = node.parent
-                while parent and parent.type != 'function_definition':
-                    parent = parent.parent
-                target_node = parent
-                break
-        
+
+        if 'name' in captures:
+            for node in captures['name']:
+                if node.text.decode('utf8') == func_name:
+                    # In newer tree-sitter, we need to find the function_definition parent
+                    parent = node.parent
+                    while parent and parent.type != 'function_definition':
+                        parent = parent.parent
+                    target_node = parent
+                    break
         if target_node:
             start_byte = target_node.start_byte
             end_byte = target_node.end_byte

@@ -17,6 +17,7 @@ import os
 import sys
 import json
 import re
+import subprocess
 from typing import Optional, List, Dict
 from dotenv import load_dotenv
 
@@ -391,7 +392,6 @@ def resolve_symbol_definitions(state: dict) -> str:
     Returns a formatted string with all found definitions.
     """
     import re
-    import subprocess
 
     include_dir = os.path.join(_root_dir, "include")
     src_dir = os.path.join(_root_dir, "src")
@@ -862,7 +862,7 @@ def invoke_refactor(state: dict, escalate_after: int = 5, escalate: bool = False
         print(f"[LLM] {'='*60}")
 
     display_tier = f"{tier} (local)" if tier == "fast" and prefer_local else tier
-    print(f"[LLM] Invoking {display_tier} LLM (escalate={escalate})...")
+    print(f"[LLM] Invoking {display_tier} LLM (escalate={escalate})...", flush=True)
 
     system_prompt = DEEP_SYSTEM_PROMPT if tier == "deep" else SYSTEM_PROMPT
     messages = [
@@ -871,11 +871,20 @@ def invoke_refactor(state: dict, escalate_after: int = 5, escalate: bool = False
     ]
 
     full_response = ""
-    for chunk in llm.stream(messages):
-        content = chunk.content
-        full_response += content
-        print(content, end="", flush=True)
-    print() # Final newline after streaming
+    try:
+        print(f"[LLM] Requesting stream...", flush=True)
+        # We use stream so we can see the output as it comes
+        stream_iter = llm.stream(messages)
+        print(f"[LLM] Stream iterator obtained. Waiting for first chunk...", flush=True)
+        for chunk in stream_iter:
+            content = chunk.content
+            full_response += content
+            print(content, end="", flush=True)
+        print("\n[LLM] Stream complete.", flush=True)
+    except Exception as e:
+        print(f"\n[LLM] Exception during streaming: {type(e).__name__}: {e}", flush=True)
+        raise e
+
     sys.stdout.flush()
     raw = full_response.strip()
 
