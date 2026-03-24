@@ -198,7 +198,10 @@ void fn_3_B0D78(void) {
 
 // .text:0x000B0D7C size:0x34 mapped:0x806EFE10
 void fn_3_B0D7C(void) {
-    return;
+    g_Pitcher.handedness = g_Fielders[0].unk1C7;
+    g_Pitcher.curveBallSpeed = 0x7D;
+    g_Pitcher.fastBallSpeed = 0x91;
+    g_Pitcher.cursedBallStat = 0x64;
 }
 
 // .text:0x000B0DB0 size:0x50 mapped:0x806EFE44
