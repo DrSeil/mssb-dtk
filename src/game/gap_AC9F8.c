@@ -313,7 +313,11 @@ void fn_3_B2E20(void) {
 
 // .text:0x000B3288 size:0x30 mapped:0x806F231C
 void fn_3_B3288(void) {
-    return;
+    g_Practice.pauseMenuLoading = 0;
+    g_Practice._19F = 1;
+    g_Practice.frames_onPauseScreen = 0;
+    lbl_3_common_bss_34C90.field_0x1D2 = 0;
+    lbl_3_common_bss_34C90.field_0x1DA = 0;
 }
 
 // .text:0x000B32B8 size:0x190 mapped:0x806F234C
