@@ -123,8 +123,15 @@ void fn_3_107CD0(void) {
 }
 
 // .text:0x00107D34 size:0x3C mapped:0x80746DC8
-void fn_3_107D34(void) {
-    return;
+s32 fn_3_107D34(u8* a, u8* b) {
+    u8 ib = *b;
+    u8 ia = *a;
+    s16 keyB = (s16)(g_Minigame.minigamePoints_current_Latest[ib] >> 16);
+    s16 keyA = (s16)(g_Minigame.minigamePoints_current_Latest[ia] >> 16);
+    if (keyB == keyA) {
+        return ia - ib;
+    }
+    return keyB - keyA;
 }
 
 // .text:0x00107D70 size:0x44 mapped:0x80746E04
