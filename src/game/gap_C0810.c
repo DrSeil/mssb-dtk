@@ -1,4 +1,5 @@
 #include "game/gap_C0810.h"
+#include "game/rep_3E58.h"
 
 // .text:0x000C0810 size:0x14 mapped:0x806FF8A4
 void fn_3_C0810(void) {
@@ -7,6 +8,6 @@ void fn_3_C0810(void) {
 
 // .text:0x000C0824 size:0x30 mapped:0x806FF8B8
 void fn_3_C0824(void) {
-    return;
+    fn_800B0A5C_insertQueue(fn_3_C0810, 0xFFFF);
 }
 
