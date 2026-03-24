@@ -16,7 +16,7 @@ void fn_3_107784(void);
 void fn_3_1078F8(void);
 void fn_3_107988(void);
 void fn_3_1079C8(void);
-void fn_3_107B9C(void);
+s32 fn_3_107B9C(u8* a, u8* b);
 void fn_3_107BD0(void);
 void fn_3_107C04(void);
 void fn_3_107C40(void);

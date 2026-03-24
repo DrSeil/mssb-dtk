@@ -72,8 +72,15 @@ void fn_3_1079C8(void) {
 }
 
 // .text:0x00107B9C size:0x34 mapped:0x80746C30
-void fn_3_107B9C(void) {
-    return;
+s32 fn_3_107B9C(u8* a, u8* b) {
+    u8 ib = *b;
+    u8 ia = *a;
+    u8 keyB = g_Minigame.field_1E26[ib];
+    u8 keyA = g_Minigame.field_1E26[ia];
+    if (keyB == keyA) {
+        return ia - ib;
+    }
+    return keyB - keyA;
 }
 
 // .text:0x00107BD0 size:0x34 mapped:0x80746C64
