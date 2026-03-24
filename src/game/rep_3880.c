@@ -400,7 +400,7 @@ void fn_3_14F5A4(void) {
 }
 
 // .text:0x0014F8D0 size:0x60 mapped:0x8078E964
-// NONMATCHING: register allocation swap (node↔i in r6/r7, data_26C94↔magic in r4/r5)
+// NONMATCHING: register allocation swap (node<->i in r6/r7, data_26C94<->magic in r4/r5)
 void fn_3_14F8D0(struct Struct_800339F0_Result* arg) {
     ListNode_14B9F0* node;
     u32 i = 0;
