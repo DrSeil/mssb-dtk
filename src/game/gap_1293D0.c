@@ -1,6 +1,7 @@
 #include "game/gap_1293D0.h"
+#include "game/UnknownHomes_Game.h"
 
-// .text:0x001293D0 size:0x88 mapped:0x80768464
+// .text:0x001293D0 size:0x78 mapped:0x80768468
 void fn_3_1293D0(void) {
     return;
 }
@@ -121,18 +122,13 @@ void fn_3_12D1F4(void) {
 }
 
 // .text:0x0012DB54 size:0x2C mapped:0x8076CBE8
-
+// .text:0x0012DB54 size:0x2C mapped:0x8076CBAC
 void fn_3_12DB54(void) {
-    s8 var_r5;
-    u8 *var_r4;
-
-    var_r5 = 0;
-    var_r4 = (u8*)&g_Minigame + 0x1DBC;
+    s8 i = 0;
     do {
-        var_r5 += 1;
-        *var_r4 = 0;
-        var_r4 += 1;
-    } while (var_r5 < 4);
+        g_Minigame._1DBC[i] = 0;
+        i++;
+    } while (i < 4);
 }
 
 // .text:0x0012DB80 size:0x208 mapped:0x8076CC14

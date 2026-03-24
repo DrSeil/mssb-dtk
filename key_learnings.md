@@ -65,3 +65,6 @@
 - Offsets in global structs must account for padding fields, which are frequently used as flags or state markers.
 - Pointer arithmetic requires explicit casting to specific byte-sized types (`u8*`/`s8*`) to read/write individual bytes.
 - Padding fields within structs are writable and commonly used for runtime state flags.
+
+### Learnings from fn_3_12DB54
+- When defining array fields in structs, ensure the array size is explicitly provided, even if it's a flexible array member at the end of the struct. The compiler expects a concrete size for array declarations within structs.
