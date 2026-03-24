@@ -74,13 +74,14 @@ def get_sda_mapping(symbols: List[Dict]) -> Dict[str, List[Dict]]:
     return mapping
 
 def parse_struct_fields(struct_def: str) -> List[StructField]:
-    """Parse a struct definition into a list of StructField objects.
+    \"\"\"Parse a struct definition into a list of StructField objects.
     
     Expects format with offset comments: /* 0xXXX */ type name;
-    """
+    \"\"\"
     fields = []
     # Match: /* 0xOFFSET */ type name[optional_size]; // size: 0xXX
-    pattern = r'/\*\s*(0x[0-9a-fA-F]+)\s*\*/\s*([\w\s\*]+?)\s+(\w+)(?:\[(0x[0-9a-fA-F]+|\d+)\])?\s*;(?:\s*//\s*size:\s*(0x[0-9a-fA-F]+))?'
+    # Improved regex to handle E(storage, enum) macros and other decorations
+    pattern = r'/\*\s*(0x[0-9a-fA-F]+)\s*\*/\s*([\w\s\*\(\),]+?)\s+(\w+)(?:\[(0x[0-9a-fA-F]+|\d+)\])?\s*;(?:\s*//\s*size:\s*(0x[0-9a-fA-F]+))?'
     
     # Try to find the size of basic types
     type_sizes = {
@@ -103,8 +104,16 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
         elif '*' in type_str:
             base_size = 4 # 32-bit pointers
         else:
-            # Check for known types
-            base_size = type_sizes.get(type_str.split()[-1], 4)
+            # Check for known types, handle E(storage, type) macro by taking the first word of storage or the storage itself
+            # If it's E(u8, ...), the type_str is "E(u8," or similar. We need to be careful.
+            clean_type = type_str
+            if type_str.startswith('E('):
+                # Extract the storage type from E(storage, enum)
+                m = re.match(r'E\s*\(\s*(\w+)', type_str)
+                if m:
+                    clean_type = m.group(1)
+            
+            base_size = type_sizes.get(clean_type.split()[-1], 4)
             
         count = 1
         if array_size_str:
@@ -115,9 +124,9 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
         
         size = base_size * count
             
-        # Consider _0, _1, _1A3F, _0x1A3F etc. as padding/placeholders
-        is_placeholder = bool(re.match(r'^(_[0-9A-Fa-f]+|_[0-9]+)$', name))
-        is_padding = name.startswith('_pad') or name.startswith('pad') or is_placeholder
+        # ONLY treat things as padding if they explicitly have "pad" in the name.
+        # Placeholder names like _1A3F are often used in code and should NOT be dropped.
+        is_padding = name.lower().startswith('pad') or name.lower().startswith('_pad') or name.lower().startswith('__padding')
         
         fields.append(StructField(type_str + ("*" if '*' in type_str and not type_str.endswith('*') else ""), 
                                  name, offset, size, is_padding, count, base_size))
@@ -125,10 +134,10 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
     return sorted(fields, key=lambda x: x.offset)
 
 def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> str:
-    """Apply modifications to a struct and return the new definition.
+    \"\"\"Apply modifications to a struct and return the new definition.
     
     modifications: List of {'action': 'add_field', 'type': str, 'name': str, 'offset': int}
-    """
+    \"\"\"
     def _log(msg):
         if log is not None:
             log(msg)
@@ -138,6 +147,7 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     # 1. Parse current fields
     fields = parse_struct_fields(struct_def)
     if not fields:
+        _log(\"[struct_utils] WARNING: No fields parsed from struct definition!\")
         return struct_def
 
     # Extract struct wrapper
@@ -149,9 +159,9 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     header = header_match.group(1)
     footer = footer_match.group(1)
     
-    # 2. Collect all named fields (original non-padding + new additions)
-    # CRITICAL: We MUST preserve ANY field that is not a padding/placeholder.
-    named = {f.offset: f for f in fields if not f.is_padding}
+    # 2. Collect ALL fields. We will only replace padding/placeholders if a new field overlaps.
+    # We use a dictionary keyed by offset.
+    named = {f.offset: f for f in fields}
     
     for mod in modifications:
         action = mod.get('action', 'add_field')
@@ -170,70 +180,72 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
             m_size = size_map.get(m_type, 4)
             if '*' in m_type: m_size = 4
             
-            # If we already have an authoritative named field at this offset, skip
+            # 1. Check if a field with this EXACT name already exists
+            existing_by_name = next((f for f in named.values() if f.name == m_name), None)
+            if existing_by_name:
+                if existing_by_name.offset == m_offset:
+                    _log(f\"[struct_utils] Field '{m_name}' already exists at {hex(m_offset)}. Skipping.\")
+                    continue
+                else:
+                    _log(f\"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: name already exists at {hex(existing_by_name.offset)}\")
+                    continue
+
+            # 2. Check for EXACT offset match
             if m_offset in named:
                 existing = named[m_offset]
-                if existing.name == m_name and existing.type_str == m_type:
+                # If it's a padding/placeholder, we can replace it IF sizes match or it's a simple placeholder
+                if existing.is_padding or re.match(r'^(_[0-9A-Fa-f]+|_[0-9]+)$', existing.name):
+                    _log(f\"[struct_utils] Replacing placeholder '{existing.name}' with '{m_name}' at {hex(m_offset)}\")
+                    named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
                     continue
-                # If it's a real name (not a placeholder), we do NOT override it 
-                # unless it matches exactly.
-                _log(f"[struct_utils] REFUSING to override authoritative field {existing.name} with {m_name} at {hex(m_offset)}")
-                continue
+                else:
+                    _log(f\"[struct_utils] REFUSING to override authoritative field '{existing.name}' with '{m_name}' at {hex(m_offset)}\")
+                    continue
 
-            # Check for overlaps with existing authoritative fields
-            overlap = False
+            # 3. Check for overlaps with existing authoritative fields
+            overlap_field = None
             for off, f in named.items():
                 if off <= m_offset < off + f.size:
-                    _log(f"[struct_utils] REFUSING to add {m_name} at {hex(m_offset)}: overlaps {f.name} ({hex(f.offset)}-{hex(f.offset+f.size)})")
-                    overlap = True
+                    overlap_field = f
                     break
-            if overlap:
-                continue
+            
+            if overlap_field:
+                if overlap_field.is_padding:
+                    # We could split the padding here, but for now let's just log it.
+                    # Actually, let's keep it simple: if it overlaps any non-padding, refuse.
+                    _log(f\"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps padding '{overlap_field.name}'\")
+                    continue
+                else:
+                    _log(f\"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps field '{overlap_field.name}' ({hex(overlap_field.offset)}-{hex(overlap_field.offset+overlap_field.size)})\")
+                    overlap = True
+                    continue
                 
             named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
 
-    # 3. Sort named fields and generate the final list with padding
-    sorted_named = sorted(named.values(), key=lambda x: x.offset)
-    final_fields = []
+    # 3. Sort fields and generate the final list. 
+    # We DO NOT re-generate padding anymore; we preserved it from the original struct.
+    sorted_fields = sorted(named.values(), key=lambda x: x.offset)
     
-    # We assume the struct starts at the offset of the first field found
-    current_offset = sorted_named[0].offset if sorted_named else 0
-    
-    for f in sorted_named:
-        # Gap?
-        if f.offset > current_offset:
-            gap_size = f.offset - current_offset
-            final_fields.append(StructField("u8", f"_pad_{hex(current_offset)}", current_offset, gap_size, True))
-            current_offset = f.offset
-            
-        # Overlap? (Should be handled by logic above, but safety check)
-        if f.offset < current_offset:
-            _log(f"[struct_utils] Skipping overlapping field {f.name} at {hex(f.offset)}")
-            continue
-            
-        final_fields.append(f)
-        current_offset += f.size
-
     # 4. Format the output
     lines = [header]
-    for f in final_fields:
-        offset_str = f"0x{f.offset:03X}" if f.offset < 0x1000 else f"0x{f.offset:X}"
-        size_suffix = f" // size: {hex(f.base_size)}" if f.base_size not in (1, 2, 4, 8, 12, 48) else ""
+    for f in sorted_fields:
+        offset_str = f\"0x{f.offset:03X}\" if f.offset < 0x1000 else f\"0x{f.offset:X}\"
+        size_suffix = f\" // size: {hex(f.base_size)}\" if f.base_size not in (1, 2, 4, 8, 12, 48) else \"\"
         
         if f.count > 1:
-            name_with_array = f"{f.name}[{hex(f.count) if f.count > 10 else f.count}]"
-            lines.append(f"    /* {offset_str} */ {f.type_str} {name_with_array};{size_suffix}")
+            name_with_array = f\"{f.name}[{hex(f.count) if f.count > 10 else f.count}]\"
+            lines.append(f\"    /* {offset_str} */ {f.type_str} {name_with_array};{size_suffix}\")
         elif f.is_padding:
             # For padding, we use array format if size > 1
             if f.size > 1:
-                lines.append(f"    /* {offset_str} */ {f.type_str} {f.name}[{hex(f.size)}];")
+                lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name}[{hex(f.size)}];\")
             else:
-                lines.append(f"    /* {offset_str} */ {f.type_str} {f.name};")
+                lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name};\")
         else:
-            lines.append(f"    /* {offset_str} */ {f.type_str} {f.name};{size_suffix}")
+            lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name};{size_suffix}\")
     lines.append(footer)
     
-    return "\n".join(lines)
+    return \"\\n\".join(lines)
 
 if __name__ == "__main__":
     # Test
