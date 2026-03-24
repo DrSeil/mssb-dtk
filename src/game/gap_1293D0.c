@@ -1,4 +1,5 @@
 #include "game/gap_1293D0.h"
+#include "game/UnknownHomes_Game.h"
 
 // .text:0x001293D0 size:0x88 mapped:0x80768464
 void fn_3_1293D0(void) {
@@ -121,8 +122,18 @@ void fn_3_12D1F4(void) {
 }
 
 // .text:0x0012DB54 size:0x2C mapped:0x8076CBE8
+
 void fn_3_12DB54(void) {
-    return;
+    s8 var_r5;
+    u8 *var_r4;
+
+    var_r5 = 0;
+    var_r4 = (u8*)&g_Minigame + 0x1DBC;
+    do {
+        var_r5 += 1;
+        *var_r4 = 0;
+        var_r4 += 1;
+    } while (var_r5 < 4);
 }
 
 // .text:0x0012DB80 size:0x208 mapped:0x8076CC14
