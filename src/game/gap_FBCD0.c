@@ -12,7 +12,13 @@ void fn_3_FBD58(void) {
 
 // .text:0x000FBD70 size:0x3C mapped:0x8073AE04
 void fn_3_FBD70(void) {
-    return;
+    BssDE94Item* p = lbl_3_common_bss_DE94;
+    p->field_0x9AF = 0;
+    lbl_3_common_bss_DE94->field_0x9B0 = 0;
+    lbl_3_common_bss_DE94->field_0x9AE = 0;
+    lbl_3_common_bss_DE94->field_0x9AB = 0;
+    lbl_3_common_bss_DE94->field_0x9B6 = 0;
+    p->field_0x18 = 0;
 }
 
 // .text:0x000FBDAC size:0x78 mapped:0x8073AE40
