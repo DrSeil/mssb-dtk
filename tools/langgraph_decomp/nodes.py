@@ -630,6 +630,25 @@ def _write_attempt_log(state, attempt, iteration):
     print(f"[builder] Logged attempt to {log_file}")
 
 
+def _filter_build_output(output: str) -> str:
+    """Strip ninja progress noise from build output, keeping only error-relevant lines."""
+    filtered = []
+    for line in output.splitlines():
+        # Skip [N/M] MWCC progress lines
+        if re.match(r'^\[\d+/\d+\]\s+MWCC\b', line):
+            continue
+        # Skip the long wibo/mwcceppc compiler command line
+        if re.match(r'^build/tools/wibo\b', line):
+            continue
+        # For FAILED: lines, keep just the target filename, not the command
+        if line.startswith('FAILED:'):
+            parts = line.split()
+            filtered.append(f"FAILED: {parts[1]}" if len(parts) > 1 else line)
+            continue
+        filtered.append(line)
+    return '\n'.join(filtered)
+
+
 def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _log=print, fixes_acc=None) -> bool:
     """Attempt to parse compiler errors and automatically fix the source file.
     
@@ -852,10 +871,43 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                                     fixed_something = True
 
 
+                # Case 4: function has no prototype
+                no_proto_match = re.match(r"#\s+function has no prototype", msg_line)
+                if no_proto_match:
+                    code_text = code_line.split(":", 1)[1].strip() if ":" in code_line else code_line
+                    func_match = re.search(r'(\w+)\s*\(', code_text)
+                    if func_match:
+                        func_name = func_match.group(1)
+                        _log(f"[builder] Auto-fix searching for prototype of: {func_name}")
+                        include_dir = os.path.join(_root_dir, "include")
+                        try:
+                            decl_pattern = rf'\b{re.escape(func_name)}\s*\('
+                            result = subprocess.run(
+                                ["grep", "-rln", "-P", "--include=*.h", decl_pattern, include_dir],
+                                capture_output=True, text=True, timeout=5
+                            )
+                            if result.stdout:
+                                header_path = result.stdout.splitlines()[0].strip()
+                                rel_inc = os.path.relpath(header_path, include_dir)
+                                inc_line = f'#include "{rel_inc}"\n'
+                                if inc_line.strip() not in src_content:
+                                    _log(f"[builder] Auto-fixing missing prototype include -> {inc_line.strip()}")
+                                    fixes_acc.append({"type": "missing_include", "file": source_path, "content": inc_line.strip()})
+                                    if source_path not in backups:
+                                        backups[source_path] = src_content
+                                    inc_match = re.search(r'^#include.*?\n', src_content, re.MULTILINE)
+                                    if inc_match:
+                                        src_content = src_content[:inc_match.end()] + inc_line + src_content[inc_match.end():]
+                                    else:
+                                        src_content = inc_line + src_content
+                                    fixed_something = True
+                        except Exception:
+                            pass
+
         if fixed_something:
             with open(source_path, "w") as f:
                 f.write(src_content)
-        
+
         return fixed_something
     except Exception as e:
         import traceback
@@ -1044,7 +1096,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             _log(f"[builder] === FULL BUILD ERROR ===")
             _log(combined)
             _log(f"[builder] === END BUILD ERROR ===")
-            return {"status": "build_error", "log": combined, "process_log": process_log}
+            return {"status": "build_error", "log": _filter_build_output(combined), "process_log": process_log}
 
         # Score via objdiff
         objdiff_cmd = [

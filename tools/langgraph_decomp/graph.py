@@ -41,9 +41,9 @@ def classifier_node(state: DecompState) -> dict:
     hint = ""
     
     if build_log:
-        if "undefined identifier" in build_log:
+        if "undefined identifier" in build_log or "function has no prototype" in build_log:
             classification = "Type Error"
-            hint = "One or more identifiers are undefined. Check for missing includes or extern declarations."
+            hint = "One or more identifiers are undefined or missing a prototype. Check for missing includes or extern declarations."
         elif "redeclared" in build_log:
             classification = "Type Error"
             hint = "Symbol redeclaration detected. Check if a prototype in your header conflicts with a definition."
