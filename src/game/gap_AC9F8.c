@@ -189,8 +189,11 @@ void fn_3_B0B5C(void) {
 }
 
 // .text:0x000B0CF4 size:0x38 mapped:0x806EFD88
-void fn_3_B0CF4(void) {
-    return;
+s32 fn_3_B0CF4(void) {
+    if (g_Practice.aiBuntIndicator == 0) {
+        return 0;
+    }
+    return g_Ball.pitchHangtimeCounter > 0;
 }
 
 // .text:0x000B0D2C size:0x4C mapped:0x806EFDC0

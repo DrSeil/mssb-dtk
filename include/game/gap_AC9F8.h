@@ -64,7 +64,7 @@ void fn_3_B0874(void);
 void fn_3_B0A88(void);
 void fn_3_B0AAC(void);
 void fn_3_B0B5C(void);
-void fn_3_B0CF4(void);
+s32 fn_3_B0CF4(void);
 void fn_3_B0D2C(void);
 void fn_3_B0D78(void);
 void fn_3_B0D7C(void);
