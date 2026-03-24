@@ -1,4 +1,5 @@
 #include "game/gap_B3B70.h"
+#include "game/gap_AC9F8.h"
 
 // .text:0x000B3B70 size:0x60 mapped:0x806F2C04
 void fn_3_B3B70(void) {
@@ -102,8 +103,12 @@ void fn_3_B5CB4(void) {
 }
 
 // .text:0x000B5D4C size:0x2C mapped:0x806F4DE0
-void fn_3_B5D4C(void) {
-    return;
+void fn_3_B5D4C(u8 arg0) {
+    g_Practice.practiceType_1 = arg0;
+    g_Practice.practiceState = 0;
+    lbl_3_common_bss_34C90.field_0x1D2 = 0;
+    g_Practice.practiceMenu_framesOnCurrMenuScreen = 0;
+    g_Practice.framesInCurrTransitionState = 0;
 }
 
 // .text:0x000B5D78 size:0x104 mapped:0x806F4E0C
