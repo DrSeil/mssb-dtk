@@ -1,4 +1,5 @@
 #include "game/gap_20A60.h"
+#include "game/UnknownHomes_Game.h"
 
 // .text:0x00020A60 size:0x50 mapped:0x8065FAF4
 void fn_3_20A60(void) {
@@ -7,7 +8,13 @@ void fn_3_20A60(void) {
 
 // .text:0x00020AB0 size:0x30 mapped:0x8065FB44
 void fn_3_20AB0(void) {
-    return;
+    g_AiLogic.lastPitchFramesUntilPitchGetsToBatter = 0;
+    g_AiLogic.lastPitchType = 0xFF;
+    g_AiLogic.starRelated[0] = 0;
+    g_AiLogic.starRelated[1] = 0;
+    g_AiLogic.lastPitchBallLocZone = 0xFF;
+    g_AiLogic.lastPitchMoundZone = 0xFF;
+    g_AiLogic.batterAIStealIndicator = 0;
 }
 
 // .text:0x00020AE0 size:0x50 mapped:0x8065FB74
