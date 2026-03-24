@@ -105,10 +105,8 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
             base_size = 4 # 32-bit pointers
         else:
             # Check for known types, handle E(storage, type) macro by taking the first word of storage or the storage itself
-            # If it's E(u8, ...), the type_str is "E(u8," or similar. We need to be careful.
             clean_type = type_str
             if type_str.startswith('E('):
-                # Extract the storage type from E(storage, enum)
                 m = re.match(r'E\s*\(\s*(\w+)', type_str)
                 if m:
                     clean_type = m.group(1)
@@ -124,9 +122,8 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
         
         size = base_size * count
             
-        # ONLY treat things as padding if they explicitly have "pad" in the name.
-        # Placeholder names like _1A3F are often used in code and should NOT be dropped.
-        is_padding = name.lower().startswith('pad') or name.lower().startswith('_pad') or name.lower().startswith('__padding')
+        # Treat things as padding if they explicitly have "pad" in the name OR start with "_"
+        is_padding = name.lower().startswith('pad') or name.lower().startswith('_pad') or name.startswith('_') or name.lower().startswith('__padding')
         
         fields.append(StructField(type_str + ("*" if '*' in type_str and not type_str.endswith('*') else ""), 
                                  name, offset, size, is_padding, count, base_size))
@@ -159,8 +156,7 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     header = header_match.group(1)
     footer = footer_match.group(1)
     
-    # 2. Collect ALL fields. We will only replace padding/placeholders if a new field overlaps.
-    # We use a dictionary keyed by offset.
+    # 2. Collect ALL fields. 
     named = {f.offset: f for f in fields}
     
     for mod in modifications:
@@ -190,19 +186,7 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
                     _log(f"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: name already exists at {hex(existing_by_name.offset)}")
                     continue
 
-            # 2. Check for EXACT offset match
-            if m_offset in named:
-                existing = named[m_offset]
-                # If it's a padding/placeholder, we can replace it IF sizes match or it's a simple placeholder
-                if existing.is_padding or re.match(r'^(_[0-9A-Fa-f]+|_[0-9]+)$', existing.name):
-                    _log(f"[struct_utils] Replacing placeholder '{existing.name}' with '{m_name}' at {hex(m_offset)}")
-                    named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
-                    continue
-                else:
-                    _log(f"[struct_utils] REFUSING to override authoritative field '{existing.name}' with '{m_name}' at {hex(m_offset)}")
-                    continue
-
-            # 3. Check for overlaps with existing authoritative fields
+            # 2. Check for overlaps/matches
             overlap_field = None
             for off, f in named.items():
                 if off <= m_offset < off + f.size:
@@ -210,20 +194,43 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
                     break
             
             if overlap_field:
+                # If it's an exact match for a padding/placeholder, replace it
+                if overlap_field.offset == m_offset and overlap_field.is_padding:
+                     _log(f"[struct_utils] Replacing placeholder '{overlap_field.name}' with '{m_name}' at {hex(m_offset)}")
+                     # If the placeholder was larger than the new field, we should split it
+                     if overlap_field.size > m_size:
+                         remaining_size = overlap_field.size - m_size
+                         new_pad_offset = m_offset + m_size
+                         named[new_pad_offset] = StructField("u8", f"_pad_{hex(new_pad_offset)}", new_pad_offset, remaining_size, True)
+                     named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
+                     continue
+                
+                # If it overlaps a padding field (even an array), split the padding
                 if overlap_field.is_padding:
-                    # We could split the padding here, but for now let's just log it.
-                    # Actually, let's keep it simple: if it overlaps any non-padding, refuse.
-                    _log(f"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps padding '{overlap_field.name}'")
+                    _log(f"[struct_utils] Splitting padding '{overlap_field.name}' at {hex(m_offset)} for '{m_name}'")
+                    # Part before the new field
+                    before_size = m_offset - overlap_field.offset
+                    if before_size > 0:
+                        named[overlap_field.offset] = StructField("u8", f"_pad_{hex(overlap_field.offset)}", overlap_field.offset, before_size, True)
+                    else:
+                        del named[overlap_field.offset]
+                    
+                    # The new field
+                    named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
+                    
+                    # Part after the new field
+                    after_offset = m_offset + m_size
+                    after_size = (overlap_field.offset + overlap_field.size) - after_offset
+                    if after_size > 0:
+                        named[after_offset] = StructField("u8", f"_pad_{hex(after_offset)}", after_offset, after_size, True)
                     continue
                 else:
                     _log(f"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps field '{overlap_field.name}' ({hex(overlap_field.offset)}-{hex(overlap_field.offset+overlap_field.size)})")
-                    overlap = True
                     continue
                 
             named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
 
     # 3. Sort fields and generate the final list. 
-    # We DO NOT re-generate padding anymore; we preserved it from the original struct.
     sorted_fields = sorted(named.values(), key=lambda x: x.offset)
     
     # 4. Format the output
@@ -232,11 +239,10 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
         offset_str = f"0x{f.offset:03X}" if f.offset < 0x1000 else f"0x{f.offset:X}"
         size_suffix = f" // size: {hex(f.base_size)}" if f.base_size not in (1, 2, 4, 8, 12, 48) else ""
         
-        if f.count > 1:
+        if f.count > 1 and not f.is_padding:
             name_with_array = f"{f.name}[{hex(f.count) if f.count > 10 else f.count}]"
             lines.append(f"    /* {offset_str} */ {f.type_str} {name_with_array};{size_suffix}")
         elif f.is_padding:
-            # For padding, we use array format if size > 1
             if f.size > 1:
                 lines.append(f"    /* {offset_str} */ {f.type_str} {f.name}[{hex(f.size)}];")
             else:
@@ -249,13 +255,13 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
 
 if __name__ == "__main__":
     # Test
-    test_struct = """
+    test_struct = \"\"\"
 typedef struct CommonBss_35154 {
     /* 0x000 */ u32 firstMember;
     /* 0x004 */ u8 _pad0[0x3AC - 4];
     /* 0x3AC */ u32 bitfield;
 } CommonBss_35154;
-"""
+\"\"\"
     mods = [
         {'action': 'add_field', 'type': 'f32', 'name': 'unk3EC', 'offset': '0x3EC'},
         {'action': 'add_field', 'type': 'u8', 'name': 'unk479', 'offset': '0x479'}
