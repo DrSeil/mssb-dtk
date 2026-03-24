@@ -96,8 +96,15 @@ void fn_3_AFB64(void) {
 }
 
 // .text:0x000AFD48 size:0x38 mapped:0x806EEDDC
-void fn_3_AFD48(void) {
-    return;
+s32 fn_3_AFD48(s16 arg0) {
+    if ((s8) lbl_3_common_bss_34C90.field_0x206 <= 0) {
+        lbl_3_common_bss_34C90.field_0x04 = arg0;
+        lbl_3_common_bss_34C90.field_0x06 = arg0;
+        lbl_3_common_bss_34C90.field_0x08 = arg0;
+        lbl_3_common_bss_34C90.field_0x206 = 0xD;
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x000AFD80 size:0x24 mapped:0x806EEE14
