@@ -74,7 +74,7 @@ void fn_3_B1A30(void);
 void fn_3_B1BCC(void);
 void fn_3_B1C14(void);
 void fn_3_B1CB0(void);
-void fn_3_B1DA4(void);
+void fn_3_B1DA4(u8 arg0, u8 arg1);
 void fn_3_B1DD0(void);
 void fn_3_B254C(void);
 void fn_3_B2630(void);

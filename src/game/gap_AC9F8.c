@@ -262,8 +262,13 @@ void fn_3_B1CB0(void) {
 }
 
 // .text:0x000B1DA4 size:0x2C mapped:0x806F0E38
-void fn_3_B1DA4(void) {
-    return;
+void fn_3_B1DA4(u8 arg0, u8 arg1) {
+    g_Practice.loadingGuidedPractice = 1;
+    g_Practice._1D5 = 0;
+    g_Practice.practiceLevel_2 = arg0;
+    g_Practice._1D7 = arg1;
+    g_Practice._1D8 = 0;
+    g_Practice._188 = 0;
 }
 
 // .text:0x000B1DD0 size:0x77C mapped:0x806F0E64

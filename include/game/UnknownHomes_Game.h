@@ -926,7 +926,9 @@ typedef struct _PracticeStruct {
     /*0x1D4*/ u8 loadingGuidedPractice; // unsure
     /*0x1D5*/ u8 _1D5;
     /*0x1D6*/ u8 practiceLevel_2;
-    artificial_padding(0x1d6, 0x1e1, u8);
+    /*0x1D7*/ u8 _1D7;
+    /*0x1D8*/ u8 _1D8;
+    artificial_padding(0x1d8, 0x1e1, u8);
     /*0x1E1*/ u8 hitVariablesSetIndicator;
     /*0x1E2*/ u8 _1E2;
     /*0x1E3*/ u8 aiBuntIndicator; // unsure
