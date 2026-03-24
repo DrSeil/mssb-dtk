@@ -131,26 +131,30 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
     return sorted(fields, key=lambda x: x.offset)
 
 def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> str:
-    """Apply modifications to a struct and return the new definition.
+    \"\"\"Apply modifications to a struct and return the new definition.
     
     modifications: List of {'action': 'add_field', 'type': str, 'name': str, 'offset': int}
-    """
+    \"\"\"
     def _log(msg):
         if log is not None:
             log(msg)
         else:
             print(msg)
 
+    if not modifications:
+        return struct_def
+
     # 1. Parse current fields
     fields = parse_struct_fields(struct_def)
     if not fields:
-        _log("[struct_utils] WARNING: No fields parsed from struct definition!")
+        _log(\"[struct_utils] WARNING: No fields parsed from struct definition!\")
         return struct_def
 
     # Extract struct wrapper
     header_match = re.search(r'(typedef\s+struct\s+\w+\s*\{)', struct_def)
     footer_match = re.search(r'(\}\s*\w+\s*;)', struct_def)
     if not header_match or not footer_match:
+        _log(\"[struct_utils] WARNING: Could not find struct header/footer!\")
         return struct_def
         
     header = header_match.group(1)
@@ -158,6 +162,7 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     
     # 2. Collect ALL fields. 
     named = {f.offset: f for f in fields}
+    has_changes = False
     
     for mod in modifications:
         action = mod.get('action', 'add_field')
@@ -180,11 +185,11 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
             existing_by_name = next((f for f in named.values() if f.name == m_name), None)
             if existing_by_name:
                 if existing_by_name.offset == m_offset:
-                    _log(f"[struct_utils] Field '{m_name}' already exists at {hex(m_offset)}. Skipping.")
+                    _log(f\"[struct_utils] Field '{m_name}' already exists at {hex(m_offset)}. Skipping.\")
                     continue
                 else:
-                    _log(f"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: name already exists at {hex(existing_by_name.offset)}")
-                    continue
+                    _log(f\"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: name already exists at {hex(existing_by_name.offset)}\")
+                    return struct_def # Return original on refusal
 
             # 2. Check for overlaps/matches
             overlap_field = None
@@ -196,22 +201,23 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
             if overlap_field:
                 # If it's an exact match for a padding/placeholder, replace it
                 if overlap_field.offset == m_offset and overlap_field.is_padding:
-                     _log(f"[struct_utils] Replacing placeholder '{overlap_field.name}' with '{m_name}' at {hex(m_offset)}")
+                     _log(f\"[struct_utils] Replacing placeholder '{overlap_field.name}' with '{m_name}' at {hex(m_offset)}\")
                      # If the placeholder was larger than the new field, we should split it
                      if overlap_field.size > m_size:
                          remaining_size = overlap_field.size - m_size
                          new_pad_offset = m_offset + m_size
-                         named[new_pad_offset] = StructField("u8", f"_pad_{hex(new_pad_offset)}", new_pad_offset, remaining_size, True)
+                         named[new_pad_offset] = StructField(\"u8\", f\"_pad_{hex(new_pad_offset)}\", new_pad_offset, remaining_size, True)
                      named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
+                     has_changes = True
                      continue
                 
                 # If it overlaps a padding field (even an array), split the padding
                 if overlap_field.is_padding:
-                    _log(f"[struct_utils] Splitting padding '{overlap_field.name}' at {hex(m_offset)} for '{m_name}'")
+                    _log(f\"[struct_utils] Splitting padding '{overlap_field.name}' at {hex(m_offset)} for '{m_name}'\")
                     # Part before the new field
                     before_size = m_offset - overlap_field.offset
                     if before_size > 0:
-                        named[overlap_field.offset] = StructField("u8", f"_pad_{hex(overlap_field.offset)}", overlap_field.offset, before_size, True)
+                        named[overlap_field.offset] = StructField(\"u8\", f\"_pad_{hex(overlap_field.offset)}\", overlap_field.offset, before_size, True)
                     else:
                         del named[overlap_field.offset]
                     
@@ -222,13 +228,18 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
                     after_offset = m_offset + m_size
                     after_size = (overlap_field.offset + overlap_field.size) - after_offset
                     if after_size > 0:
-                        named[after_offset] = StructField("u8", f"_pad_{hex(after_offset)}", after_offset, after_size, True)
+                        named[after_offset] = StructField(\"u8\", f\"_pad_{hex(after_offset)}\", after_offset, after_size, True)
+                    has_changes = True
                     continue
                 else:
-                    _log(f"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps field '{overlap_field.name}' ({hex(overlap_field.offset)}-{hex(overlap_field.offset+overlap_field.size)})")
-                    continue
+                    _log(f\"[struct_utils] REFUSING to add '{m_name}' at {hex(m_offset)}: overlaps field '{overlap_field.name}' ({hex(overlap_field.offset)}-{hex(overlap_field.offset+overlap_field.size)})\")
+                    return struct_def # Return original on refusal
                 
             named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
+            has_changes = True
+
+    if not has_changes:
+        return struct_def
 
     # 3. Sort fields and generate the final list. 
     sorted_fields = sorted(named.values(), key=lambda x: x.offset)
@@ -236,22 +247,22 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     # 4. Format the output
     lines = [header]
     for f in sorted_fields:
-        offset_str = f"0x{f.offset:03X}" if f.offset < 0x1000 else f"0x{f.offset:X}"
-        size_suffix = f" // size: {hex(f.base_size)}" if f.base_size not in (1, 2, 4, 8, 12, 48) else ""
+        offset_str = f\"0x{f.offset:03X}\" if f.offset < 0x1000 else f\"0x{f.offset:X}\"
+        size_suffix = f\" // size: {hex(f.base_size)}\" if f.base_size not in (1, 2, 4, 8, 12, 48) else \"\"
         
         if f.count > 1 and not f.is_padding:
-            name_with_array = f"{f.name}[{hex(f.count) if f.count > 10 else f.count}]"
-            lines.append(f"    /* {offset_str} */ {f.type_str} {name_with_array};{size_suffix}")
+            name_with_array = f\"{f.name}[{hex(f.count) if f.count > 10 else f.count}]\"
+            lines.append(f\"    /* {offset_str} */ {f.type_str} {name_with_array};{size_suffix}\")
         elif f.is_padding:
             if f.size > 1:
-                lines.append(f"    /* {offset_str} */ {f.type_str} {f.name}[{hex(f.size)}];")
+                lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name}[{hex(f.size)}];\")
             else:
-                lines.append(f"    /* {offset_str} */ {f.type_str} {f.name};")
+                lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name};\")
         else:
-            lines.append(f"    /* {offset_str} */ {f.type_str} {f.name};{size_suffix}")
+            lines.append(f\"    /* {offset_str} */ {f.type_str} {f.name};{size_suffix}\")
     lines.append(footer)
     
-    return "\\n".join(lines)
+    return \"\n\".join(lines)
 
 if __name__ == "__main__":
     # Test
