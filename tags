@@ -1029,7 +1029,6 @@ Lg5	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log.c	/^    Lg
 Lg6	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log.c	/^    Lg6    = 1.531383769920937332e-01,   \/* 3FC39A09 D078C69F *\/$/;"	v	typeref:typename:const f64	file:
 Lg7	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_log.c	/^    Lg7    = 1.479819860511658591e-01;   \/* 3FC2F112 DF3E5244 *\/$/;"	v	typeref:typename:const f64	file:
 Link	src/Dolphin/os/OSLink.c	/^static BOOL Link(OSModuleInfo* newModule, void* bss, BOOL fixed) {$/;"	f	typeref:typename:BOOL	file:
-LocalMinigame	src/game/gap_106DFC.c	/^} LocalMinigame;$/;"	t	typeref:struct:__anon5d9492510108	file:
 LockSram	src/Dolphin/os/OSRtc.c	/^static void* LockSram(u32 offset)$/;"	f	typeref:typename:void *	file:
 LookBackSize	src/Unknown/File_0x800a64e0.c	/^    u8 LookBackSize;          \/\/ 0x362$/;"	m	struct:__anon1f2bd40b0108	typeref:typename:u8	file:
 LowPrecisionHandler	src/Musyx/synth.c	/^static void LowPrecisionHandler(u32 i) {$/;"	f	typeref:typename:void	file:
@@ -1873,7 +1872,6 @@ _14	src/Dolphin/os/OSExec.c	/^    int _14;$/;"	m	struct:__anoncde375620208	typer
 _14	src/Dolphin/os/OSExec.c	/^    u32 _14;$/;"	m	struct:__anoncde375620308	typeref:typename:u32	file:
 _18	src/Dolphin/MSL_C/MSL_Common/locale.c	/^	char* _18;$/;"	m	struct:__anon14238efa0108	typeref:typename:char *	file:
 _18	src/Dolphin/os/OSExec.c	/^    void *_18;$/;"	m	struct:__anoncde375620308	typeref:typename:void *	file:
-_1A41	src/game/gap_106DFC.c	/^    u8 _1A41; \/* 0x1A41 *\/$/;"	m	struct:__anon5d9492510108	typeref:typename:u8	file:
 _1C	src/Dolphin/MSL_C/MSL_Common/locale.c	/^	char* _1C;$/;"	m	struct:__anon14238efa0108	typeref:typename:char *	file:
 _1C	src/Dolphin/os/OSExec.c	/^        u32 _1C;$/;"	m	struct:__OSBootDolSimple::__anoncde375620408	typeref:typename:u32	file:
 _1C_Struct	src/Dolphin/os/OSExec.c	/^} _1C_Struct;$/;"	t	typeref:struct:__anoncde375620308	file:
@@ -2219,7 +2217,6 @@ __anon1efcbc790108	src/Unknown/File_0x800a6304.c	/^{$/;"	s	file:
 __anon1efcbc790208	src/Unknown/File_0x800a6304.c	/^{$/;"	s	file:
 __anon1f2bd40b0108	src/Unknown/File_0x800a64e0.c	/^{$/;"	s	file:
 __anon48e3d6750108	src/Dolphin/base/PPCArch.c	/^	struct {$/;"	s	union:FpscrUnion	file:
-__anon5d9492510108	src/game/gap_106DFC.c	/^typedef struct {$/;"	s	file:
 __anon8c1e4634010a	src/Dolphin/Runtime/ptmf.c	/^	union {$/;"	u	struct:PTMF	file:
 __anonbb08325d0108	src/Dolphin/MSL_C/MSL_Common/printf.c	/^typedef struct {$/;"	s	file:
 __anoncde375620108	src/Dolphin/os/OSExec.c	/^{$/;"	s	file:
@@ -2406,8 +2403,6 @@ _heapmin	src/Dolphin/MSL_C/MSL_Common/extras.c	/^void _heapmin(void)$/;"	f	typer
 _inv_sqrtf	src/Dolphin/MSL_C/PPC_EABI/math_ppc.c	/^void _inv_sqrtf(void)$/;"	f	typeref:typename:void
 _itoa	src/Dolphin/MSL_C/MSL_Common/extras.c	/^void _itoa(void)$/;"	f	typeref:typename:void
 _itow	src/Dolphin/MSL_C/MSL_Common/extras.c	/^void _itow(void)$/;"	f	typeref:typename:void
-_pad	src/game/gap_106DFC.c	/^    u8 _pad[0x1A28];$/;"	m	struct:__anon5d9492510108	typeref:typename:u8[0x1A28]	file:
-_pad2	src/game/gap_106DFC.c	/^    u8 _pad2[0x17];$/;"	m	struct:__anon5d9492510108	typeref:typename:u8[0x17]	file:
 _prolog	src/executor.c	/^void _prolog() {$/;"	f	typeref:typename:void
 _prolog	src/game/gap_464.c	/^void _prolog(void) {$/;"	f	typeref:typename:void
 _strcasecmp	src/Dolphin/MSL_C/MSL_Common/extras.c	/^void _strcasecmp(void)$/;"	f	typeref:typename:void
@@ -5485,7 +5480,7 @@ minSubstick	src/Dolphin/pad/Padclamp.c	/^	s8 minSubstick;$/;"	m	struct:PADClampR
 minTrigger	src/Dolphin/pad/Padclamp.c	/^	u8 minTrigger;$/;"	m	struct:PADClampRegion	typeref:typename:u8	file:
 min_heap_size	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^	u32 min_heap_size;$/;"	m	struct:pool_options	typeref:typename:u32	file:
 min_wait	src/Dolphin/ai/ai.c	/^static OSTime min_wait;$/;"	v	typeref:typename:OSTime	file:
-minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased	src/game/gap_106DFC.c	/^void minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(void) {$/;"	f	typeref:typename:void
+minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased	src/game/gap_106DFC.c	/^u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8 arg0) {$/;"	f	typeref:typename:u32
 modf	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.c	/^f64 modf(f64 x, f64* iptr)$/;"	f	typeref:typename:f64
 modff	src/Dolphin/MSL_C/PPC_EABI/math_ppc.c	/^void modff(f32 f1, f32* fp)$/;"	f	typeref:typename:void
 modfl	src/Dolphin/MSL_C/PPC_EABI/math_ppc.c	/^void modfl(void)$/;"	f	typeref:typename:void
@@ -5902,7 +5897,6 @@ snd_used_studios	src/Musyx/snd3d.c	/^static u32 snd_used_studios;$/;"	v	typeref:
 snprintf	src/Dolphin/MSL_C/MSL_Common/printf.c	/^int snprintf(char* s, size_t n, const char* format, ...)$/;"	f	typeref:typename:int
 soft_allocate_from_var_pools	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^void soft_allocate_from_var_pools(void)$/;"	f	typeref:typename:void
 someAnimationIndFunction	src/game/game_batter.c	/^int someAnimationIndFunction(void) {$/;"	f	typeref:typename:int
-someGraphicFrameCountdown	src/game/gap_106DFC.c	/^    s16 someGraphicFrameCountdown; \/* 0x1A28 *\/$/;"	m	struct:__anon5d9492510108	typeref:typename:s16	file:
 sp	src/Musyx/s_data.c	/^static s16 sp;$/;"	v	typeref:typename:s16	file:
 space_holder	src/Dolphin/MSL_C/MSL_Common/printf.c	/^enum sign_options { only_minus, sign_always, space_holder };$/;"	e	enum:sign_options	file:
 spinWait	src/game/rep_A00.c	/^void spinWait(void) {$/;"	f	typeref:typename:void

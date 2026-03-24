@@ -945,7 +945,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     continue
                 
                 # 3. Use struct_utils to reconcile
-                new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions)
+                new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions, log=_log)
                 
                 # 4. Replace in file
                 new_content = current_file_content.replace(old_struct_def, new_struct_def)
@@ -1517,7 +1517,7 @@ def committer_node(state):
                         content = f.read()
                     old_struct_def = _extract_struct_block(filepath, type_name)
                     if old_struct_def:
-                        new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions)
+                        new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions, log=print)
                         new_content = content.replace(old_struct_def, new_struct_def)
                         with open(filepath, "w") as f:
                             f.write(new_content)

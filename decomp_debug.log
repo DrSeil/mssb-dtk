@@ -9,105 +9,84 @@ LangGraph Decompilation Loop
 ============================================================
 
 [source_finder] Resolving fn_3_107078...
-[source_finder] Branch decomp/fn_3_107078 already exists, creating attempt 4: decomp/fn_3_107078_4
+[source_finder] Branch decomp/fn_3_107078 already exists, creating attempt 5: decomp/fn_3_107078_5
 [source_finder] Found: module=game, unit=game/game/gap_106DFC, source=game/gap_106DFC.c, is_stub=False, asm_lines=13
 [source_finder] Parsing SDA symbols from /home/michael/Desktop/mssb-dtk/config/GYQE01/game/symbols.txt...
 🔍 [source_finder] | status=running
 [decompiler] Running M2C for fn_3_107078...
-[decompiler] M2C output: 143 chars, body: 143 chars
+[decompiler] M2C output: 130 chars, body: 130 chars
 ⚙️  [decompiler] | iter=0
 [refactorer] Iteration 1 for fn_3_107078 (escalate=False, prefer_local=False)...
 DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
 [LLM] Invoking fast LLM (escalate=False)...
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
-{
-  "explanation": "The assembly indicates that `g_Minigame` is loaded into `r4`. Then, a byte is loaded from `g_Minigame + 0x1908` into `r0`, sign-extended, and added to `r4` to form a new base address in `r3`. A byte is then loaded from `r3 + 0x18E8` into `r0`. This suggests an array of structures where `g_Minigame._1908` is an index, and `0x18E8` is an offset within the indexed element. The comparison `cmplwi r0, 0x1` checks if this value is 1. If it is, a byte `0x1` is stored at `g_Minigame + 0x1A3F`. The previous C code used `_pad` and `_pad2` which are not correct for the offsets. The correct structure access should be `g_Minigame.minigameControlStruct[g_Minigame._1908].characterIndex[0]` for the read and `g_Minigame._1A3F` for the write.",
-  "function_code": "void fn_3_107078(void) {\n    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
-  "struct_modifications": [
-    {
-      "type_name": "MiniGameStruct",
-      "actions": [
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1A3F",
-          "offset": "0x1A3F"
-        }
-      ]
-    }
-  ],
-  "header_additions": "",
-  "extern_declarations": ""
-}
+{"explanation": "The assembly checks if a specific byte in `g_Minigame` at offset 0x18E8 equals 1, then sets another byte at offset 0x1A3F to 1. The current C code correctly computes the address using `&g_Minigame + (s8)g_Minigame._1908` and accesses the fields. No struct modifications are needed as the existing definitions include the required fields. The code uses appropriate types and matches the assembly's access pattern.", "function_code": "void fn_3_107078(void) {\n    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->unk18E8 == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}", "struct_modifications": [], "header_additions": "", "extern_declarations": ""}
 [LLM] Stream complete.
-[refactorer] Got 151 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] Got 130 chars function, 0 struct modifications, 0 chars header, 0 chars externs from fast LLM
 [refactorer] === LLM FUNCTION ===
 void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->unk18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [refactorer] === END LLM FUNCTION ===
-[refactorer] === LLM STRUCT UPDATES (1) ===
-  Type: MiniGameStruct
-    - {"action": "add_field", "type": "u8", "name": "_1A3F", "offset": "0x1A3F"}
-[refactorer] === END STRUCT UPDATES ===
 🤖 [refactorer] | llm=fast
 [builder] Build + score iteration 1 for fn_3_107078...
 [builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
 void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->unk18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
 [builder] Checking if auto-fix is possible for compiler errors...
 [builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/rep_F80.o
-[2/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[3/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[4/43] MWCC build/GYQE01/src/game/rep_EA0.o
+[1/43] MWCC build/GYQE01/src/game/rep_A00.o
+[2/43] MWCC build/GYQE01/src/game/rep_EA0.o
+[3/43] MWCC build/GYQE01/src/game/rep_F80.o
+[4/43] MWCC build/GYQE01/src/game/rep_720.o
 [5/43] MWCC build/GYQE01/src/game/rep_1200.o
-[6/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[7/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[8/43] MWCC build/GYQE01/src/game/rep_A00.o
-[9/43] MWCC build/GYQE01/src/game/m_sound.o
-[10/43] MWCC build/GYQE01/src/game/rep_1038.o
-[11/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[12/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[13/43] MWCC build/GYQE01/src/game/rep_720.o
+[6/43] MWCC build/GYQE01/src/game/gap_6C410.o
+[7/43] MWCC build/GYQE01/src/game/rep_1038.o
+[8/43] MWCC build/GYQE01/src/game/rep_13B8.o
+[9/43] MWCC build/GYQE01/src/game/rep_18E8.o
+[10/43] MWCC build/GYQE01/src/game/m_sound.o
+[11/43] MWCC build/GYQE01/src/game/rep_AC8.o
+[12/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
+[13/43] MWCC build/GYQE01/src/game/rep_1C0.o
 [14/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[15/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[16/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[17/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[18/43] MWCC build/GYQE01/src/game/gap_106DFC.o
+[15/43] MWCC build/GYQE01/src/game/rep_1D58.o
+[16/43] MWCC build/GYQE01/src/game/rep_1CB8.o
+[17/43] MWCC build/GYQE01/src/game/gap_B3B70.o
+[18/43] MWCC build/GYQE01/src/game/rep_1F58.o
+[19/43] MWCC build/GYQE01/src/game/rep_1E08.o
+[20/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
+[21/43] MWCC build/GYQE01/src/game/gap_106DFC.o
 FAILED: build/GYQE01/src/game/gap_106DFC.o 
 build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
 ### mwcceppc.exe Compiler:
 #    File: src\game\gap_106DFC.c
 # ------------------------------
-#      36: if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
-#   Error:                ^^^^^^^^^^^^^^^^^^^^^
-#   'minigameControlStruct' is not a struct/union/class member
+#      29: if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->unk18E8 == 1) {
+#   Error:                                                 ^^^^^^^
+#   'unk18E8' is not a struct/union/class member
 #   Too many errors printed, aborting program
 
 User break, cancelled...
-[19/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[20/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[21/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[22/43] MWCC build/GYQE01/src/game/rep_23E8.o
+[22/43] MWCC build/GYQE01/src/game/rep_1FD8.o
 [23/43] MWCC build/GYQE01/src/game/sta_c2.o
-[24/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[25/43] MWCC build/GYQE01/src/game/sta_c5.o
-[26/43] MWCC build/GYQE01/src/game/sta_c6.o
-[27/43] MWCC build/GYQE01/src/game/rep_2998.o
-[28/43] MWCC build/GYQE01/src/game/rep_1FD8.o
+[24/43] MWCC build/GYQE01/src/game/gap_BA150.o
+[25/43] MWCC build/GYQE01/src/game/rep_2998.o
+[26/43] MWCC build/GYQE01/src/game/rep_23E8.o
+[27/43] MWCC build/GYQE01/src/game/sta_c5.o
+[28/43] MWCC build/GYQE01/src/game/sta_c4.o
 [29/43] MWCC build/GYQE01/src/game/rep_3090.o
-[30/43] MWCC build/GYQE01/src/game/sta_c4.o
+[30/43] MWCC build/GYQE01/src/game/sta_c6.o
 [31/43] MWCC build/GYQE01/src/game/rep_31F0.o
+[32/43] MWCC build/GYQE01/src/game/rep_3290.o
+[33/43] MWCC build/GYQE01/src/game/rep_3310.o
+[34/43] MWCC build/GYQE01/src/game/rep_3448.o
 ninja: build stopped: subcommand failed.
 
 [builder] === END BUILD ERROR ===
@@ -122,78 +101,86 @@ DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
 {
-  "explanation": "The previous attempt failed because `minigameControlStruct` is not a direct member of `MiniGameStruct` at the offset implied by the assembly. The assembly loads a byte from `g_Minigame + 0x1908`, sign-extends it, and then adds this value to the base address of `g_Minigame` to form a new base address. From this new base address, it loads a byte at offset `0x18E8`. This indicates that `0x1908` is an index into an array of structures, and `0x18E8` is an offset *within* the indexed structure. Looking at the `MiniGameStruct` definition, `minigameControlStruct` is an array of `MiniGameControlStruct` starting at offset `0x18CC`. The offset `0x18E8` is `0x18CC + 0x1C`, where `0x1C` is the size of `MiniGameControlStruct`. This means the access is `g_Minigame.minigameControlStruct[index].characterIndex[0]` where `index` is derived from `g_Minigame._1908`. The `characterIndex` field is at offset `0x0` within `MiniGameControlStruct`. The error 'minigameControlStruct' is not a struct/union/class member indicates that the compiler thinks `g_Minigame.minigameControlStruct` is not a valid access. This is because `minigameControlStruct` is an array, not a single member. The correct way to access it is `g_Minigame.minigameControlStruct[index]`. The `_1908` field is a `u8`, which needs to be cast to `s8` for the `extsb` instruction to match. The `_1A3F` field is correctly identified.",
-  "function_code": "void fn_3_107078(void) {\n    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
-  "struct_modifications": [],
+  "explanation": "Theassembly accesses _18E8, which is missing from the current _MiniGameStruct definition. Adding this field resolves the 'not a struct member' error. The function code uses the correct field name _18E8 instead of 'unk18E8'.",
+  "function_code": "void fn_3_107078(void) {\n    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
+  "struct_modifications": [
+    {
+      "type_name": "_MiniGameStruct",
+      "actions": [
+        {
+          "action": "add_field",
+          "type": "u8",
+          "name": "_18E8",
+          "offset": "0x18E8"
+        }
+      ]
+    }
+  ],
   "header_additions": "",
   "extern_declarations": ""
 }
 [LLM] Stream complete.
-[refactorer] Got 151 chars function, 0 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] Got 128 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
 [refactorer] === LLM FUNCTION ===
 void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [refactorer] === END LLM FUNCTION ===
+[refactorer] === LLM STRUCT UPDATES (1) ===
+  Type: _MiniGameStruct
+    - {"action": "add_field", "type": "u8", "name": "_18E8", "offset": "0x18E8"}
+[refactorer] === END STRUCT UPDATES ===
 🤖 [refactorer] | llm=fast
 [builder] Build + score iteration 2 for fn_3_107078...
 [builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
 void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
+[builder] Applying struct modifications for _MiniGameStruct via struct_utils
+[builder] Updated _MiniGameStruct in /home/michael/Desktop/mssb-dtk/include/game/UnknownHomes_Game.h
 [builder] Checking if auto-fix is possible for compiler errors...
 [builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[2/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[3/43] MWCC build/GYQE01/src/game/m_sound.o
-[4/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[5/43] MWCC build/GYQE01/src/game/rep_A00.o
-[6/43] MWCC build/GYQE01/src/game/rep_720.o
-[7/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[8/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[9/43] MWCC build/GYQE01/src/game/rep_F80.o
-[10/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[11/43] MWCC build/GYQE01/src/game/rep_1038.o
-[12/43] MWCC build/GYQE01/src/game/rep_EA0.o
-[13/43] MWCC build/GYQE01/src/game/rep_1200.o
-[14/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[15/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[16/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[17/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[18/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[19/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[20/43] MWCC build/GYQE01/src/game/gap_106DFC.o
-FAILED: build/GYQE01/src/game/gap_106DFC.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
+[1/55] MWCC build/GYQE01/src/game/game_batter.o
+FAILED: build/GYQE01/src/game/game_batter.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -inline deferred -fp_contract on -MMD -c src/game/game_batter.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/game_batter.d build/GYQE01/src/game/game_batter.d
 ### mwcceppc.exe Compiler:
-#    File: src\game\gap_106DFC.c
-# ------------------------------
-#      36: if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908].characterIndex[0] == 1) {
-#   Error:                ^^^^^^^^^^^^^^^^^^^^^
-#   'minigameControlStruct' is not a struct/union/class member
+#    File: src\game\game_batter.c
+# -------------------------------
+#      30: g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
+#   Error:                                   ^
+#   pointer/array required
 #   Too many errors printed, aborting program
 
 User break, cancelled...
-[21/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[22/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[23/43] MWCC build/GYQE01/src/game/rep_23E8.o
-[24/43] MWCC build/GYQE01/src/game/sta_c2.o
-[25/43] MWCC build/GYQE01/src/game/rep_2998.o
-[26/43] MWCC build/GYQE01/src/game/sta_c4.o
-[27/43] MWCC build/GYQE01/src/game/rep_1FD8.o
-[28/43] MWCC build/GYQE01/src/game/sta_c6.o
-[29/43] MWCC build/GYQE01/src/game/sta_c5.o
-[30/43] MWCC build/GYQE01/src/game/rep_3090.o
-[31/43] MWCC build/GYQE01/src/game/rep_3290.o
-[32/43] MWCC build/GYQE01/src/game/rep_31F0.o
-[33/43] MWCC build/GYQE01/src/game/rep_3310.o
+[2/55] MWCC build/GYQE01/src/game/rep_540.o
+[3/55] MWCC build/GYQE01/src/game/rep_F80.o
+[4/55] MWCC build/GYQE01/src/game/gap_6C410.o
+[5/55] MWCC build/GYQE01/src/game/rep_940.o
+[6/55] MWCC build/GYQE01/src/game/rep_AC8.o
+FAILED: build/GYQE01/src/game/rep_AC8.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/rep_AC8.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/rep_AC8.d build/GYQE01/src/game/rep_AC8.d
+### mwcceppc.exe Compiler:
+#    File: src\game\rep_AC8.c
+# ---------------------------
+#     550: if (g_Minigame.GameMode_MiniGame == 5) {
+#   Error:                ^^^^^^^^^^^^^^^^^
+#   'GameMode_MiniGame' is not a struct/union/class member
+#   Too many errors printed, aborting program
+
+User break, cancelled...
+[7/55] MWCC build/GYQE01/src/game/rep_A00.o
+[8/55] MWCC build/GYQE01/src/game/rep_D0.o
+[9/55] MWCC build/GYQE01/src/game/gap_6AEC0.o
+[10/55] MWCC build/GYQE01/src/game/rep_EA0.o
+[11/55] MWCC build/GYQE01/src/game/gap_5985C.o
+[12/55] MWCC build/GYQE01/src/game/rep_720.o
+[13/55] MWCC build/GYQE01/src/game/rep_1C0.o
+[14/55] MWCC build/GYQE01/src/game/rep_1038.o
 ninja: build stopped: subcommand failed.
 
 [builder] === END BUILD ERROR ===
@@ -208,78 +195,86 @@ DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
 {
-  "explanation": "The previous attempts failed because `minigameControlStruct` is an array within `MiniGameStruct`, and direct member access `g_Minigame.minigameControlStruct` is incorrect. The assembly shows an index (`g_Minigame._1908`) is used to calculate an offset, which is then added to the base address of `g_Minigame` to form a new base pointer. From this new base pointer, an offset of `0x18E8` is used to load a byte. This implies that `0x18E8` is an offset relative to the start of the `MiniGameStruct` itself, not relative to an element of `minigameControlStruct`. The assembly `add r3, r4, r0` where `r4` holds `&g_Minigame` and `r0` holds the sign-extended value of `g_Minigame._1908` means that `r3` becomes `&g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(&g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is a direct byte access at a calculated offset from the start of `g_Minigame`. The field `_18E8` is already defined in `MiniGameStruct` at offset `0x18E8`. Therefore, the access should be `g_Minigame._18E8` after adding the index. The `_1908` field is used as an index, and the `extsb` instruction indicates it should be sign-extended. The `_1A3F` field is correctly identified for the write.",
-  "function_code": "void fn_3_107078(void) {\n    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
-  "struct_modifications": [],
+  "explanation": "The function accesses a byte at offset 0x18E8 from a computed address based on g_Minigame._1908, then compares it to 1. If equal, it sets g_Minigame._1A3F to 1. The previous attempt failed because _18E8 was missing from the struct definition. Adding this field resolves the syntax error. The code uses direct pointer arithmetic with the global struct, matching the assembly's pattern of computing addresses dynamically.",
+  "function_code": "void fn_3_107078(void) {\n    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
+  "struct_modifications": [
+    {
+      "type_name": "_MiniGameStruct",
+      "actions": [
+        {
+          "action": "add_field",
+          "type": "u8",
+          "name": "_18E8",
+          "offset": "0x18E8"
+        }
+      ]
+    }
+  ],
   "header_additions": "",
   "extern_declarations": ""
 }
 [LLM] Stream complete.
-[refactorer] Got 135 chars function, 0 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] Got 128 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
 [refactorer] === LLM FUNCTION ===
 void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [refactorer] === END LLM FUNCTION ===
+[refactorer] === LLM STRUCT UPDATES (1) ===
+  Type: _MiniGameStruct
+    - {"action": "add_field", "type": "u8", "name": "_18E8", "offset": "0x18E8"}
+[refactorer] === END STRUCT UPDATES ===
 🤖 [refactorer] | llm=fast
 [builder] Build + score iteration 3 for fn_3_107078...
 [builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
 void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
+[builder] Applying struct modifications for _MiniGameStruct via struct_utils
+[builder] Updated _MiniGameStruct in /home/michael/Desktop/mssb-dtk/include/game/UnknownHomes_Game.h
 [builder] Checking if auto-fix is possible for compiler errors...
 [builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[2/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[3/43] MWCC build/GYQE01/src/game/rep_EA0.o
-[4/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[5/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[6/43] MWCC build/GYQE01/src/game/rep_A00.o
-[7/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[8/43] MWCC build/GYQE01/src/game/rep_F80.o
-[9/43] MWCC build/GYQE01/src/game/m_sound.o
-[10/43] MWCC build/GYQE01/src/game/rep_1038.o
-[11/43] MWCC build/GYQE01/src/game/rep_1200.o
-[12/43] MWCC build/GYQE01/src/game/rep_720.o
-[13/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[14/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[15/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[16/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[17/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[18/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[19/43] MWCC build/GYQE01/src/game/rep_1FD8.o
-[20/43] MWCC build/GYQE01/src/game/gap_106DFC.o
-FAILED: build/GYQE01/src/game/gap_106DFC.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
+[1/55] MWCC build/GYQE01/src/game/rep_AC8.o
+FAILED: build/GYQE01/src/game/rep_AC8.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/rep_AC8.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/rep_AC8.d build/GYQE01/src/game/rep_AC8.d
 ### mwcceppc.exe Compiler:
-#    File: src\game\gap_106DFC.c
-# ------------------------------
-#      36: if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
-#   Error:                                              ^^^^^
-#   '_1908' is not a struct/union/class member
+#    File: src\game\rep_AC8.c
+# ---------------------------
+#     550: if (g_Minigame.GameMode_MiniGame == 5) {
+#   Error:                ^^^^^^^^^^^^^^^^^
+#   'GameMode_MiniGame' is not a struct/union/class member
 #   Too many errors printed, aborting program
 
 User break, cancelled...
-[21/43] MWCC build/GYQE01/src/game/sta_c2.o
-[22/43] MWCC build/GYQE01/src/game/rep_23E8.o
-[23/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[24/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[25/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[26/43] MWCC build/GYQE01/src/game/sta_c6.o
-[27/43] MWCC build/GYQE01/src/game/rep_2998.o
-[28/43] MWCC build/GYQE01/src/game/sta_c4.o
-[29/43] MWCC build/GYQE01/src/game/sta_c5.o
-[30/43] MWCC build/GYQE01/src/game/rep_3090.o
-[31/43] MWCC build/GYQE01/src/game/rep_31F0.o
-[32/43] MWCC build/GYQE01/src/game/rep_3310.o
-[33/43] MWCC build/GYQE01/src/game/rep_3290.o
+[2/55] MWCC build/GYQE01/src/game/rep_EA0.o
+[3/55] MWCC build/GYQE01/src/game/rep_940.o
+[4/55] MWCC build/GYQE01/src/game/rep_540.o
+[5/55] MWCC build/GYQE01/src/game/rep_1C0.o
+[6/55] MWCC build/GYQE01/src/game/rep_F80.o
+[7/55] MWCC build/GYQE01/src/game/game_batter.o
+FAILED: build/GYQE01/src/game/game_batter.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -inline deferred -fp_contract on -MMD -c src/game/game_batter.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/game_batter.d build/GYQE01/src/game/game_batter.d
+### mwcceppc.exe Compiler:
+#    File: src\game\game_batter.c
+# -------------------------------
+#      30: g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
+#   Error:                                   ^
+#   pointer/array required
+#   Too many errors printed, aborting program
+
+User break, cancelled...
+[8/55] MWCC build/GYQE01/src/game/rep_A00.o
+[9/55] MWCC build/GYQE01/src/game/rep_720.o
+[10/55] MWCC build/GYQE01/src/game/rep_D0.o
+[11/55] MWCC build/GYQE01/src/game/gap_5985C.o
+[12/55] MWCC build/GYQE01/src/game/gap_6AEC0.o
+[13/55] MWCC build/GYQE01/src/game/gap_6C410.o
+[14/55] MWCC build/GYQE01/src/game/rep_1038.o
 ninja: build stopped: subcommand failed.
 
 [builder] === END BUILD ERROR ===
@@ -294,23 +289,17 @@ DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
 {
-  "explanation": "The previous attempts failed because `_1908` was not recognized as a member of `MiniGameStruct`. The assembly loads a byte from `g_Minigame + 0x1908`, sign-extends it, and then adds this value to the base address of `g_Minigame` to form a new base address. From this new base address, it loads a byte at offset `0x18E8`. This implies that `0x18E8` is an offset relative to the start of `MiniGameStruct` itself, and `_1908` is an index that shifts the base address. The error indicates that `_1908` is not a member, which means the struct definition is missing this field. I will add `_1908` as a `u8` at offset `0x1908` to `MiniGameStruct`. The access `*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8)` is a direct memory access pattern that matches the assembly's `add r3, r4, r0` and `lbz r0, 0x18e8(r3)` instructions, where `r4` is `&g_Minigame`, `r0` is `(s8)g_Minigame._1908`, and `r3` becomes `&g_Minigame + (s8)g_Minigame._1908`. The final `stb` instruction writes `1` to `g_Minigame + 0x1A3F`, which is correctly represented by `g_Minigame._1A3F = 1;` after adding `_1A3F` to the struct.",
-  "function_code": "void fn_3_107078(void) {\n    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
+  "explanation": "The function accesses a byte at offset 0x18E8 from a computed address based on g_Minigame._1908, then compares it to 1. If equal, it sets g_Minigame._1A3F to 1. The previous attempt failed because _18E8 was missing from the struct definition. Adding this field resolves the syntax error. The code uses direct pointer arithmetic with the global struct, matching the assembly's pattern of computing addresses dynamically.",
+  "function_code": "void fn_3_107078(void) {\n    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
   "struct_modifications": [
     {
-      "type_name": "MiniGameStruct",
+      "type_name": "_MiniGameStruct",
       "actions": [
         {
           "action": "add_field",
           "type": "u8",
-          "name": "_1908",
-          "offset": "0x1908"
-        },
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1A3F",
-          "offset": "0x1A3F"
+          "name": "_18E8",
+          "offset": "0x18E8"
         }
       ]
     }
@@ -319,74 +308,79 @@ DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
   "extern_declarations": ""
 }
 [LLM] Stream complete.
-[refactorer] Got 135 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
+[refactorer] Got 128 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
 [refactorer] === LLM FUNCTION ===
 void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [refactorer] === END LLM FUNCTION ===
 [refactorer] === LLM STRUCT UPDATES (1) ===
-  Type: MiniGameStruct
-    - {"action": "add_field", "type": "u8", "name": "_1908", "offset": "0x1908"}
-    - {"action": "add_field", "type": "u8", "name": "_1A3F", "offset": "0x1A3F"}
+  Type: _MiniGameStruct
+    - {"action": "add_field", "type": "u8", "name": "_18E8", "offset": "0x18E8"}
 [refactorer] === END STRUCT UPDATES ===
 🤖 [refactorer] | llm=fast
 [builder] Build + score iteration 4 for fn_3_107078...
 [builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
 void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
+    if ((u8) (&g_Minigame + (s8) g_Minigame._1908)->_18E8 == 1) {
         g_Minigame._1A3F = 1;
     }
 }
 [builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
+[builder] Applying struct modifications for _MiniGameStruct via struct_utils
+[builder] Updated _MiniGameStruct in /home/michael/Desktop/mssb-dtk/include/game/UnknownHomes_Game.h
 [builder] Checking if auto-fix is possible for compiler errors...
 [builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[2/43] MWCC build/GYQE01/src/game/rep_1038.o
-[3/43] MWCC build/GYQE01/src/game/rep_F80.o
-[4/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[5/43] MWCC build/GYQE01/src/game/rep_1200.o
-[6/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[7/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[8/43] MWCC build/GYQE01/src/game/rep_EA0.o
-[9/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[10/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[11/43] MWCC build/GYQE01/src/game/m_sound.o
-[12/43] MWCC build/GYQE01/src/game/rep_720.o
-[13/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[14/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[15/43] MWCC build/GYQE01/src/game/rep_A00.o
-[16/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[17/43] MWCC build/GYQE01/src/game/rep_23E8.o
-[18/43] MWCC build/GYQE01/src/game/gap_106DFC.o
-FAILED: build/GYQE01/src/game/gap_106DFC.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
+[1/55] MWCC build/GYQE01/src/game/rep_540.o
+[2/55] MWCC build/GYQE01/src/game/rep_AC8.o
+FAILED: build/GYQE01/src/game/rep_AC8.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/rep_AC8.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/rep_AC8.d build/GYQE01/src/game/rep_AC8.d
 ### mwcceppc.exe Compiler:
-#    File: src\game\gap_106DFC.c
-# ------------------------------
-#      36: if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
-#   Error:                                              ^^^^^
-#   '_1908' is not a struct/union/class member
+#    File: src\game\rep_AC8.c
+# ---------------------------
+#     550: if (g_Minigame.GameMode_MiniGame == 5) {
+#   Error:                ^^^^^^^^^^^^^^^^^
+#   'GameMode_MiniGame' is not a struct/union/class member
 #   Too many errors printed, aborting program
 
 User break, cancelled...
-[19/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[20/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[21/43] MWCC build/GYQE01/src/game/rep_2998.o
-[22/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[23/43] MWCC build/GYQE01/src/game/rep_1FD8.o
-[24/43] MWCC build/GYQE01/src/game/sta_c4.o
-[25/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[26/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[27/43] MWCC build/GYQE01/src/game/sta_c2.o
-[28/43] MWCC build/GYQE01/src/game/sta_c6.o
-[29/43] MWCC build/GYQE01/src/game/rep_3090.o
-[30/43] MWCC build/GYQE01/src/game/sta_c5.o
-[31/43] MWCC build/GYQE01/src/game/rep_31F0.o
+[3/55] MWCC build/GYQE01/src/game/rep_D0.o
+[4/55] MWCC build/GYQE01/src/game/game_batter.o
+FAILED: build/GYQE01/src/game/game_batter.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -inline deferred -fp_contract on -MMD -c src/game/game_batter.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/game_batter.d build/GYQE01/src/game/game_batter.d
+### mwcceppc.exe Compiler:
+#    File: src\game\game_batter.c
+# -------------------------------
+#      30: g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID])) {
+#   Error:                                   ^
+#   pointer/array required
+#   Too many errors printed, aborting program
+
+User break, cancelled...
+[5/55] MWCC build/GYQE01/src/game/gap_6C410.o
+[6/55] MWCC build/GYQE01/src/game/rep_940.o
+[7/55] MWCC build/GYQE01/src/game/rep_EA0.o
+[8/55] MWCC build/GYQE01/src/game/rep_A00.o
+[9/55] MWCC build/GYQE01/src/game/rep_1038.o
+[10/55] MWCC build/GYQE01/src/game/rep_1188.o
+FAILED: build/GYQE01/src/game/rep_1188.o 
+build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/rep_1188.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/rep_1188.d build/GYQE01/src/game/rep_1188.d
+### mwcceppc.exe Compiler:
+#    File: src\game\rep_1188.c
+# ----------------------------
+#      33: rosterID = g_Minigame.minigameControlStruct[0].characterIndex[g_Minigame.rosterID];
+#   Error:                                              ^
+#   pointer/array required
+#   Too many errors printed, aborting program
+
+User break, cancelled...
+[11/55] MWCC build/GYQE01/src/game/rep_1C0.o
+[12/55] MWCC build/GYQE01/src/game/rep_F80.o
+[13/55] MWCC build/GYQE01/src/game/gap_5985C.o
+[14/55] MWCC build/GYQE01/src/game/gap_6AEC0.o
+[15/55] MWCC build/GYQE01/src/game/rep_720.o
 ninja: build stopped: subcommand failed.
 
 [builder] === END BUILD ERROR ===
@@ -400,130 +394,3 @@ DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
 [LLM] Invoking fast LLM (escalate=False)...
 [LLM] Requesting stream...
 [LLM] Stream iterator obtained. Waiting for first chunk...
-{
-  "explanation": "The previous attempts failed because the `_1908` field was not correctly added to the `MiniGameStruct` definition, leading to a 'not a struct/union/class member' error. The assembly loads a byte from `g_Minigame + 0x1908`, sign-extends it, and then adds this value to the base address of `g_Minigame` to form a new base address. From this new base address, it loads a byte at offset `0x18E8`. This implies a direct memory access pattern where `_1908` acts as an index or offset to shift the base pointer before accessing `_18E8`. To fix this, I will explicitly add `_1908` as a `u8` at offset `0x1908` to `MiniGameStruct`. The access `*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8)` correctly reflects the assembly's pointer arithmetic and byte loading. The `_1A3F` field is also added to the struct for the final store operation.",
-  "function_code": "void fn_3_107078(void) {\n    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
-  "struct_modifications": [
-    {
-      "type_name": "MiniGameStruct",
-      "actions": [
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1908",
-          "offset": "0x1908"
-        },
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1A3F",
-          "offset": "0x1A3F"
-        }
-      ]
-    }
-  ],
-  "header_additions": "",
-  "extern_declarations": ""
-}
-[LLM] Stream complete.
-[refactorer] Got 135 chars function, 1 struct modifications, 0 chars header, 0 chars externs from fast LLM
-[refactorer] === LLM FUNCTION ===
-void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
-        g_Minigame._1A3F = 1;
-    }
-}
-[refactorer] === END LLM FUNCTION ===
-[refactorer] === LLM STRUCT UPDATES (1) ===
-  Type: MiniGameStruct
-    - {"action": "add_field", "type": "u8", "name": "_1908", "offset": "0x1908"}
-    - {"action": "add_field", "type": "u8", "name": "_1A3F", "offset": "0x1A3F"}
-[refactorer] === END STRUCT UPDATES ===
-🤖 [refactorer] | llm=fast
-[builder] Build + score iteration 5 for fn_3_107078...
-[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
-void fn_3_107078(void) {
-    if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
-        g_Minigame._1A3F = 1;
-    }
-}
-[builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
-[builder] Checking if auto-fix is possible for compiler errors...
-[builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/rep_1038.o
-[2/43] MWCC build/GYQE01/src/game/rep_EA0.o
-[3/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[4/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[5/43] MWCC build/GYQE01/src/game/rep_1200.o
-[6/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[7/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[8/43] MWCC build/GYQE01/src/game/rep_A00.o
-[9/43] MWCC build/GYQE01/src/game/rep_720.o
-[10/43] MWCC build/GYQE01/src/game/m_sound.o
-[11/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[12/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[13/43] MWCC build/GYQE01/src/game/rep_F80.o
-[14/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[15/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[16/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[17/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[18/43] MWCC build/GYQE01/src/game/gap_106DFC.o
-FAILED: build/GYQE01/src/game/gap_106DFC.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
-### mwcceppc.exe Compiler:
-#    File: src\game\gap_106DFC.c
-# ------------------------------
-#      36: if (*(u8*)((u8*)&g_Minigame + (s8)g_Minigame._1908 + 0x18E8) == 1) {
-#   Error:                                              ^^^^^
-#   '_1908' is not a struct/union/class member
-#   Too many errors printed, aborting program
-
-User break, cancelled...
-[19/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[20/43] MWCC build/GYQE01/src/game/rep_1FD8.o
-[21/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[22/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[23/43] MWCC build/GYQE01/src/game/rep_2998.o
-[24/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[25/43] MWCC build/GYQE01/src/game/sta_c4.o
-[26/43] MWCC build/GYQE01/src/game/rep_23E8.o
-[27/43] MWCC build/GYQE01/src/game/sta_c2.o
-[28/43] MWCC build/GYQE01/src/game/rep_3090.o
-[29/43] MWCC build/GYQE01/src/game/sta_c6.o
-[30/43] MWCC build/GYQE01/src/game/sta_c5.o
-[31/43] MWCC build/GYQE01/src/game/rep_31F0.o
-ninja: build stopped: subcommand failed.
-
-[builder] === END BUILD ERROR ===
-[builder] Result: 0.0% match (0 mismatches), status=running, escalate=False
-[builder] Logged attempt to /home/michael/Desktop/mssb-dtk/logs/decomp/fn_3_107078/attempt_5.log
-🔨 [builder] | match=0.0% | status=running | iter=5
-[classifier] Category: Syntax Error
-[graph] Max iterations (5) reached.
-   [classifier]
-[summarizer] Analyzing execution history for key learnings...
-DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
-[summarizer] LLM response: * The `minigameControlStruct` field within `MiniGameStruct` is likely an array, and its elements are...
-[summarizer] Appending 391 chars of new learnings to key_learnings.md
-   [summarizer] | match=0.0% | llm=fast | status=running | iter=5
-
-============================================================
-RESULT: fn_3_107078
-============================================================
-  Status:     running
-  Match:      0.0%
-  Iterations: 5
-
-  Attempt History:
-    1.   0.0% BUILD ERROR
-    2.   0.0% BUILD ERROR
-    3.   0.0% BUILD ERROR
-    4.   0.0% BUILD ERROR
-    5.   0.0% BUILD ERROR
-
-  ⚠️  Max iterations reached. Best: 0.0%
-============================================================
-
-Total time: 32.0s
