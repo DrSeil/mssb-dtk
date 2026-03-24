@@ -41,10 +41,27 @@ def source_finder_node(state):
         original_branch = res.stdout.strip()
         
         # Create and switch to temporary branch
-        tmp_branch = f"decomp/{func_name}"
-        print(f"[source_finder] Creating/switching to branch {tmp_branch} (from {original_branch})...")
+        base_branch = f"decomp/{func_name}"
+        tmp_branch = base_branch
+        
+        # Check if the base branch already exists
+        res = subprocess.run(["git", "branch", "--list", tmp_branch], capture_output=True, text=True, cwd=_root_dir)
+        if res.stdout.strip():
+            # If it exists, find the next available attempt number
+            i = 1
+            while True:
+                tmp_branch = f"{base_branch}_{i}"
+                res = subprocess.run(["git", "branch", "--list", tmp_branch], capture_output=True, text=True, cwd=_root_dir)
+                if not res.stdout.strip():
+                    break
+                i += 1
+            print(f"[source_finder] Branch {base_branch} already exists, creating attempt {i}: {tmp_branch}")
+        else:
+            print(f"[source_finder] Creating branch {tmp_branch} (from {original_branch})...")
+            
+        # Create and switch to temporary branch
         subprocess.run(["git", "checkout", "-b", tmp_branch], capture_output=True, cwd=_root_dir)
-        # If it already exists, just switch to it
+        # If it failed to create (race condition?), try checking it out
         subprocess.run(["git", "checkout", tmp_branch], capture_output=True, cwd=_root_dir)
     except Exception as e:
         print(f"[source_finder] Git branching failed: {e}")
