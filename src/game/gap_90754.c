@@ -7,8 +7,9 @@ void fn_3_90754(Gap90754Struct* arg0, u8 arg1, u8 arg2) {
 }
 
 // .text:0x00090764 size:0x34 mapped:0x806CF7F8
-void fn_3_90764(void) {
-    return;
+s32 fn_3_90764(void) {
+    fn_80021518(0x33, lbl_800EF808.unkBC);
+    return 0;
 }
 
 // .text:0x00090798 size:0x84 mapped:0x806CF82C

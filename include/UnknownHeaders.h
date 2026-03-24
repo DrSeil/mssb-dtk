@@ -11,6 +11,13 @@ typedef void (*QueueCallback)(void);
 void fn_800528AC(void (*callback)(void));
 void fn_80011604(s8 arg1, void (*func)(void));
 
+typedef struct {
+    u8 _pad[0xBC];
+    s32 unkBC;
+} Lbl800EF808; // size: 0x39C
+extern Lbl800EF808 lbl_800EF808;
+BOOL fn_80021518(s32 charID, s32 param_2);
+
 // Forward declaration for fn_800339F0 return type
 struct Struct_800339F0_Result;
 

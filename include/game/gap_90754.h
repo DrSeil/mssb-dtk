@@ -2,6 +2,7 @@
 #define __GAME_gap_90754_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 typedef struct {
     u8 _pad[0x11820];
@@ -10,7 +11,7 @@ typedef struct {
 } Gap90754Struct;
 
 void fn_3_90754(Gap90754Struct* arg0, u8 arg1, u8 arg2);
-void fn_3_90764(void);
+s32 fn_3_90764(void);
 void fn_3_90798(void);
 void fn_3_9081C(void);
 void fn_3_90860(void);
