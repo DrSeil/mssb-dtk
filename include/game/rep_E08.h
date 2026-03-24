@@ -8,12 +8,30 @@ typedef struct {
     u16 field_0x04; // 0x04
     u8 _pad1[0x02];
     u8 field_0x08;  // 0x08
-    u8 _pad2[0x02];
-    u8 field_0x0B;  // 0x0B
+    u8 _pad2[0x01];
+    u8 field_0x0a;  // 0x0a
+    u8 field_0x0B;  // 0x0b
     u8 _pad3[0x04];
 } Struct_32220; // size: 0x10
 
 extern Struct_32220 lbl_3_common_bss_32220;
+
+typedef struct {
+    u8 unk0; // 0x00
+    u8 unk1; // 0x01
+    u8 unk2; // 0x02
+    u8 unk3; // 0x03
+} Struct_32230; // size: 0x04
+
+extern Struct_32230 lbl_3_common_bss_32230;
+
+typedef struct {
+    u8 unk0; // 0x00
+    u8 unk1; // 0x01
+    u8 _pad[0x06];
+} Struct_32234; // size: 0x08
+
+extern Struct_32234 lbl_3_common_bss_32234;
 
 typedef struct {
     u8 _pad0[0x38];
