@@ -1,4 +1,5 @@
 #include "game/gap_114FC0.h"
+#include "UnknownHeaders.h"
 
 // .text:0x00114FC0 size:0x6C mapped:0x80754054
 void fn_3_114FC0(void) {
@@ -77,7 +78,10 @@ void fn_3_1160BC(void) {
 
 // .text:0x0011669C size:0x30 mapped:0x80755730
 void fn_3_11669C(void) {
-    return;
+    g_hugeAnimStruct.entries_2D94[240].unk_26 = 0;
+    g_hugeAnimStruct.entries_2D94[241].unk_26 = 0;
+    g_hugeAnimStruct.entries_2D94[242].unk_26 = 0;
+    g_hugeAnimStruct.entries_2D94[243].unk_26 = 0;
 }
 
 // .text:0x001166CC size:0xC0 mapped:0x80755760

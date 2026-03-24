@@ -129,15 +129,11 @@ typedef struct HugeAnimEntry2D94 {
     // Not confident of these
     /* 0x00 */ void* stadiumFileHeaderPointer;
     /* 0x04 */ void* stadiumObjectLoadingPtr;
-    /* 0x08 */ s32 unk08[7]; // 0x08 through 0x24
-    /* 0x24 */ s32 unk24;
-    
-    // --- THE TARGET BYTE ---
-    /* 0x26 */ u8 unk_26; // The u8 zeroed in fn_3_116B38
-    // -----------------------
-    
-    /* 0x27 */ u8 _pad[0x28 - 0x27]; // Ensure total size is 0x28 (40 u8s)
-} HugeAnimEntry2D94;
+    /* 0x08 */ s32 unk08[7]; // 0x08 through 0x23
+    /* 0x24 */ u8 _pad24[2]; // 0x24-0x25
+    /* 0x26 */ u8 unk_26;
+    /* 0x27 */ u8 _pad27;
+} HugeAnimEntry2D94; // size: 0x28
 typedef struct HugeAnimEntry68 {
     AnimLevel1* field_0x0;  // offset 0x0
     AnimLevel1* field_0x4;  // offset 0x4
