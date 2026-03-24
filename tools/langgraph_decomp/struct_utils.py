@@ -255,13 +255,13 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
 
 if __name__ == "__main__":
     # Test
-    test_struct = \"\"\"
+    test_struct = """
 typedef struct CommonBss_35154 {
     /* 0x000 */ u32 firstMember;
     /* 0x004 */ u8 _pad0[0x3AC - 4];
     /* 0x3AC */ u32 bitfield;
 } CommonBss_35154;
-\"\"\"
+"""
     mods = [
         {'action': 'add_field', 'type': 'f32', 'name': 'unk3EC', 'offset': '0x3EC'},
         {'action': 'add_field', 'type': 'u8', 'name': 'unk479', 'offset': '0x479'}
