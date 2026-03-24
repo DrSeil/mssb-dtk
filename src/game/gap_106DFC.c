@@ -62,8 +62,19 @@ void fn_3_1078F8(void) {
 }
 
 // .text:0x00107988 size:0x40 mapped:0x80746A1C
-void fn_3_107988(void) {
-    return;
+s32 fn_3_107988(u32 arg0) {
+    MiniGameStruct* s = &g_Minigame;
+    u32 count = s->field_1E26[4] - 1;
+    if (count <= 0) {
+        return 0;
+    }
+    do {
+        if (s->_1DFC[0x20] == arg0) {
+            return 1;
+        }
+        s = (MiniGameStruct*)((u8*)s + 1);
+    } while (--count != 0);
+    return 0;
 }
 
 // .text:0x001079C8 size:0x1D4 mapped:0x80746A5C
