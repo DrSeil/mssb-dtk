@@ -1,140 +1,15 @@
-
-============================================================
-LangGraph Decompilation Loop
-============================================================
-  Function:       fn_3_107078
-  Max iterations: 15
-  Escalate after: 5
-  Human-in-loop:  False
-============================================================
-
-[source_finder] Resolving fn_3_107078...
-[source_finder] Branch decomp/fn_3_107078 already exists, creating attempt 2: decomp/fn_3_107078_2
-[source_finder] Found: module=game, unit=game/game/gap_106DFC, source=game/gap_106DFC.c, is_stub=False, asm_lines=13
-[source_finder] Parsing SDA symbols from /home/michael/Desktop/mssb-dtk/config/GYQE01/game/symbols.txt...
-🔍 [source_finder] | status=running
-[decompiler] Running M2C for fn_3_107078...
-[decompiler] M2C output: 143 chars, body: 143 chars
-⚙️  [decompiler] | iter=0
-[refactorer] Iteration 1 for fn_3_107078 (escalate=False, prefer_local=False)...
-DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
-[LLM] Invoking fast LLM (escalate=False)...
-[LLM] Requesting stream...
-[LLM] Stream iterator obtained. Waiting for first chunk...
-{
-  "explanation": "The assembly reads a byte at offset 0x1908, sign-extends it, uses it as an index into an array of `MiniGameControlStruct` (which starts at 0x18CC), and then reads a byte at offset 0x18E8 relative to the start of `g_Minigame` plus the indexed `MiniGameControlStruct`'s base address. This implies that the `_18E8` field is actually part of the `MiniGameControlStruct` and the index is used to select one of the two `MiniGameControlStruct` instances. The `_18E8` field is at offset `0x18E8 - 0x18CC = 0x1C` relative to the start of `MiniGameControlStruct`. The `_1908` field is used as an index, and the `_1A3F` field is set to 1. The original C code had a complex `_pad` access that was incorrect. The `_1908` field is a `u8` and needs to be cast to `s8` for sign extension to match the `extsb` instruction. The `_1A3F` field is directly set.",
-  "function_code": "void fn_3_107078(void) {\n    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C == 1) {\n        g_Minigame._1A3F = 1;\n    }\n}",
-  "struct_modifications": [
-    {
-      "type_name": "MiniGameStruct",
-      "actions": [
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1A3F",
-          "offset": "0x1A3F"
-        }
-      ]
-    },
-    {
-      "type_name": "MiniGameControlStruct",
-      "actions": [
-        {
-          "action": "add_field",
-          "type": "u8",
-          "name": "_1C",
-          "offset": "0x1C"
-        }
-      ]
-    }
-  ],
-  "header_additions": "",
-  "extern_declarations": ""
-}
-[LLM] Stream complete.
-[refactorer] Got 137 chars function, 2 struct modifications, 0 chars header, 0 chars externs from fast LLM
-[refactorer] === LLM FUNCTION ===
-void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C == 1) {
-        g_Minigame._1A3F = 1;
-    }
-}
-[refactorer] === END LLM FUNCTION ===
-[refactorer] === LLM STRUCT UPDATES (2) ===
-  Type: MiniGameStruct
-    - {"action": "add_field", "type": "u8", "name": "_1A3F", "offset": "0x1A3F"}
-  Type: MiniGameControlStruct
-    - {"action": "add_field", "type": "u8", "name": "_1C", "offset": "0x1C"}
-[refactorer] === END STRUCT UPDATES ===
-🤖 [refactorer] | llm=fast
-[builder] Build + score iteration 1 for fn_3_107078...
-[builder] === CODE BEING WRITTEN TO /home/michael/Desktop/mssb-dtk/src/game/gap_106DFC.c ===
-void fn_3_107078(void) {
-    if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C == 1) {
-        g_Minigame._1A3F = 1;
-    }
-}
-[builder] === END CODE ===
-[builder] Applying struct modifications for MiniGameStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameStruct
-[builder] Applying struct modifications for MiniGameControlStruct via struct_utils
-[builder] WARNING: Could not find file for MiniGameControlStruct
-[builder] Checking if auto-fix is possible for compiler errors...
-[builder] === FULL BUILD ERROR ===
-[1/43] MWCC build/GYQE01/src/game/rep_1200.o
-[2/43] MWCC build/GYQE01/src/game/rep_18E8.o
-[3/43] MWCC build/GYQE01/src/game/rep_F80.o
-[4/43] MWCC build/GYQE01/src/game/rep_A00.o
-[5/43] MWCC build/GYQE01/src/game/rep_AC8.o
-[6/43] MWCC build/GYQE01/src/game/rep_1C0.o
-[7/43] MWCC build/GYQE01/src/game/rep_16B8.o
-[8/43] MWCC build/GYQE01/src/game/gap_6C410.o
-[9/43] MWCC build/GYQE01/src/game/rep_EA0.o
-[10/43] MWCC build/GYQE01/src/game/rep_13B8.o
-[11/43] MWCC build/GYQE01/src/game/gap_6AEC0.o
-[12/43] MWCC build/GYQE01/src/game/m_sound.o
-[13/43] MWCC build/GYQE01/src/game/rep_720.o
-[14/43] MWCC build/GYQE01/src/game/rep_1038.o
-[15/43] MWCC build/GYQE01/src/game/rep_1D58.o
-[16/43] MWCC build/GYQE01/src/game/gap_B3B70.o
-[17/43] MWCC build/GYQE01/src/game/rep_1CB8.o
-[18/43] MWCC build/GYQE01/src/game/gap_106DFC.o
-FAILED: build/GYQE01/src/game/gap_106DFC.o 
-build/tools/wibo build/tools/sjiswrap.exe build/compilers/GC/2.6/mwcceppc.exe -proc gekko -nodefaults -Cpp_exceptions off -RTTI off -fp hard -fp_contract on -O4,p -maxerrors 1 -enum int -inline auto -str reuse,readonly -nosyspath -use_lmw_stmw on -sdata 8 -sdata2 8 -DVERNUM={version_num} -i include -i include/stl -DNDEBUG=1 -sdata 0 -sdata2 0 -O4,p -sym on -inline noauto -pool off -requireprotos -lang=c -MMD -c src/game/gap_106DFC.c -o build/GYQE01/src/game && "/usr/bin/python3" tools/transform_dep.py build/GYQE01/src/game/gap_106DFC.d build/GYQE01/src/game/gap_106DFC.d
-### mwcceppc.exe Compiler:
-#    File: src\game\gap_106DFC.c
-# ------------------------------
-#      36: if (g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C == 1) {
-#   Error:                ^^^^^^^^^^^^^^^^^^^^^
-#   'minigameControlStruct' is not a struct/union/class member
-#   Too many errors printed, aborting program
-
-User break, cancelled...
-[19/43] MWCC build/GYQE01/src/game/rep_1F58.o
-[20/43] MWCC build/GYQE01/src/game/gap_AC9F8.o
-[21/43] MWCC build/GYQE01/src/game/rep_1FD8.o
-[22/43] MWCC build/GYQE01/src/game/sta_c5.o
-[23/43] MWCC build/GYQE01/src/game/sta_c6.o
-[24/43] MWCC build/GYQE01/src/game/gap_BA150.o
-[25/43] MWCC build/GYQE01/src/game/sta_c4.o
-[26/43] MWCC build/GYQE01/src/game/sta_c2.o
-[27/43] MWCC build/GYQE01/src/game/rep_23E8.o
-[28/43] MWCC build/GYQE01/src/game/rep_3090.o
-[29/43] MWCC build/GYQE01/src/game/rep_1E08.o
-[30/43] MWCC build/GYQE01/src/game/rep_2998.o
-[31/43] MWCC build/GYQE01/src/game/rep_31F0.o
-ninja: build stopped: subcommand failed.
-
-[builder] === END BUILD ERROR ===
-[builder] Result: 0.0% match (0 mismatches), status=running, escalate=False
-[builder] Logged attempt to /home/michael/Desktop/mssb-dtk/logs/decomp/fn_3_107078/attempt_1.log
-🔨 [builder] | match=0.0% | status=running | iter=1
-[classifier] Category: Syntax Error
-   [classifier]
-[refactorer] Iteration 2 for fn_3_107078 (escalate=False, prefer_local=False)...
-DEBUG: LLM_CLOUD_PROVIDER from env: openrouter
-[LLM] Invoking fast LLM (escalate=False)...
-[LLM] Requesting stream...
-[LLM] Stream iterator obtained. Waiting for first chunk...
-{
-  "explanation": "The previous attempt failed because `minigameControlStruct` is an array of `MiniGameControlStruct` objects, and the access `g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C` was incorrect. The assembly shows that `0x18e8` is accessed relative to `r3`, which is `g_Minigame + (s8)g_Minigame._1908`. This means `0x18e8` is a field within the `MiniGameStruct` itself, not within `MiniGameControlStruct`. The offset `0x18e8` is `_18E8` in `MiniGameStruct`. The `_1908` field is used as an index to calculate an offset from `g_Minigame`, and then `0x18E8` is accessed relative to that calculated address. This implies that `_18E8` is part of a structure that is indexed by `_1908`. Given the assembly `add r3, r4, r0` where `r4` is `g_Minigame` and `r0` is `(s8)g_Minigame._1908`, `r3` becomes `g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This pattern suggests that `_18E8` is a field within `MiniGameStruct` itself, and the `(s8)g_Minigame._1908` is an offset to a base address within `g_Minigame` from which `_18E8` is then accessed. However, the `add r3, r4, r0` instruction is `r3 = g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is a very unusual access pattern. A more likely interpretation is that `g_Minigame._1908` is an index into an array of structures, and `0x18E8` is an offset within that structure. However, `0x18E8` is already a field in `MiniGameStruct`. Let's re-examine the assembly: `lbz r0, 0x1908(r4)` loads `g_Minigame._1908`. `extsb r0, r0` sign-extends it. `add r3, r4, r0` adds this sign-extended value to `g_Minigame`'s base address. So `r3` now points to `g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` loads a byte from `g_Minigame + (s8)g_Minigame._1908 + 0x18E8`. This means `0x18E8` is an offset from `g_Minigame + (s8)g_Minigame._1908`. This is equivalent to `g_Minigame._18E8` if `(s8)g_Minigame._1908` is 0, or `g_Minigame._18E8 + (s8)g_Minigame._1908` if `_18E8` is an array. The most straightforward interpretation that matches the assembly's `add` instruction is that `_1908` is an index into an array of bytes, and `_18E8` is an offset from the base of that array. However, `_18E8` is already defined as a field in `MiniGameStruct`. The only way this makes sense is if `_18E8` is part of an array of bytes, and `_1908` is an index into that array. The current `MiniGameStruct` has `_18E8` as a single `u8`. The assembly implies `g_Minigame` is `r4`. `r0 = g_Minigame._1908`. `r3 = g_Minigame + r0`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8[g_Minigame._1908]` if `_18E8` was an array. Given the existing `MiniGameControlStruct minigameControlStruct[2]` at `0x18CC`, and `_18E8` at `0x18E8`, it's possible that `_18E8` is a field within `minigameControlStruct[X]`. The offset `0x18E8` is `0x18CC + 0x1C`. So `_18E8` is actually `minigameControlStruct[X]._1C`. The index `X` is `(s8)g_Minigame._1908`. This means the access is `g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C`. The previous attempt had `_1C` as a field in `MiniGameControlStruct`, which is correct. The error message `minigameControlStruct' is not a struct/union/class member` is confusing given it is defined. This might be a compiler bug or a problem with how the struct was defined. Let's assume the struct definition is correct and the compiler is having trouble with the nested access. The assembly `add r3, r4, r0` where `r4` is `g_Minigame` and `r0` is `(s8)g_Minigame._1908` means `r3` points to `g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is equivalent to `g_Minigame.minigameControlStruct[(s8)g_Minigame._1908]._1C` if `minigameControlStruct` was at offset `0x18CC` and `_1C` was at offset `0x1C` within `MiniGameControlStruct`. The offset `0x18E8` is `0x18CC + 0x1C`. So the access is `g_Minigame.minigameControlStruct[index]._1C`. The index is `(s8)g_Minigame._1908`. The previous code was correct in its logical access. The error `minigameControlStruct' is not a struct/union/class member` is the key. This implies that `minigameControlStruct` is not directly accessible as a member of `g_Minigame` in the way the compiler expects, or there's an issue with its definition. However, it is defined. The problem might be with the `(s8)g_Minigame._1908` part. The `add` instruction uses `r0` (which holds `(s8)g_Minigame._1908`) as an offset to `r4` (which holds `g_Minigame`). This means `g_Minigame._1908` is directly added to the base address of `g_Minigame`. This is not how array indexing works for `minigameControlStruct[X]`. Array indexing would involve `g_Minigame.minigameControlStruct + X * sizeof(MiniGameControlStruct)`. The assembly `add r3, r4, r0` where `r0` is `(s8)g_Minigame._1908` means `r3` is `g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is a direct byte offset from `g_Minigame`. This means `_18E8` is not a field within `MiniGameControlStruct` indexed by `_1908`. Instead, `_1908` is an offset that is added to `g_Minigame`'s base address, and then `0x18E8` is an additional offset from that new address. This implies that `_18E8` is a field within `MiniGameStruct` itself, and `_1908` is an index into some byte array starting at `g_Minigame`. The most plausible interpretation is that `_18E8` is a field within `MiniGameStruct`, and `_1908` is an index into a byte array that starts at `g_Minigame`. The assembly `lbz r0, 0x1908(r4)` loads `g_Minigame._1908`. `extsb r0, r0` sign-extends it. `add r3, r4, r0` calculates `g_Minigame + (s8)g_Minigame._1908`. Then `lbz r0, 0x18e8(r3)` loads a byte from `g_Minigame + (s8)g_Minigame._1908 + 0x18E8`. This is equivalent to `g_Minigame._18E8 + (s8)g_Minigame._1908` if `_18E8` was the start of an array of bytes. Let's assume `_18E8` is the start of an array of bytes, and `_1908` is an index into it. This would mean `g_Minigame._18E8[(s8)g_Minigame._1908]`. This is the most direct interpretation of the assembly. The `_18E8` field is currently `u8 _18E8;`. We need to change it to an array. The size of the array is unknown, but it's accessed with an index from `_1908`. Let's assume it's a byte array. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown, but it's accessed with an index. The `_1908` field is `u8 _1908;`. The `_1A3F` field is `u8 _1A3F;`. The assembly `lbz r0, 0x18e8(r3)` means `*(u8*)(g_Minigame + (s8)g_Minigame._1908 + 0x18E8)`. This is `g_Minigame._18E8_array[(s8)g_Minigame._1908]` if `_18E8_array` starts at `0x18E8`. This is the most direct interpretation. The `_18E8` field is currently `u8 _18E8;`. Let's rename it to `_18E8_byte_array` and make it an array. The size is unknown
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/michael/Desktop/mssb-dtk/tools/langgraph_decomp/__main__.py", line 2, in <module>
+    from tools.langgraph_decomp.cli import main
+  File "/home/michael/Desktop/mssb-dtk/tools/langgraph_decomp/cli.py", line 25, in <module>
+    from tools.langgraph_decomp.graph import build_graph
+  File "/home/michael/Desktop/mssb-dtk/tools/langgraph_decomp/graph.py", line 15, in <module>
+    from .state import DecompState
+  File "/home/michael/Desktop/mssb-dtk/tools/langgraph_decomp/state.py", line 5, in <module>
+    from .llm import clean_code_block
+  File "/home/michael/Desktop/mssb-dtk/tools/langgraph_decomp/llm.py", line 91
+    }}
+     ^
+SyntaxError: f-string: single '}' is not allowed

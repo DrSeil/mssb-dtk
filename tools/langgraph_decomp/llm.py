@@ -69,7 +69,7 @@ If a symbol is already defined in a header that is included by the current sourc
 
 RESPOND ONLY WITH A VALID JSON OBJECT. Do not include any text outside the JSON.
 The JSON schema must be:
-{
+{{
   "explanation": "A SINGLE CONCISE PARAGRAPH summary of technical rationale and changes.",
   "function_code": "The complete C code for the function",
   "struct_modifications": [
@@ -88,9 +88,10 @@ The JSON schema must be:
   ],
   "header_additions": "New prototypes or structs to ADD to the header",
   "extern_declarations": "Extern variables to ADD"
-}}
+  }}
 
-STRUCT MODIFICATION RULES:
+  STRUCT MODIFICATION RULES:
+
 - If a struct needs a new field, DO NOT try to calculate padding manually.
 - Instead, use the `struct_modifications` section to specify the field and its offset.
 - Our specialized tool will handle the padding and alignment for you.
@@ -133,7 +134,7 @@ YOUR RESPONSE MUST FOLLOW THIS PROTOCOL:
 2. End your response with EXACTLY ONE JSON block containing your patch instructions.
 
 The JSON schema must be:
-{
+{{
 "explanation": "A SINGLE CONCISE PARAGRAPH summary of technical rationale and changes.",
 "function_code": "The complete C code for the function",
 "struct_modifications": [
@@ -155,6 +156,7 @@ The JSON schema must be:
 }}
 
 JSON block must be enclosed in ```json fences.
+
 """
 
 
