@@ -1163,13 +1163,13 @@ def _resolve_source_path(unit_name):
 def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=None, type_str=None, _log=print):
     """Find an existing extern for a symbol and update it, or add to default_path."""
     include_dir = os.path.join(_root_dir, "include")
-    
+
     # If a type_str is provided, check if we need to include a header for it
     if type_str:
         # Extract base type
         base_type = re.sub(r'[\*\s]', '', type_str)
         base_type = base_type.replace('const', '').replace('volatile', '').strip()
-        
+
         # If it's not a primitive type, try to find where it's defined
         if base_type and base_type not in ('void', 'int', 'char', 'short', 'long',
                                          'u8', 'u16', 'u32', 'u64', 's8', 's16',
@@ -1198,6 +1198,8 @@ def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=No
                 _log(f"[builder] Warning during type search: {e}")
 
     # Search for an existing extern declaration in any header
+    found_anywhere = False
+    found_in_default = False
     try:
         # Grep for 'extern ... symbol_name ... ;'
         # We use a pattern that matches 'extern' and then the symbol name followed by optional array/semicolon
@@ -1207,26 +1209,23 @@ def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=No
             capture_output=True, text=True, timeout=5
         )
         if result.stdout:
-            found_globally = False
             for filepath in result.stdout.strip().splitlines():
                 filepath = filepath.strip()
                 if not filepath or not os.path.exists(filepath):
                     continue
-                if filepath == os.path.join(_root_dir, default_path):
-                    found_globally = True
+                found_anywhere = True
+                if os.path.abspath(filepath) == os.path.abspath(os.path.join(_root_dir, default_path)):
+                    found_in_default = True
                 _log(f"[builder] Updating extern {symbol_name} in {os.path.basename(filepath)}")
                 _append_to_file_if_missing(filepath, new_declaration, backups, _log=_log)
-            
-            if found_globally:
-                return
-            
-            _log(f"[builder] Extern {symbol_name} found elsewhere but NOT in {default_path}. Adding to {default_path} for visibility.")
     except Exception as e:
         _log(f"[builder] Warning during extern search: {e}")
 
-    # Not found, add to default path
-    _append_to_file_if_missing(default_path, new_declaration, backups, _log=_log)
-
+    # If not found in our default path (UnknownHeaders.h usually), add it there too
+    # so the current source file can definitely see it (since we ensure source includes UnknownHeaders.h)
+    if not found_in_default:
+        _log(f"[builder] Extern {symbol_name} not in {default_path}. Adding for visibility.")
+        _append_to_file_if_missing(default_path, new_declaration, backups, _log=_log)
 
 def _commit_code_to_source(src_path, func_name, c_code):
     """Temporarily replace a function body in the source file using Tree-Sitter."""
@@ -1438,36 +1437,30 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
 
 def _find_struct_file(type_name):
     """Find which header file contains the struct definition."""
-    # Common headers
-    headers = [
-        "include/UnknownHeaders.h",
-        "include/game/GameInitVariables.h",
-    ]
-    
-    # Grep for it
-    pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{type_name}\b'
-    
-    # Use grep -l to find files
+    # Grep for it with word boundaries, handling optional typedef/struct/enum/union and whitespace
+    # Pattern explanation:
+    # (?:typedef\s+)?           Optional typedef
+    # (?:struct|enum|union)\s+  Required struct/enum/union
+    # _?{type_name}\b           Optional leading underscore and the name
+    pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_name)}\b'
+
+    # We use ripgrep if available for speed, otherwise standard grep
     try:
+        # Search all headers in include/
         res = subprocess.run(
-            ["grep", "-rl", pattern, "include"],
+            ["grep", "-rlE", pattern, "include"],
             capture_output=True, text=True, cwd=_root_dir
         )
         if res.returncode == 0:
             files = res.stdout.strip().splitlines()
             if files:
+                # Prioritize UnknownHeaders.h if multiple matches
+                for f in files:
+                    if "UnknownHeaders.h" in f:
+                        return os.path.join(_root_dir, f)
                 return os.path.join(_root_dir, files[0])
     except:
         pass
-        
-    for h in headers.copy():
-        path = os.path.join(_root_dir, h)
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                if re.search(pattern, f.read()):
-                    return path
-    return None
-
 
 # ---------------------------------------------------------------------------
 # Node E: Committer (permanent write on match)
