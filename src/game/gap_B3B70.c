@@ -153,7 +153,8 @@ void fn_3_B6994(void) {
 
 // .text:0x000B6B70 size:0x34 mapped:0x806F5C04
 void fn_3_B6B70(void) {
-    return;
+    g_Practice._1DB = 0;
+    fn_3_B3C78(0);
 }
 
 // .text:0x000B6BA4 size:0xAC mapped:0x806F5C38
