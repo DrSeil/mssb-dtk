@@ -47,7 +47,15 @@ void fn_3_9DB5C(void) {
 
 // .text:0x0009DBE4 size:0x34 mapped:0x806DCC78
 void fn_3_9DBE4(void) {
-    return;
+    lbl_3_common_bss_32A94.unk7D = 0;
+    lbl_3_common_bss_32A94.unk7F = 0;
+    lbl_3_common_bss_32A94.unk81 = 0;
+    lbl_3_common_bss_32A94.unk82 = 0;
+    lbl_3_common_bss_32A94.unk84 = 0;
+    lbl_3_common_bss_32A94.unk85 = 0;
+    lbl_3_common_bss_32A94.unk87 = 0;
+    lbl_3_common_bss_32A94.unk88 = 0;
+    lbl_3_common_bss_32A94.unk8A = 0;
 }
 
 // .text:0x0009DC18 size:0x460 mapped:0x806DCCAC
