@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 #include "game/rep_720.h"
+#include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 
 void fn_3_7976C(void);
 void fn_3_79A00(void);
@@ -21,7 +23,7 @@ void fn_3_7AFE4(void);
 void fn_3_7B130(void);
 void fn_3_7B308(void);
 void fn_3_7BB74(void);
-void fn_3_7BBC0(void);
+StatTableEntry* fn_3_7BBC0(void);
 void fn_3_7BBF8(void);  /* sets g_Stats.unk39 = 1 */
 void fn_3_7BC0C(void);
 void fn_3_7BC20(void);

@@ -18,6 +18,12 @@ typedef struct {
 extern Lbl800EF808 lbl_800EF808;
 BOOL fn_80021518(s32 charID, s32 param_2);
 
+typedef struct {
+    u8 _data[0x1E];
+} StatTableEntry; // size: 0x1E
+
+extern StatTableEntry lbl_803535C8[2][9]; // Static_Stats_Tables+0x4C28 entries[teamFielding][rosterSlot]
+
 // Forward declaration for fn_800339F0 return type
 struct Struct_800339F0_Result;
 
