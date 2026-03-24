@@ -6,8 +6,14 @@ void fn_3_BA150(void) {
 }
 
 // .text:0x000BA174 size:0x2C mapped:0x806F9208
-void fn_3_BA174(void) {
-    return;
+s32 fn_3_BA174(BA150SortItem* a, BA150SortItem* b) {
+    if (a->sortKey < b->sortKey) {
+        return 1;
+    }
+    if (a->sortKey > b->sortKey) {
+        return -1;
+    }
+    return 0;
 }
 
 // .text:0x000BA1A0 size:0xC8 mapped:0x806F9234
