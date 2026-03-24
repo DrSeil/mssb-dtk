@@ -2,6 +2,10 @@
 #define __GAME_gap_157DB8_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "game/rep_1200.h"
+
+extern s16 lbl_3_data_FC1C;
 
 void fn_3_157DB8(void);
 void fn_3_157E28(void);

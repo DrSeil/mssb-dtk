@@ -107,7 +107,9 @@ void fn_3_15A9F4(void) {
 
 // .text:0x0015AD94 size:0x40 mapped:0x80799E28
 void fn_3_15AD94(void) {
-    return;
+    if (g_Pitcher.currentStateFrameCounter > lbl_3_data_FC1C) {
+        fn_3_750C4(2);
+    }
 }
 
 // .text:0x0015ADD4 size:0x60 mapped:0x80799E68
