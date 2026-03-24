@@ -24,8 +24,11 @@ void fn_3_106ED4(void) {
 }
 
 // .text:0x00107078 size:0x2C mapped:0x8074610C
+
 void fn_3_107078(void) {
-    return;
+    if (*((u8*) &g_Minigame + (s8) g_Minigame._1908 + 0x18E8) == 1) {
+        g_Minigame._1A3F = 1;
+    }
 }
 
 // .text:0x001070A4 size:0x188 mapped:0x80746138

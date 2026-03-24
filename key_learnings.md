@@ -64,3 +64,8 @@
 ### Learnings from fn_3_107078
 * The `minigameControlStruct` field within `MiniGameStruct` is likely an array, and its elements are accessed using an index stored in another field of `MiniGameStruct`.
 * Direct pointer arithmetic on `g_Minigame` with an offset and cast to `u8*` is sometimes used to access fields, implying that some fields might be accessed dynamically or are part of a larger, less structured data block.
+
+### Learnings from fn_3_107078
+- Offsets in global structs mustaccount for padding fields, which are frequently used as flags or state markers.
+- Pointer arithmetic requires explicit casting to specific byte-sized types (`u8*`/`s8*`) to read/write individual bytes, with strict adherence to signed/unsigned type handling.
+- Padding fields within structs are writable and commonly used for runtime state flags, requiring direct assignment operations.
