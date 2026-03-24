@@ -314,7 +314,11 @@ void fn_3_10FDC8(void) {
 
 // .text:0x001104A8 size:0x2C mapped:0x8074F53C
 void fn_3_1104A8(void) {
-    return;
+    s8 i = 0;
+    do {
+        g_Minigame._1DBC[i] = 0;
+        i++;
+    } while (i < 4);
 }
 
 // .text:0x001104D4 size:0x160 mapped:0x8074F568
