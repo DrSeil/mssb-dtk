@@ -96,8 +96,15 @@ s32 fn_3_107BD0(u8* a, u8* b) {
 }
 
 // .text:0x00107C04 size:0x3C mapped:0x80746C98
-void fn_3_107C04(void) {
-    return;
+s32 fn_3_107C04(u8* a, u8* b) {
+    u8 ib = *b;
+    u8 ia = *a;
+    s16 keyB = g_Minigame.miniGameCurrentPoints[ib];
+    s16 keyA = g_Minigame.miniGameCurrentPoints[ia];
+    if (keyB == keyA) {
+        return ia - ib;
+    }
+    return keyB - keyA;
 }
 
 // .text:0x00107C40 size:0x48 mapped:0x80746CD4
