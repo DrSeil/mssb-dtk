@@ -71,8 +71,15 @@ void fn_3_5A684(void) {
 }
 
 // .text:0x0005A6A0 size:0x34 mapped:0x80699734
-void fn_3_5A6A0(void) {
-    return;
+void fn_3_5A6A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 temp = arg1 ^ arg0;
+    g_GameLogic.homeTeamBattingInd_fieldingTeam = arg0;
+    g_GameLogic.awayTeamBattingInd_battingTeam = arg0 ^ 1;
+    g_GameLogic.homeTeamInd = arg1;
+    g_GameLogic.teamBatting = temp;
+    g_GameLogic.teamFielding = temp ^ 1;
+    g_GameLogic._1C = arg2;
+    g_GameLogic._20 = arg3;
 }
 
 // .text:0x0005A6D4 size:0x28 mapped:0x80699768

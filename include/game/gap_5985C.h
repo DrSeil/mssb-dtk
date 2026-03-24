@@ -19,7 +19,7 @@ void fn_3_59C2C(void);
 void fn_3_59F40(void);
 void fn_3_5A28C(void);
 void fn_3_5A684(void);
-void fn_3_5A6A0(void);
+void fn_3_5A6A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_3_5A6D4(u8 arg0, u8 arg1);
 void fn_3_5A6FC(void);
 void fn_3_5A87C(void);

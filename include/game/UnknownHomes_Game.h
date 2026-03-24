@@ -1081,13 +1081,14 @@ typedef struct _LogoInfoStruct {
 } LogoInfoStruct; // size: 0xC
 
 typedef struct _GameControlsStruct {
-    /*0x000*/ s16 homeTeamInd[2];
+    /*0x000*/ s32 homeTeamInd;
     /*0x004*/ int teamBatting;
     /*0x008*/ int teamFielding;
     /*0x00C*/ int homeTeamBattingInd_fieldingTeam;
     /*0x010*/ int awayTeamBattingInd_battingTeam;
     /*0x014*/ u32 AIDifficulty0Special3Weak[2];
-    artificial_padding(0x14, 0x24, u32[2]);
+    /*0x01C*/ s32 _1C;
+    /*0x020*/ s32 _20;
     /*0x024*/ LogoInfoStruct logo[2];
     /*0x03C*/ int battingOrderAndPositionMapping[2][10][2]; // first Pair Is Pitcher
     /*0x0DC*/ int currentBatterPerTeam[2];
