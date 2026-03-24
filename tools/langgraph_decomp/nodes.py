@@ -1564,11 +1564,13 @@ def committer_node(state):
                 subprocess.run(["git", "commit", "-m", f"final matched {func_name}"], cwd=_root_dir)
                 
                 # Switch back to original branch
-                subprocess.run(["git", "checkout", original_branch], cwd=_root_dir, check=True)
+                # We use -f because files like decomp_debug.log might have untracked changes
+                # that were previously tracked, blocking a normal checkout.
+                subprocess.run(["git", "checkout", "-f", original_branch], cwd=_root_dir, check=True)
                 
                 # Instead of merge --squash, we'll just checkout the specific files we modified
                 # This ensures NO junk files (logs, tags) ever hit the main branch.
-                relevant_files = [source_path, header_path]
+                relevant_files = [source_path, header_path, os.path.join(_root_dir, "key_learnings.md")]
                 if externs_path and os.path.exists(externs_path):
                     relevant_files.append(externs_path)
                 
