@@ -26,7 +26,7 @@ void fn_3_107D34(void);
 void fn_3_107D70(void);
 void fn_3_107DB4(void);
 void fn_3_107DF8(void);
-void minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(void);
+u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8);
 void fn_3_107E80(void);
 void fn_3_108230(void);
 void fn_3_1084B4(void);

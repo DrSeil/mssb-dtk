@@ -60,3 +60,7 @@
 ### Learnings from fn_3_21C7C
 *   Direct pointer arithmetic on a global `lbl_` symbol, combined with an offset, is preferred over introducing a struct type and accessing a field within it. This suggests a possible optimization strategy or coding style where flat memory access is favored over struct-based access, even when the memory layout conceptually resembles a struct.
 *   The codebase might use a global array (or a memory region treated as an array) accessed via offsets rather than a struct of arrays.
+
+### Learnings from fn_3_107078
+* The `minigameControlStruct` field within `MiniGameStruct` is likely an array, and its elements are accessed using an index stored in another field of `MiniGameStruct`.
+* Direct pointer arithmetic on `g_Minigame` with an offset and cast to `u8*` is sometimes used to access fields, implying that some fields might be accessed dynamically or are part of a larger, less structured data block.

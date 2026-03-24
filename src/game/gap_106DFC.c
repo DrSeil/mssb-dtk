@@ -1,12 +1,5 @@
 #include "game/gap_106DFC.h"
-
-typedef struct {
-    u8 _pad[0x1A28];
-    s16 someGraphicFrameCountdown; /* 0x1A28 */
-    u8 _pad2[0x17];
-    u8 _1A41; /* 0x1A41 */
-} LocalMinigame;
-extern LocalMinigame g_Minigame;
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_90064(s32 param);
 
@@ -126,8 +119,8 @@ void fn_3_107DF8(void) {
 }
 
 // .text:0x00107E3C size:0x44 mapped:0x80746ED0
-void minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(void) {
-    return;
+u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8 arg0) {
+    return 0;
 }
 
 // .text:0x00107E80 size:0x3B0 mapped:0x80746F14

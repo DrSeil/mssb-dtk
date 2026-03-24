@@ -925,7 +925,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 _log(f"[builder] Applying struct modifications for {type_name} via struct_utils")
                 
                 # 1. Find the file containing the struct
-                filepath = _find_struct_file(type_name)
+                filepath = _find_struct_file(type_name, source_path=source_path)
                 if not filepath:
                     _log(f"[builder] WARNING: Could not find file for {type_name}")
                     continue
@@ -1435,14 +1435,26 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
         _log(f"[builder] No new lines to add to {os.path.basename(file_path)}")
 
 
-def _find_struct_file(type_name):
-    """Find which header file contains the struct definition."""
+def _find_struct_file(type_name, source_path=None):
+    """Find which header file (or source file) contains the struct definition."""
     # Grep for it with word boundaries, handling optional typedef/struct/enum/union and whitespace
     # Pattern explanation:
-    # (?:typedef\s+)?           Optional typedef
-    # (?:struct|enum|union)\s+  Required struct/enum/union
+    # (typedef\s+)?           Optional typedef
+    # (struct|enum|union)\s+  Required struct/enum/union
     # _?{type_name}\b           Optional leading underscore and the name
-    pattern = rf'(?:typedef\s+)?(?:struct|enum|union)\s+_?{re.escape(type_name)}\b'
+    pattern = rf'(typedef\s+)?(struct|enum|union)\s+_?{re.escape(type_name)}\b'
+
+    # 0. Check source file first if provided
+    if source_path and os.path.exists(source_path):
+        try:
+            res = subprocess.run(
+                ["grep", "-qE", pattern, source_path],
+                capture_output=True, cwd=_root_dir
+            )
+            if res.returncode == 0:
+                return source_path
+        except:
+            pass
 
     # We use ripgrep if available for speed, otherwise standard grep
     try:
@@ -1461,6 +1473,7 @@ def _find_struct_file(type_name):
                 return os.path.join(_root_dir, files[0])
     except:
         pass
+    return None
 
 # ---------------------------------------------------------------------------
 # Node E: Committer (permanent write on match)
@@ -1497,7 +1510,7 @@ def committer_node(state):
                     continue
                 
                 print(f"[committer] Permanently applying struct modifications for {type_name}")
-                filepath = _find_struct_file(type_name)
+                filepath = _find_struct_file(type_name, source_path=source_path)
                 if filepath:
                     from .llm import _extract_struct_block
                     with open(filepath, "r") as f:

@@ -111,7 +111,10 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
         else:
             size = base_size
             
-        is_padding = name.startswith('_pad') or name.startswith('pad')
+        # Consider _0, _1, _1A3F, _0x1A3F etc. as padding/placeholders
+        is_placeholder = bool(re.match(r'^(_[0-9A-Fa-f]+|_[0-9]+)$', name))
+        is_padding = name.startswith('_pad') or name.startswith('pad') or is_placeholder
+        
         fields.append(StructField(type_str + ("*" if '*' in type_str and not type_str.endswith('*') else ""), 
                                  name, offset, size, is_padding))
     
@@ -156,10 +159,14 @@ def reconcile_struct(struct_def: str, modifications: List[Dict]) -> str:
             m_size = size_map.get(m_type, 4)
             if '*' in m_type: m_size = 4
             
-            # If we already have a named field at this offset, skip addition
-            # (In a more advanced tool we might check for sub-field overlaps)
+            # If we already have a named field at this offset, check if it's the same
             if m_offset in named:
-                continue
+                existing = named[m_offset]
+                # If it's a real name (not a placeholder), and it matches, skip
+                if existing.name == m_name and existing.type_str == m_type:
+                    continue
+                # If we are here, we are potentially overriding or it was a placeholder
+                # We'll allow the override
                 
             named[m_offset] = StructField(m_type, m_name, m_offset, m_size, False)
 
