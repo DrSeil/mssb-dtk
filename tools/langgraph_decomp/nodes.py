@@ -513,6 +513,7 @@ def builder_node(state):
         "match_percent": match_percent,
         "mismatch_count": mismatch_count,
         "mismatch_summary": mismatch_summary,
+        "explanation": state.get("explanation", ""),
         "feedback": feedback_text, # Keep full diff for logs
         "current_asm": current_asm,
         "build_error": build_error,

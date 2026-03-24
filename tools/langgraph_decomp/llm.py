@@ -69,10 +69,11 @@ If a symbol is already defined in a header that is included by the current sourc
 
 RESPOND ONLY WITH A VALID JSON OBJECT. Do not include any text outside the JSON.
 The JSON schema must be:
-{{
-  "explanation": "Brief summary of changes",
+{
+  "explanation": "A SINGLE CONCISE PARAGRAPH summary of technical rationale and changes.",
   "function_code": "The complete C code for the function",
   "struct_modifications": [
+
     {{
       "type_name": "Name of the struct to modify",
       "actions": [
@@ -132,10 +133,11 @@ YOUR RESPONSE MUST FOLLOW THIS PROTOCOL:
 2. End your response with EXACTLY ONE JSON block containing your patch instructions.
 
 The JSON schema must be:
-{{
-"explanation": "Brief summary of changes",
+{
+"explanation": "A SINGLE CONCISE PARAGRAPH summary of technical rationale and changes.",
 "function_code": "The complete C code for the function",
 "struct_modifications": [
+
 {{
   "type_name": "Name of the struct to modify",
   "actions": [
@@ -810,6 +812,10 @@ def build_refactor_prompt(state: dict, escalate: bool = False) -> str:
             pct = attempt.get("match_percent", 0)
             sections.append(f"### Attempt {i + 1} ({pct:.1f}% match)\n")
             
+            explanation = attempt.get("explanation", "")
+            if explanation:
+                sections.append(f"**Rationale:** {explanation.strip()}\n")
+
             updates = attempt.get("struct_updates", [])
             if updates:
                 sections.append("**Struct Updates Tried:**\n")
