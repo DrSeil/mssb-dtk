@@ -1,5 +1,6 @@
 #include "game/gap_1293D0.h"
 #include "game/UnknownHomes_Game.h"
+#include "stl/mem.h"
 
 // .text:0x001293D0 size:0x78 mapped:0x80768468
 void fn_3_1293D0(void) {
@@ -163,7 +164,7 @@ void fn_3_12E384(void) {
 
 // .text:0x0012E808 size:0x34 mapped:0x8076D89C
 void fn_3_12E808(void) {
-    return;
+    memset(g_Minigame._1D7C, 0, 0x78);
 }
 
 // .text:0x0012E83C size:0xC0 mapped:0x8076D8D0
