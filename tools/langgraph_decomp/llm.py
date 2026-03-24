@@ -27,6 +27,8 @@ from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.callbacks import StdOutCallbackHandler
 
+def _log(msg: str):
+    print(msg, flush=True)
 
 # ---------------------------------------------------------------------------
 # Project-specific prompt fragments (imported from gen_prompt.py)
