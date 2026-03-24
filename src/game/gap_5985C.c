@@ -17,7 +17,14 @@ void fn_3_59918(void) {
 
 // .text:0x00059A90 size:0x30 mapped:0x80698B24
 void fn_3_59A90(void) {
-    return;
+    g_UnkSound_32718._02 = 0;
+    g_UnkSound_32718._03 = 0;
+    g_UnkSound_32718._04 = 0;
+    g_UnkSound_32718._05 = 0;
+    g_UnkSound_32718._06 = 0;
+    g_UnkSound_32718._00 = 0;
+    g_UnkSound_32718._07 = 0;
+    g_UnkSound_32718._08 = 0;
 }
 
 // .text:0x00059AC0 size:0x24 mapped:0x80698B54
