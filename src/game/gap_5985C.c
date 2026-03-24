@@ -33,8 +33,11 @@ void fn_3_59AC0(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 // .text:0x00059AE4 size:0x3C mapped:0x80698B78
-void fn_3_59AE4(void) {
-    return;
+s32 fn_3_59AE4(void) {
+    if (g_d_GameSettings.GameModeSelected == 6) {
+        return fn_80022B68();
+    }
+    return 1;
 }
 
 // .text:0x00059B20 size:0xAC mapped:0x80698BB4
