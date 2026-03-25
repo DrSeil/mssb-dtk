@@ -2,6 +2,8 @@
 #define __GAME_gap_EA340_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 
 void fn_3_EA340(void);
 void fn_3_EA454(void);
@@ -9,7 +11,7 @@ void fn_3_EA8FC(void);
 void fn_3_EAEF4(void);
 void fn_3_EB684(void);
 void fn_3_EB6E0(void);
-void fn_3_EBFD4(void);
+s32 fn_3_EBFD4(void);
 void fn_3_EC014(void);
 void fn_3_EC804(void);
 void fn_3_ECBB0(void);

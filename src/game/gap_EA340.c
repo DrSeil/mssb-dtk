@@ -31,8 +31,12 @@ void fn_3_EB6E0(void) {
 }
 
 // .text:0x000EBFD4 size:0x40 mapped:0x8072B068
-void fn_3_EBFD4(void) {
-    return;
+s32 fn_3_EBFD4(void) {
+    if (lbl_3_common_bss_32724.someStatusInd == 0
+        && g_GameLogic.gameStatus != GAME_STATUS_LIVE_BALL
+        && g_GameLogic.gameStatus != GAME_STATUS_TRANSITION)
+        return 0;
+    return 1;
 }
 
 // .text:0x000EC014 size:0x7F0 mapped:0x8072B0A8
