@@ -28,6 +28,14 @@ typedef struct Struct_DE94_Inner {
 
 extern Struct_DE94_Inner* lbl_3_common_bss_DE94;
 
+typedef struct Fixup_105C84 {
+    u8 _pad0[4];
+    u16 unk4;
+    s16 unk6;
+    u32 unk8;
+    u32 array[1];
+} Fixup_105C84;
+
 typedef struct SourceObj_104B20 {
     u8 _pad[0x30];
     VecXYZ pos;
@@ -101,7 +109,7 @@ typedef struct {
 } Struct_105C28;
 
 u32 fn_3_105C28(Struct_105C28* arg0, u32 arg1);
-void fn_3_105C84(void);
+void fn_3_105C84(Fixup_105C84* arg0);
 void fn_3_105CDC(void);
 void fn_3_105E00(void);
 void fn_3_106014(void);
