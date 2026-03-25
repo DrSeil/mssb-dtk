@@ -4,6 +4,7 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 #include "static/UnknownHomes_Static.h"
+#include "game/rep_AC8.h"
 
 void fn_80017D28(s32 arg0);
 

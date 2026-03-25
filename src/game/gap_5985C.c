@@ -7,7 +7,12 @@ void fn_3_5985C(void) {
 
 // .text:0x000598D0 size:0x48 mapped:0x80698964
 void fn_3_598D0(void) {
-    return;
+    fn_3_58688();
+    if (g_GameLogic.teamAIInd[g_GameLogic.awayTeamBattingInd_battingTeam] != 0) {
+        fn_3_583B8();
+        return;
+    }
+    fn_3_3B9E4();
 }
 
 // .text:0x00059918 size:0x178 mapped:0x806989AC
