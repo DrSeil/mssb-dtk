@@ -104,15 +104,9 @@ void fn_3_E4554(castleThwompObj *arg) {
 }
 
 // .text:0x000E45A8 size:0x48 mapped:0x8072363C
-// Instructions out of order.
 void fn_3_E45A8(castleThwompObj *param) {
-// Scale the object (param starts with the control struct)
     CTRLSetScale(&param->control, lbl_3_rodata_2B28, lbl_3_rodata_2B28, lbl_3_rodata_2B28);
-    
-    // Assign X rotation
-    (param->rotation).x = lbl_3_rodata_2B28;
-    
-    return;
+    param->rotation.x = lbl_3_rodata_2B28;
 }
 
 // .text:0x000E45F0 size:0x68 mapped:0x80723684
