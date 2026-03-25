@@ -33,7 +33,11 @@ void fn_3_115828(void) {
 
 // .text:0x001158B0 size:0x48 mapped:0x80754944
 void fn_3_1158B0(void) {
-    return;
+    if (g_Scores.highscore >= g_Scores.threshold) {
+        fn_3_5A6D4(0xF);
+        return;
+    }
+    fn_3_5A6D4(6);
 }
 
 // .text:0x001158F8 size:0x80 mapped:0x8075498C

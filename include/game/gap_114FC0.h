@@ -2,6 +2,7 @@
 #define __GAME_gap_114FC0_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 void fn_3_114FC0(void);
 void fn_3_11502C(void);
