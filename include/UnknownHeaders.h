@@ -651,6 +651,17 @@ typedef struct DrawingSceneStruct {
 } DrawingSceneStruct;
 
 extern DrawingSceneStruct *lbl_803CC1B8;
+typedef struct CameraStruct {
+    u8 _pad0[0xAB0];
+    void* unkAB0;   // 0xAB0 - allocated buffer
+    u8 _padAB4[0x9B8];
+    void* unk146C;  // 0x146C - allocated buffer
+    u8 _pad1470[0x1440];
+} CameraStruct;
+
+extern CameraStruct g_Camera;
+extern void* _OSAllocFromHeap(s32 heap, u32 size);
+
 extern void (*lbl_3_data_11390[])(u32);
 extern void fn_800B0A14_removeQueue(void);
 // The assembly passes the index in r4

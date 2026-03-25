@@ -5,7 +5,8 @@ void fn_3_90064(s32 param);
 
 // .text:0x00106DFC size:0x54 mapped:0x80745E90
 void fn_3_106DFC(void) {
-    return;
+    g_Camera.unkAB0 = _OSAllocFromHeap(4, 0x8000);
+    g_Camera.unk146C = _OSAllocFromHeap(4, 0x8000);
 }
 
 // .text:0x00106E50 size:0x60 mapped:0x80745EE4
