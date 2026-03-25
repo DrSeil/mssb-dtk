@@ -149,7 +149,12 @@ void fn_3_B01E0(void) {
 
 // .text:0x000B025C size:0x4C mapped:0x806EF2F0
 void fn_3_B025C(void) {
-    return;
+    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
+        fn_3_75560();
+        atBat_batter();
+        fn_3_8A958();
+        fn_3_31594();
+    }
 }
 
 // .text:0x000B02A8 size:0x148 mapped:0x806EF33C
@@ -344,7 +349,7 @@ void fn_3_B3288(void) {
 }
 
 // .text:0x000B32B8 size:0x190 mapped:0x806F234C
-void fn_3_B32B8(void) {
+s32 fn_3_B32B8(void) {
     return;
 }
 

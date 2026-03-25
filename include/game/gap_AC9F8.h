@@ -5,6 +5,10 @@
 #include "game/UnknownHomes_Game.h"
 #include "game/gap_B3B70.h"
 #include "game/gap_1D86C.h"
+#include "game/rep_1200.h"
+#include "game/rep_AC8.h"
+#include "game/rep_13B8.h"
+#include "game/game_batter.h"
 
 typedef struct {
     u8 _pad0[0x04];      /* 0x00 */
@@ -91,7 +95,7 @@ void fn_3_B28A8(void);
 void fn_3_B2AA0(void);
 void fn_3_B2E20(void);
 void fn_3_B3288(void);
-void fn_3_B32B8(void);
+s32 fn_3_B32B8(void);
 void fn_3_B3448(void);
 void fn_3_B3620(void);
 void fn_3_B3A28(void);
