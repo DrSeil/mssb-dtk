@@ -241,8 +241,17 @@ void fn_3_5DA9C(void) {
 }
 
 // .text:0x0005DCE0 size:0x50 mapped:0x8069CD74
-void fn_3_5DCE0(void) {
-    return;
+s32 fn_3_5DCE0(void) {
+    s32 result = 0;
+    if (g_Pitcher.strikeOutOrWalk == 1) {
+        fn_3_736CC();
+        return 1;
+    }
+    if (g_Pitcher.strikeOutOrWalk == 2) {
+        fn_3_735A8();
+        result = 1;
+    }
+    return result;
 }
 
 // .text:0x0005DD30 size:0x224 mapped:0x8069CDC4
