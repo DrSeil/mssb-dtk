@@ -227,7 +227,12 @@ void fn_3_B0D7C(void) {
 
 // .text:0x000B0DB0 size:0x50 mapped:0x806EFE44
 void fn_3_B0DB0(void) {
-    return;
+    g_Practice.allowPlayToEndIndicator = 0;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+    fn_3_1DD48();
+    fn_3_5A6D4(7U);
 }
 
 // .text:0x000B0E00 size:0x320 mapped:0x806EFE94
