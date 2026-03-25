@@ -5,6 +5,8 @@
 #include "game/UnknownHomes_Game.h"
 #include "UnknownHeaders.h"
 
+extern s32 lbl_3_data_8FCC;
+
 void fn_3_EA340(void);
 void fn_3_EA454(void);
 void fn_3_EA8FC(void);

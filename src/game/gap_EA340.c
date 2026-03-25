@@ -76,7 +76,8 @@ void fn_3_ED244(void) {
 
 // .text:0x000ED2A8 size:0x4C mapped:0x8072C33C
 void fn_3_ED2A8(void) {
-    return;
+    fn_80034E20((void(*)(void))lbl_803CC1B8, (int*)&lbl_3_data_8FCC, (void**)&lbl_803CC1B8);
+    lbl_803CC1B8->aFunctionPointer = fn_3_ED244;
 }
 
 // .text:0x000ED2F4 size:0x19C mapped:0x8072C388
