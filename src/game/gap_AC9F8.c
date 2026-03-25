@@ -207,7 +207,9 @@ s32 fn_3_B0CF4(void) {
 
 // .text:0x000B0D2C size:0x4C mapped:0x806EFDC0
 void fn_3_B0D2C(void) {
-    return;
+    if (g_Practice.aiBuntIndicator != 0) return;
+    if ((g_Pitcher.framesUntilUnhittable + 1) != swingSoundFrame[0][1]) return;
+    g_AiLogic.batterAISwingInd = 1;
 }
 
 // .text:0x000B0D78 size:0x4 mapped:0x806EFE0C
