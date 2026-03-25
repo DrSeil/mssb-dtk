@@ -330,7 +330,30 @@ void fn_3_BD8FC(void) {
 
 // .text:0x000BDCA4 size:0x170 mapped:0x806FCD38
 void fn_3_BDCA4(void) {
-    return;
+    QueueEntry* qEntry = (QueueEntry*)lbl_803CC1B8;
+    u32 val28;
+
+    if (g_d_GameSettings._55 != 0 || lbl_3_common_bss_35154.unk_479 != 0) {
+        fn_800B0A14_removeQueue();
+        return;
+    }
+
+    val28 = ((u8*)&lbl_80366158)[0x28];
+    qEntry->unk20 -= (s32)(((u32)(2 - val28) | (u32)(val28 - 2)) >> 31);
+
+    ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].unk48 = lbl_3_rodata_1E84 / fn_80052768(0)->unkA4;
+    ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].unk38 = qEntry->vec.x;
+    ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].unk3C = qEntry->vec.y;
+    ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].unk40 = qEntry->vec.z;
+    ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].unk44 = qEntry->unk20;
+
+    PSMTXCopy(fn_80052768(0)->mtx, ((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0].mtx);
+
+    fn_800A7D4C(0, &((BdcArrayElement*)(qEntry->unk24))[lbl_803CBBC0]);
+
+    if (qEntry->unk20 == 0) {
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000BDE14 size:0x160 mapped:0x806FCEA8

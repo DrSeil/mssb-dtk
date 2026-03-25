@@ -10,6 +10,7 @@ extern s16 lbl_3_bss_9952;
 extern s32 lbl_3_data_17000[];
 extern CompressedDiskRead lbl_3_data_11380;
 extern f32 lbl_3_rodata_1E64;
+extern f32 lbl_3_rodata_1E84;
 extern f32 lbl_3_rodata_1E68;
 extern f32 lbl_3_rodata_1EC0;
 extern f32 lbl_3_rodata_1EC4;
@@ -81,6 +82,27 @@ typedef struct {
 extern void fn_8003A85C(u8 val);
 extern void fn_8003A848(u8 b0, u8 b1, u8 b2);
 extern void fn_8003A6B0(s32 idx, TexDataInfo* texData, f32 f1, f32 f2);
+
+typedef struct {
+    u8 _pad0[0x08];
+    Mtx mtx;         /* 0x08 */
+    f32 unk38;       /* 0x38 */
+    f32 unk3C;       /* 0x3C */
+    f32 unk40;       /* 0x40 */
+    s32 unk44;       /* 0x44 */
+    f32 unk48;       /* 0x48 */
+    u8 _rest[0x300]; /* 0x4C */
+} BdcArrayElement; /* size 0x34C */
+
+typedef struct {
+    u8 _pad0[0x40];
+    Mtx mtx;         /* 0x40 */
+    u8 _pad1[0x34];
+    f32 unkA4;       /* 0xa4 */
+} Fn52768Result;
+
+Fn52768Result* fn_80052768(s32 arg0);
+void fn_800A7D4C(s32 arg0, BdcArrayElement* elem);
 
 void fn_3_BA538(void);
 void fn_3_BA7F4(void);
