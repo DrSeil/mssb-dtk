@@ -3,6 +3,8 @@
 
 #include "mssbTypes.h"
 #include "UnknownHeaders.h"
+#include "game/rep_3290.h"
+#include "musyx/musyx.h"
 
 void fn_3_114FC0(void);
 void fn_3_11502C(void);

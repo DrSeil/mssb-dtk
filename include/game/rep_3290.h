@@ -15,7 +15,7 @@ void fn_3_114204(void);
 void fn_3_114384(void);
 void fn_3_1149B8(void);
 void fn_3_114A2C(void);
-void fn_3_114A88(void);
+void fn_3_114A88(s32 arg0);
 
 #include "stl/mem.h"
 #include "game/UnknownHomes_Game.h"

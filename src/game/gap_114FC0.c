@@ -62,7 +62,9 @@ void fn_3_115B5C(void) {
 
 // .text:0x00115BDC size:0x48 mapped:0x80754C70
 void fn_3_115BDC(void) {
-    return;
+    sndFXStartEx(0x1BD, lbl_800EFBA4.volume, 0x3F, 0);
+    fn_3_114A88(1);
+    fn_3_5A6D4(6);
 }
 
 // .text:0x00115C24 size:0x494 mapped:0x80754CB8
