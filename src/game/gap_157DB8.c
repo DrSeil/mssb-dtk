@@ -57,7 +57,9 @@ void fn_3_158FE4(void) {
 
 // .text:0x001590C8 size:0x4C mapped:0x8079815C
 void fn_3_1590C8(void) {
-    return;
+    if (g_Practice.tutorialState == 0 && g_Practice.practiceState == 7) {
+        fn_800B0A5C_insertQueue(fn_3_158FE4, 2);
+    }
 }
 
 // .text:0x00159114 size:0x47C mapped:0x807981A8

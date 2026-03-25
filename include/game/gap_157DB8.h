@@ -2,6 +2,7 @@
 #define __GAME_gap_157DB8_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 #include "game/UnknownHomes_Game.h"
 #include "game/rep_1200.h"
 
