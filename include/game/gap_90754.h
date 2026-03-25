@@ -25,8 +25,8 @@ void fn_3_90C14(void);
 void fn_3_90CB0(void);
 void fn_3_90DD8(void);
 void fn_3_90F48(void);
-void fn_3_91064(void);
-void fn_3_910AC(void);
+s32 fn_3_91064(void);
+s32 fn_3_910AC(void);
 void fn_3_910F4(void);
 void fn_3_911A8(void);
 

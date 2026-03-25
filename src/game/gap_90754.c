@@ -83,13 +83,17 @@ void fn_3_90F48(void) {
 }
 
 // .text:0x00091064 size:0x48 mapped:0x806D00F8
-void fn_3_91064(void) {
-    return;
+s32 fn_3_91064(void) {
+    fn_80021518(0x1C, lbl_800EF808.unk10);
+    fn_80021518(0x36, lbl_800EF808.unk10);
+    return 0;
 }
 
 // .text:0x000910AC size:0x48 mapped:0x806D0140
-void fn_3_910AC(void) {
-    return;
+s32 fn_3_910AC(void) {
+    fn_80021518(0x1C, (s32)lbl_800EF808.unk8);
+    fn_80021518(0x1D, (s32)lbl_800EF808.unk8);
+    return 0;
 }
 
 // .text:0x000910F4 size:0xB4 mapped:0x806D0188
