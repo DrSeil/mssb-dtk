@@ -41,7 +41,11 @@ void fn_3_113D20(void) {
 
 // .text:0x00113EC0 size:0x54 mapped:0x80752F54
 void fn_3_113EC0(void) {
-    return;
+    g_Pitcher.ballVelocity.z = -g_Pitcher.ballVelocity.z;
+    g_Minigame.ballStoppedBreakingWallsInd = 1;
+    g_Pitcher.ballVelocity.x *= lbl_3_data_21674;
+    g_Pitcher.ballVelocity.y *= lbl_3_data_21674;
+    g_Pitcher.ballVelocity.z *= lbl_3_data_21674;
 }
 
 // .text:0x00113F14 size:0x2F0 mapped:0x80752FA8
