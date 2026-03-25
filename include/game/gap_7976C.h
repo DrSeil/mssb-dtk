@@ -22,7 +22,7 @@ void fn_3_7AF68(void);
 void fn_3_7AFE4(void);
 void fn_3_7B130(void);
 void fn_3_7B308(void);
-void fn_3_7BB74(void);
+BatterStatEntry* fn_3_7BB74(void);
 StatTableEntry* fn_3_7BBC0(void);
 void fn_3_7BBF8(void);  /* sets g_Stats.unk39 = 1 */
 void fn_3_7BC0C(void);

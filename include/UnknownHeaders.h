@@ -14,7 +14,9 @@ void fn_80011604(s8 arg1, void (*func)(void));
 typedef struct {
     u8 _pad0[0x8];
     void* unk8;         /* 0x08 */
-    u8 _pad1[0x98 - 0xC];
+    u8 _pad1a[0x10 - 0xC];
+    s32 unk10;          /* 0x10 */
+    u8 _pad1b[0x98 - 0x14];
     void* unk98;        /* 0x98 */
     u8 _pad9C[0xBC - 0x9C];
     s32 unkBC;
@@ -29,7 +31,10 @@ typedef struct {
     u8 _data1[0x1E - 0x10];
 } StatTableEntry; // size: 0x1E
 
-extern StatTableEntry lbl_803535C8[2][9]; // Static_Stats_Tables+0x4C28 entries[teamFielding][rosterSlot]
+typedef struct { u8 _pad[0x26]; } BatterStatEntry; // size: 0x26
+
+extern StatTableEntry lbl_803535C8[2][9]; // PitcherStats entries[teamFielding][rosterSlot]
+extern BatterStatEntry lbl_803537E4[2][9]; // BatterStats entries[teamBatting][rosterSlot]
 
 // Forward declaration for fn_800339F0 return type
 struct Struct_800339F0_Result;

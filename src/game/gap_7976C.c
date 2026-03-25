@@ -85,8 +85,12 @@ void fn_3_7B308(void) {
 }
 
 // .text:0x0007BB74 size:0x4C mapped:0x806BAC08
-void fn_3_7BB74(void) {
-    return;
+BatterStatEntry* fn_3_7BB74(void) {
+    s32 fieldingTeam = g_GameLogic.homeTeamBattingInd_fieldingTeam;
+    s32 batting = g_GameLogic.teamBatting;
+    s32 currentBatter = g_GameLogic.currentBatterPerTeam[fieldingTeam];
+    s32 rosterSlot = g_GameLogic.battingOrderAndPositionMapping[fieldingTeam][currentBatter][0];
+    return &lbl_803537E4[batting][rosterSlot];
 }
 
 // .text:0x0007BBC0 size:0x38 mapped:0x806BAC54
