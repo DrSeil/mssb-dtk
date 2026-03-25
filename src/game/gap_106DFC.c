@@ -134,8 +134,18 @@ s32 fn_3_107C40(void) {
 }
 
 // .text:0x00107C88 size:0x48 mapped:0x80746D1C
-void fn_3_107C88(void) {
-    return;
+s32 fn_3_107C88(void) {
+    s32* p = &g_Minigame.minigamePoints_current_Latest[1];
+    u8 count = g_Minigame.miniGameNumberOfParticipants;
+    s16 first = (s16)(g_Minigame.minigamePoints_current_Latest[0] >> 16);
+    s32 n = count - 1;
+    if (count > 1) {
+        do {
+            if ((s16)(*p >> 16) != first) return 0;
+            p++;
+        } while (--n);
+    }
+    return 1;
 }
 
 // .text:0x00107CD0 size:0x64 mapped:0x80746D64
