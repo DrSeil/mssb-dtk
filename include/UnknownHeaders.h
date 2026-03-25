@@ -50,8 +50,16 @@ struct ACTBone;
 struct ActLayout;
 struct AnimBank;
 typedef struct starAnimationRelated {
-    u8 _pad[0xC6];
-    u8 state_alt; /* 0xC6 */
+    u8 _pad0[0xC6];
+    u8 state_alt;    /* 0xC6 */
+    u8 _pad1[0x2CE - 0xC7];
+    u8 unk2CE;       /* 0x2CE */
+    u8 _pad2[0x27];
+    u8 unk2F6;       /* 0x2F6 */
+    u8 _pad3[0x27];
+    u8 unk31E;       /* 0x31E */
+    u8 _pad4[0x27];
+    u8 unk346;       /* 0x346 */
 } starAnimationRelated;
 
 /* AnimationStruct - 0x27C bytes, used in arrays within hugeAnimStruct.
