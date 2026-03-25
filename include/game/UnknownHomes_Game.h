@@ -1480,6 +1480,8 @@ typedef enum _WALL_BALL_GAME_STATE {
     WALL_BALL_GAME_STATE_PITCH_OR_WAITING_FOR_PITCH = 2
 } WALL_BALL_GAME_STATE;
 
+typedef struct QueueEntry QueueEntry;
+
 typedef struct _MiniGameStruct {
     /*0x000*/ u8 _0;
     /*0x001*/ u8 _1;
@@ -2441,7 +2443,9 @@ typedef struct _MiniGameStruct {
     /* 0x1DEC */ f32 unk1DEC;
     /* 0x1DF0 */ f32 unk1DF0;
     /*0x1DF4*/ s16 targetPointsArray[4];
-    /*0x1DFC*/ u8 _1DFC[0x26];
+    /*0x1DFC*/ u8 _1DFC[0x8];
+    /*0x1E04*/ QueueEntry* unk1E04;
+    /*0x1E08*/ u8 _1E08[0x1A];
     /*0x1E22*/ u8 field_1E22[4];
     /*0x1E26*/ u8 field_1E26[6];
 } MiniGameStruct; // size: 0x1E2C

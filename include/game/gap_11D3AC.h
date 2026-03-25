@@ -2,6 +2,8 @@
 #define __GAME_gap_11D3AC_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_11D3AC(void);
 void fn_3_11D6A0(void);

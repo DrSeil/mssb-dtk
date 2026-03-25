@@ -27,7 +27,9 @@ void fn_3_11DDC4(void) {
 
 // .text:0x0011DE80 size:0x4C mapped:0x8075CF14
 void fn_3_11DE80(void) {
-    return;
+    if (g_GameLogic._125 == 0) {
+        g_Minigame.unk1E04 = fn_800B0A5C_insertQueue(fn_3_11DECC, 2);
+    }
 }
 
 // .text:0x0011DECC size:0x43C mapped:0x8075CF60
