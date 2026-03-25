@@ -232,7 +232,7 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         kwargs = {"temperature": 0.1, "callbacks": [StdOutCallbackHandler()]}
         if json_mode:
             kwargs["model_kwargs"] = {"response_format": {"type": "json_object"}}
-
+        _log(f"DEBUG: OpenRouter Model (tier={tier}): {model}")
         return ChatOpenAI(
             model=model,
             openai_api_key=api_key,
