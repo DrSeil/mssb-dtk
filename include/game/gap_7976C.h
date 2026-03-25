@@ -15,7 +15,7 @@ void fn_3_7A154(void);
 void fn_3_7AB34(void);
 void fn_3_7AB78(void);
 void fn_3_7AD68(void);
-void fn_3_7AEA8(void);
+s32 fn_3_7AEA8(void);
 void fn_3_7AEE8(void);
 void fn_3_7AEEC(void);
 void fn_3_7AF68(void);

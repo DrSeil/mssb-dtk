@@ -46,8 +46,11 @@ void fn_3_7AD68(void) {
 }
 
 // .text:0x0007AEA8 size:0x40 mapped:0x806B9F3C
-void fn_3_7AEA8(void) {
-    return;
+s32 fn_3_7AEA8(void) {
+    s32 team = g_GameLogic.homeTeamBattingInd_fieldingTeam;
+    s32 bssVal = lbl_3_common_bss_32A94.unk44[team];
+    s32 currentBatter = g_GameLogic.currentBatterPerTeam[team];
+    return currentBatter + (bssVal - 1) * 9 - 1;
 }
 
 // .text:0x0007AEE8 size:0x4 mapped:0x806B9F7C
