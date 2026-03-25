@@ -2,7 +2,8 @@
 
 // .text:0x0000FF4C size:0x4C mapped:0x8064EFE0
 void fn_3_FF4C(void) {
-    return;
+    g_Ball.StaticRandomInt1 = (s32)(((g_Ball.StaticRandomInt1 * 8) + ((s32)g_Ball.StaticRandomInt1 >> 1) + (g_Ball.StaticRandomInt1 & 0x505)) & 0x7FFF);
+    g_Ball.StaticRandomInt2 = (s32)(((g_Ball.StaticRandomInt2 * 8) + ((s32)g_Ball.StaticRandomInt2 >> 2) + (g_Ball.StaticRandomInt2 & 0x505)) & 0x7FFF);
 }
 
 // .text:0x0000FF98 size:0x98 mapped:0x8064F02C
