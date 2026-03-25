@@ -146,8 +146,11 @@ s32 fn_3_107D34(u8* a, u8* b) {
 }
 
 // .text:0x00107D70 size:0x44 mapped:0x80746E04
-void fn_3_107D70(void) {
-    return;
+u8 fn_3_107D70(s8 arg0) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES && arg0 >= 0 && arg0 < 4) {
+        return g_Minigame.player_states[arg0];
+    }
+    return 0;
 }
 
 // .text:0x00107DB4 size:0x44 mapped:0x80746E48

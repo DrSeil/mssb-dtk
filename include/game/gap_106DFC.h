@@ -2,6 +2,9 @@
 #define __GAME_gap_106DFC_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
+#include "UnknownHeaders.h"
 
 void fn_3_106DFC(void);
 void fn_3_106E50(void);
@@ -23,7 +26,7 @@ void fn_3_107C40(void);
 void fn_3_107C88(void);
 void fn_3_107CD0(void);
 s32 fn_3_107D34(u8* a, u8* b);
-void fn_3_107D70(void);
+u8 fn_3_107D70(s8 arg0);
 void fn_3_107DB4(void);
 void fn_3_107DF8(void);
 u32 minigame_checkIfAIInputIs_Algorithmic_Or_ControllerBased(u8);
