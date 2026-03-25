@@ -261,7 +261,13 @@ void fn_3_B1A30(void) {
 
 // .text:0x000B1BCC size:0x48 mapped:0x806F0C60
 void fn_3_B1BCC(void) {
-    return;
+    g_Practice.__0x1e1padding[1] = 0;
+    g_Practice.__0x1e1padding[2] = 0;
+    g_Practice.__0x1e1padding[3] = 0;
+    g_Practice.__0x1e1padding[4] = 0;
+    g_Practice._1E2 = 0;
+    g_Practice.maybeCommandData[0] = 0;
+    fn_3_B3C78(0);
 }
 
 // .text:0x000B1C14 size:0x9C mapped:0x806F0CA8
