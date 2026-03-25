@@ -119,8 +119,18 @@ s32 fn_3_107C04(u8* a, u8* b) {
 }
 
 // .text:0x00107C40 size:0x48 mapped:0x80746CD4
-void fn_3_107C40(void) {
-    return;
+s32 fn_3_107C40(void) {
+    s16* p = &g_Minigame.miniGameCurrentPoints[1];
+    u8 count = g_Minigame.miniGameNumberOfParticipants;
+    s16 first = g_Minigame.miniGameCurrentPoints[0];
+    s32 n = count - 1;
+    if (count > 1) {
+        do {
+            if (*p != first) return 0;
+            p++;
+        } while (--n);
+    }
+    return 1;
 }
 
 // .text:0x00107C88 size:0x48 mapped:0x80746D1C
