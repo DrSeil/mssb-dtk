@@ -2,6 +2,8 @@
 #define __GAME_gap_15C5F4_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 
 void fn_3_15C5F4(void);
 void fn_3_15C638(void);
