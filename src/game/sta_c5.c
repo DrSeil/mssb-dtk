@@ -95,13 +95,14 @@ void fn_3_EF408(void) {
 }
 
 // .text:0x000EF55C size:0x258 mapped:0x8072E5F0
-void fn_3_EF55C(void) {
-    return;
+u8 fn_3_EF55C(EF55C_Arg* arg0) {
+    return 0;
 }
 
 // .text:0x000EF7B4 size:0x4C mapped:0x8072E848
-void fn_3_EF7B4(void) {
-    return;
+s32 fn_3_EF7B4(EF55C_Arg* arg0) {
+    EF55C_Arg local = *arg0;
+    return fn_3_EF55C(&local) != 0;
 }
 
 // .text:0x000EF800 size:0x90 mapped:0x8072E894

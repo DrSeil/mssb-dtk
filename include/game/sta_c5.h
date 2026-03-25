@@ -2,6 +2,13 @@
 #define __GAME_sta_c5_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+
+typedef struct {
+    s32 x;
+    s32 y;
+    s32 z;
+} EF55C_Arg;
 
 typedef struct {
     u8 _pad0[0x60];
@@ -45,8 +52,8 @@ void fn_3_EF218(void);
 void fn_3_EF21C(void);
 void fn_3_EF3D4(UnknownStruct_EF3D4* arg0, u32 index);
 void fn_3_EF408(void);
-void fn_3_EF55C(void);
-void fn_3_EF7B4(void);
+u8 fn_3_EF55C(EF55C_Arg* arg0);
+s32 fn_3_EF7B4(EF55C_Arg* arg0);
 void fn_3_EF800(void);
 void fn_3_EF890(void);
 void fn_3_EF930(void);
