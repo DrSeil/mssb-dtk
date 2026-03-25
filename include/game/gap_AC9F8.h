@@ -6,6 +6,8 @@
 #include "game/gap_B3B70.h"
 #include "game/gap_1D86C.h"
 #include "game/rep_1200.h"
+#include "game/gap_FF4C.h"
+#include "game/gap_5985C.h"
 #include "game/rep_AC8.h"
 #include "game/rep_13B8.h"
 #include "game/game_batter.h"

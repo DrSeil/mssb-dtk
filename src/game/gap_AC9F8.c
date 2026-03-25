@@ -237,7 +237,12 @@ void fn_3_B0E00(void) {
 
 // .text:0x000B1120 size:0x4C mapped:0x806F01B4
 void fn_3_B1120(void) {
-    return;
+    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
+        ballPhysica();
+        fn_3_598D0();
+        fn_3_8A958();
+        fn_3_B0E00();
+    }
 }
 
 // .text:0x000B116C size:0x64 mapped:0x806F0200

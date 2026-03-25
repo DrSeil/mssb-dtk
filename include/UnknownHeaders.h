@@ -672,7 +672,7 @@ typedef struct CommonBss32A94 {
 extern CommonBss32A94 lbl_3_common_bss_32A94;
 extern void fn_3_FBE24(void);
 extern f32 lbl_3_rodata_1998;
-extern void fn_3_5A6D4(s32);
+extern void fn_3_5A6D4(u8);
 extern f32 fn_800B4A94(AnimLevel1* arg0, hugeAnimStruct* arg1);
 typedef struct Struct_14D6D4_Node {
 struct Struct_14D6D4_Node* next; // 0x00
