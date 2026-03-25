@@ -12,7 +12,9 @@ void fn_800528AC(void (*callback)(void));
 void fn_80011604(s8 arg1, void (*func)(void));
 
 typedef struct {
-    u8 _pad[0x98];
+    u8 _pad0[0x8];
+    void* unk8;         /* 0x08 */
+    u8 _pad1[0x98 - 0xC];
     void* unk98;        /* 0x98 */
     u8 _pad9C[0xBC - 0x9C];
     s32 unkBC;
