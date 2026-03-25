@@ -22,7 +22,9 @@ BOOL fn_80021518(s32 charID, s32 param_2);
 void fn_800214D0(void);
 
 typedef struct {
-    u8 _data[0x1E];
+    u8 _data0[0xE];
+    u16 unkE;           /* 0xE */
+    u8 _data1[0x1E - 0x10];
 } StatTableEntry; // size: 0x1E
 
 extern StatTableEntry lbl_803535C8[2][9]; // Static_Stats_Tables+0x4C28 entries[teamFielding][rosterSlot]

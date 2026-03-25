@@ -32,7 +32,8 @@ void fn_3_7A154(void) {
 
 // .text:0x0007AB34 size:0x44 mapped:0x806B9BC8
 void fn_3_7AB34(void) {
-    return;
+    StatTableEntry* entry = &lbl_803535C8[g_GameLogic.teamFielding][g_GameLogic.battingOrderAndPositionMapping[g_GameLogic.awayTeamBattingInd_battingTeam][0][0]];
+    entry->unkE++;
 }
 
 // .text:0x0007AB78 size:0x1F0 mapped:0x806B9C0C
