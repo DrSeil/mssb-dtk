@@ -2,6 +2,8 @@
 #define __GAME_gap_9CD90_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 #include "UnknownHeaders.h"
 
 void fn_3_9CD90(void);

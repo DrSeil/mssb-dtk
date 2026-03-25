@@ -22,7 +22,11 @@ void fn_3_9D374(void) {
 
 // .text:0x0009D550 size:0x44 mapped:0x806DC5E4
 void fn_3_9D550(void) {
-    return;
+    if (g_Ball.maybeBuntInd != 0 && g_Strikes.strikes >= 3) {
+        lbl_3_common_bss_32A94.unk0 = 0x27;
+        return;
+    }
+    lbl_3_common_bss_32A94.unk0 = 0x2C;
 }
 
 // .text:0x0009D594 size:0x6C mapped:0x806DC628
