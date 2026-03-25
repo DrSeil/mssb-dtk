@@ -164,7 +164,11 @@ void fn_3_B6BA4(void) {
 
 // .text:0x000B6C50 size:0x4C mapped:0x806F5CE4
 void fn_3_B6C50(void) {
-    return;
+    g_Practice.allowPlayToEndIndicator = 0;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    fn_3_1DD48();
+    fn_3_5A6D4(7);
 }
 
 // .text:0x000B6C9C size:0xE4 mapped:0x806F5D30
