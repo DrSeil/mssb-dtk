@@ -29,7 +29,9 @@ void fn_3_90860(void) {
 
 // .text:0x000908E8 size:0x40 mapped:0x806CF97C
 void fn_3_908E8(void) {
-    return;
+    fn_800214D0();
+    fn_800ACFB0(lbl_800EF808.unk98);
+    lbl_800EF808.unk98 = 0;
 }
 
 // .text:0x00090928 size:0x88 mapped:0x806CF9BC

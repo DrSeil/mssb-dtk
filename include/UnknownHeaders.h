@@ -12,11 +12,14 @@ void fn_800528AC(void (*callback)(void));
 void fn_80011604(s8 arg1, void (*func)(void));
 
 typedef struct {
-    u8 _pad[0xBC];
+    u8 _pad[0x98];
+    void* unk98;        /* 0x98 */
+    u8 _pad9C[0xBC - 0x9C];
     s32 unkBC;
 } Lbl800EF808; // size: 0x39C
 extern Lbl800EF808 lbl_800EF808;
 BOOL fn_80021518(s32 charID, s32 param_2);
+void fn_800214D0(void);
 
 typedef struct {
     u8 _data[0x1E];
