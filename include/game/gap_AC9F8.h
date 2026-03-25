@@ -4,6 +4,7 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 #include "game/gap_B3B70.h"
+#include "game/gap_1D86C.h"
 
 typedef struct {
     u8 _pad0[0x04];      /* 0x00 */

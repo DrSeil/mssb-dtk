@@ -125,7 +125,11 @@ void fn_3_AFDA4(void) {
 
 // .text:0x000AFDC0 size:0x4C mapped:0x806EEE54
 void fn_3_AFDC0(void) {
-    return;
+    g_Practice.allowPlayToEndIndicator = 0;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    fn_3_1DD48();
+    fn_3_5A6D4(7);
 }
 
 // .text:0x000AFE0C size:0x230 mapped:0x806EEEA0
