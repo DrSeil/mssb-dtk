@@ -2,6 +2,7 @@
 #define __GAME_sta_c4_H_
 
 #include "mssbTypes.h"
+#include "UnknownHeaders.h"
 
 extern u8 lbl_3_bss_B5D4;
 

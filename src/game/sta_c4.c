@@ -79,7 +79,13 @@ void fn_3_F9164(void) {
 
 // .text:0x000F92FC size:0x50 mapped:0x80738390
 void fn_3_F92FC(void) {
-    return;
+    DrawingSceneStruct *s = lbl_803CC1B8;
+    s16 state = s->loadingState;
+    s->loadingState = state - 1;
+    if (state == 0) {
+        s->unk14->b2 = 1;
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000F934C size:0x2F0 mapped:0x807383E0

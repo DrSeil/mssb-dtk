@@ -613,6 +613,13 @@ typedef struct UnknownBss_803C6CF8 {
 
 extern UnknownBss_803C6CF8 lbl_803C6CF8;
 
+typedef struct DrawingSceneItem {
+    u8 _pad[0x90];
+    u8 _b0 : 2;
+    u8 b2 : 1;  // bit 5 from LSB (0x20)
+    u8 _b3 : 5;
+} DrawingSceneItem;
+
 typedef struct DrawingSceneStruct {
     void* aFunctionPointer;
     struct {
@@ -622,8 +629,13 @@ typedef struct DrawingSceneStruct {
     struct DrawingSceneStruct *currentDrawingItem;
     short loadingState;
     u16 priority;
-    u16 unkIndex;
-    u16 unkIndex2; // Combination of field6_0x16 and field7_0x17
+    union {
+        struct {
+            u16 unkIndex;
+            u16 unkIndex2;
+        };
+        DrawingSceneItem *unk14;
+    };
     s16 unk18;
     s16 unk1a;
     u16 eventID;
