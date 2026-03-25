@@ -11,8 +11,14 @@ void fn_3_6D564(void) {
 }
 
 // .text:0x0006D604 size:0x54 mapped:0x806AC698
-void checkFieldingStat(void) {
-    return;
+BOOL checkFieldingStat(int teamIdx, int playerIdx, int statBit) {
+    if (g_d_GameSettings.minigamesEnabled) {
+        teamIdx = 0;
+    }
+    if (inMemRoster[teamIdx][playerIdx].stats.FieldingStats & (1U << statBit)) {
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x0006D658 size:0x7C mapped:0x806AC6EC
