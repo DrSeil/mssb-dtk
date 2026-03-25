@@ -86,7 +86,7 @@ void fn_3_5A6A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 // .text:0x0005A6D4 size:0x28 mapped:0x80699768
-void fn_3_5A6D4(u8 arg0, u8 arg1) {
+void fn_3_5A6D4(u8 arg0) {
     g_GameLogic.FrameCountOfCurrentPitch = 0;
     g_GameLogic.gameStatus_prev = g_GameLogic.gameStatus;
     g_GameLogic.gameStatus = arg0;
@@ -257,7 +257,9 @@ void fn_3_5E2C4(void) {
 
 // .text:0x0005ED98 size:0x40 mapped:0x8069DE2C
 void fn_3_5ED98(void) {
-    return;
+    fn_3_5A6D4(2);
+    g_FieldingLogic.unkAE = 0;
+    g_Pitcher.peachDaisyStarAnimationOn = 0;
 }
 
 // .text:0x0005EDD8 size:0x80 mapped:0x8069DE6C
