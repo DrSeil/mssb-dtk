@@ -8,7 +8,12 @@ void fn_3_CB6B4(u32* arg0) {
 }
 
 // .text:0x000CB6EC size:0x4C mapped:0x8070A780
-void fn_3_CB6EC(void) {
-    return;
+void fn_3_CB6EC(f32 x, f32 y, f32 z) {
+    Vec vec;
+    vec.x = x;
+    vec.y = y;
+    vec.z = z;
+    lbl_3_data_18268 = lbl_3_common_bss_35154.unk4;
+    fn_8002955C(&vec, 0, &lbl_3_data_18268);
 }
 
