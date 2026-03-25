@@ -2,6 +2,7 @@
 #define __GAME_gap_1293D0_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
 
 void fn_3_1293D0(void);
 void fn_3_129458(void);
@@ -29,7 +30,7 @@ void fn_3_12CA90(void);
 void fn_3_12D1F4(void);
 void fn_3_12DB54(void);
 void fn_3_12DB80(void);
-void fn_3_12DD88(void);
+s32 fn_3_12DD88(void);
 void fn_3_12DDCC(void);
 void fn_3_12E084(void);
 void fn_3_12E17C(void);

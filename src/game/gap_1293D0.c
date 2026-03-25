@@ -138,8 +138,13 @@ void fn_3_12DB80(void) {
 }
 
 // .text:0x0012DD88 size:0x44 mapped:0x8076CE1C
-void fn_3_12DD88(void) {
-    return;
+s32 fn_3_12DD88(void) {
+    u32 count = 0;
+    do {
+        if (g_Minigame.barrels[count].barrelState != 2) break;
+        count++;
+    } while (count < 15);
+    return count >= 15;
 }
 
 // .text:0x0012DDCC size:0x2B8 mapped:0x8076CE60
