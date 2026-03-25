@@ -16,6 +16,7 @@
 | fn_3_BB07C | 224 | sin/cos scheduler: lfsu cascade, +1 instruction |
 | fn_3_BF070 | 232 | stmw r27 vs 4 individual stw's — can't get lbl_3_data_111A8 cached in r30 |
 | fn_3_BDE14 | 352 | register allocation: r25-r28+stmw vs r29-r31 individual stw; rodata not cached in f27-f31 |
+| fn_3_BDCA4 | 368 | register allocation: CW assigns r6/r5 for addr/unk24 instead of r5/r4 → stfsx vs stfs |
 
 ### Matched ✓
 | Function | Notes |
@@ -45,7 +46,6 @@
 | Function | Size | Notes |
 |---|---|---|
 | fn_3_BDE14 | 352 | stub |
-| fn_3_BDCA4 | 368 | stub |
 | fn_3_BC6D8 | 376 | stub |
 | fn_3_BC888 | 408 | stub |
 | fn_3_BD504 | 424 | has partial code, needs work |
