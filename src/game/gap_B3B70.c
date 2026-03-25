@@ -210,7 +210,12 @@ void fn_3_B777C(u8 arg0) {
 
 // .text:0x000B7794 size:0x48 mapped:0x806F6828
 void fn_3_B7794(void) {
-    return;
+    g_Practice.__0x1eepadding[4] = 1;
+    g_Practice.__0x1eepadding[5] = 1;
+    g_Practice.__0x1eepadding[6] = 0;
+    g_Practice.__0x1eepadding[7] = 0;
+    g_Practice.__0x1eepadding[3] = 0;
+    fn_3_B3C78(0);
 }
 
 // .text:0x000B77DC size:0x1D0 mapped:0x806F6870
