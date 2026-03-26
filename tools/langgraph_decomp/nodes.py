@@ -1112,6 +1112,9 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 block = "\n".join(pending_lines).strip()
                 _append_to_file_if_missing(header_path, block, backups, _log=_log)
 
+        # Collect auto-fix messages from extern processing (used in build feedback)
+        extern_autofix_msgs = []
+
         # Apply extern additions
         if externs and externs.strip():
             _log(f"[builder] Applying extern additions/updates")
@@ -1156,22 +1159,52 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     pending_lines = []
                     if not block:
                         continue
-                    # Reject anonymous struct/union externs — MWCC C mode does not
-                    # support `extern struct { ... } name;` and writing it to the
-                    # shared UnknownHeaders.h would break every compilation unit.
+                    # Auto-fix anonymous struct/union externs — MWCC C mode does not
+                    # support `extern struct { ... } name;`.  Synthesize a named
+                    # typedef + plain extern and proceed to build.  Only hard-reject
+                    # if we cannot parse the block.
                     if re.search(r'\bextern\s+(struct|union)\s*\{', block):
+                        kw_match = re.search(r'\bextern\s+(struct|union)\s*\{', block)
+                        keyword = kw_match.group(1)
                         sym_match = re.search(r'\}\s*(\w+)\s*;', block)
-                        sym_name = sym_match.group(1) if sym_match else "unknown"
-                        msg = (
-                            f"[builder] REJECTED anonymous struct/union extern for '{sym_name}'. "
-                            f"Metrowerks CodeWarrior C mode does not support "
-                            f"'extern struct {{ ... }} {sym_name};'. "
-                            f"Use a named typedef instead: "
-                            f"'typedef struct {{ ... }} TypeName; extern TypeName {sym_name};', "
-                            f"or use a simple array extern if no struct fields are needed."
-                        )
-                        _log(msg)
-                        extern_rejection_errors.append(msg)
+                        body_match = re.search(r'\{(.*)\}', block, re.DOTALL)
+                        sym_name = sym_match.group(1) if sym_match else None
+
+                        if sym_name and sym_name in headers_declared_syms:
+                            _log(
+                                f"[builder] Skipping anonymous struct extern for '{sym_name}' "
+                                f"— symbol already declared in header_additions."
+                            )
+                            continue
+
+                        if sym_name and body_match:
+                            body = body_match.group(1).strip()
+                            type_name = f"{sym_name}_struct"
+                            typedef_block = f"typedef {keyword} {{\n    {body}\n}} {type_name};"
+                            extern_block = f"extern {type_name} {sym_name};"
+                            autofix_note = (
+                                f"[builder] Auto-fixed anonymous struct extern for '{sym_name}': "
+                                f"synthesized 'typedef {keyword} {{ ... }} {type_name}; "
+                                f"extern {type_name} {sym_name};' — use this pattern directly."
+                            )
+                            _log(autofix_note)
+                            extern_autofix_msgs.append(autofix_note)
+                            _append_to_file_if_missing(
+                                externs_path,
+                                typedef_block + "\n" + extern_block,
+                                backups, _log=_log
+                            )
+                        else:
+                            # Cannot parse — hard reject
+                            fallback_name = sym_name or "unknown"
+                            msg = (
+                                f"[builder] REJECTED unparseable anonymous struct/union extern "
+                                f"for '{fallback_name}'. "
+                                f"Use a named typedef instead: "
+                                f"'typedef struct {{ ... }} TypeName; extern TypeName {fallback_name};'"
+                            )
+                            _log(msg)
+                            extern_rejection_errors.append(msg)
                         continue
                     match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
                     if match:
@@ -1247,8 +1280,9 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             filtered = _filter_build_output(combined)
             # Prepend any struct_modifications failures so they appear in the
             # feedback the LLM receives (they were previously only in process_log)
-            if struct_mod_failures:
-                filtered = "\n".join(struct_mod_failures) + "\n\n" + filtered
+            prefix_msgs = struct_mod_failures + extern_autofix_msgs
+            if prefix_msgs:
+                filtered = "\n".join(prefix_msgs) + "\n\n" + filtered
             # Detect shared-header corruption: errors originating from a shared
             # include file (not just the target source) indicate that an extern
             # declaration written to that header is syntactically broken and will
@@ -1330,10 +1364,11 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         except Exception as e:
             _log(f"[builder] Git checkpointing failed: {e}")
 
-        # If struct_modifications failed, surface the warnings alongside the diff
-        # so the LLM knows to use header_additions instead next iteration.
-        if struct_mod_failures:
-            asm_diff = "\n".join(struct_mod_failures) + "\n\n" + asm_diff
+        # Surface struct_modifications failures and extern auto-fix notes alongside
+        # the diff so the LLM sees them even on a successful build.
+        prefix_msgs = struct_mod_failures + extern_autofix_msgs
+        if prefix_msgs:
+            asm_diff = "\n".join(prefix_msgs) + "\n\n" + asm_diff
 
         return {
             "status": "success",
