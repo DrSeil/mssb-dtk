@@ -36,3 +36,27 @@
 - **Build system behavior**: The build process halts on the first critical error (e.g., missing prototype) and does not proceed to compile remaining files, making it essential to resolve all prototype and syntax issues before successful compilation.
 
 - **No generalizable architectural patterns**: The failures observed are due to standard C89 compliance and encoding issues rather than project-specific quirks or unconventional code patterns.
+
+### Learnings from fn_3_109D88
+- **Struct padding fields**: The compiler requires explicit `_pad` fields for alignment when struct sizes don't match expected memory layout. Missing padding causes "illegal struct/union/enum/class definition" errors.
+
+- **Array access syntax**: Using `&lbl_803616CC[offset]` syntax is valid for accessing struct arrays by offset, but the struct definition must be properly declared with correct field sizes and padding.
+
+- **Global variable access**: Functions can safely access global variables like `g_Minigame` without explicit declarations in the same file, as long as they're declared in included headers.
+
+- **Pointer arithmetic with structs**: Pointer arithmetic using struct offsets (e.g., `&lbl_803616CC[0x28 + (index - 1) * 0x28]`) is valid when the base address is properly typed as a struct array.
+
+- **Build dependency propagation**: Errors in header files (like struct definitions) cause cascading build failures across multiple source files that include them, even if those files don't directly use the problematic struct.
+
+### Learnings from fn_3_10F564
+- The compiler rejects struct definitions that appear to be malformed or incomplete, particularly when they contain unexpected syntax or missing members. Ensure all struct definitions are complete and syntactically correct before compilation.
+
+- When accessing struct members, the compiler enforces strict typing rules. Casting between types (e.g., `(s8)`, `(u8)`) must be valid and not violate type safety, especially when dealing with signed/unsigned conversions.
+
+- Array indexing with struct members (e.g., `lbl_3_data_18910[g_Minigame.GameMode_MiniGame]`) is valid, but the index must be of an appropriate type (e.g., integer) and within bounds. Ensure the array and index types are compatible.
+
+- The compiler is sensitive to the order and structure of conditional statements. Nested `if` statements with early returns are acceptable, but ensure all branches are properly terminated and return types match the function signature.
+
+- When dealing with global variables or arrays (e.g., `g_Minigame`, `lbl_3_data_228`), ensure they are properly declared and initialized before use. Undefined or improperly declared globals can cause compilation errors.
+
+- The compiler enforces strict C89/C90 rules, so avoid using features or syntax that are not supported in these standards (e.g., certain C99 or later features). Stick to basic C constructs and ensure compatibility with the target compiler version.
