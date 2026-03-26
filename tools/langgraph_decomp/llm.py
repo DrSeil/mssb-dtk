@@ -801,6 +801,11 @@ def build_refactor_prompt(state: dict, escalate: bool = False) -> str:
     if symbol_defs:
         sections.append(symbol_defs)
 
+    # Symbol context (size/type/array hints for referenced lbl_ symbols)
+    symbol_context = state.get("symbol_context", "")
+    if symbol_context:
+        sections.append(symbol_context + "\n")
+
     # SDA Mapping (r13/r2)
     sda_map = state.get("sda_map", "")
     if sda_map:

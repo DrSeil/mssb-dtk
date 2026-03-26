@@ -138,4 +138,5 @@ class DecompState(TypedDict):
     current_asm: str            # latest compiled assembly for current C code
     struct_updates: Annotated[List[dict], merge_struct_updates]  # list of {'type_name': str, 'definition': str}
     sda_map: str                # info about SDA-relative symbols (r13/r2)
+    symbol_context: str         # annotated symbol size/type/array hints from symbols.txt
     error_taxonomy: str         # classification of current failure (e.g. "SDA Access")

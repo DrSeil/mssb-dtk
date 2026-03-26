@@ -159,6 +159,11 @@ def source_finder_node(state):
         if len(sda_lines) > 1:
             sda_info = "\n".join(sda_lines)
 
+    # Phase 1.2: Symbol context (size/type/array hints) and Ghidra annotation
+    _, raw_syms = gen_prompt.extract_deps_and_symbols(asm_text)
+    symbol_context = gen_prompt.annotate_referenced_symbols(raw_syms, asm_text, module=None)
+    annotated_ghidra = gen_prompt.annotate_ghidra_addresses(ghidra_output or "", module=None)
+
     return {
         "module": module,
         "source_file": source_file,
@@ -168,7 +173,8 @@ def source_finder_node(state):
         "unit_name": unit_name,
         "header_path": header_path or "",
         "header_content": header_content or "",
-        "ghidra_output": ghidra_output or "",
+        "ghidra_output": annotated_ghidra,
+        "symbol_context": symbol_context,
         "is_stub": is_stub,
         "sda_map": sda_info,
         "original_branch": original_branch,

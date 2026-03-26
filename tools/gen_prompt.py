@@ -289,6 +289,199 @@ def extract_deps_and_symbols(asm_text):
     return sorted(deps), sorted(syms)
 
 
+def load_symbol_db(module=None):
+    """Load symbols from symbols.txt for the given module (or DOL if module is falsy).
+
+    Returns a dict: symbol_name -> {addr, section, type, size}.
+    """
+    if module:
+        sym_file = os.path.join(CONFIG_BASE, module, "symbols.txt")
+    else:
+        sym_file = os.path.join(CONFIG_BASE, "symbols.txt")
+
+    db = {}
+    if not os.path.exists(sym_file):
+        return db
+    with open(sym_file, "r") as f:
+        for line in f:
+            # name = .section:0xADDR; // type:TYPE size:0xSIZE ...
+            m = re.match(
+                r'(\w+)\s*=\s*([\.\w]+):0x([0-9A-Fa-f]+)\s*;(?:\s*//\s*(.*))?', line
+            )
+            if not m:
+                continue
+            name, section, addr_hex, comment = m.groups()
+            entry = {"addr": int(addr_hex, 16), "section": section, "type": None, "size": None}
+            if comment:
+                tm = re.search(r'type:(\S+)', comment)
+                sm = re.search(r'size:0x([0-9A-Fa-f]+)', comment)
+                if tm:
+                    entry["type"] = tm.group(1)
+                if sm:
+                    entry["size"] = int(sm.group(1), 16)
+            db[name] = entry
+    return db
+
+
+def detect_strides(asm_text, sym_db):
+    """Scan assembly for mulli instructions and pair strides with nearby base symbols.
+
+    Returns a dict: symbol_name -> set of integer strides observed.
+    """
+    lines = asm_text.splitlines()
+    strides = {}  # sym -> set of stride ints
+
+    for i, line in enumerate(lines):
+        mulli_m = re.search(r'\bmulli\s+\w+,\s*\w+,\s*(0x[0-9A-Fa-f]+|\d+)', line)
+        if not mulli_m:
+            continue
+        raw = mulli_m.group(1)
+        stride = int(raw, 16) if raw.startswith("0x") else int(raw)
+        if stride < 2:
+            continue
+
+        # Look back up to 8 lines for the most recent lbl_ symbol reference
+        window = lines[max(0, i - 8): i + 1]
+        for wline in reversed(window):
+            sym_m = re.search(r'\b(lbl_[0-9A-Fa-f]+)\b', wline)
+            if sym_m:
+                sym = sym_m.group(1)
+                strides.setdefault(sym, set()).add(stride)
+                break
+
+    return strides
+
+
+def annotate_referenced_symbols(syms, asm_text, module=None):
+    """Build an annotated symbol context section for the prompt.
+
+    For each symbol:
+      - Looks up size/type from symbols.txt
+      - Detects mulli strides to infer array element size
+      - Notes if the symbol is undeclared (not in any header)
+    Returns a markdown string, or "" if nothing useful.
+    """
+    if not syms:
+        return ""
+
+    # DOL symbols (lbl_80XXXXXX) live in the DOL symbol db; REL symbols in module db
+    dol_db = load_symbol_db(module=None)
+    mod_db = load_symbol_db(module=module) if module else {}
+    strides = detect_strides(asm_text, {**dol_db, **mod_db})
+
+    include_dir = os.path.join(ROOT_DIR, "include")
+
+    lines = ["## Referenced Symbols\n"]
+    for sym in syms:
+        info = dol_db.get(sym) or mod_db.get(sym)
+        lines.append(f"- `{sym}`")
+
+        if info:
+            addr_str = f"0x{info['addr']:08X}" if info.get("addr") else "?"
+            size_str = f"0x{info['size']:X}" if info.get("size") else "unknown"
+            sec_str = info.get("section", "?")
+            type_str = info.get("type", "?")
+            lines.append(f"  - Section: {sec_str}, Address: {addr_str}, "
+                         f"Type: {type_str}, Size: {size_str} bytes")
+
+            # Stride hint
+            if sym in strides:
+                for stride in sorted(strides[sym]):
+                    size = info.get("size")
+                    hint = f"  - ARRAY HINT: `mulli` stride 0x{stride:X} detected"
+                    if size and stride > 0:
+                        count = size // stride
+                        hint += (f" → array of ~{count} elements × 0x{stride:X} bytes. "
+                                 f"Define a struct of size 0x{stride:X} and use array/field access.")
+                    else:
+                        hint += f" → define a struct of size 0x{stride:X} bytes."
+                    lines.append(hint)
+        else:
+            # Symbol not in any symbols.txt — might be a REL local label
+            lines.append(f"  - (address not found in symbols.txt)")
+
+        # Check if declared in any header
+        try:
+            result = subprocess.run(
+                ["grep", "-rl", sym, include_dir],
+                capture_output=True, text=True, timeout=3,
+            )
+            if not result.stdout.strip():
+                lines.append(f"  - **NOT declared in any header** — add an extern declaration before use")
+        except Exception:
+            pass
+
+    return "\n".join(lines)
+
+
+def annotate_ghidra_addresses(ghidra_text, module=None):
+    """Replace Ghidra's INT_/DAT_ absolute addresses with symbolic annotations.
+
+    When Ghidra shows `&INT_803617e4`, resolve that address against known symbols
+    and annotate it as e.g. `/* lbl_803616CC + 0x118 */ &INT_803617e4`.
+    Returns the annotated string.
+    """
+    if not ghidra_text:
+        return ghidra_text
+
+    dol_db = load_symbol_db(module=None)
+    # Build a sorted list of (addr, name, size) for range lookup
+    symbol_ranges = sorted(
+        [(v["addr"], k, v.get("size") or 0)
+         for k, v in dol_db.items() if v.get("addr") is not None],
+        key=lambda x: x[0],
+    )
+
+    def _resolve_addr(addr_int):
+        """Find which symbol contains addr_int and return 'sym + 0xOFFSET'."""
+        for sym_addr, sym_name, sym_size in reversed(symbol_ranges):
+            if sym_addr <= addr_int:
+                offset = addr_int - sym_addr
+                # Accept if within the symbol's size, or within a reasonable 0x200 window
+                limit = sym_size if sym_size else 0x200
+                if offset <= limit:
+                    if offset == 0:
+                        return sym_name
+                    return f"{sym_name} + 0x{offset:X}"
+        return None
+
+    def _replace_addr(m):
+        raw = m.group(0)
+        hex_str = m.group(1)
+        try:
+            addr_int = int(hex_str, 16)
+        except ValueError:
+            return raw
+        resolved = _resolve_addr(addr_int)
+        if resolved and resolved != raw:
+            return f"{raw}  /* {resolved} */"
+        return raw
+
+    # Match INT_XXXXXXXX, DAT_XXXXXXXX, PTR_XXXXXXXX, and raw 0x80XXXXXX addresses
+    annotated = re.sub(
+        r'\b(?:INT|DAT|PTR|FUN|LAB|SUB)_([0-9A-Fa-f]{8})\b',
+        _replace_addr,
+        ghidra_text,
+    )
+    # Also match standalone 0x80XXXXXX literals in Ghidra context
+    def _replace_literal(m):
+        raw = m.group(0)
+        hex_str = m.group(1)
+        try:
+            addr_int = int(hex_str, 16)
+        except ValueError:
+            return raw
+        if addr_int < 0x80000000:
+            return raw
+        resolved = _resolve_addr(addr_int)
+        if resolved and resolved != raw:
+            return f"{raw}  /* {resolved} */"
+        return raw
+
+    annotated = re.sub(r'\b0x(8[0-9A-Fa-f]{7})\b', _replace_literal, annotated)
+    return annotated
+
+
 def find_signature(symbol):
     """Search include/ for a function signature."""
     include_dir = os.path.join(ROOT_DIR, "include")
@@ -409,11 +602,10 @@ def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
             else:
                 sections.append(f"- `{dep}` (signature not found in headers)")
 
-    # Referenced symbols
+    # Referenced symbols (annotated with size/type/stride hints)
     if syms:
-        sections.append(f"\n## Referenced Symbols\n")
-        for sym in syms:
-            sections.append(f"- `{sym}`")
+        sym_section = annotate_referenced_symbols(syms, asm_text, module=info.get("module"))
+        sections.append(f"\n{sym_section}")
 
     # Current feedback
     if feedback and "MATCH!" not in feedback:
@@ -425,10 +617,11 @@ def build_prompt(func_name, info, asm_text, deps, syms, src_path, src_content,
         sections.append(f"\n## Approximate Decompilation (from m2c)\n")
         sections.append(f"```c\n{m2c_output.strip()}\n```")
 
-    # Ghidra decompilation
+    # Ghidra decompilation (with address annotations)
     if ghidra_output:
+        annotated_ghidra = annotate_ghidra_addresses(ghidra_output, module=info.get("module"))
         sections.append(f"\n## Ghidra Decompilation (from in_game.c)\n")
-        sections.append(f"```c\n{ghidra_output.strip()}\n```")
+        sections.append(f"```c\n{annotated_ghidra.strip()}\n```")
 
     # Header file
     if header_content:
