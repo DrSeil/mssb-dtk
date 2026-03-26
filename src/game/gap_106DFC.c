@@ -244,8 +244,16 @@ void fn_3_109CE8(void) {
 }
 
 // .text:0x00109D88 size:0x58 mapped:0x80748E1C
-void fn_3_109D88(void) {
-    return;
+MinigameModeData* fn_3_109D88(void) {
+    u8 mode;
+    if (g_Minigame._1A3C != 0) {
+        return &lbl_803616CC.modes[6];
+    }
+    mode = g_Minigame.GameMode_MiniGame;
+    if (mode != 0) {
+        return &lbl_803616CC.modes[mode - 1];
+    }
+    return &lbl_803616CC.base;
 }
 
 // .text:0x00109DE0 size:0x23C mapped:0x80748E74

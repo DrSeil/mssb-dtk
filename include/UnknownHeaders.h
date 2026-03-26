@@ -870,4 +870,19 @@ s32 val5; // 0x14
 extern GameStateBss lbl_3_bss_D6F0;
 extern f32 lbl_3_rodata_B20;
 void fn_800B0A14_removeQueue(void);
+
+// Array of minigame mode data entries, indexed by MINI_GAME_ID.
+// base is the entry for MINI_GAME_ID_NONE; modes[0..6] map to IDs 1-7.
+typedef struct {
+    u8 _pad[0x28];
+} MinigameModeData;
+
+typedef struct {
+    MinigameModeData base;      /* 0x000 */
+    MinigameModeData modes[7];  /* 0x028 - 0x118 */
+    u8 _rest[0x454 - 0x28 * 8];
+} MinigameModeTable;            // size: 0x454
+
+extern MinigameModeTable lbl_803616CC;
+
 #endif
