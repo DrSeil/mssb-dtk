@@ -1059,18 +1059,34 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         # Apply header additions (prototypes, struct defs)
         if headers and headers.strip():
             _log(f"[builder] Applying header additions to {header_path}")
-            for line in headers.strip().splitlines():
-                line = line.strip()
-                if not line or line.startswith("//") or line.startswith("/*"):
+            # Accumulate lines into logical blocks, keeping multi-line struct/typedef
+            # definitions together (brace-depth tracking) so they are never fragmented.
+            pending_lines = []
+            brace_depth = 0
+            for raw_line in headers.strip().splitlines():
+                stripped = raw_line.strip()
+                if not stripped or stripped.startswith("//") or stripped.startswith("/*"):
                     continue
-                # If it's an extern, handle it globally
-                match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
-                if match:
-                    type_str = match.group(1).strip()
-                    symbol_name = match.group(2).strip()
-                    _add_or_update_extern(symbol_name, line, header_path, backups, type_str=type_str, _log=_log)
-                else:
-                    _append_to_file_if_missing(header_path, line, backups, _log=_log)
+                pending_lines.append(raw_line)
+                brace_depth += stripped.count('{') - stripped.count('}')
+                if brace_depth <= 0:
+                    brace_depth = 0
+                    block = "\n".join(pending_lines).strip()
+                    pending_lines = []
+                    if not block:
+                        continue
+                    # Extern lines get type-aware update logic
+                    match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
+                    if match:
+                        type_str = match.group(1).strip()
+                        symbol_name = match.group(2).strip()
+                        _add_or_update_extern(symbol_name, block, header_path, backups, type_str=type_str, _log=_log)
+                    else:
+                        _append_to_file_if_missing(header_path, block, backups, _log=_log)
+            # Flush any unterminated block (e.g. missing closing brace — let the compiler catch it)
+            if pending_lines:
+                block = "\n".join(pending_lines).strip()
+                _append_to_file_if_missing(header_path, block, backups, _log=_log)
 
         # Apply extern additions
         if externs and externs.strip():
