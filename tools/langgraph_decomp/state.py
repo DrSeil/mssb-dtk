@@ -23,57 +23,138 @@ def merge_struct_updates(old: list, new: list) -> list:
 
 import re
 
-def merge_unique_symbols(old: str, new: str) -> str:
-    # Combined list of all lines
-    old = clean_code_block(old)
-    new = clean_code_block(new)
-    
-    if not new: return old
-    if not old: return new
-    
-    all_lines = old.splitlines() + new.splitlines()
-    
-    # Map symbol name -> full line
-    # We prioritize later lines (from 'new')
-    symbol_to_line = {}
-    other_lines = []
-    
-    # Improved regex to find symbol name in a declaration
-    # Matches 'extern Type Name;' or 'Type Name;' or 'extern Type Name[size];'
-    # or 'void Func(Args);'
-    # Captures name into group 1
-    decl_pattern = re.compile(r'(?:extern\s+)?(?:[a-zA-Z_0-9]+\s+)+([a-zA-Z_0-9]+)(?:\[.*?\])?(?:\s*\(.*?\))?\s*;')
+def _split_into_declaration_blocks(text: str):
+    """Split a header text into logical declaration blocks.
 
-    for line in all_lines:
+    Uses brace-depth tracking so that multi-line typedefs / struct definitions
+    are kept as a single block rather than being shredded line-by-line.
+    Returns a list of (key, block_text) pairs where *key* is used for
+    deduplication (latest wins during merge).
+    """
+    blocks = []
+    pending = []
+    depth = 0
+
+    for line in text.splitlines():
         stripped = line.strip()
         if not stripped or stripped.startswith('#') or stripped.startswith('//'):
-            other_lines.append(line)
+            # Preserve blank lines / comments only when inside a block
+            if pending:
+                pending.append(line)
             continue
-            
-        match = decl_pattern.search(stripped)
-        if match:
-            symbol_name = match.group(1)
-            # Prioritize specific types over generic placeholders if possible,
-            # but generally 'latest wins' for LLM refinements.
-            if '?' in stripped and symbol_name in symbol_to_line:
-                continue # Skip garbage placeholders if we already have a definition
-            
-            symbol_to_line[symbol_name] = line
+
+        pending.append(line)
+        depth += stripped.count('{') - stripped.count('}')
+
+        if depth <= 0:
+            depth = 0
+            block = '\n'.join(pending).strip()
+            pending = []
+            if not block:
+                continue
+
+            # Derive a deduplication key that distinguishes typedefs from externs
+            # for the same symbol name so they don't accidentally clobber each other.
+            key = None
+
+            # typedef / struct / enum / union ending with "} TypeName;"
+            m = re.search(r'\}\s*(\w+)\s*;$', block, re.MULTILINE)
+            if m:
+                key = f"typedef_{m.group(1)}"
+
+            if key is None:
+                # extern declaration: "extern Type name;" or "extern Type name[];"
+                m = re.match(r'extern\s+[\w\s\*]+?\s+(\w+)\s*[\[;]', block)
+                if m:
+                    key = f"extern_{m.group(1)}"
+
+            if key is None:
+                # function prototype: "RetType name(...);"
+                m = re.search(r'\b(\w+)\s*\([^)]*\)\s*;$', block, re.MULTILINE)
+                if m:
+                    key = f"proto_{m.group(1)}"
+
+            if key is None:
+                # Unrecognised — use the whole block text as key (exact dedup only)
+                key = block
+
+            blocks.append((key, block))
+
+    # Flush any unterminated block (e.g. missing closing brace)
+    if pending:
+        block = '\n'.join(pending).strip()
+        if block:
+            blocks.append((block, block))
+
+    return blocks
+
+
+def merge_unique_symbols(old: str, new: str) -> str:
+    """Merge two strings of header declarations/definitions.
+
+    Multi-line blocks (typedef struct, typedef enum, …) are kept intact via
+    brace-depth tracking before merging, so they are never shredded line-by-line.
+    For each symbol key the *latest* (new) definition wins.  Typedef blocks are
+    emitted before extern/prototype lines to satisfy forward-declaration ordering.
+    """
+    old = clean_code_block(old)
+    new = clean_code_block(new)
+
+    if not new: return old
+    if not old: return new
+
+    # Skip garbage placeholder lines that some LLMs emit
+    def _scrub(text):
+        return '\n'.join(
+            l for l in text.splitlines()
+            if '?' not in re.sub(r'/\*.*?\*/', '', l)
+        )
+    old = _scrub(old)
+    new = _scrub(new)
+
+    old_blocks = _split_into_declaration_blocks(old)
+    new_blocks = _split_into_declaration_blocks(new)
+
+    # Ordered dict: key -> block_text, later entries overwrite earlier ones
+    merged_order = []
+    merged_map = {}
+
+    for key, block in old_blocks + new_blocks:
+        if key not in merged_map:
+            merged_order.append(key)
+        merged_map[key] = block
+
+    # Emit typedef/struct/enum/union blocks first, then everything else,
+    # so that forward-declaration ordering is satisfied.
+    typedef_blocks = []
+    other_blocks = []
+    for key in merged_order:
+        block = merged_map[key]
+        if re.match(r'\s*(?:typedef|struct|enum|union)\b', block):
+            typedef_blocks.append(block)
         else:
-            # If we can't parse it as a simple declaration, just treat it as a unique line
-            other_lines.append(line)
-    
-    # Result is unique 'other' lines + the latest symbol declarations
-    # Use a set for other_lines to keep them unique
-    unique_others = []
-    seen_others = set()
-    for l in other_lines:
-        ls = l.strip()
-        if ls and ls not in seen_others:
-            unique_others.append(l)
-            seen_others.add(ls)
-            
-    return "\n".join(unique_others + list(symbol_to_line.values()))
+            other_blocks.append(block)
+
+    # Prune orphaned typedef blocks: if a typedef defines TypeName but TypeName
+    # is not referenced in any extern/prototype in the result, it was superseded
+    # by a newer typedef with a different name and is no longer needed.
+    other_text = '\n'.join(other_blocks)
+    surviving_typedefs = []
+    for block in typedef_blocks:
+        m = re.search(r'\}\s*(\w+)\s*;$', block, re.MULTILINE)
+        if m:
+            type_name = m.group(1)
+            # Keep only if type_name appears in a TYPE position (followed by
+            # whitespace + another identifier) in the extern/prototype blocks.
+            # This avoids false positives where the symbol is used only as a
+            # *variable* name (e.g. `extern NewType lbl_3_data_228;`).
+            if re.search(r'\b' + re.escape(type_name) + r'\b\s+\w', other_text):
+                surviving_typedefs.append(block)
+            # else: orphaned (type no longer referenced) — silently drop it
+        else:
+            surviving_typedefs.append(block)
+
+    return '\n'.join(surviving_typedefs + other_blocks)
 
 
 class AttemptRecord(TypedDict):
