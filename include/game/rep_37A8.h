@@ -6,7 +6,7 @@
 void fn_3_141C44(void);
 void fn_3_141C8C(void);
 void fn_3_141F30(void);
-void fn_3_142030(void);
+s32 fn_3_142030(s32 a, s32 b, s32 c);
 void fn_3_142088(void);
 void fn_3_14225C(void);
 void fn_3_142284(void);
