@@ -60,7 +60,7 @@ void fn_3_10EFAC(void);
 void fn_3_10F1D4(void);
 void fn_3_10F3D8(void);
 void fn_3_10F550(u8 arg0, s16 arg1);
-void fn_3_10F564(void);
+s32 fn_3_10F564(void);
 void fn_3_10F5BC(void);
 void fn_3_10F684(void);
 void fn_3_10F91C(void);

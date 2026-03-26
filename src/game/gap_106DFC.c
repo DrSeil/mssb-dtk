@@ -1,6 +1,9 @@
 #include "game/gap_106DFC.h"
 #include "game/UnknownHomes_Game.h"
 
+extern u8 lbl_3_data_18910[];
+extern u8 lbl_3_data_228[];
+
 void fn_3_90064(s32 param);
 
 // .text:0x00106DFC size:0x54 mapped:0x80745E90
@@ -358,8 +361,15 @@ void fn_3_10F550(u8 arg0, s16 arg1) {
 }
 
 // .text:0x0010F564 size:0x58 mapped:0x8074E5F8
-void fn_3_10F564(void) {
-    return;
+s32 fn_3_10F564(void) {
+    if ((s8)g_Minigame._1A2C == -1) {
+        if (lbl_3_data_228[0x10] != 0) {
+            g_Minigame._1A2C = lbl_3_data_18910[g_Minigame.GameMode_MiniGame];
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x0010F5BC size:0xC8 mapped:0x8074E650
