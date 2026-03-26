@@ -215,7 +215,7 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         )
     else:
         # OpenRouter via OpenAI-compatible API
-        from langchain_openai import ChatOpenAI
+        from langchain_openrouter import ChatOpenRouter
 
         if tier == "deep":
             model = os.environ.get("OPENROUTER_MODEL_DEEP", "anthropic/claude-3.5-sonnet")
@@ -234,10 +234,9 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         if json_mode:
             kwargs["model_kwargs"] = {"response_format": {"type": "json_object"}}
         _log(f"DEBUG: OpenRouter Model (tier={tier}): {model}")
-        return ChatOpenAI(
+        return ChatOpenRouter(
             model=model,
-            openai_api_key=api_key,
-            openai_api_base="https://openrouter.ai/api/v1",
+            openrouter_api_key=api_key,
             **kwargs
         )
 
