@@ -54,8 +54,9 @@ void fn_3_15F380(void) {
 }
 
 // .text:0x0015F3C4 size:0x4C mapped:0x8079E458
+
 void fn_3_15F3C4(void) {
-    fn_80034E20((void(*)(void))lbl_803CC1B8, (int*)&lbl_3_data_273E0, (void**)&lbl_803CC1B8);
+    fn_80034E20((void (*)()) lbl_803CC1B8, (int *) &lbl_3_data_273E0, (void **) &lbl_803CC1B8);
     lbl_803CC1B8->aFunctionPointer = fn_3_15F380;
 }
 
