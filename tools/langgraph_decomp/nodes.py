@@ -224,6 +224,7 @@ def decompiler_node(state):
                 continue
         m2c_clean.append(line)
     m2c_refined = "\n".join(m2c_clean)
+    m2c_refined = _postprocess_m2c_output(m2c_refined)
 
     split = _split_m2c_draft(m2c_refined, func_name)
 
@@ -243,6 +244,19 @@ def decompiler_node(state):
         "attempts": [],
         "messages": [("ai", f"Generated initial M2C decompilation for {func_name}.")],
     }
+
+
+def _postprocess_m2c_output(c_code: str) -> str:
+    """Convert m2c pointer-arithmetic patterns to proper C array indexing.
+
+    m2c emits *(&sym + idx) for indexed global array accesses.  This notation
+    is forbidden by project style (no pointer arithmetic) AND often triggers
+    Metrowerks "illegal type" errors.  Convert it to sym[idx] so the LLM
+    never sees the bad pattern in the first place.
+    """
+    # *(&sym + idx)  →  sym[idx]
+    c_code = re.sub(r'\*\(&(\w+)\s*\+\s*([^)]+?)\)', r'\1[\2]', c_code)
+    return c_code
 
 
 def _split_m2c_draft(c_code, func_name):
@@ -1105,20 +1119,56 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 with open(source_path, "w") as f:
                     f.write(new_src)
 
-            for line in externs.strip().splitlines():
-                line = line.strip()
-                if not line or line.startswith("//") or line.startswith("/*"):
+            # Process extern declarations with brace-depth tracking so that
+            # multi-line blocks (e.g. struct definitions) are kept intact.
+            extern_rejection_errors = []
+            pending_lines = []
+            brace_depth = 0
+            for raw_line in externs.strip().splitlines():
+                stripped = raw_line.strip()
+                if not stripped or stripped.startswith("//") or stripped.startswith("/*"):
                     continue
-                # Extract symbol name from extern declaration
-                # Pattern: extern Type Symbol; or extern Type Symbol[];
-                match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', line)
-                if match:
-                    type_str = match.group(1).strip()
-                    symbol_name = match.group(2).strip()
-                    _add_or_update_extern(symbol_name, line, externs_path, backups, type_str=type_str, _log=_log)
+                pending_lines.append(raw_line)
+                brace_depth += stripped.count('{') - stripped.count('}')
+                if brace_depth <= 0:
+                    brace_depth = 0
+                    block = "\n".join(pending_lines).strip()
+                    pending_lines = []
+                    if not block:
+                        continue
+                    # Reject anonymous struct/union externs — MWCC C mode does not
+                    # support `extern struct { ... } name;` and writing it to the
+                    # shared UnknownHeaders.h would break every compilation unit.
+                    if re.search(r'\bextern\s+(struct|union)\s*\{', block):
+                        sym_match = re.search(r'\}\s*(\w+)\s*;', block)
+                        sym_name = sym_match.group(1) if sym_match else "unknown"
+                        msg = (
+                            f"[builder] REJECTED anonymous struct/union extern for '{sym_name}'. "
+                            f"Metrowerks CodeWarrior C mode does not support "
+                            f"'extern struct {{ ... }} {sym_name};'. "
+                            f"Use a named typedef instead: "
+                            f"'typedef struct {{ ... }} TypeName; extern TypeName {sym_name};', "
+                            f"or use a simple array extern if no struct fields are needed."
+                        )
+                        _log(msg)
+                        extern_rejection_errors.append(msg)
+                        continue
+                    match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
+                    if match:
+                        type_str = match.group(1).strip()
+                        symbol_name = match.group(2).strip()
+                        _add_or_update_extern(symbol_name, block, externs_path, backups, type_str=type_str, _log=_log)
+                    else:
+                        _append_to_file_if_missing(externs_path, block, backups)
+            # Flush any unterminated block (compiler will catch remaining errors)
+            if pending_lines:
+                block = "\n".join(pending_lines).strip()
+                if re.search(r'\bextern\s+(struct|union)\s*\{', block):
+                    _log(f"[builder] REJECTED unterminated anonymous struct/union extern")
                 else:
-                    # Fallback for complex lines
-                    _append_to_file_if_missing(externs_path, line, backups)
+                    _append_to_file_if_missing(externs_path, block, backups)
+            if extern_rejection_errors:
+                return {"status": "build_error", "log": "\n".join(extern_rejection_errors), "process_log": process_log}
 
         # Unmask everything before build
         for p in [source_path, header_path, externs_path]:
@@ -1163,7 +1213,27 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             _log(f"[builder] === FULL BUILD ERROR ===")
             _log(combined)
             _log(f"[builder] === END BUILD ERROR ===")
-            return {"status": "build_error", "log": _filter_build_output(combined), "process_log": process_log}
+            filtered = _filter_build_output(combined)
+            # Detect shared-header corruption: errors originating from a shared
+            # include file (not just the target source) indicate that an extern
+            # declaration written to that header is syntactically broken and will
+            # fail every compilation unit until fixed.  Annotate clearly so the
+            # LLM understands what went wrong (the raw CW error is cryptic).
+            shared_headers = ["UnknownHeaders.h", "UnknownHomes_Game.h", "mssbTypes.h"]
+            for sh in shared_headers:
+                if f"In: include" in combined and sh in combined:
+                    filtered = (
+                        f"[SHARED HEADER CORRUPTION] A syntax error in {sh} is breaking ALL "
+                        f"compilation units (not just the target file).  This was caused by an "
+                        f"invalid declaration in extern_declarations that was written to the shared "
+                        f"header.  Common cause: 'extern struct {{ ... }} name;' is NOT valid in "
+                        f"Metrowerks CodeWarrior C mode.  Fix: use a named typedef "
+                        f"('typedef struct {{ ... }} TypeName; extern TypeName name;') or a plain "
+                        f"scalar/array extern.  The header has been reverted automatically.\n\n"
+                        + filtered
+                    )
+                    break
+            return {"status": "build_error", "log": filtered, "process_log": process_log}
 
         # Score via objdiff
         objdiff_cmd = [
