@@ -107,6 +107,7 @@ CRITICAL RULES:
 - NEVER output `?` as a type. Replace ALL `?` with real C types.
 - NEVER include assembly instructions or comments in `function_code`.
 - Declare any new symbols in `extern_declarations` or `header_additions`.
+- **Return type changes**: If the assembly shows the function should return a non-void type but the header declares it as `void`, you MUST include the updated declaration in `header_additions`. Example: if `fn_3_XXXX` should return `SomeType*`, add `SomeType* fn_3_XXXX(void);` to `header_additions`. Without this the build will fail with "illegal return value in void function".
 # Read build errors and diff feedback carefully to guide your fixes.
 """
 

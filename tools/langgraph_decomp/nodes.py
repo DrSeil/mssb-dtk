@@ -904,6 +904,51 @@ def _attempt_auto_fix(compiler_output: str, source_path: str, backups: dict, _lo
                         except Exception:
                             pass
 
+                # Case 5: illegal return value in void function
+                # The LLM changed the return type in the source but forgot to update the header.
+                # Fix: find the function definition in the source, grep the include dir for its
+                # void declaration, and replace the header prototype with the non-void one.
+                void_ret_match = re.match(r"#\s+illegal return value in void", msg_line)
+                if void_ret_match:
+                    with open(source_path, "r") as f:
+                        current_src = f.read()
+                    # Find the first non-void function definition in the source
+                    fn_def = re.search(
+                        r'(?m)^((?!void\b)[\w][\w\s\*]*?)\s+(fn_\w+|[a-z]\w+)\s*\((.*?)\)\s*\{',
+                        current_src
+                    )
+                    if fn_def:
+                        ret_type = fn_def.group(1).strip()
+                        func_ident = fn_def.group(2).strip()
+                        params = fn_def.group(3).strip()
+                        new_decl = f"{ret_type} {func_ident}({params});"
+                        include_dir = os.path.join(_root_dir, "include")
+                        try:
+                            result = subprocess.run(
+                                ["grep", "-rln", "-P", "--include=*.h",
+                                 rf'\bvoid\s+{re.escape(func_ident)}\s*\(', include_dir],
+                                capture_output=True, text=True, timeout=5
+                            )
+                            if result.stdout:
+                                h_site = result.stdout.splitlines()[0].strip()
+                                if h_site not in backups:
+                                    with open(h_site, "r") as f:
+                                        backups[h_site] = f.read()
+                                h_content = backups[h_site]
+                                h_content = re.sub(
+                                    rf'\bvoid\s+{re.escape(func_ident)}\s*\(.*?\)\s*;',
+                                    new_decl, h_content
+                                )
+                                with open(h_site, "w") as f:
+                                    f.write(h_content)
+                                fixes_acc.append({"type": "header_rectification",
+                                                  "file": h_site, "content": new_decl})
+                                fixed_something = True
+                                _log(f"[builder] Auto-fix: updated void→{ret_type} for "
+                                     f"{func_ident} in {os.path.basename(h_site)}")
+                        except Exception:
+                            pass
+
         if fixed_something:
             with open(source_path, "w") as f:
                 f.write(src_content)
