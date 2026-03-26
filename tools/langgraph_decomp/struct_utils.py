@@ -79,10 +79,11 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
     Expects format with offset comments: /* 0xXXX */ type name;
     """
     fields = []
-    # Match: /* 0xOFFSET */ type name[optional_size]; // size: 0xXX
-    # Improved regex to handle E(storage, enum) macros and other decorations
-    pattern = r'/\*\s*(0x[0-9a-fA-F]+)\s*\*/\s*([\w\s\*\(\),]+?)\s+(\w+)(?:\[(0x[0-9a-fA-F]+|\d+)\])?\s*;(?:\s*//\s*size:\s*(0x[0-9a-fA-F]+))?'
-    
+    # Match: /* 0xOFFSET */ type name[dim1][dim2]...; // size: 0xXX
+    # Captures all array dimensions (including multi-dimensional) to correctly
+    # compute total element count and prevent false overlap misses.
+    pattern = r'/\*\s*(0x[0-9a-fA-F]+)\s*\*/\s*([\w\s\*\(\),]+?)\s+(\w+)((?:\[(?:0x[0-9a-fA-F]+|\d+)\])*)\s*;(?:\s*//\s*(?:size:\s*(0x[0-9a-fA-F]+).*?)?)?'
+
     # Try to find the size of basic types
     type_sizes = {
         'u8': 1, 's8': 1, 'char': 1, 'bool': 1,
@@ -94,10 +95,10 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
     }
 
     for match in re.finditer(pattern, struct_def):
-        offset_str, type_str, name, array_size_str, comment_size_str = match.groups()
+        offset_str, type_str, name, array_dims_str, comment_size_str = match.groups()
         offset = int(offset_str, 16)
         type_str = type_str.strip()
-        
+
         # Calculate base size
         if comment_size_str:
             base_size = int(comment_size_str, 16)
@@ -110,16 +111,16 @@ def parse_struct_fields(struct_def: str) -> List[StructField]:
                 m = re.match(r'E\s*\(\s*(\w+)', type_str)
                 if m:
                     clean_type = m.group(1)
-            
+
             base_size = type_sizes.get(clean_type.split()[-1], 4)
-            
+
+        # Parse all array dimensions (e.g. "[2][10][2]" → count = 2*10*2 = 40)
         count = 1
-        if array_size_str:
-            if array_size_str.startswith('0x'):
-                count = int(array_size_str, 16)
-            else:
-                count = int(array_size_str)
-        
+        if array_dims_str:
+            for dim_str in re.findall(r'\[(0x[0-9a-fA-F]+|\d+)\]', array_dims_str):
+                dim = int(dim_str, 16) if dim_str.startswith('0x') else int(dim_str)
+                count *= dim
+
         size = base_size * count
             
         # Treat things as padding if they explicitly have "pad" in the name OR start with "_"
