@@ -1426,35 +1426,37 @@ def _add_or_update_extern(symbol_name, new_declaration, default_path, backups=No
             except Exception as e:
                 _log(f"[builder] Warning during type search: {e}")
 
-    # Search for an existing extern declaration in any header
-    found_anywhere = False
-    found_in_default = False
+    # Search for an existing extern declaration in any header and update it.
+    # We update exactly ONE location (preferring default_path) to avoid creating
+    # duplicate declarations with conflicting types across multiple headers.
     try:
-        # Grep for 'extern ... symbol_name ... ;'
-        # We use a pattern that matches 'extern' and then the symbol name followed by optional array/semicolon
         pattern = rf'extern\s+.*?\b{re.escape(symbol_name)}\b.*?;'
         result = subprocess.run(
             ["grep", "-rln", "-P", "--include=*.h", pattern, include_dir],
             capture_output=True, text=True, timeout=5
         )
         if result.stdout:
-            for filepath in result.stdout.strip().splitlines():
-                filepath = filepath.strip()
-                if not filepath or not os.path.exists(filepath):
-                    continue
-                found_anywhere = True
-                if os.path.abspath(filepath) == os.path.abspath(os.path.join(_root_dir, default_path)):
-                    found_in_default = True
-                _log(f"[builder] Updating extern {symbol_name} in {os.path.basename(filepath)}")
-                _append_to_file_if_missing(filepath, new_declaration, backups, _log=_log)
+            filepaths = [
+                fp.strip() for fp in result.stdout.strip().splitlines()
+                if fp.strip() and os.path.exists(fp.strip())
+            ]
+            if filepaths:
+                # Prefer updating default_path if the symbol is already there,
+                # otherwise update the first (most local) header found.
+                default_abs = os.path.abspath(os.path.join(_root_dir, default_path))
+                target = next(
+                    (fp for fp in filepaths if os.path.abspath(fp) == default_abs),
+                    filepaths[0]
+                )
+                _log(f"[builder] Updating extern {symbol_name} in {os.path.basename(target)}")
+                _append_to_file_if_missing(target, new_declaration, backups, _log=_log)
+                return  # Updated in one place — do NOT also add to default_path
     except Exception as e:
         _log(f"[builder] Warning during extern search: {e}")
 
-    # If not found in our default path (UnknownHeaders.h usually), add it there too
-    # so the current source file can definitely see it (since we ensure source includes UnknownHeaders.h)
-    if not found_in_default:
-        _log(f"[builder] Extern {symbol_name} not in {default_path}. Adding for visibility.")
-        _append_to_file_if_missing(default_path, new_declaration, backups, _log=_log)
+    # Symbol not found anywhere — add to default_path for visibility
+    _log(f"[builder] Extern {symbol_name} not in {default_path}. Adding for visibility.")
+    _append_to_file_if_missing(default_path, new_declaration, backups, _log=_log)
 
 def _commit_code_to_source(src_path, func_name, c_code):
     """Temporarily replace a function body in the source file using Tree-Sitter."""
@@ -1634,13 +1636,33 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
                 )
                 continue
 
-        # For structs and other blocks, check for existence
-        # We use a normalized search (ignoring whitespace differences)
+        # Detect typedef struct/enum/union redefinitions — replace in-place so the
+        # old typedef doesn't persist as a duplicate alongside the updated one.
+        typedef_name_m = re.search(r'\}\s*(\w+)\s*;$', block, re.MULTILINE)
+        if typedef_name_m and re.match(r'\s*typedef\s+(?:struct|enum|union)\b', block):
+            type_name = typedef_name_m.group(1)
+            existing_typedef_pat = (
+                rf'(?ms)typedef\s+(?:struct|enum|union)\s*\w*\s*\{{.*?\}}\s*'
+                + re.escape(type_name) + r'\s*;'
+            )
+            existing_match = re.search(existing_typedef_pat, existing_content)
+            if existing_match:
+                if re.sub(r'\s+', '', existing_match.group(0)) == re.sub(r'\s+', '', block):
+                    continue  # Already identical
+                _log(f"[builder] Updating typedef {type_name} in {os.path.basename(file_path)}")
+                existing_content = (
+                    existing_content[:existing_match.start()]
+                    + block
+                    + existing_content[existing_match.end():]
+                )
+                continue
+
+        # For other blocks, check for existence using normalized whitespace comparison
         normalized_block = re.sub(r'\s+', '', block)
         normalized_existing = re.sub(r'\s+', '', existing_content)
         if normalized_block in normalized_existing:
             continue
-            
+
         blocks_to_add.append(block)
 
     if blocks_to_add:
