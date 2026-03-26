@@ -1031,6 +1031,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
 
         # Apply struct modifications using struct_utils
         struct_updates = state.get("struct_updates", [])
+        struct_mod_failures = []  # Collect failures to surface to LLM
         if struct_updates:
             # struct_updates is now a list of {type_name: str, actions: list}
             for update in struct_updates:
@@ -1038,13 +1039,22 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 actions = update.get("actions", [])
                 if not type_name or not actions:
                     continue
-                
+
                 _log(f"[builder] Applying struct modifications for {type_name} via struct_utils")
-                
+
                 # 1. Find the file containing the struct
                 filepath = _find_struct_file(type_name, source_path=source_path)
                 if not filepath:
-                    _log(f"[builder] WARNING: Could not find file for {type_name}")
+                    msg = (
+                        f"[builder] struct_modifications FAILED: '{type_name}' is not a "
+                        f"defined struct type in the codebase. struct_modifications can only "
+                        f"update EXISTING struct types. To introduce a new type for this symbol, "
+                        f"use header_additions with a full typedef (e.g. "
+                        f"'typedef struct {{ u8 _pad[0xOFFSET]; u8 fieldName; }} TypeName; "
+                        f"extern TypeName {type_name};')."
+                    )
+                    _log(msg)
+                    struct_mod_failures.append(msg)
                     continue
                 
                 # 2. Extract current definition
@@ -1119,6 +1129,16 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 with open(source_path, "w") as f:
                     f.write(new_src)
 
+            # Build a set of symbol names already declared in local_headers so
+            # we can skip conflicting re-declarations from extern_declarations.
+            # header_additions are more specific/correct than accumulated externs.
+            headers_declared_syms = set()
+            if headers:
+                for m in re.finditer(
+                    r'\bextern\s+[\w\s\*]+?\s+(\w+)\s*[\[;]', headers, re.MULTILINE
+                ):
+                    headers_declared_syms.add(m.group(1))
+
             # Process extern declarations with brace-depth tracking so that
             # multi-line blocks (e.g. struct definitions) are kept intact.
             extern_rejection_errors = []
@@ -1157,6 +1177,17 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     if match:
                         type_str = match.group(1).strip()
                         symbol_name = match.group(2).strip()
+                        # Skip if this symbol is already declared in header_additions
+                        # for this same run — header_additions is more specific and
+                        # correct; silently overwriting it with an accumulated stale
+                        # extern causes "not a struct/union/class" type conflicts.
+                        if symbol_name in headers_declared_syms:
+                            _log(
+                                f"[builder] Skipping extern_declarations entry for "
+                                f"'{symbol_name}' — symbol already declared in "
+                                f"header_additions (preventing type conflict)."
+                            )
+                            continue
                         _add_or_update_extern(symbol_name, block, externs_path, backups, type_str=type_str, _log=_log)
                     else:
                         _append_to_file_if_missing(externs_path, block, backups)
@@ -1214,6 +1245,10 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             _log(combined)
             _log(f"[builder] === END BUILD ERROR ===")
             filtered = _filter_build_output(combined)
+            # Prepend any struct_modifications failures so they appear in the
+            # feedback the LLM receives (they were previously only in process_log)
+            if struct_mod_failures:
+                filtered = "\n".join(struct_mod_failures) + "\n\n" + filtered
             # Detect shared-header corruption: errors originating from a shared
             # include file (not just the target source) indicate that an extern
             # declaration written to that header is syntactically broken and will
@@ -1294,6 +1329,11 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
         except Exception as e:
             _log(f"[builder] Git checkpointing failed: {e}")
+
+        # If struct_modifications failed, surface the warnings alongside the diff
+        # so the LLM knows to use header_additions instead next iteration.
+        if struct_mod_failures:
+            asm_diff = "\n".join(struct_mod_failures) + "\n\n" + asm_diff
 
         return {
             "status": "success",
