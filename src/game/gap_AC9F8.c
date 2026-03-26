@@ -328,7 +328,24 @@ void fn_3_B2630(void) {
 
 // .text:0x000B274C size:0x58 mapped:0x806F17E0
 void fn_3_B274C(void) {
-    return;
+    g_Practice.inputs[0].controlStickAngle = -1;
+    g_Practice.inputs[0].controlStickMagnitude = 0;
+    g_Practice.inputs[0].buttonInput = 0;
+    g_Practice.inputs[0].newButtonInput = 0;
+    g_Practice.inputs[0]._08 = 0;
+    g_Practice.inputs[0].right_left = 0;
+    g_Practice.inputs[0].up_down = 0;
+    g_Practice.inputs[0].rightTriggerDistance = 0;
+    g_Practice.inputs[0].leftTriggerDistance = 0;
+    g_Practice.inputs[1].controlStickAngle = -1;
+    g_Practice.inputs[1].controlStickMagnitude = 0;
+    g_Practice.inputs[1].buttonInput = 0;
+    g_Practice.inputs[1].newButtonInput = 0;
+    g_Practice.inputs[1]._08 = 0;
+    g_Practice.inputs[1].right_left = 0;
+    g_Practice.inputs[1].up_down = 0;
+    g_Practice.inputs[1].rightTriggerDistance = 0;
+    g_Practice.inputs[1].leftTriggerDistance = 0;
 }
 
 // .text:0x000B27A4 size:0x104 mapped:0x806F1838
