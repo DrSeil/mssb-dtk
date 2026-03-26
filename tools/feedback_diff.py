@@ -147,6 +147,20 @@ def analyze_diff(left_sym, right_sym):
     left_inst_entries = left_sym.get("instructions", [])
     right_inst_entries = right_sym.get("instructions", [])
 
+    # Stub detection: compiled function is significantly shorter than target.
+    # This usually means the return type or function body is wrong/incomplete.
+    left_count = len(left_inst_entries)
+    right_count = len(right_inst_entries)
+    stub_warning = ""
+    if left_count >= 8 and right_count <= left_count // 3:
+        stub_warning = (
+            f"\nNOTE: Your compiled function has {right_count} instruction(s) "
+            f"but the target has {left_count}. This usually means:\n"
+            f"  - The function is declared void but should return a value (update the header)\n"
+            f"  - The function body is incomplete / most logic is missing\n"
+            f"  Check the return type in the header and assembly before iterating further.\n"
+        )
+
     # Get symbol base addresses for branch target normalization
     l_base = int(left_sym.get("address", 0))
     r_base = int(right_sym.get("address", 0))
@@ -192,7 +206,7 @@ def analyze_diff(left_sym, right_sym):
     if not feedback:
         return "MATCH! Standardized assembly is identical."
 
-    return "\n".join(feedback)
+    return stub_warning + "\n".join(feedback)
 
 def get_formatted_asm(sym):
     if not sym:
