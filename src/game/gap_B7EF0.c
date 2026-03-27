@@ -20,7 +20,13 @@ void fn_3_B7F18(VecXYZ* dest, VecXYZ* vec1, VecXYZ* vec2) {
 }
 
 // .text:0x000B7F70 size:0x58 mapped:0x806F7004
-void fn_3_B7F70(void) {
-    return;
+s16 fn_3_B7F70(s16 input) {
+    s16 lcg;
+    if (input < 0) {
+        input = input * -1;
+    }
+    lcg = (lbl_3_common_bss_350E4->unk66 * 5 + 1) % 32768;
+    lbl_3_common_bss_350E4->unk66 = lcg;
+    return lcg % input;
 }
 

@@ -6,6 +6,6 @@
 
 f32 vecDotProduct(VecXYZ* a, VecXYZ* b);
 void fn_3_B7F18(VecXYZ* dest, VecXYZ* vec1, VecXYZ* vec2);
-void fn_3_B7F70(void);
+s16 fn_3_B7F70(s16 input);
 
 #endif // !__GAME_gap_B7EF0_H_
