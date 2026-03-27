@@ -652,7 +652,9 @@ typedef struct DrawingSceneStruct {
 
 extern DrawingSceneStruct *lbl_803CC1B8;
 typedef struct CameraStruct {
-    u8 _pad0[0xAB0];
+    u8 _pad0[0x1B4];
+    void* unk1B4;   // 0x1B4
+    u8 _pad1B8[0x8F8];
     void* unkAB0;   // 0xAB0 - allocated buffer
     u8 _padAB4[0x9B8];
     void* unk146C;  // 0x146C - allocated buffer

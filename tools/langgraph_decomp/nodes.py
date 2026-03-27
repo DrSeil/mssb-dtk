@@ -1073,8 +1073,20 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 
                 # 3. Use struct_utils to reconcile
                 new_struct_def = struct_utils.reconcile_struct(old_struct_def, actions, log=_log)
-                
-                # 4. Replace in file
+
+                # 4. Replace in file — only if struct_utils actually made changes
+                if new_struct_def == old_struct_def:
+                    msg = (
+                        f"[builder] struct_modifications FAILED for '{type_name}': "
+                        f"struct_utils returned the struct unchanged. This usually means the "
+                        f"struct uses an unrecognised field format (e.g. offset comment after "
+                        f"the field declaration). Use header_additions with a full typedef "
+                        f"replacement instead of struct_modifications."
+                    )
+                    _log(msg)
+                    struct_mod_failures.append(msg)
+                    continue
+
                 new_content = current_file_content.replace(old_struct_def, new_struct_def)
                 with open(filepath, "w") as f:
                     f.write(new_content)

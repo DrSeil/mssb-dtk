@@ -7,7 +7,7 @@
 #include "UnknownHeaders.h"
 
 void fn_3_106DFC(void);
-void fn_3_106E50(void);
+s32 fn_3_106E50(void);
 void fn_3_106EB0(void);
 void fn_3_106ED4(void);
 void fn_3_107078(void);

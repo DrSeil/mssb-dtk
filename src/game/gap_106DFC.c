@@ -1,5 +1,6 @@
 #include "game/gap_106DFC.h"
 #include "game/UnknownHomes_Game.h"
+#include "game/rep_1C0.h"
 
 extern u8 lbl_3_data_18910[];
 extern u8 lbl_3_data_228[];
@@ -12,9 +13,15 @@ void fn_3_106DFC(void) {
     g_Camera.unk146C = _OSAllocFromHeap(4, 0x8000);
 }
 
+extern CompressedDiskRead lbl_3_data_20FDC;
+
 // .text:0x00106E50 size:0x60 mapped:0x80745EE4
-void fn_3_106E50(void) {
-    return;
+s32 fn_3_106E50(void) {
+    if (lbl_803C6CF8.allowLoad == 1) {
+        g_Camera.unk1B4 = ARAMTransfer(&lbl_3_data_20FDC, 0, 0, 0);
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x00106EB0 size:0x24 mapped:0x80745F44
