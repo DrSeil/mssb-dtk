@@ -19,7 +19,6 @@ from .nodes import (
     refactorer_node,
     builder_node,
     committer_node,
-    summarizer_node,
 )
 
 
@@ -75,10 +74,10 @@ def check_progress(state: DecompState) -> str:
         return "committer"
     if state.get("iterations", 0) >= MAX_ITERATIONS:
         print(f"[graph] Max iterations ({MAX_ITERATIONS}) reached.")
-        return "summarizer"
+        return END
     if state.get("status") == "error":
         print(f"[graph] Hard error detected, stopping.")
-        return "summarizer"
+        return END
     
     # Otherwise, loop back for more refinement
     return "refactorer"
@@ -116,7 +115,6 @@ def build_graph(
     builder.add_node("builder", builder_node)
     builder.add_node("classifier", classifier_node)
     builder.add_node("committer", committer_node)
-    builder.add_node("summarizer", summarizer_node)
 
     # Edges
     builder.add_edge(START, "source_finder")
@@ -125,12 +123,10 @@ def build_graph(
     builder.add_edge("refactorer", "builder")
     builder.add_edge("builder", "classifier")
 
-    # Conditional edge from classifier (instead of builder)
+    # Conditional edge from classifier
     builder.add_conditional_edges("classifier", check_progress)
 
-    # Committer and summarizer flow
-    builder.add_edge("committer", "summarizer")
-    builder.add_edge("summarizer", END)
+    builder.add_edge("committer", END)
 
     # Compile with checkpointer
     checkpointer = MemorySaver()

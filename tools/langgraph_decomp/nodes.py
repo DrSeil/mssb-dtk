@@ -1868,7 +1868,7 @@ def committer_node(state):
                 
                 # Instead of merge --squash, we'll just checkout the specific files we modified
                 # This ensures NO junk files (logs, tags) ever hit the main branch.
-                relevant_files = [source_path, header_path, os.path.join(_root_dir, "key_learnings.md")]
+                relevant_files = [source_path, header_path]
                 if externs_path and os.path.exists(externs_path):
                     relevant_files.append(externs_path)
                 
@@ -1899,13 +1899,4 @@ def committer_node(state):
             "feedback": f"Failed to commit {func_name} to source.",
         }
 
-
-# ---------------------------------------------------------------------------
-# Node F: Summarizer (Key Learnings)
-# ---------------------------------------------------------------------------
-
-def summarizer_node(state):
-    """Summarize substantial key learnings from this run and append them globally."""
-    from .llm import summarize_key_learnings
-    return summarize_key_learnings(state)
 
