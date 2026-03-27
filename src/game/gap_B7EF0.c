@@ -1,4 +1,5 @@
 #include "game/gap_B7EF0.h"
+#include "UnknownHeaders.h"
 
 // .text:0x000B7EF0 size:0x28 mapped:0x806F6F84
 f32 vecDotProduct(VecXYZ* a, VecXYZ* b) {
