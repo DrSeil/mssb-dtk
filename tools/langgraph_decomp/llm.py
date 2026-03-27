@@ -236,9 +236,9 @@ def get_cloud_llm(tier: str = "fast", json_mode: bool = True) -> BaseChatModel:
         _log(f"DEBUG: OpenRouter Model (tier={tier}): {model}")
         return ChatOpenRouter(
             model=model,
-            openrouter_provider={
-        "only": ["arcee-ai/prime"]
-    },
+    #         openrouter_provider={
+    #     "only": ["arcee-ai/prime"]
+    # },
             openrouter_api_key=api_key,
             **kwargs
         )

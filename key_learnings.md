@@ -30,3 +30,8 @@
 - **Identical Function Folding**: The compiler may fold identical functions. To verify a match, temporarily add a unique constant or global access to force a distinct implementation.
 - **Function Address Gaps**: Fill gaps between matched functions in `.text` with stubs to maintain correct alignment and ordering.
 - **Boolean/OR Sensitivity**: In `||` conditions, the compiler's choice of `bne` vs `beq` can affect register reuse and instruction hoisting.
+
+### Learnings from fn_3_EB684
+- **Padding Field Access:** When accessing specific bytes within a struct's padding array (e.g., `_pad[1]`), the compiler expects explicit indexing rather than pointer arithmetic or casting, as these fields are often treated as distinct, addressable members in the symbol map.
+- **Global State Pattern:** The codebase frequently uses a centralized status structure where multiple disparate conditions (e.g., status flags and game state enums) are checked in sequence to determine a boolean "ready" or "active" state.
+- **Enum/Constant Comparison:** The compiler strictly enforces type consistency for global state enums; comparisons against magic numbers (like `0xB`) are common, but they must align with the underlying integer type defined in the global header to avoid implicit conversion warnings that break strict builds.

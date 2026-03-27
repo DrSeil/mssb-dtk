@@ -4899,7 +4899,7 @@ fn_3_EA340	src/game/gap_EA340.c	/^void fn_3_EA340(void) {$/;"	f	typeref:typename
 fn_3_EA454	src/game/gap_EA340.c	/^void fn_3_EA454(void) {$/;"	f	typeref:typename:void
 fn_3_EA8FC	src/game/gap_EA340.c	/^void fn_3_EA8FC(void) {$/;"	f	typeref:typename:void
 fn_3_EAEF4	src/game/gap_EA340.c	/^void fn_3_EAEF4(void) {$/;"	f	typeref:typename:void
-fn_3_EB684	src/game/gap_EA340.c	/^void fn_3_EB684(void) {$/;"	f	typeref:typename:void
+fn_3_EB684	src/game/gap_EA340.c	/^s32 fn_3_EB684(void) {$/;"	f	typeref:typename:s32
 fn_3_EB6E0	src/game/gap_EA340.c	/^void fn_3_EB6E0(void) {$/;"	f	typeref:typename:void
 fn_3_EBFD4	src/game/gap_EA340.c	/^s32 fn_3_EBFD4(void) {$/;"	f	typeref:typename:s32
 fn_3_EC014	src/game/gap_EA340.c	/^void fn_3_EC014(void) {$/;"	f	typeref:typename:void
