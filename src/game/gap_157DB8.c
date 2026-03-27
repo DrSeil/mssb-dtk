@@ -122,8 +122,15 @@ void fn_3_15AD94(void) {
 }
 
 // .text:0x0015ADD4 size:0x60 mapped:0x80799E68
+
 void fn_3_15ADD4(void) {
-    return;
+    fn_3_6B870();
+    g_GameLogic._135 = 0;
+    g_GameLogic._136 = 0;
+    if ((g_GameLogic.secondaryGameMode == 0xF) && (g_Strikes.outs >= 3)) {
+        g_Strikes.outs = 0;
+    }
+    fn_3_5A6D4(7);
 }
 
 // .text:0x0015AE34 size:0x144 mapped:0x80799EC8

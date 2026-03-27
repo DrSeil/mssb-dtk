@@ -38,4 +38,7 @@ void fn_3_15B204(void);
 void fn_3_15B494(void);
 void fn_3_15B610(void);
 
+
+void fn_3_6B870(void);
+
 #endif // !__GAME_gap_157DB8_H_

@@ -887,4 +887,11 @@ typedef struct {
 
 extern MinigameModeTable lbl_803616CC;
 
+
+void fn_3_6B870();                                     /* extern */
+
+extern GameControlsStruct g_GameLogic;
+
+extern Strikes g_Strikes;
+
 #endif
