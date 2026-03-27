@@ -11,7 +11,7 @@ void fn_3_EA340(void);
 void fn_3_EA454(void);
 void fn_3_EA8FC(void);
 void fn_3_EAEF4(void);
-void fn_3_EB684(void);
+s32 fn_3_EB684(void);
 void fn_3_EB6E0(void);
 s32 fn_3_EBFD4(void);
 void fn_3_EC014(void);

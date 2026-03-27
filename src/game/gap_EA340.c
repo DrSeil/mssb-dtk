@@ -21,8 +21,15 @@ void fn_3_EAEF4(void) {
 }
 
 // .text:0x000EB684 size:0x5C mapped:0x8072A718
-void fn_3_EB684(void) {
-    return;
+
+s32 fn_3_EB684(void) {
+    if (((u8) lbl_3_common_bss_32724.someStatusInd != 0) || ((u8) lbl_3_common_bss_32724._pad5[1] != 0)) {
+        return 1;
+    }
+    if (((u8) g_GameLogic.gameStatus == 1) || ((u8) g_GameLogic.gameStatus == 2) || ((u8) g_GameLogic.gameStatus == 0xB)) {
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x000EB6E0 size:0x8F4 mapped:0x8072A774
