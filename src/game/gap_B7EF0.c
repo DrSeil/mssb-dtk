@@ -13,8 +13,10 @@ f32 vecDotProduct(VecXYZ* a, VecXYZ* b) {
 }
 
 // .text:0x000B7F18 size:0x58 mapped:0x806F6FAC
-void fn_3_B7F18(void) {
-    return;
+void fn_3_B7F18(VecXYZ* dest, VecXYZ* vec1, VecXYZ* vec2) {
+    dest->x = vec1->y * vec2->z - vec1->z * vec2->y;
+    dest->y = vec1->z * vec2->x - vec1->x * vec2->z;
+    dest->z = vec1->x * vec2->y - vec1->y * vec2->x;
 }
 
 // .text:0x000B7F70 size:0x58 mapped:0x806F7004
