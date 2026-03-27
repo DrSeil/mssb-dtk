@@ -71,6 +71,27 @@ labels will mismatch. Order your constant references to match the assembly.
 Use explicit casts to match `extsh` (sign-extend halfword) and `extsb` (sign-extend byte).
 Ensure `lwz` vs `lhz` vs `lbz` matches your struct field types (u32 vs u16 vs u8).
 
+### Float Expression Scheduling (fmuls / fmsubs)
+For float expressions of the form `A*B - C*D`, CW generates:
+```
+fmuls dest, C, D          ; compute subtracted term first
+fmsubs dest, A, B, dest   ; A*B - (C*D)
+```
+CW interleaves `lfs` loads naturally with the float ops when expressions are written
+directly. **Do NOT pre-load struct fields into local float variables before the
+expression.** Write inline:
+```c
+dest->x = vec1->y * vec2->z - vec1->z * vec2->y;  // CORRECT
+```
+NOT:
+```c
+f32 y1 = vec1->y, z1 = vec1->z, y2 = vec2->y, z2 = vec2->z;
+dest->x = y1 * z2 - z1 * y2;  // WRONG — pre-loading disrupts scheduling
+```
+This applies to all float arithmetic: cross products, dot products, linear
+interpolations, etc. Start with clean direct expressions; only introduce a temp
+if the diff shows a specific register issue that the temp would fix.
+
 ### C89 Variable Declarations
 The compiler (Metrowerks CodeWarrior) is extremely strict about C89 rules.
 CRITICAL: You MUST declare ALL variables at the very BEGINNING of a block (`{ ... }`), before any other code or statements (like `if`, `memcpy`, or assignments).
