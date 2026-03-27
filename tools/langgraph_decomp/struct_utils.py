@@ -157,11 +157,32 @@ def reconcile_struct(struct_def: str, modifications: List[Dict], log=None) -> st
     if not header_match or not footer_match:
         _log("[struct_utils] WARNING: Could not find struct header/footer!")
         return struct_def
-        
+
     header = header_match.group(1)
     footer = footer_match.group(1)
-    
-    # 2. Collect ALL fields. 
+
+    # Safety check: count semicolon-terminated declaration lines in the struct body.
+    # If the raw line count exceeds the number of parsed fields, some fields use a
+    # format the parser can't handle (e.g. "type name; /* 0xOFFSET */").
+    # Proceeding would silently drop unparsed fields from the reconstructed struct.
+    body_start = struct_def.index(header_match.group(1)) + len(header_match.group(1))
+    body_end = struct_def.index(footer_match.group(1))
+    body = struct_def[body_start:body_end]
+    # Count lines that look like field declarations (end with ; excluding blank/comment-only)
+    raw_field_lines = [
+        l.strip() for l in body.splitlines()
+        if l.strip().endswith(';') and not l.strip().startswith('//')
+    ]
+    if len(raw_field_lines) > len(fields):
+        _log(
+            f"[struct_utils] REFUSING modification: parsed {len(fields)} field(s) but struct "
+            f"body has {len(raw_field_lines)} semicolon lines. Some fields use an unrecognised "
+            f"format (offset comment after field, or macro fields). Modifying would silently "
+            f"drop unparsed fields. Fix the struct to use '/* 0xOFFSET */ type name;' format first."
+        )
+        return struct_def
+
+    # 2. Collect ALL fields.
     named = {f.offset: f for f in fields}
     has_changes = False
     

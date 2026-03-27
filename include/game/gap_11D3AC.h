@@ -4,6 +4,7 @@
 #include "mssbTypes.h"
 #include "UnknownHeaders.h"
 #include "game/UnknownHomes_Game.h"
+#include "game/sta_c6.h"
 
 void fn_3_11D3AC(void);
 void fn_3_11D6A0(void);
