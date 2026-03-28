@@ -252,7 +252,15 @@ void fn_3_B1120(void) {
 
 // .text:0x000B116C size:0x64 mapped:0x806F0200
 void fn_3_B116C(void) {
-    return;
+    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
+        if ((u8)g_Practice.hitVariablesSetIndicator == 0) {
+            fn_3_B0B5C();
+        }
+        fn_3_75560();
+        atBat_batter();
+        fn_3_8A958();
+        fn_3_31594();
+    }
 }
 
 // .text:0x000B11D0 size:0x128 mapped:0x806F0264
