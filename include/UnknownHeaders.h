@@ -644,7 +644,7 @@ typedef struct DrawingSceneStruct {
     s16 unk1a;
     u16 eventID;
     u16 fielderIndex;
-    u8 field12_0x20[2];
+    s16 unk20;
     short drawingState;
     u8 field14_0x24[4];
     u8 field15_0x28;

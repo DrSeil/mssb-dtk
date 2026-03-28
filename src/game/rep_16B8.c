@@ -10,7 +10,15 @@ void fn_3_91520(void) {
 
 // .text:0x00091A60 size:0x68 mapped:0x806D0AF4
 void fn_3_91A60(void) {
-    return;
+    DrawingSceneStruct *temp_r31;
+
+    temp_r31 = lbl_803CC1B8;
+    fn_80034E20((void (*)(void))temp_r31, (int*)&lbl_3_data_BF6C, NULL);
+    temp_r31->unk18 = 0;
+    temp_r31->eventID = 0;
+    temp_r31->fielderIndex = 0;
+    temp_r31->unk20 = 0;
+    lbl_803CC1B8->aFunctionPointer = fn_3_91520;
 }
 
 // .text:0x00091AC8 size:0x88 mapped:0x806D0B5C
