@@ -21,7 +21,7 @@ void fn_3_15004(void);
 void fn_3_150C0(void);
 void fn_3_15144(void);
 void fn_3_15220(s32 arg0);
-void fn_3_1527C(void);
+void fn_3_1527C(s32 arg0);
 void fn_3_152E8(void);
 void fn_3_1537C(void);
 void fn_3_153F0(s32 arg0);

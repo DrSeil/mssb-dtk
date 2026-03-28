@@ -169,8 +169,18 @@ void fn_3_15220(s32 arg0) {
 }
 
 // .text:0x0001527C size:0x6C mapped:0x80654310
-void fn_3_1527C(void) {
-    return;
+void fn_3_1527C(s32 arg0) {
+    if (g_Ball.ballState != 1) {
+        return;
+    }
+    if (arg0 == 0) {
+        g_pCamera->_pad4d[2] = 1;
+        return;
+    }
+    if (g_pCamera->unkA80 == 0) {
+        g_pCamera->unkA9A = g_Ball.fielderWBallIndex;
+        g_pCamera->unkA80 = g_Stats.unk24;
+    }
 }
 
 // .text:0x000152E8 size:0x94 mapped:0x8065437C
