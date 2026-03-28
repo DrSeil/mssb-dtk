@@ -7,12 +7,17 @@ void fn_3_C9878(void) {
 }
 
 // .text:0x000C99F8 size:0x68 mapped:0x80708A8C
-void fn_3_C99F8(void) {
-    return;
+void fn_3_C99F8(ActorObject *arg0) {
+    if (g_GameLogic.gameStatus == GAME_STATUS_AT_BAT || g_GameLogic.gameStatus == GAME_STATUS_DEFAULT) {
+        arg0->unk90_bit0 = 0;
+    } else {
+        arg0->unk90_bit0 = 1;
+        AnimateActorBones(arg0->wrapper->boneData);
+    }
 }
 
 // .text:0x000C9A60 size:0x68 mapped:0x80708AF4
-void fn_3_C9A60(void) {
+void fn_3_C9A60(ActorObject *arg0) {
     return;
 }
 
