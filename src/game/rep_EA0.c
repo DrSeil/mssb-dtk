@@ -7,8 +7,15 @@ void fn_3_6750C(void) {
 }
 
 // .text:0x000675B8 size:0x68 mapped:0x806A664C
-void fn_3_675B8(void) {
-    return;
+void fn_3_675B8(u16 arg0) {
+    Bss200Struct *bss200 = &lbl_3_bss_200;
+    if (arg0 == 0) {
+        lbl_3_common_bss_32724.flagCC = 0;
+        bss200->unk14A8 = lbl_3_rodata_F20;
+        return;
+    }
+    bss200->unkC = (s32)arg0;
+    bss200->unk14A4 = bss200->unk14A8 / (f32)arg0;
 }
 
 // .text:0x00067620 size:0x298 mapped:0x806A66B4
