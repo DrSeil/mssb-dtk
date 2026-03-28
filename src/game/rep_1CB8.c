@@ -18,8 +18,17 @@ void fn_3_B7CDC(void) {
 }
 
 // .text:0x000B7D6C size:0x6C mapped:0x806F6E00
-void fn_3_B7D6C(void) {
-    return;
+s32 fn_3_B7D6C(f32 f1, f32 f2) {
+    if (f1 > lbl_3_rodata_1D08) {
+        if (f2 > f1 - lbl_3_rodata_1D38 && f2 < lbl_3_rodata_1D38 + f1) {
+            return 1;
+        }
+    } else {
+        if (f2 > -f1 - lbl_3_rodata_1D38 && f2 < lbl_3_rodata_1D38 - f1) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // .text:0x000B7DD8 size:0x38 mapped:0x806F6E6C
