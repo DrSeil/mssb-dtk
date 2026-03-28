@@ -19,7 +19,7 @@ typedef struct {
     s32 unk10;          /* 0x10 */
     u8 _pad1b[0x98 - 0x14];
     void* unk98;        /* 0x98 */
-    u8 _pad9C[0xBC - 0x9C];
+    void* ptrArray[8];       /* 0x9C */
     s32 unkBC;
     u8 _padC0[0x398 - 0xC0];
     u8 unk398;

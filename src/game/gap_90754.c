@@ -44,7 +44,17 @@ void fn_3_90928(void) {
 
 // .text:0x000909B0 size:0x68 mapped:0x806CFA44
 void fn_3_909B0(void) {
-    return;
+    s32 stadiumID;
+    void **ptr;
+
+    fn_800214D0();
+    stadiumID = 6;
+    if (g_d_GameSettings.StadiumID != 6) {
+        stadiumID = g_d_GameSettings.StadiumID;
+    }
+    ptr = &lbl_800EF808.ptrArray[stadiumID];
+    fn_800ACFB0(ptr[1]);
+    ptr[1] = NULL;
 }
 
 // .text:0x00090A18 size:0x98 mapped:0x806CFAAC
