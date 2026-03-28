@@ -6,6 +6,7 @@
 #include "UnknownHeaders.h"
 
 extern s32 lbl_3_data_8FCC;
+extern s32 lbl_3_data_8F24;
 
 void fn_3_EA340(void);
 void fn_3_EA454(void);

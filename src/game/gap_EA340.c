@@ -100,7 +100,11 @@ void fn_3_ED2F4(void) {
 
 // .text:0x000ED490 size:0x6C mapped:0x8072C524
 void fn_3_ED490(void) {
-    return;
+    DrawingSceneStruct *r31 = lbl_803CC1B8;
+    fn_80034E20((void(*)(void))r31, (int*)&lbl_3_data_8F24, (void**)&lbl_803CC1B8);
+    g_Minigame.toyfield_waitFor_CoinsX2_AnimationToEnd = 1;
+    r31->eventID = 0;
+    lbl_803CC1B8->aFunctionPointer = fn_3_ED2F4;
 }
 
 // .text:0x000ED4FC size:0x78 mapped:0x8072C590
