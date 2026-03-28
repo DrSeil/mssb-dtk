@@ -634,9 +634,9 @@ typedef struct DrawingSceneStruct {
         struct {
             u16 unkIndex;
             u16 unkIndex2;
-        } indices;
+        };
         DrawingSceneItem *unk14;
-    } unk8;
+    };
     s16 unk18;
     s16 unk1a;
     u16 eventID;
