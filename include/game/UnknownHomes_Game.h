@@ -1920,7 +1920,7 @@ typedef struct _MiniGameStruct {
     /*0x18BA*/ s16 _18BA;
     /*0x18BC*/ s32 minigamePoints_current_Latest[4];
     /*0x18CC*/ MiniGameControlStruct minigameControlStruct[2];
-    /*0x18F8*/ u8 minigameFielderIndex[4];
+    /*0x18F8*/ s8 minigameFielderIndex[4];
     /*0x18FC*/ u8 _18FC[4];
     /*0x1900*/ u8 _1900;
     /*0x1901*/ u8 _1901;

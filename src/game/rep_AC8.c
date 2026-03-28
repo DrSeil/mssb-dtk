@@ -214,7 +214,16 @@ void fn_3_2E87C(void) {
 
 // .text:0x0002EA24 size:0x64 mapped:0x8066DAB8
 void fn_3_2EA24(void) {
-    return;
+    s32 i = 0;
+    do {
+        s8 idx = g_Minigame.minigameFielderIndex[i];
+        if (idx >= 0) {
+            fn_3_55EEC(idx);
+        }
+        i++;
+    } while (i < 4);
+    fn_3_2E41C();
+    fn_3_313B0();
 }
 
 // .text:0x0002EA88 size:0x43C mapped:0x8066DB1C
@@ -1118,7 +1127,7 @@ void fn_3_55CC4(void) {
 }
 
 // .text:0x00055EEC size:0x1258 mapped:0x80694F80
-void fn_3_55EEC(void) {
+void fn_3_55EEC(s32 fielderIdx) {
     return;
 }
 
