@@ -89,7 +89,8 @@ extern s32 lbl_3_bss_44;
 typedef struct Stats {
     u8 _pad[0x24];
     u32 unk24;
-    u8 _pad2[0x36 - 0x28];
+    s16 unk28;
+    u8 _pad2[0x36 - 0x2A];
     u8 unk36;
     u8 unk37;
     u8 unk38;

@@ -1,5 +1,7 @@
 #include "game/gap_7976C.h"
 
+s32 fn_3_6C938(s32, s32);
+
 // .text:0x0007976C size:0x294 mapped:0x806B8800
 void fn_3_7976C(void) {
     return;
@@ -122,7 +124,13 @@ void fn_3_7C190(void) {
 }
 
 // .text:0x0007C194 size:0x68 mapped:0x806BB228
-void fn_3_7C194(void) {
-    return;
+s32 fn_3_7C194(void) {
+    if ((s32)g_Stats.unk24 < 0x5A) {
+        return 0;
+    }
+    if ((s32)g_Stats.unk24 > (s32)(g_Stats.unk28 - 0x3C)) {
+        return 0;
+    }
+    return fn_3_6C938(1, 0x1100) != 0;
 }
 

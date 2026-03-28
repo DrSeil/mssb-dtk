@@ -28,6 +28,6 @@ void fn_3_7BBF8(void);  /* sets g_Stats.unk39 = 1 */
 void fn_3_7BC0C(void);
 void fn_3_7BC20(void);
 void fn_3_7C190(void);
-void fn_3_7C194(void);
+s32 fn_3_7C194(void);
 
 #endif // !__GAME_gap_7976C_H_
