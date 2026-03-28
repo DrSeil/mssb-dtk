@@ -295,12 +295,22 @@ void fn_3_1382E0(void) {
 }
 
 // .text:0x00138448 size:0x6C mapped:0x807774DC
-void fn_3_138448(void) {
-    return;
+void fn_3_138448(CounterObj_138448 *arg0) {
+    if (g_Minigame._72A == 0) {
+        if (arg0->count < 0x7FFE) {
+            arg0->count = arg0->count + 1;
+        } else {
+            arg0->count = 0x7FFF;
+        }
+        if (arg0->count >= arg0->maxCount) {
+            arg0->flag = 0;
+            fn_3_1384B4(arg0);
+        }
+    }
 }
 
 // .text:0x001384B4 size:0x5F0 mapped:0x80777548
-void fn_3_1384B4(void) {
+void fn_3_1384B4(CounterObj_138448 *arg0) {
     return;
 }
 

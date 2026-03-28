@@ -65,8 +65,15 @@ void fn_3_137DE4(void);
 void fn_3_137F14(void);
 void fn_3_13802C(void);
 void fn_3_1382E0(void);
-void fn_3_138448(void);
-void fn_3_1384B4(void);
+typedef struct {
+    u8 _pad0[0x38];
+    s16 maxCount;   /* 0x38 */
+    s16 count;      /* 0x3A */
+    u8 _pad1[2];
+    u8 flag;        /* 0x3E */
+} CounterObj_138448;
+void fn_3_138448(CounterObj_138448 *arg0);
+void fn_3_1384B4(CounterObj_138448 *arg0);
 void fn_3_138AA4(void);
 void fn_3_1391C0(void);
 void fn_3_139700(void);
