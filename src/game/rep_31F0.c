@@ -4,6 +4,8 @@
 #include "header_rep_data.h"
 #include "stl/mem.h"
 
+extern void fn_8003A540(s32 arg0, GameControlsStruct* arg1);
+
 // .text:0x00110634 size:0x3D0 mapped:0x8074F6C8
 void fn_3_110634(void) {
     return;
@@ -44,7 +46,15 @@ void fn_3_1111D0(void) {
 
 // .text:0x00111250 size:0x64 mapped:0x807502E4
 void fn_3_111250(void) {
-    return;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+    fn_8003A540(0, &g_GameLogic);
+    if ((u8)g_Minigame.pointsTargetReachedInd == 1) {
+        fn_3_5A6D4(8);
+        return;
+    }
+    fn_3_5A6D4(0);
 }
 
 // .text:0x001112B4 size:0x484 mapped:0x80750348
