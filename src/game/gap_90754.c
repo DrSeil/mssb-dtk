@@ -53,8 +53,18 @@ void fn_3_90A18(void) {
 }
 
 // .text:0x00090AB0 size:0x64 mapped:0x806CFB44
-void fn_3_90AB0(void) {
-    return;
+void fn_3_90AB0(s32 charID) {
+    // NONMATCHING: r0/r4 register swap in base+offset computation, and lwz vs lwzu
+    void **entry;
+    void *ptr;
+    if (charID < 0) return;
+    entry = (void**)&lbl_800EF808 + (fn_800698F8(charID) + 5);
+    ptr = entry[1];
+    if (ptr != NULL) {
+        fn_800214D0();
+        fn_800ACFB0(entry[1]);
+        entry[1] = NULL;
+    }
 }
 
 // .text:0x00090B14 size:0x100 mapped:0x806CFBA8
