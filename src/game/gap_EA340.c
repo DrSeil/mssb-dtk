@@ -1,4 +1,5 @@
 #include "game/gap_EA340.h"
+#include "game/rep_3448.h"
 
 // .text:0x000EA340 size:0x114 mapped:0x807293D4
 void fn_3_EA340(void) {
@@ -78,7 +79,12 @@ void fn_3_ED0F4(void) {
 
 // .text:0x000ED244 size:0x64 mapped:0x8072C2D8
 void fn_3_ED244(void) {
-    return;
+    DrawingSceneStruct *scene = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 ||
+        lbl_80371C30[scene->unkIndex].obj->field_0x69 == 2) {
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000ED2A8 size:0x4C mapped:0x8072C33C
