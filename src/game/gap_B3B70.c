@@ -1,9 +1,19 @@
 #include "game/gap_B3B70.h"
 #include "game/gap_AC9F8.h"
+#include "game/gap_6AEC0.h"
+#include "game/m_sound.h"
+#include "game/rep_AC8.h"
 
 // .text:0x000B3B70 size:0x60 mapped:0x806F2C04
 void fn_3_B3B70(void) {
-    return;
+    g_GameLogic.freeFieldingPracticeInd = 0;
+    g_Practice.instructionNumber = -1;
+    g_Practice.transitioningIndicator = 0;
+    g_hugeAnimStruct.renderStadiumFlag = 1;
+    g_hugeAnimStruct.field269_0x307a = 1;
+    fn_3_6AEC0();
+    fn_3_8F1C8();
+    fn_3_59338();
 }
 
 // .text:0x000B3BD0 size:0x94 mapped:0x806F2C64
