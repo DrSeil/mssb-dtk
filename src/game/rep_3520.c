@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
+#include <math.h>
 
 // .text:0x00133200 size:0x120 mapped:0x80772294
 void fn_3_133200(void) {
@@ -73,8 +74,15 @@ void fn_3_1350BC(void) {
 }
 
 // .text:0x001354BC size:0x64 mapped:0x80774550
-void fn_3_1354BC(void) {
-    return;
+s32 fn_3_1354BC(s32 idx, f32 f1, f32 f2) {
+    s32 ret = 0;
+    f32 a = g_Minigame.unkBB0[idx]._00;
+    f32 b = g_Minigame.unkBB0[idx]._08;
+    f32 diff1 = a - f1;
+    f32 diff2 = b - f2;
+    if ((f32)fabs(diff1) > lbl_3_rodata_35D8) return ret;
+    if ((f32)fabs(diff2) > lbl_3_rodata_35DC) return ret;
+    return 1;
 }
 
 // .text:0x00135520 size:0xE0 mapped:0x807745B4

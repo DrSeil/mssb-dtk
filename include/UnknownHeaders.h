@@ -861,6 +861,8 @@ extern void fn_80035CA4(s32 arg);
 extern void fn_800BCDBC(void* ptr);
 extern VecXYZ lbl_3_data_21A48;
 extern f32 lbl_3_rodata_35D0;
+extern f32 lbl_3_rodata_35D8;
+extern f32 lbl_3_rodata_35DC;
 extern f32 lbl_3_rodata_3638;
 typedef struct GameStateBss {
 s32 val0; // 0x00

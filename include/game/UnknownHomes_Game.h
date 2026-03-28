@@ -1407,10 +1407,14 @@ typedef struct _UnkStructMinigame {
     /*0x020*/ u8 pad4[28];
     /*0x03C*/ s32 _3C;
     /*0x040*/ u8 _40[4];
-    /*0x044*/ VecXYZ _44;
-    /*0x050*/ VecXYZ _50;
-    /*0x05C*/ VecXYZ _5C;
-} UnkStructMinigame; // size: 0x68
+} UnkStructMinigame; // size: 0x44
+
+typedef struct {
+    /*0x00*/ f32 _00;
+    /*0x04*/ u8 _04[4];
+    /*0x08*/ f32 _08;
+    /*0x0C*/ u8 _0C[52];
+} MiniGamePosElement; // size: 0x40
 
 typedef struct _MiniGameControlStruct {
     /*0x000*/ s8 characterIndex[4];
@@ -1846,23 +1850,7 @@ typedef struct _MiniGameStruct {
     /*0x85F*/ u8 pad3;
     /*0x860*/ BB_barrelStruct barrels[15];
     /*0xB6C*/ UnkStructMinigame _B6C;
-    /*0xBD4*/ VecXYZ _BD4;
-    /*0xBE0*/ f32 _BE0;
-    /*0xBE4*/ f32 _BE4;
-    /*0xBE8*/ s16 _BE8;
-    /*0xBEA*/ s16 _BEA;
-    /*0xBEC*/ u8 _BEC;
-    /*0xBED*/ u8 _BED;
-    /*0xBEE*/ u8 _BEE;
-    /*0xBEF*/ u8 _BEF[62];
-    /*0xC2D*/ u8 _C2D[7];
-    /*0xC34*/ s16 _C34;
-    /*0xC36*/ s16 _C36;
-    /*0xC38*/ u8 _C38;
-    /*0xC39*/ u8 _C39[52];
-    /*0xC6D*/ u8 _C6D[64];
-    /*0xCAD*/ u8 _CAD;
-    /*0xCAE*/ u8 pad4[2];
+    /*0xBB0*/ MiniGamePosElement unkBB0[4];
     /*0xCB0*/ f32 _CB0;
     /*0xCB4*/ f32 _CB4;
     /*0xCB8*/ f32 _CB8;
