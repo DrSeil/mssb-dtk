@@ -1,6 +1,7 @@
 #include "game/rep_16B8.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/rep_3448.h"
 
 // .text:0x00091520 size:0x540 mapped:0x806D05B4
 void fn_3_91520(void) {
@@ -209,7 +210,12 @@ void fn_3_9551C(void) {
 
 // .text:0x00095568 size:0x64 mapped:0x806D45FC
 void fn_3_95568(void) {
-    return;
+    DrawingSceneStruct *scene = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 ||
+        lbl_80371C30[scene->unkIndex].obj->field_0x69 == 2) {
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000955CC size:0x54 mapped:0x806D4660
