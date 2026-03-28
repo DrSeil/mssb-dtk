@@ -6,8 +6,11 @@
 #include "static/UnknownHomes_Static.h"
 #include "game/rep_AC8.h"
 #include "game/rep_1200.h"
+#include "UnknownHeaders.h"
+#include "game/gap_6AEC0.h"
 
 void fn_80017D28(s32 arg0);
+void fn_8001AAA4(void);
 
 void fn_3_5985C(void);
 void fn_3_598D0(void);
@@ -17,7 +20,7 @@ void fn_3_59AC0(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_80022B68(void);
 s32 fn_3_59AE4(void);
 void fn_3_59B20(void);
-void fn_3_59BCC(void);
+s32 fn_3_59BCC(s32 arg0);
 void fn_3_59C2C(void);
 void fn_3_59F40(void);
 void fn_3_5A28C(void);

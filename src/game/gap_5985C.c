@@ -51,8 +51,19 @@ void fn_3_59B20(void) {
 }
 
 // .text:0x00059BCC size:0x60 mapped:0x80698C60
-void fn_3_59BCC(void) {
-    return;
+s32 fn_3_59BCC(s32 arg0) {
+    DrawingSceneStruct *r31 = lbl_803CC1B8;
+    if (arg0 < 1) {
+        return 0;
+    }
+    if (arg0 == 1) {
+        fn_8001AAA4();
+    }
+    if (r31->loadingState != 0) {
+        fn_3_6AEC0();
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x00059C2C size:0x314 mapped:0x80698CC0
