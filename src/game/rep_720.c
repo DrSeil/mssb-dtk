@@ -184,8 +184,16 @@ void fn_3_1537C(void) {
 }
 
 // .text:0x000153F0 size:0x68 mapped:0x80654484
-void fn_3_153F0(void) {
-    return;
+void fn_3_153F0(s32 arg0) {
+    if ((u8)g_Batter.swingInd == 0) return;
+    if ((u8)g_Batter.contactMadeInd != 1) return;
+    if (arg0 == 0) {
+        g_pCamera->unkAB6 = 1;
+        return;
+    }
+    if (g_pCamera->unkA78 == 0) {
+        g_pCamera->unkA78 = (s16)g_Stats.unk24;
+    }
 }
 
 // .text:0x00015458 size:0x6C mapped:0x806544EC
