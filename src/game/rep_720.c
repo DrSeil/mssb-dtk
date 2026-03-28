@@ -330,8 +330,16 @@ void fn_3_16328(void) {
 }
 
 // .text:0x000164A8 size:0x64 mapped:0x8065553C
-void fn_3_164A8(void) {
-    return;
+s32 fn_3_164A8(void) {
+    switch ((u8)g_Minigame.GameMode_MiniGame) {
+        case 0: return 6;
+        case 1: return 0;
+        case 2: return 4;
+        case 3: return 5;
+        case 4: return 2;
+        case 5: return 3;
+        case 6: return 1;
+    }
 }
 
 // .text:0x0001650C size:0x1E8 mapped:0x806555A0
