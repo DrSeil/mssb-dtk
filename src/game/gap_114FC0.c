@@ -3,7 +3,16 @@
 
 // .text:0x00114FC0 size:0x6C mapped:0x80754054
 void fn_3_114FC0(void) {
-    return;
+    u8 temp = g_Minigame.turnNumberWithinRound + 1;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+    g_Minigame.turnNumberWithinRound = temp;
+    if (temp >= g_Minigame.miniGameNumberOfParticipants) {
+        fn_3_5A6D4(0x19);
+    } else {
+        fn_3_5A6D4(7);
+    }
 }
 
 // .text:0x0011502C size:0xDC mapped:0x807540C0
