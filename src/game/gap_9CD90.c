@@ -83,8 +83,15 @@ void fn_3_9E5A0(void) {
 }
 
 // .text:0x0009E7D4 size:0x60 mapped:0x806DD868
-void fn_3_9E7D4(void) {
-    return;
+void fn_3_9E7D4(s32 arg0) {
+    if (g_d_GameSettings.GameModeSelected == 2 && g_GameLogic.secondaryGameMode == 0xF) {
+        return;
+    }
+    if (g_GameLogic.currentBatterPerTeam[arg0] == 9) {
+        g_GameLogic.currentBatterPerTeam[arg0] = 1;
+        return;
+    }
+    g_GameLogic.currentBatterPerTeam[arg0]++;
 }
 
 // .text:0x0009E834 size:0x1E8 mapped:0x806DD8C8

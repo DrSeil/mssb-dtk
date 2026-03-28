@@ -20,7 +20,7 @@ void fn_3_9DC18(void);
 void fn_3_9E078(void);
 void fn_3_9E368(void);
 void fn_3_9E5A0(void);
-void fn_3_9E7D4(void);
+void fn_3_9E7D4(s32 arg0);
 void fn_3_9E834(void);
 void fn_3_9EA1C(void);
 
