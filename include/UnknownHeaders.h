@@ -6,6 +6,7 @@
 #include "game/rep_D0.h"
 #include "C3/control.h"
 #include "Dolphin/mtx.h"
+#include "static/UnknownHomes_Static.h"
 
 typedef void (*QueueCallback)(void);
 void fn_800528AC(void (*callback)(void));
