@@ -859,6 +859,11 @@ extern void* lbl_3_bss_1904;
 extern void fn_800ACFB0(void*);
 extern void fn_80035CA4(s32 arg);
 extern void fn_800BCDBC(void* ptr);
+typedef struct {
+    u8 _00[14];
+    s16 unkE;
+} Data21A04; // size: 0x10
+extern Data21A04 lbl_3_data_21A04;
 extern VecXYZ lbl_3_data_21A48;
 extern f32 lbl_3_rodata_35D0;
 extern f32 lbl_3_rodata_35D8;

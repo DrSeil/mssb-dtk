@@ -349,8 +349,15 @@ void fn_3_139F84(void) {
 }
 
 // .text:0x0013A048 size:0x64 mapped:0x807790DC
-void fn_3_13A048(void) {
-    return;
+void fn_3_13A048(s32 destIdx, s32 srcIdx) {
+    s16 srcPts = g_Minigame.miniGameCurrentPoints[srcIdx];
+    if (srcPts < lbl_3_data_21A04.unkE) {
+        g_Minigame.miniGameCurrentPoints[destIdx] += srcPts;
+        g_Minigame.miniGameCurrentPoints[srcIdx] = 0;
+        return;
+    }
+    g_Minigame.miniGameCurrentPoints[destIdx] += lbl_3_data_21A04.unkE;
+    g_Minigame.miniGameCurrentPoints[srcIdx] -= lbl_3_data_21A04.unkE;
 }
 
 // .text:0x0013A0AC size:0x678 mapped:0x80779140
