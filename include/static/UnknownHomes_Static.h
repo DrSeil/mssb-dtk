@@ -53,7 +53,7 @@ typedef struct Camera {
     /* 0xA50 */ s32 unk_A50;
     /* 0xA54 */ u8 _pad1[0xA74 - 0xA54];
     /* 0xA74 */ s16 unkA74;
-    /* 0xA76 */ u8 _pad1c[0xA78 - 0xA76];
+    /* 0xA76 */ s16 unkA76;
     /* 0xA78 */ s16 unkA78;
     /* 0xA7A */ u8 _pad1d[0xA80 - 0xA7A];
     /* 0xA80 */ s16 unkA80;

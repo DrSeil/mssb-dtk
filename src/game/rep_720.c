@@ -207,8 +207,20 @@ void fn_3_153F0(s32 arg0) {
 }
 
 // .text:0x00015458 size:0x6C mapped:0x806544EC
-void fn_3_15458(void) {
-    return;
+void fn_3_15458(s32 arg0) {
+    if (g_Batter.swingInd == 0) {
+        return;
+    }
+    if (g_Batter.framesSinceStartOfSwing != 1) {
+        return;
+    }
+    if (arg0 == 0) {
+        g_pCamera->_pad4c[0] = 1;
+        return;
+    }
+    if (g_Stats.unk36 == 0) {
+        g_pCamera->unkA76 = g_Stats.unk24;
+    }
 }
 
 // .text:0x000154C4 size:0x60 mapped:0x80654558
