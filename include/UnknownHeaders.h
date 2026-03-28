@@ -21,6 +21,9 @@ typedef struct {
     void* unk98;        /* 0x98 */
     u8 _pad9C[0xBC - 0x9C];
     s32 unkBC;
+    u8 _padC0[0x398 - 0xC0];
+    u8 unk398;
+    u8 _pad399[0x39C - 0x399];
 } Lbl800EF808; // size: 0x39C
 extern Lbl800EF808 lbl_800EF808;
 BOOL fn_80021518(s32 charID, s32 param_2);

@@ -8,6 +8,7 @@
 
 extern s16 lbl_3_data_FC1C;
 extern int lbl_3_data_B3F4;
+extern s32 lbl_3_data_BD50;
 
 void fn_3_157DB8(void);
 void fn_3_157E28(void);

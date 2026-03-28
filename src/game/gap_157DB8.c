@@ -29,7 +29,11 @@ void fn_3_15810C(void) {
 
 // .text:0x001581FC size:0x68 mapped:0x80797290
 void fn_3_1581FC(void) {
-    return;
+    fn_80034E20((void(*)(void))lbl_803CC1B8, (int*)&lbl_3_data_BD50, (void**)&lbl_803CC1B8);
+    if ((u8)lbl_800EF808.unk398 == 1) {
+        playSoundEffect(0x1AD);
+    }
+    lbl_803CC1B8->aFunctionPointer = fn_3_15810C;
 }
 
 // .text:0x00158264 size:0x148 mapped:0x807972F8
