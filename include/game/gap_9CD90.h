@@ -6,6 +6,14 @@
 #include "static/UnknownHomes_Static.h"
 #include "UnknownHeaders.h"
 
+typedef struct {
+    u8 _pad0[0x12];
+    u8 unk12;   /* 0x12 */
+    u8 _pad13[0x20 - 0x13];
+} RunningLogicStruct;
+
+extern RunningLogicStruct g_RunningLogic;
+
 void fn_3_9CD90(void);
 void fn_3_9CE78(void);
 void fn_3_9D140(void);

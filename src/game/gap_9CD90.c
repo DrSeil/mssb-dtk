@@ -31,7 +31,20 @@ void fn_3_9D550(void) {
 
 // .text:0x0009D594 size:0x6C mapped:0x806DC628
 void fn_3_9D594(void) {
-    return;
+    switch (g_RunningLogic.unk12) {
+    case 4:
+        lbl_3_common_bss_32A94.unk0 = 1;
+        return;
+    case 3:
+        lbl_3_common_bss_32A94.unk0 = 2;
+        return;
+    case 2:
+        lbl_3_common_bss_32A94.unk0 = 3;
+        return;
+    default:
+        lbl_3_common_bss_32A94.unk0 = 4;
+        return;
+    }
 }
 
 // .text:0x0009D600 size:0xA4 mapped:0x806DC694
