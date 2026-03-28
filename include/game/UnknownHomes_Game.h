@@ -2416,7 +2416,7 @@ typedef struct _MiniGameStruct {
     /*0x1D6E*/ u8 starDashStunType[4];
     /*0x1D72*/ u8 _1D72;
     /*0x1D73*/ u8 _1D73;
-    /*0x1D74*/ u8 playerIDWithPowerup[2];
+    /*0x1D74*/ s8 playerIDWithPowerup[2];
     /*0x1D76*/ s16 _1D76;
     /*0x1D78*/ u8 _1D78;
     /*0x1D79*/ u8 _1D79;

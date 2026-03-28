@@ -154,18 +154,27 @@ void fn_3_13E174(void) {
 }
 
 // .text:0x0013E21C size:0x188 mapped:0x8077D2B0
-void fn_3_13E21C(void) {
+void fn_3_13E21C(f32* arg0) {
     return;
 }
 
 // .text:0x0013E3A4 size:0x2CC mapped:0x8077D438
-void fn_3_13E3A4(void) {
+void fn_3_13E3A4(f32* arg0) {
     return;
 }
 
 // .text:0x0013E670 size:0x64 mapped:0x8077D704
 void fn_3_13E670(void) {
-    return;
+    if ((u8)g_Minigame.turnOverStatus != 0) {
+        g_Minigame.playerIDWithPowerup[0] = -1;
+        g_Minigame._CCE[0] = 0;
+        return;
+    }
+    if ((u8)g_Minigame._CCE[0] != 0) {
+        fn_3_13E21C(&g_Minigame._CB0);
+        return;
+    }
+    fn_3_13E3A4(&g_Minigame._CB0);
 }
 
 // .text:0x0013E6D4 size:0x100 mapped:0x8077D768
