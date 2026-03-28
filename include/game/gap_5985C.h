@@ -14,7 +14,7 @@ void fn_8001AAA4(void);
 
 void fn_3_5985C(void);
 void fn_3_598D0(void);
-void fn_3_59918(void);
+void fn_3_59918(s32 arg0, s32 arg1);
 void fn_3_59A90(void);
 void fn_3_59AC0(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_80022B68(void);

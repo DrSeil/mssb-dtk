@@ -7,8 +7,9 @@
 #include "UnknownHeaders.h"
 
 typedef struct {
-    u8 _pad0[0x12];
-    u8 unk12;   /* 0x12 */
+    s16 unk0;           /* 0x00 */
+    u8 _pad2[0x12 - 0x02];
+    u8 unk12;           /* 0x12 */
     u8 _pad13[0x20 - 0x13];
 } RunningLogicStruct;
 

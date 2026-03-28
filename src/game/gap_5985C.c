@@ -16,7 +16,7 @@ void fn_3_598D0(void) {
 }
 
 // .text:0x00059918 size:0x178 mapped:0x806989AC
-void fn_3_59918(void) {
+void fn_3_59918(s32 arg0, s32 arg1) {
     return;
 }
 

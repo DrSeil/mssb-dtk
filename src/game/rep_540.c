@@ -86,7 +86,15 @@ void fn_3_9CE0(void) {
 
 // .text:0x00009E18 size:0x6C mapped:0x80648EAC
 void fn_3_9E18(void) {
-    return;
+    if (g_Ball.deadBallReason != 4) {
+        g_Ball.deadballLastLoc.x = g_Ball.AtBat_Contact_BallPos.x;
+        g_Ball.deadballLastLoc.y = g_Ball.AtBat_Contact_BallPos.y;
+        g_Ball.deadballLastLoc.z = g_Ball.AtBat_Contact_BallPos.z;
+        g_Ball.deadBallReason = 4;
+        if (g_RunningLogic.unk0 != 0) {
+            fn_3_59918(0x14, 0);
+        }
+    }
 }
 
 // .text:0x00009E84 size:0x120 mapped:0x80648F18

@@ -2,6 +2,8 @@
 #define __GAME_rep_540_H_
 
 #include "mssbTypes.h"
+#include "game/gap_5985C.h"
+#include "game/gap_9CD90.h"
 
 void fn_3_6530(void);
 void fn_3_65A8(void);
