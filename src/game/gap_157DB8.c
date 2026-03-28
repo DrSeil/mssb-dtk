@@ -76,7 +76,14 @@ void fn_3_159114(void) {
 
 // .text:0x00159590 size:0x64 mapped:0x80798624
 void fn_3_159590(void) {
-    return;
+    // NONMATCHING: target assembly shows 2-arg call (no r5 setup), but fn_80034E20 is
+    // declared with 3 args globally; local redeclaration is rejected by CW
+    DrawingSceneStruct *dss = lbl_803CC1B8;
+    fn_80034E20((void*)dss, (int*)&lbl_3_data_B3F4, (void**)&lbl_803CC1B8);
+    dss->unk18 = 0;
+    dss->unk1a = 0;
+    dss->eventID = 0;
+    lbl_803CC1B8->aFunctionPointer = fn_3_159114;
 }
 
 // .text:0x001595F4 size:0x3C4 mapped:0x80798688
