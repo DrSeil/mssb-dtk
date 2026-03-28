@@ -2,6 +2,7 @@
 #define __GAME_sta_c6_H_
 
 #include "mssbTypes.h"
+#include "game/sta_c2.h"
 
 // Structs for fn_3_E6638
 typedef struct OuterPtr_E6798 {
@@ -69,8 +70,15 @@ extern u8 lbl_3_data_196B4;
 extern u8 lbl_3_data_19024;
 extern u8 lbl_3_data_1963F;
 extern u8 lbl_3_data_19640;
-void fn_3_E59B4(void);
-void fn_3_E5A1C(void);
+extern f32 lbl_3_rodata_2B90;
+extern f32 lbl_3_rodata_2B94;
+extern f32 lbl_3_rodata_2B98;
+extern f32 lbl_3_rodata_2B9C;
+extern f32 lbl_3_rodata_2BA0;
+f32 fn_800B4C40(void *boneData);
+void fn_800B4CA0(void *boneData, f32 val);
+void fn_3_E59B4(ActorObject *arg0);
+void fn_3_E5A1C(ActorObject *arg0);
 void fn_3_E5A84(void);
 void fn_3_E5CBC(void);
 int fn_3_E5E14(Arg0_E5E14* arg0);

@@ -5,13 +5,21 @@
 #include "header_rep_data.h"
 
 // .text:0x000E59B4 size:0x68 mapped:0x80724A48
-void fn_3_E59B4(void) {
-    return;
+void fn_3_E59B4(ActorObject *arg0) {
+    void *boneData = arg0->wrapper->boneData;
+    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B94) {
+        fn_800B4CA0(boneData, lbl_3_rodata_2B98);
+    }
+    AnimateActorBones(boneData);
 }
 
 // .text:0x000E5A1C size:0x68 mapped:0x80724AB0
-void fn_3_E5A1C(void) {
-    return;
+void fn_3_E5A1C(ActorObject *arg0) {
+    void *boneData = arg0->wrapper->boneData;
+    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B9C) {
+        fn_800B4CA0(boneData, lbl_3_rodata_2BA0);
+    }
+    AnimateActorBones(boneData);
 }
 
 // .text:0x000E5A84 size:0x238 mapped:0x80724B18
