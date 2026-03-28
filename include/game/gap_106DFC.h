@@ -24,7 +24,7 @@ s32 fn_3_107BD0(u8* a, u8* b);
 s32 fn_3_107C04(u8* a, u8* b);
 s32 fn_3_107C40(void);
 s32 fn_3_107C88(void);
-void fn_3_107CD0(void);
+u8 fn_3_107CD0(void);
 s32 fn_3_107D34(u8* a, u8* b);
 u8 fn_3_107D70(s8 arg0);
 u8 fn_3_107DB4(s8 arg0);

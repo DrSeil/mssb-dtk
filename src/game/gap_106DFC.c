@@ -2,6 +2,8 @@
 #include "game/UnknownHomes_Game.h"
 #include "game/rep_1C0.h"
 
+extern void fn_800246D4(s32 (*compareFn)(u8*, u8*), u8* out, u8* in, u32 elemSize, u8 count);
+
 extern u8 lbl_3_data_18910[];
 extern u8 lbl_3_data_228[];
 
@@ -160,8 +162,17 @@ s32 fn_3_107C88(void) {
 }
 
 // .text:0x00107CD0 size:0x64 mapped:0x80746D64
-void fn_3_107CD0(void) {
-    return;
+u8 fn_3_107CD0(void) {
+    u8 sp8;
+    u8 *p = &sp8;
+    u32 i = 0;
+    do {
+        *p = i;
+        i++;
+        p++;
+    } while (i < (u8)g_Minigame.miniGameNumberOfParticipants);
+    fn_800246D4(fn_3_107D34, &sp8, &sp8, 1, g_Minigame.miniGameNumberOfParticipants);
+    return sp8;
 }
 
 // .text:0x00107D34 size:0x3C mapped:0x80746DC8
