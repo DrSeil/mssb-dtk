@@ -63,7 +63,26 @@ void fn_3_7AEE8(void) {
 
 // .text:0x0007AEEC size:0x7C mapped:0x806B9F80
 void fn_3_7AEEC(void) {
-    return;
+    InMemRunnerType *pRunners = g_Runners;
+    CommonBss32A94 *pBss = &lbl_3_common_bss_32A94;
+    pBss->_pad6[0x1C] = (u8)-1;
+    pBss->_pad6[0x21] = 0;
+    if (pRunners[1].runnerOnFieldOrOutOrScored != 0) {
+        pBss->_pad6[0x22] = 1;
+    } else {
+        pBss->_pad6[0x22] = 0;
+    }
+    pRunners += 2;
+    if (pRunners[0].runnerOnFieldOrOutOrScored != 0) {
+        pBss->_pad6[0x23] = 1;
+    } else {
+        pBss->_pad6[0x23] = 0;
+    }
+    if (pRunners[1].runnerOnFieldOrOutOrScored != 0) {
+        pBss->_pad6[0x24] = 1;
+    } else {
+        pBss->_pad6[0x24] = 0;
+    }
 }
 
 // .text:0x0007AF68 size:0x7C mapped:0x806B9FFC
