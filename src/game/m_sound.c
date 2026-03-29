@@ -185,12 +185,13 @@ void playSoundEffect(int arg0) {
     int index;
     u8* tableBase;
     u8* entryPtr;
+    s32 result;
 
     index = arg0 * 2;
     tableBase = (u8*)&lbl_3_data_8338;
     entryPtr = &tableBase[index];
 
-    sndFXStartEx((u16)arg0, entryPtr[-0x2A2], 0x3F, 0);
+    result = sndFXStartEx((u16)arg0, entryPtr[-0x2A2], 0x3F, 0);
     sndFXCtrl(0x5B, entryPtr[-0x2A1]);
 }
 
