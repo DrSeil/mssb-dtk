@@ -8,8 +8,18 @@ void fn_3_13C7BC(void) {
 }
 
 // .text:0x0013D578 size:0x70 mapped:0x8077C60C
-void fn_3_13D578(void) {
-    return;
+s32 fn_3_13D578(s8 arg0) {
+    s8 i = 0;
+    do {
+        s8 charIdx = g_Minigame.minigameControlStruct[0].characterIndex[i];
+        if (charIdx >= 0 && charIdx < 4) {
+            if (g_Minigame.miniGameCurrentPoints[i] > g_Minigame.miniGameCurrentPoints[arg0]) {
+                return 1;
+            }
+        }
+        i++;
+    } while (i < 4);
+    return 0;
 }
 
 // .text:0x0013D5E8 size:0x30 mapped:0x8077C67C

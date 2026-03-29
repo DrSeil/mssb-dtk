@@ -4,7 +4,7 @@
 #include "mssbTypes.h"
 
 void fn_3_13C7BC(void);
-void fn_3_13D578(void);
+s32 fn_3_13D578(s8 arg0);
 // Use a distinct name to avoid conflict with the u32 version in mssbTypes.h
 typedef struct unk_13d5e8_struct {
     f32 value; // Offset 0x00
