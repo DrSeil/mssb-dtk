@@ -63,4 +63,13 @@ void fn_3_90674(void);
 void fn_3_906FC(void);
 
 extern s32 lbl_3_bss_1780;
+
+extern u8 lbl_3_data_8338[];
+
+
+extern int sndFXStartEx(u16 id, u8 unk1, u8 unk2, u8 unk3);
+
+
+extern void sndFXCtrl(u8 unk1, u8 unk2);
+
 #endif // !__GAME_m_sound_H_

@@ -180,8 +180,18 @@ void fn_3_90220(void) {
 }
 
 // .text:0x00090294 size:0x64 mapped:0x806CF328
+
 void playSoundEffect(int arg0) {
-    return;
+    int index;
+    u8* tableBase;
+    u8* entryPtr;
+
+    index = arg0 * 2;
+    tableBase = (u8*)&lbl_3_data_8338;
+    entryPtr = &tableBase[index];
+
+    sndFXStartEx((u16)arg0, entryPtr[-0x2A2], 0x3F, 0);
+    sndFXCtrl(0x5B, entryPtr[-0x2A1]);
 }
 
 // .text:0x000902FC size:0x28 mapped:0x806CF390
