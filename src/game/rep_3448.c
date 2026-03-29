@@ -200,7 +200,14 @@ void fn_3_125604(void) {
 
 // .text:0x00125850 size:0x70 mapped:0x807648E4
 void fn_3_125850(void) {
-    return;
+    extern int lbl_3_data_91BC;
+    DrawingSceneStruct *temp_r31 = lbl_803CC1B8;
+    fn_80034E20((void (*)(void))temp_r31, (int*)&lbl_3_data_91BC, NULL);
+    g_Minigame.bODRelated = 0;
+    temp_r31->unk18 = 0;
+    temp_r31->unk1a = 0;
+    temp_r31->eventID = 0;
+    lbl_803CC1B8->aFunctionPointer = fn_3_125604;
 }
 
 // .text:0x001258C0 size:0xD44 mapped:0x80764954
