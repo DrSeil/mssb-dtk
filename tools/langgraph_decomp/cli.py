@@ -25,48 +25,31 @@ sys.path.insert(0, _root_dir)
 from tools.langgraph_decomp.graph import build_graph
 
 
-def find_auto_target(module="game"):
-    """Auto-select a small unmatched function with a stub in source."""
-    report_path = os.path.join(_root_dir, "report.json")
-    if not os.path.exists(report_path):
-        print("Error: report.json not found. Run 'ninja report' first.",
-              file=sys.stderr)
+def find_auto_target(module="game", max_match=30):
+    """Auto-select the first function from score_functions.py --module <module> --max-match <max_match>."""
+    import subprocess
+    score_script = os.path.join(_tools_dir, "score_functions.py")
+    cmd = [
+        sys.executable, score_script,
+        "--module", module,
+        "--max-match", str(max_match),
+        "--limit", "1",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=_root_dir)
+    if result.returncode != 0:
+        print(f"Error running score_functions.py: {result.stderr}", file=sys.stderr)
         sys.exit(1)
 
-    with open(report_path) as f:
-        data = json.load(f)
-
-    candidates = []
-    for unit in data.get("units", []):
-        un = unit.get("name", "")
-        if module and not un.startswith(f"{module}/"):
+    # Parse the first data row (skip header and separator lines)
+    for line in result.stdout.splitlines():
+        line = line.strip()
+        if not line or line.startswith("Function") or line.startswith("-") or line.startswith("...") or line.startswith("Total"):
             continue
+        func_name = line.split()[0]
+        return func_name
 
-        for func in unit.get("functions", []):
-            fm = func.get("measures", {})
-            mp = fm.get("matched_code_percent", 0)
-            sz = int(func.get("size", 0))
-
-            if mp >= 100 or sz < 8:
-                continue
-
-            fname = func.get("name", "")
-            # Check if source file has a stub
-            parts = un.split("/")
-            if len(parts) > 1:
-                src = os.path.join(_root_dir, "src", "/".join(parts[1:]) + ".c")
-                if os.path.exists(src):
-                    with open(src) as sf:
-                        if fname in sf.read():
-                            candidates.append((fname, sz, un))
-
-    candidates.sort(key=lambda x: x[1])
-
-    if not candidates:
-        print("No suitable unmatched functions found.", file=sys.stderr)
-        sys.exit(1)
-
-    return candidates[0][0]
+    print("No suitable unmatched functions found.", file=sys.stderr)
+    sys.exit(1)
 
 
 def main():
@@ -80,11 +63,15 @@ def main():
     )
     parser.add_argument(
         "--auto", action="store_true",
-        help="Auto-select a function from score_functions",
+        help="Auto-select a function from score_functions (default when no function given)",
     )
     parser.add_argument(
         "--module", default="game",
-        help="Module to search in for --auto (default: game)",
+        help="Module to search in for auto-selection (default: game)",
+    )
+    parser.add_argument(
+        "--max-match", type=float, default=30, metavar="PCT",
+        help="Max match%% for auto-selection via score_functions (default: 30)",
     )
     parser.add_argument(
         "--max-iterations", type=int, default=15,
@@ -125,12 +112,9 @@ def main():
     # Determine target function
     if args.function:
         func_name = args.function
-    elif args.auto:
-        func_name = find_auto_target(args.module)
-        print(f"Auto-selected: {func_name}")
     else:
-        parser.print_help()
-        sys.exit(1)
+        func_name = find_auto_target(args.module, args.max_match)
+        print(f"Auto-selected: {func_name}")
 
     print(f"\n{'='*60}")
     print(f"LangGraph Decompilation Loop")

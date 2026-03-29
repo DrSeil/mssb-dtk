@@ -52,6 +52,13 @@ def main():
         action="store_true",
         help="Only show functions that aren't in any .c file yet (auto-generated units)",
     )
+    parser.add_argument(
+        "--max-match",
+        type=float,
+        default=None,
+        metavar="PCT",
+        help="Only show functions with match%% at or below this value (e.g. 50 for <=50%%)",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.report):
@@ -157,6 +164,10 @@ def main():
 
             # Skip if already 100% matched
             if match_pct >= 100.0:
+                continue
+
+            # Skip if above max-match threshold
+            if args.max_match is not None and match_pct > args.max_match:
                 continue
 
             candidates.append(

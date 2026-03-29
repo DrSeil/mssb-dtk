@@ -908,5 +908,6 @@ void fn_3_6B870();                                     /* extern */
 extern GameControlsStruct g_GameLogic;
 
 extern Strikes g_Strikes;
+void fn_3_C1770(void);                                     /* extern */
 
 #endif
