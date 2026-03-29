@@ -2856,7 +2856,7 @@ fn_3_107BD0	src/game/gap_106DFC.c	/^s32 fn_3_107BD0(u8* a, u8* b) {$/;"	f	typere
 fn_3_107C04	src/game/gap_106DFC.c	/^s32 fn_3_107C04(u8* a, u8* b) {$/;"	f	typeref:typename:s32
 fn_3_107C40	src/game/gap_106DFC.c	/^s32 fn_3_107C40(void) {$/;"	f	typeref:typename:s32
 fn_3_107C88	src/game/gap_106DFC.c	/^s32 fn_3_107C88(void) {$/;"	f	typeref:typename:s32
-fn_3_107CD0	src/game/gap_106DFC.c	/^void fn_3_107CD0(void) {$/;"	f	typeref:typename:void
+fn_3_107CD0	src/game/gap_106DFC.c	/^u8 fn_3_107CD0(void) {$/;"	f	typeref:typename:u8
 fn_3_107D34	src/game/gap_106DFC.c	/^s32 fn_3_107D34(u8* a, u8* b) {$/;"	f	typeref:typename:s32
 fn_3_107D70	src/game/gap_106DFC.c	/^u8 fn_3_107D70(s8 arg0) {$/;"	f	typeref:typename:u8
 fn_3_107DB4	src/game/gap_106DFC.c	/^u8 fn_3_107DB4(s8 arg0) {$/;"	f	typeref:typename:u8
@@ -3137,7 +3137,7 @@ fn_3_13493C	src/game/rep_3520.c	/^void fn_3_13493C(void) {$/;"	f	typeref:typenam
 fn_3_134C80	src/game/rep_3520.c	/^void fn_3_134C80(void) {$/;"	f	typeref:typename:void
 fn_3_134D4C	src/game/rep_3520.c	/^void fn_3_134D4C(void) {$/;"	f	typeref:typename:void
 fn_3_1350BC	src/game/rep_3520.c	/^void fn_3_1350BC(void) {$/;"	f	typeref:typename:void
-fn_3_1354BC	src/game/rep_3520.c	/^void fn_3_1354BC(void) {$/;"	f	typeref:typename:void
+fn_3_1354BC	src/game/rep_3520.c	/^s32 fn_3_1354BC(s32 idx, f32 f1, f32 f2) {$/;"	f	typeref:typename:s32
 fn_3_135520	src/game/rep_3520.c	/^void fn_3_135520(void) {$/;"	f	typeref:typename:void
 fn_3_135600	src/game/rep_3520.c	/^void fn_3_135600(f32 x, f32 z, f32 *outX, f32 *outZ) {$/;"	f	typeref:typename:void
 fn_3_13564C	src/game/rep_3520.c	/^s32 fn_3_13564C(f32 val1, f32 val2) {$/;"	f	typeref:typename:s32
@@ -3170,8 +3170,8 @@ fn_3_137DE4	src/game/rep_3520.c	/^void fn_3_137DE4(void) {$/;"	f	typeref:typenam
 fn_3_137F14	src/game/rep_3520.c	/^void fn_3_137F14(void) {$/;"	f	typeref:typename:void
 fn_3_13802C	src/game/rep_3520.c	/^void fn_3_13802C(void) {$/;"	f	typeref:typename:void
 fn_3_1382E0	src/game/rep_3520.c	/^void fn_3_1382E0(void) {$/;"	f	typeref:typename:void
-fn_3_138448	src/game/rep_3520.c	/^void fn_3_138448(void) {$/;"	f	typeref:typename:void
-fn_3_1384B4	src/game/rep_3520.c	/^void fn_3_1384B4(void) {$/;"	f	typeref:typename:void
+fn_3_138448	src/game/rep_3520.c	/^void fn_3_138448(CounterObj_138448 *arg0) {$/;"	f	typeref:typename:void
+fn_3_1384B4	src/game/rep_3520.c	/^void fn_3_1384B4(CounterObj_138448 *arg0) {$/;"	f	typeref:typename:void
 fn_3_138AA4	src/game/rep_3520.c	/^void fn_3_138AA4(void) {$/;"	f	typeref:typename:void
 fn_3_1391C0	src/game/rep_3520.c	/^void fn_3_1391C0(void) {$/;"	f	typeref:typename:void
 fn_3_139700	src/game/rep_3520.c	/^void fn_3_139700(void) {$/;"	f	typeref:typename:void
@@ -3179,7 +3179,7 @@ fn_3_13974C	src/game/rep_3520.c	/^void fn_3_13974C(void) {$/;"	f	typeref:typenam
 fn_3_139808	src/game/rep_3520.c	/^void fn_3_139808(void) {$/;"	f	typeref:typename:void
 fn_3_139CA0	src/game/rep_3520.c	/^void fn_3_139CA0(void) {$/;"	f	typeref:typename:void
 fn_3_139F84	src/game/rep_3520.c	/^void fn_3_139F84(void) {$/;"	f	typeref:typename:void
-fn_3_13A048	src/game/rep_3520.c	/^void fn_3_13A048(void) {$/;"	f	typeref:typename:void
+fn_3_13A048	src/game/rep_3520.c	/^void fn_3_13A048(s32 destIdx, s32 srcIdx) {$/;"	f	typeref:typename:void
 fn_3_13A0AC	src/game/rep_3520.c	/^void fn_3_13A0AC(void) {$/;"	f	typeref:typename:void
 fn_3_13A724	src/game/rep_3520.c	/^void fn_3_13A724(void) {$/;"	f	typeref:typename:void
 fn_3_13A89C	src/game/rep_3520.c	/^void fn_3_13A89C(void) {$/;"	f	typeref:typename:void
@@ -3197,7 +3197,7 @@ fn_3_13C464	src/game/rep_3520.c	/^void fn_3_13C464(void) {$/;"	f	typeref:typenam
 fn_3_13C468	src/game/rep_3520.c	/^void fn_3_13C468(void) {$/;"	f	typeref:typename:void
 fn_3_13C790	src/game/gap_13C790.c	/^void fn_3_13C790(void) {$/;"	f	typeref:typename:void
 fn_3_13C7BC	src/game/rep_36D8.c	/^void fn_3_13C7BC(void) {$/;"	f	typeref:typename:void
-fn_3_13D578	src/game/rep_36D8.c	/^void fn_3_13D578(void) {$/;"	f	typeref:typename:void
+fn_3_13D578	src/game/rep_36D8.c	/^s32 fn_3_13D578(s8 arg0) {$/;"	f	typeref:typename:s32
 fn_3_13D5E8	src/game/rep_36D8.c	/^s32 fn_3_13D5E8(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {$/;"	f	typeref:typename:s32
 fn_3_13D618	src/game/rep_36D8.c	/^void fn_3_13D618(void) {$/;"	f	typeref:typename:void
 fn_3_13DA20	src/game/rep_36D8.c	/^s32 fn_3_13DA20(unk_13d5e8_struct* a, unk_13d5e8_struct* b) {$/;"	f	typeref:typename:s32
@@ -3207,8 +3207,8 @@ fn_3_13DDE0	src/game/rep_36D8.c	/^void fn_3_13DDE0(void) {$/;"	f	typeref:typenam
 fn_3_13DEA4	src/game/rep_36D8.c	/^void fn_3_13DEA4(void) {$/;"	f	typeref:typename:void
 fn_3_13DFBC	src/game/rep_36D8.c	/^void fn_3_13DFBC(void) {$/;"	f	typeref:typename:void
 fn_3_13E174	src/game/rep_36D8.c	/^void fn_3_13E174(void) {$/;"	f	typeref:typename:void
-fn_3_13E21C	src/game/rep_36D8.c	/^void fn_3_13E21C(void) {$/;"	f	typeref:typename:void
-fn_3_13E3A4	src/game/rep_36D8.c	/^void fn_3_13E3A4(void) {$/;"	f	typeref:typename:void
+fn_3_13E21C	src/game/rep_36D8.c	/^void fn_3_13E21C(f32* arg0) {$/;"	f	typeref:typename:void
+fn_3_13E3A4	src/game/rep_36D8.c	/^void fn_3_13E3A4(f32* arg0) {$/;"	f	typeref:typename:void
 fn_3_13E670	src/game/rep_36D8.c	/^void fn_3_13E670(void) {$/;"	f	typeref:typename:void
 fn_3_13E6D4	src/game/rep_36D8.c	/^void fn_3_13E6D4(void) {$/;"	f	typeref:typename:void
 fn_3_13E7D4	src/game/rep_36D8.c	/^void fn_3_13E7D4(void) {$/;"	f	typeref:typename:void
@@ -3332,8 +3332,8 @@ fn_3_14E7C0	src/game/rep_3880.c	/^void fn_3_14E7C0(void* arg0) {$/;"	f	typeref:t
 fn_3_14E810	src/game/rep_3880.c	/^void fn_3_14E810(void) {$/;"	f	typeref:typename:void
 fn_3_14E84	src/game/rep_720.c	/^void fn_3_14E84(void) {$/;"	f	typeref:typename:void
 fn_3_14E894	src/game/rep_3880.c	/^void fn_3_14E894(void) {$/;"	f	typeref:typename:void
-fn_3_14E920	src/game/rep_3880.c	/^void fn_3_14E920(void) {$/;"	f	typeref:typename:void
-fn_3_14E988	src/game/rep_3880.c	/^void fn_3_14E988(void) {$/;"	f	typeref:typename:void
+fn_3_14E920	src/game/rep_3880.c	/^void fn_3_14E920(s8 arg0) {$/;"	f	typeref:typename:void
+fn_3_14E988	src/game/rep_3880.c	/^void fn_3_14E988(s8 arg0) {$/;"	f	typeref:typename:void
 fn_3_14E9F0	src/game/rep_3880.c	/^void fn_3_14E9F0(void) {$/;"	f	typeref:typename:void
 fn_3_14EAF4	src/game/rep_3880.c	/^void fn_3_14EAF4(void) {$/;"	f	typeref:typename:void
 fn_3_14EC0	src/game/rep_720.c	/^void fn_3_14EC0(void) {$/;"	f	typeref:typename:void
@@ -3371,7 +3371,7 @@ fn_3_151F2C	src/game/rep_3880.c	/^void fn_3_151F2C(void) {$/;"	f	typeref:typenam
 fn_3_15220	src/game/rep_720.c	/^void fn_3_15220(s32 arg0) {$/;"	f	typeref:typename:void
 fn_3_1524E8	src/game/rep_3880.c	/^void fn_3_1524E8(void) {$/;"	f	typeref:typename:void
 fn_3_152794	src/game/rep_3880.c	/^void fn_3_152794(void) {$/;"	f	typeref:typename:void
-fn_3_1527C	src/game/rep_720.c	/^void fn_3_1527C(void) {$/;"	f	typeref:typename:void
+fn_3_1527C	src/game/rep_720.c	/^void fn_3_1527C(s32 arg0) {$/;"	f	typeref:typename:void
 fn_3_152AB4	src/game/rep_3880.c	/^void fn_3_152AB4(void) {$/;"	f	typeref:typename:void
 fn_3_152E8	src/game/rep_720.c	/^void fn_3_152E8(void) {$/;"	f	typeref:typename:void
 fn_3_1531A4	src/game/rep_3880.c	/^void fn_3_1531A4(void) {$/;"	f	typeref:typename:void
@@ -3379,14 +3379,14 @@ fn_3_1534C0	src/game/rep_3880.c	/^void fn_3_1534C0(void) {$/;"	f	typeref:typenam
 fn_3_1536A8	src/game/rep_3880.c	/^void fn_3_1536A8(void) {$/;"	f	typeref:typename:void
 fn_3_1537C	src/game/rep_720.c	/^void fn_3_1537C(void) {$/;"	f	typeref:typename:void
 fn_3_153E8C	src/game/rep_3880.c	/^void fn_3_153E8C(void) {$/;"	f	typeref:typename:void
-fn_3_153F0	src/game/rep_720.c	/^void fn_3_153F0(void) {$/;"	f	typeref:typename:void
+fn_3_153F0	src/game/rep_720.c	/^void fn_3_153F0(s32 arg0) {$/;"	f	typeref:typename:void
 fn_3_153F8C	src/game/rep_3880.c	/^void fn_3_153F8C(void) {$/;"	f	typeref:typename:void
 fn_3_1540E4	src/game/rep_3880.c	/^void fn_3_1540E4(void* arg0, void* arg1, void* arg2) {$/;"	f	typeref:typename:void
 fn_3_1541C4	src/game/rep_3880.c	/^void fn_3_1541C4(void* arg0, void* arg1, void* arg2) {$/;"	f	typeref:typename:void
 fn_3_154214	src/game/rep_3880.c	/^void fn_3_154214(void) {$/;"	f	typeref:typename:void
 fn_3_154238	src/game/rep_3880.c	/^void fn_3_154238(void) {$/;"	f	typeref:typename:void
 fn_3_1542F4	src/game/rep_3880.c	/^void fn_3_1542F4(void) {$/;"	f	typeref:typename:void
-fn_3_15458	src/game/rep_720.c	/^void fn_3_15458(void) {$/;"	f	typeref:typename:void
+fn_3_15458	src/game/rep_720.c	/^void fn_3_15458(s32 arg0) {$/;"	f	typeref:typename:void
 fn_3_1549F0	src/game/rep_3880.c	/^void fn_3_1549F0(void) {$/;"	f	typeref:typename:void
 fn_3_154C4	src/game/rep_720.c	/^void fn_3_154C4(s32 arg) {$/;"	f	typeref:typename:void
 fn_3_154C7C	src/game/rep_3880.c	/^void fn_3_154C7C(u32 unknown) {$/;"	f	typeref:typename:void
@@ -3412,7 +3412,7 @@ fn_3_15767C	src/game/rep_3880.c	/^void fn_3_15767C(void) {$/;"	f	typeref:typenam
 fn_3_1578F8	src/game/rep_3880.c	/^void fn_3_1578F8(void) {$/;"	f	typeref:typename:void
 fn_3_15791C	src/game/rep_3880.c	/^void fn_3_15791C(void) {$/;"	f	typeref:typename:void
 fn_3_157AC4	src/game/rep_3880.c	/^void fn_3_157AC4(void) {$/;"	f	typeref:typename:void
-fn_3_157DB8	src/game/gap_157DB8.c	/^void fn_3_157DB8(void) {$/;"	f	typeref:typename:void
+fn_3_157DB8	src/game/gap_157DB8.c	/^void fn_3_157DB8(void *arg0) {$/;"	f	typeref:typename:void
 fn_3_157E28	src/game/gap_157DB8.c	/^void fn_3_157E28(void) {$/;"	f	typeref:typename:void
 fn_3_1580AC	src/game/gap_157DB8.c	/^void fn_3_1580AC(void) {$/;"	f	typeref:typename:void
 fn_3_15810C	src/game/gap_157DB8.c	/^void fn_3_15810C(void) {$/;"	f	typeref:typename:void
@@ -3485,7 +3485,7 @@ fn_3_16058	src/game/rep_720.c	/^void fn_3_16058(void) {$/;"	f	typeref:typename:v
 fn_3_161C0	src/game/rep_720.c	/^void fn_3_161C0(void) {$/;"	f	typeref:typename:void
 fn_3_16230C	src/game/rep_3DA8.c	/^void fn_3_16230C(void) {$/;"	f	typeref:typename:void
 fn_3_16328	src/game/rep_720.c	/^void fn_3_16328(void) {$/;"	f	typeref:typename:void
-fn_3_164A8	src/game/rep_720.c	/^void fn_3_164A8(void) {$/;"	f	typeref:typename:void
+fn_3_164A8	src/game/rep_720.c	/^s32 fn_3_164A8(void) {$/;"	f	typeref:typename:s32
 fn_3_1650C	src/game/rep_720.c	/^void fn_3_1650C(void) {$/;"	f	typeref:typename:void
 fn_3_1658F0	src/game/gap_1658F0.c	/^void fn_3_1658F0(void) {$/;"	f	typeref:typename:void
 fn_3_165978	src/game/gap_1658F0.c	/^void fn_3_165978(void) {$/;"	f	typeref:typename:void
@@ -3536,9 +3536,12 @@ fn_3_16D6C	src/game/rep_720.c	/^void fn_3_16D6C(void) {$/;"	f	typeref:typename:v
 fn_3_16D810	src/game/rep_4138.c	/^void fn_3_16D810(void) {$/;"	f	typeref:typename:void
 fn_3_16D9B0	src/game/rep_4138.c	/^void fn_3_16D9B0(void) {$/;"	f	typeref:typename:void
 fn_3_16DB6C	src/game/rep_4138.c	/^void fn_3_16DB6C(void) {$/;"	f	typeref:typename:void
+fn_3_16DFC4	src/game/rep_4138.c	/^void fn_3_16DFC4(void) {$/;"	f	typeref:typename:void
 fn_3_16E1A0	src/game/rep_4138.c	/^void fn_3_16E1A0(void) {$/;"	f	typeref:typename:void
+fn_3_16E1EC	src/game/rep_4138.c	/^void fn_3_16E1EC(void) {$/;"	f	typeref:typename:void
 fn_3_16E2FC	src/game/rep_4138.c	/^void fn_3_16E2FC(u16 *ptr, s32 index) {$/;"	f	typeref:typename:void
 fn_3_16E328	src/game/rep_4138.c	/^void fn_3_16E328(void) {$/;"	f	typeref:typename:void
+fn_3_16E338	src/game/rep_4138.c	/^void fn_3_16E338(void) {$/;"	f	typeref:typename:void
 fn_3_16F04	src/game/rep_720.c	/^void fn_3_16F04(void) {$/;"	f	typeref:typename:void
 fn_3_17110	src/game/rep_720.c	/^void fn_3_17110(void) {$/;"	f	typeref:typename:void
 fn_3_1731C	src/game/rep_720.c	/^void fn_3_1731C(void) {$/;"	f	typeref:typename:void
@@ -3856,7 +3859,7 @@ fn_3_555AC	src/game/rep_AC8.c	/^void fn_3_555AC(void) {$/;"	f	typeref:typename:v
 fn_3_55710	src/game/rep_AC8.c	/^void fn_3_55710(void) {$/;"	f	typeref:typename:void
 fn_3_55918	src/game/rep_AC8.c	/^void fn_3_55918(void) {$/;"	f	typeref:typename:void
 fn_3_55CC4	src/game/rep_AC8.c	/^void fn_3_55CC4(void) {$/;"	f	typeref:typename:void
-fn_3_55EEC	src/game/rep_AC8.c	/^void fn_3_55EEC(void) {$/;"	f	typeref:typename:void
+fn_3_55EEC	src/game/rep_AC8.c	/^void fn_3_55EEC(s32 fielderIdx) {$/;"	f	typeref:typename:void
 fn_3_567C	src/game/rep_1C0.c	/^void fn_3_567C(void) {$/;"	f	typeref:typename:void
 fn_3_57144	src/game/rep_AC8.c	/^void fn_3_57144(void) {$/;"	f	typeref:typename:void
 fn_3_57488	src/game/rep_AC8.c	/^void fn_3_57488(void) {$/;"	f	typeref:typename:void
@@ -3874,12 +3877,12 @@ fn_3_595C4	src/game/rep_AC8.c	/^void fn_3_595C4(void) {$/;"	f	typeref:typename:v
 fn_3_596F8	src/game/rep_AC8.c	/^void fn_3_596F8(void) {$/;"	f	typeref:typename:void
 fn_3_5985C	src/game/gap_5985C.c	/^void fn_3_5985C(void) {$/;"	f	typeref:typename:void
 fn_3_598D0	src/game/gap_5985C.c	/^void fn_3_598D0(void) {$/;"	f	typeref:typename:void
-fn_3_59918	src/game/gap_5985C.c	/^void fn_3_59918(void) {$/;"	f	typeref:typename:void
+fn_3_59918	src/game/gap_5985C.c	/^void fn_3_59918(s32 arg0, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_59A90	src/game/gap_5985C.c	/^void fn_3_59A90(void) {$/;"	f	typeref:typename:void
 fn_3_59AC0	src/game/gap_5985C.c	/^void fn_3_59AC0(s32 arg0, s32 arg1, s32 arg2) {$/;"	f	typeref:typename:void
 fn_3_59AE4	src/game/gap_5985C.c	/^s32 fn_3_59AE4(void) {$/;"	f	typeref:typename:s32
 fn_3_59B20	src/game/gap_5985C.c	/^void fn_3_59B20(void) {$/;"	f	typeref:typename:void
-fn_3_59BCC	src/game/gap_5985C.c	/^void fn_3_59BCC(void) {$/;"	f	typeref:typename:void
+fn_3_59BCC	src/game/gap_5985C.c	/^s32 fn_3_59BCC(s32 arg0) {$/;"	f	typeref:typename:s32
 fn_3_59C2C	src/game/gap_5985C.c	/^void fn_3_59C2C(void) {$/;"	f	typeref:typename:void
 fn_3_59F40	src/game/gap_5985C.c	/^void fn_3_59F40(void) {$/;"	f	typeref:typename:void
 fn_3_5A28C	src/game/gap_5985C.c	/^void fn_3_5A28C(void) {$/;"	f	typeref:typename:void
@@ -3972,7 +3975,7 @@ fn_3_67130	src/game/rep_E08.c	/^void fn_3_67130(void) {$/;"	f	typeref:typename:v
 fn_3_6714C	src/game/rep_E08.c	/^void fn_3_6714C(void) {$/;"	f	typeref:typename:void
 fn_3_674E0	src/game/gap_674E0.c	/^void fn_3_674E0(void) {$/;"	f	typeref:typename:void
 fn_3_6750C	src/game/rep_EA0.c	/^void fn_3_6750C(void) {$/;"	f	typeref:typename:void
-fn_3_675B8	src/game/rep_EA0.c	/^void fn_3_675B8(void) {$/;"	f	typeref:typename:void
+fn_3_675B8	src/game/rep_EA0.c	/^void fn_3_675B8(u16 arg0) {$/;"	f	typeref:typename:void
 fn_3_67620	src/game/rep_EA0.c	/^void fn_3_67620(void) {$/;"	f	typeref:typename:void
 fn_3_678B8	src/game/rep_EA0.c	/^void fn_3_678B8(void) {$/;"	f	typeref:typename:void
 fn_3_67A48	src/game/rep_EA0.c	/^void fn_3_67A48(void) {$/;"	f	typeref:typename:void
@@ -4099,7 +4102,7 @@ fn_3_7BBF8	src/game/gap_7976C.c	/^void fn_3_7BBF8(void) {$/;"	f	typeref:typename
 fn_3_7BC0C	src/game/gap_7976C.c	/^void fn_3_7BC0C(void) {$/;"	f	typeref:typename:void
 fn_3_7BC20	src/game/gap_7976C.c	/^void fn_3_7BC20(void) {$/;"	f	typeref:typename:void
 fn_3_7C190	src/game/gap_7976C.c	/^void fn_3_7C190(void) {$/;"	f	typeref:typename:void
-fn_3_7C194	src/game/gap_7976C.c	/^void fn_3_7C194(void) {$/;"	f	typeref:typename:void
+fn_3_7C194	src/game/gap_7976C.c	/^s32 fn_3_7C194(void) {$/;"	f	typeref:typename:s32
 fn_3_7C4E4	src/game/rep_1330.c	/^void fn_3_7C4E4(void) {$/;"	f	typeref:typename:void
 fn_3_7CE90	src/game/gap_7CE90.c	/^void fn_3_7CE90(void) {$/;"	f	typeref:typename:void
 fn_3_7CF88	src/game/gap_7CE90.c	/^void fn_3_7CF88(void) {$/;"	f	typeref:typename:void
@@ -4147,9 +4150,9 @@ fn_3_85074	src/game/rep_13B8.c	/^void fn_3_85074(void) {$/;"	f	typeref:typename:
 fn_3_85744	src/game/rep_13B8.c	/^void fn_3_85744(void) {$/;"	f	typeref:typename:void
 fn_3_85840	src/game/rep_13B8.c	/^void fn_3_85840(void) {$/;"	f	typeref:typename:void
 fn_3_85A70	src/game/rep_13B8.c	/^void fn_3_85A70(void) {$/;"	f	typeref:typename:void
-fn_3_85C44	src/game/rep_13B8.c	/^void fn_3_85C44(void) {$/;"	f	typeref:typename:void
+fn_3_85C44	src/game/rep_13B8.c	/^void fn_3_85C44(s32 runnerIdx, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_85CB0	src/game/rep_13B8.c	/^void fn_3_85CB0(void) {$/;"	f	typeref:typename:void
-fn_3_85EF4	src/game/rep_13B8.c	/^void fn_3_85EF4(void) {$/;"	f	typeref:typename:void
+fn_3_85EF4	src/game/rep_13B8.c	/^void fn_3_85EF4(s32 runnerIdx, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_8604C	src/game/rep_13B8.c	/^void fn_3_8604C(void) {$/;"	f	typeref:typename:void
 fn_3_86118	src/game/rep_13B8.c	/^void fn_3_86118(void) {$/;"	f	typeref:typename:void
 fn_3_8679C	src/game/rep_13B8.c	/^void fn_3_8679C(void) {$/;"	f	typeref:typename:void
@@ -4216,8 +4219,15 @@ fn_3_8FF18	src/game/m_sound.c	/^void fn_3_8FF18(void) {$/;"	f	typeref:typename:v
 fn_3_8FF5C	src/game/m_sound.c	/^void fn_3_8FF5C(void) {$/;"	f	typeref:typename:void
 fn_3_90064	src/game/m_sound.c	/^void fn_3_90064(void) {$/;"	f	typeref:typename:void
 fn_3_90150	src/game/m_sound.c	/^void fn_3_90150(void) {$/;"	f	typeref:typename:void
+fn_3_90220	src/game/m_sound.c	/^void fn_3_90220(void) {$/;"	f	typeref:typename:void
 fn_3_902FC	src/game/m_sound.c	/^void fn_3_902FC(void) {$/;"	f	typeref:typename:void
+fn_3_90328	src/game/m_sound.c	/^void fn_3_90328(void) {$/;"	f	typeref:typename:void
+fn_3_903B8	src/game/m_sound.c	/^void fn_3_903B8(void) {$/;"	f	typeref:typename:void
+fn_3_90434	src/game/m_sound.c	/^void fn_3_90434(void) {$/;"	f	typeref:typename:void
 fn_3_904C	src/game/rep_540.c	/^void fn_3_904C(void) {$/;"	f	typeref:typename:void
+fn_3_9056C	src/game/m_sound.c	/^void fn_3_9056C(void) {$/;"	f	typeref:typename:void
+fn_3_90674	src/game/m_sound.c	/^void fn_3_90674(void) {$/;"	f	typeref:typename:void
+fn_3_906FC	src/game/m_sound.c	/^void fn_3_906FC(void) {$/;"	f	typeref:typename:void
 fn_3_90754	src/game/gap_90754.c	/^void fn_3_90754(Gap90754Struct* arg0, u8 arg1, u8 arg2) {$/;"	f	typeref:typename:void
 fn_3_90764	src/game/gap_90754.c	/^s32 fn_3_90764(void) {$/;"	f	typeref:typename:s32
 fn_3_90798	src/game/gap_90754.c	/^void fn_3_90798(void) {$/;"	f	typeref:typename:void
@@ -4227,7 +4237,7 @@ fn_3_908E8	src/game/gap_90754.c	/^void fn_3_908E8(void) {$/;"	f	typeref:typename
 fn_3_90928	src/game/gap_90754.c	/^void fn_3_90928(void) {$/;"	f	typeref:typename:void
 fn_3_909B0	src/game/gap_90754.c	/^void fn_3_909B0(void) {$/;"	f	typeref:typename:void
 fn_3_90A18	src/game/gap_90754.c	/^void fn_3_90A18(void) {$/;"	f	typeref:typename:void
-fn_3_90AB0	src/game/gap_90754.c	/^void fn_3_90AB0(void) {$/;"	f	typeref:typename:void
+fn_3_90AB0	src/game/gap_90754.c	/^void fn_3_90AB0(s32 charID) {$/;"	f	typeref:typename:void
 fn_3_90B14	src/game/gap_90754.c	/^void fn_3_90B14(void) {$/;"	f	typeref:typename:void
 fn_3_90C14	src/game/gap_90754.c	/^void fn_3_90C14(void) {$/;"	f	typeref:typename:void
 fn_3_90CB0	src/game/gap_90754.c	/^void fn_3_90CB0(void) {$/;"	f	typeref:typename:void
@@ -4331,7 +4341,7 @@ fn_3_9E078	src/game/gap_9CD90.c	/^void fn_3_9E078(void) {$/;"	f	typeref:typename
 fn_3_9E18	src/game/rep_540.c	/^void fn_3_9E18(void) {$/;"	f	typeref:typename:void
 fn_3_9E368	src/game/gap_9CD90.c	/^void fn_3_9E368(void) {$/;"	f	typeref:typename:void
 fn_3_9E5A0	src/game/gap_9CD90.c	/^void fn_3_9E5A0(void) {$/;"	f	typeref:typename:void
-fn_3_9E7D4	src/game/gap_9CD90.c	/^void fn_3_9E7D4(void) {$/;"	f	typeref:typename:void
+fn_3_9E7D4	src/game/gap_9CD90.c	/^void fn_3_9E7D4(s32 arg0) {$/;"	f	typeref:typename:void
 fn_3_9E834	src/game/gap_9CD90.c	/^void fn_3_9E834(void) {$/;"	f	typeref:typename:void
 fn_3_9E84	src/game/rep_540.c	/^void fn_3_9E84(void) {$/;"	f	typeref:typename:void
 fn_3_9EA1C	src/game/gap_9CD90.c	/^void fn_3_9EA1C(void) {$/;"	f	typeref:typename:void
@@ -4370,7 +4380,7 @@ fn_3_A2FD8	src/game/rep_18E8.c	/^void fn_3_A2FD8(void) {$/;"	f	typeref:typename:
 fn_3_A31E8	src/game/rep_18E8.c	/^void fn_3_A31E8(void) {$/;"	f	typeref:typename:void
 fn_3_A32B8	src/game/rep_18E8.c	/^void fn_3_A32B8(void) {$/;"	f	typeref:typename:void
 fn_3_A3374	src/game/rep_18E8.c	/^void fn_3_A3374(void) {$/;"	f	typeref:typename:void
-fn_3_A36BC	src/game/rep_18E8.c	/^void fn_3_A36BC(void) {$/;"	f	typeref:typename:void
+fn_3_A36BC	src/game/rep_18E8.c	/^s32 fn_3_A36BC(void) {$/;"	f	typeref:typename:s32
 fn_3_A372C	src/game/rep_18E8.c	/^s32 fn_3_A372C(void) {$/;"	f	typeref:typename:s32
 fn_3_A3768	src/game/rep_18E8.c	/^s32 fn_3_A3768(void) {$/;"	f	typeref:typename:s32
 fn_3_A37BC	src/game/rep_18E8.c	/^void fn_3_A37BC(void) {$/;"	f	typeref:typename:void
@@ -4526,7 +4536,7 @@ fn_3_B77DC	src/game/gap_B3B70.c	/^void fn_3_B77DC(void) {$/;"	f	typeref:typename
 fn_3_B79AC	src/game/rep_1CB8.c	/^void fn_3_B79AC(void) {$/;"	f	typeref:typename:void
 fn_3_B7C2C	src/game/rep_1CB8.c	/^void fn_3_B7C2C(void) {$/;"	f	typeref:typename:void
 fn_3_B7CDC	src/game/rep_1CB8.c	/^void fn_3_B7CDC(void) {$/;"	f	typeref:typename:void
-fn_3_B7D6C	src/game/rep_1CB8.c	/^void fn_3_B7D6C(void) {$/;"	f	typeref:typename:void
+fn_3_B7D6C	src/game/rep_1CB8.c	/^s32 fn_3_B7D6C(f32 f1, f32 f2) {$/;"	f	typeref:typename:s32
 fn_3_B7DD8	src/game/rep_1CB8.c	/^s32 fn_3_B7DD8(f32 f1, f32 f2) {$/;"	f	typeref:typename:s32
 fn_3_B7E10	src/game/rep_1CB8.c	/^s32 fn_3_B7E10(f32 f1, f32 f2) {$/;"	f	typeref:typename:s32
 fn_3_B7E44	src/game/rep_1CB8.c	/^void fn_3_B7E44(void) {$/;"	f	typeref:typename:void
@@ -4657,7 +4667,7 @@ fn_3_C2AA0	src/game/rep_1FD8.c	/^void fn_3_C2AA0(void) {$/;"	f	typeref:typename:
 fn_3_C2C80	src/game/rep_1FD8.c	/^void fn_3_C2C80(void) {$/;"	f	typeref:typename:void
 fn_3_C2EDC	src/game/rep_1FD8.c	/^void fn_3_C2EDC(void) {$/;"	f	typeref:typename:void
 fn_3_C30F0	src/game/rep_1FD8.c	/^void fn_3_C30F0(void) {$/;"	f	typeref:typename:void
-fn_3_C366C	src/game/rep_1FD8.c	/^void fn_3_C366C(void) {$/;"	f	typeref:typename:void
+fn_3_C366C	src/game/rep_1FD8.c	/^void fn_3_C366C(void *arg0, u8 arg1) {$/;"	f	typeref:typename:void
 fn_3_C39C8	src/game/rep_1FD8.c	/^void fn_3_C39C8(void) {$/;"	f	typeref:typename:void
 fn_3_C3A38	src/game/rep_1FD8.c	/^void fn_3_C3A38(void) {$/;"	f	typeref:typename:void
 fn_3_C3C2C	src/game/rep_1FD8.c	/^void fn_3_C3C2C(void) {$/;"	f	typeref:typename:void
@@ -4695,8 +4705,8 @@ fn_3_C937C	src/game/rep_21F8.c	/^void fn_3_C937C(void) {$/;"	f	typeref:typename:
 fn_3_C9590	src/game/rep_21F8.c	/^void fn_3_C9590(void) {$/;"	f	typeref:typename:void
 fn_3_C9734	src/game/rep_21F8.c	/^void fn_3_C9734(void) {$/;"	f	typeref:typename:void
 fn_3_C9878	src/game/sta_c0.c	/^void fn_3_C9878(void) {$/;"	f	typeref:typename:void
-fn_3_C99F8	src/game/sta_c0.c	/^void fn_3_C99F8(void) {$/;"	f	typeref:typename:void
-fn_3_C9A60	src/game/sta_c0.c	/^void fn_3_C9A60(void) {$/;"	f	typeref:typename:void
+fn_3_C99F8	src/game/sta_c0.c	/^void fn_3_C99F8(ActorObject *arg0) {$/;"	f	typeref:typename:void
+fn_3_C9A60	src/game/sta_c0.c	/^void fn_3_C9A60(ActorObject *arg0) {$/;"	f	typeref:typename:void
 fn_3_C9AC8	src/game/sta_c0.c	/^void fn_3_C9AC8(void) {$/;"	f	typeref:typename:void
 fn_3_C9B5C	src/game/sta_c0.c	/^void fn_3_C9B5C(void) {$/;"	f	typeref:typename:void
 fn_3_C9C94	src/game/sta_c0.c	/^void fn_3_C9C94(void) {$/;"	f	typeref:typename:void
@@ -4709,6 +4719,7 @@ fn_3_CAF9C	src/game/rep_2308.c	/^void fn_3_CAF9C(void) {$/;"	f	typeref:typename:
 fn_3_CB1B0	src/game/rep_2308.c	/^void fn_3_CB1B0(void) {$/;"	f	typeref:typename:void
 fn_3_CB234	src/game/rep_2308.c	/^void fn_3_CB234(s32 arg0, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_CB284	src/game/rep_2308.c	/^void fn_3_CB284(void) {$/;"	f	typeref:typename:void
+fn_3_CB344	src/game/auto_00_000CB344_text.c	/^void fn_3_CB344(void) {$/;"	f	typeref:typename:void
 fn_3_CB3AC	src/game/rep_2390.c	/^void fn_3_CB3AC(void) {$/;"	f	typeref:typename:void
 fn_3_CB538	src/game/rep_2390.c	/^void fn_3_CB538(void) {$/;"	f	typeref:typename:void
 fn_3_CB6B4	src/game/gap_CB6B4.c	/^void fn_3_CB6B4(u32* arg0) {$/;"	f	typeref:typename:void
@@ -4732,7 +4743,7 @@ fn_3_CD968	src/game/sta_c2.c	/^void fn_3_CD968(void) {$/;"	f	typeref:typename:vo
 fn_3_CDB48	src/game/sta_c2.c	/^void fn_3_CDB48(void) {$/;"	f	typeref:typename:void
 fn_3_CDD90	src/game/sta_c2.c	/^void fn_3_CDD90(void) {$/;"	f	typeref:typename:void
 fn_3_CDFA4	src/game/sta_c2.c	/^void fn_3_CDFA4(void) {$/;"	f	typeref:typename:void
-fn_3_CE56C	src/game/sta_c2.c	/^void fn_3_CE56C(void) {$/;"	f	typeref:typename:void
+fn_3_CE56C	src/game/sta_c2.c	/^void fn_3_CE56C(void *arg0, u8 arg1) {$/;"	f	typeref:typename:void
 fn_3_CE8E4	src/game/sta_c2.c	/^void fn_3_CE8E4(void) {$/;"	f	typeref:typename:void
 fn_3_CE954	src/game/sta_c2.c	/^void fn_3_CE954(void) {$/;"	f	typeref:typename:void
 fn_3_CEBBC	src/game/sta_c2.c	/^void fn_3_CEBBC(void) {$/;"	f	typeref:typename:void
@@ -4855,7 +4866,7 @@ fn_3_E3914	src/game/rep_2998.c	/^void fn_3_E3914(void) {$/;"	f	typeref:typename:
 fn_3_E3B88	src/game/rep_2998.c	/^void fn_3_E3B88(void) {$/;"	f	typeref:typename:void
 fn_3_E4554	src/game/rep_2998.c	/^void fn_3_E4554(castleThwompObj *arg) {$/;"	f	typeref:typename:void
 fn_3_E45A8	src/game/rep_2998.c	/^void fn_3_E45A8(castleThwompObj *param) {$/;"	f	typeref:typename:void
-fn_3_E45F0	src/game/rep_2998.c	/^void fn_3_E45F0(void) {$/;"	f	typeref:typename:void
+fn_3_E45F0	src/game/rep_2998.c	/^void fn_3_E45F0(CastleRotObj *arg0) {$/;"	f	typeref:typename:void
 fn_3_E4658	src/game/rep_2998.c	/^void fn_3_E4658(void) {$/;"	f	typeref:typename:void
 fn_3_E4760	src/game/rep_2998.c	/^void fn_3_E4760(void) {$/;"	f	typeref:typename:void
 fn_3_E48D0	src/game/rep_2998.c	/^void fn_3_E48D0(void) {$/;"	f	typeref:typename:void
@@ -4864,8 +4875,8 @@ fn_3_E4BE8	src/game/rep_2998.c	/^void fn_3_E4BE8(void) {$/;"	f	typeref:typename:
 fn_3_E4CB0	src/game/rep_2998.c	/^void fn_3_E4CB0(void) {$/;"	f	typeref:typename:void
 fn_3_E4EF4	src/game/rep_2998.c	/^void fn_3_E4EF4(void) {$/;"	f	typeref:typename:void
 fn_3_E4FC4	src/game/rep_2998.c	/^void fn_3_E4FC4(void) {$/;"	f	typeref:typename:void
-fn_3_E59B4	src/game/sta_c6.c	/^void fn_3_E59B4(void) {$/;"	f	typeref:typename:void
-fn_3_E5A1C	src/game/sta_c6.c	/^void fn_3_E5A1C(void) {$/;"	f	typeref:typename:void
+fn_3_E59B4	src/game/sta_c6.c	/^void fn_3_E59B4(ActorObject *arg0) {$/;"	f	typeref:typename:void
+fn_3_E5A1C	src/game/sta_c6.c	/^void fn_3_E5A1C(ActorObject *arg0) {$/;"	f	typeref:typename:void
 fn_3_E5A84	src/game/sta_c6.c	/^void fn_3_E5A84(void) {$/;"	f	typeref:typename:void
 fn_3_E5CBC	src/game/sta_c6.c	/^void fn_3_E5CBC(void) {$/;"	f	typeref:typename:void
 fn_3_E5E14	src/game/sta_c6.c	/^int fn_3_E5E14(Arg0_E5E14* arg0) {$/;"	f	typeref:typename:int
@@ -5032,7 +5043,7 @@ fn_3_FC448	src/game/rep_3090.c	/^void fn_3_FC448(void) {$/;"	f	typeref:typename:
 fn_3_FC938	src/game/rep_3090.c	/^void fn_3_FC938(void) {$/;"	f	typeref:typename:void
 fn_3_FCE38	src/game/rep_3090.c	/^void fn_3_FCE38(void) {$/;"	f	typeref:typename:void
 fn_3_FCEAC	src/game/rep_3090.c	/^void fn_3_FCEAC(void) {$/;"	f	typeref:typename:void
-fn_3_FCEB0	src/game/rep_3090.c	/^void fn_3_FCEB0(void) {$/;"	f	typeref:typename:void
+fn_3_FCEB0	src/game/rep_3090.c	/^s32 fn_3_FCEB0(f32 arg0) {$/;"	f	typeref:typename:s32
 fn_3_FCF20	src/game/rep_3090.c	/^void fn_3_FCF20(void) {$/;"	f	typeref:typename:void
 fn_3_FCF24	src/game/rep_3090.c	/^void fn_3_FCF24(void) {$/;"	f	typeref:typename:void
 fn_3_FD408	src/game/rep_3090.c	/^void fn_3_FD408(void) {$/;"	f	typeref:typename:void
@@ -5594,6 +5605,7 @@ pio4_hi	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_asin.c	/^ 
 pio4lo	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_tan.c	/^    pio4lo           = 3.06161699786838301793e-17, \/* 0x3C81A626, 0x33145C07 *\/$/;"	v	typeref:typename:const f64	file:
 pitch	src/Musyx/snd3d.c	/^    f32 pitch;               \/\/ offset 0x14, size 0x4$/;"	m	struct:START_LIST	typeref:typename:f32	file:
 pitchLoV	src/Musyx/chorus_fx.c	/^#define pitchLoV /;"	d	file:
+playSoundEffect	src/game/m_sound.c	/^void playSoundEffect(int arg0) {$/;"	f	typeref:typename:void
 pool_options	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^typedef struct pool_options {$/;"	s	file:
 pool_options	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^} pool_options;$/;"	t	typeref:struct:pool_options	file:
 posHiV	src/Musyx/chorus_fx.c	/^#define posHiV /;"	d	file:
