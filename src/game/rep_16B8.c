@@ -189,7 +189,12 @@ void fn_3_952DC(void) {
 
 // .text:0x0009538C size:0x70 mapped:0x806D4420
 void fn_3_9538C(void) {
-    return;
+    DrawingSceneStruct *temp_r31 = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 || g_GameLogic.gameStatus != 0x16) {
+        fn_800B0A5C_insertQueue(fn_3_95000, 2);
+        fn_80034CEC((u32)temp_r31);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000953FC size:0xC8 mapped:0x806D4490
