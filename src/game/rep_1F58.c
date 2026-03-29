@@ -65,6 +65,6 @@ void fn_3_C1344(void) {
 }
 
 // .text:0x000C1770 size:0x1C0 mapped:0x80700804
-void fn_3_C1770(void) {
+void fn_3_C1770(int arg0) {
     return;
 }
