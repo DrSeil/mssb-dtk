@@ -85,10 +85,11 @@ void fn_3_16E328(void) {
 
 void fn_3_16E338(u16 *arg0, s32 arg1) {
     if ((arg0 != NULL) && ((s32)(*arg0 - 1) >= arg1)) {
-        lbl_3_bss_D6E0.unk4 = (s32)arg0;
-        lbl_3_bss_D6E0.unk8 = arg1;
-        lbl_3_bss_D6E0.unkC = 0;
-        memset(&lbl_3_bss_D6E0 + 0x10, 0, 0x18);
+        D6E0_Struct *p = &lbl_3_bss_D6E0;
+        p->unk4 = (s32)arg0;
+        p->unk8 = arg1;
+        p->unkC = 0;
+        memset((u8 *)p + 0x10, 0, 0x18);
         fn_800B0A5C_insertQueue(fn_3_16E1EC, 5);
     }
 }
