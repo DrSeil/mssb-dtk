@@ -1,6 +1,9 @@
 #include "game/m_sound.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "musyx/musyx.h"
+
+extern u8 lbl_3_data_8338[];
 
 extern void fn_3_8B094(void);
 static QueueEntry* lbl_3_bss_1768;
@@ -180,19 +183,11 @@ void fn_3_90220(void) {
 }
 
 // .text:0x00090294 size:0x64 mapped:0x806CF328
-
-void playSoundEffect(int arg0) {
-    int index;
-    u8* tableBase;
-    u8* entryPtr;
-    s32 result;
-
-    index = arg0 * 2;
-    tableBase = (u8*)&lbl_3_data_8338;
-    entryPtr = &tableBase[index];
-
-    result = sndFXStartEx((u16)arg0, entryPtr[-0x2A2], 0x3F, 0);
-    sndFXCtrl(0x5B, entryPtr[-0x2A1]);
+SND_VOICEID playSoundEffect(int arg0) {
+    int off = arg0 * 2;
+    SND_VOICEID vid = sndFXStartEx((u16)arg0, ((u8*)&lbl_3_data_8338 + off)[-0x2a2], 0x3f, 0);
+    sndFXCtrl(vid, 0x5b, ((u8*)&lbl_3_data_8338 + off)[-0x2a1]);
+    return vid;
 }
 
 // .text:0x000902FC size:0x28 mapped:0x806CF390

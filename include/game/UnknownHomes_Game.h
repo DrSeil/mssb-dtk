@@ -2633,6 +2633,6 @@ extern AIStruct g_AiLogic;
 
 extern BOOL getAnimRelatedCoordinates(int, int, VecXYZ*);
 extern void fn_3_6C854(int, int);
-extern void playSoundEffect(int);
+extern u32 playSoundEffect(int);
 
 #endif // !__UNKNOWN_HOMES_H_
