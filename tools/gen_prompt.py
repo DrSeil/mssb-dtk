@@ -111,7 +111,55 @@ void func() {
     int b; // Both at top
     a = 5;
 }
-```"""
+```
+
+### M2C_ERROR Means Missing Parameter
+When m2c outputs `M2C_ERROR(/* Read from unset register $rX */)`, it means register rX
+held an input value that m2c did not account for — i.e., the function has an additional
+parameter passed in rX. The calling convention passes parameters in r3, r4, r5, r6, ...
+in order. If you see `$r4` unset, the function has at least 2 parameters. If you see
+`$r5`, it has at least 3, etc. Add the missing parameter(s) to the function signature.
+Example: `M2C_ERROR(/* Read from unset register $r4 */)` → add `int arg1` as second param.
+
+### Non-Void Return Type Detection
+If the assembly contains `mr rSAVED, r3` immediately after a `bl` call (saving the
+return value of the called function to a callee-saved register like r31 or r30), AND
+`mr r3, rSAVED` appears just before `blr` (restoring it as the return value), then the
+OUTER function is non-void — it returns the result of the inner call. Check the callee's
+full prototype to determine the return type, and declare the outer function accordingly.
+Example pattern:
+```
+bl  sndFXStartEx      ; returns SND_VOICEID
+...
+mr  r31, r3           ; save return value
+bl  sndFXCtrl
+...
+mr  r3, r31           ; return the saved value
+blr
+```
+→ outer function returns `SND_VOICEID`.
+
+### Integer Offset vs. Pointer for Cross-Call Index Variables
+When the same array index (e.g. `arg0 * 2`) must survive across a function call AND
+the array's base address is a known global, use an INTEGER offset variable, NOT a
+pointer variable:
+```c
+// CORRECT: saves only the int in r31; reloads global base each time
+int off = arg0 * 2;
+u8 a = ((u8*)&globalTable + off)[-0x2a2];
+sndFXStartEx(..., a, ...);
+u8 b = ((u8*)&globalTable + off)[-0x2a1];
+```
+```c
+// WRONG: saves the full pointer in r31; prevents the double lis/addi reload
+u8* ptr = (u8*)&globalTable + arg0 * 2;
+u8 a = ptr[-0x2a2];
+sndFXStartEx(..., a, ...);
+u8 b = ptr[-0x2a1];
+```
+The "wrong" version produces an extra register move before the first access and only
+one lis/addi pair instead of two. Use the "correct" version whenever the assembly
+shows two separate lis/addi sequences for the same global."""
 
 CODE_RULES = """\
 - NEVER use pointer arithmetic with manual offsets. Always define proper structs.

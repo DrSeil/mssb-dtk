@@ -1032,6 +1032,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         # Apply struct modifications using struct_utils
         struct_updates = state.get("struct_updates", [])
         struct_mod_failures = []  # Collect failures to surface to LLM
+        struct_files_modified = set()
         if struct_updates:
             # struct_updates is now a list of {type_name: str, actions: list}
             for update in struct_updates:
@@ -1090,6 +1091,7 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                 new_content = current_file_content.replace(old_struct_def, new_struct_def)
                 with open(filepath, "w") as f:
                     f.write(new_content)
+                struct_files_modified.add(filepath)
                 _log(f"[builder] Updated {type_name} in {filepath}")
 
         # Apply header additions (prototypes, struct defs)
@@ -1371,7 +1373,13 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
         try:
             if score > 0:
                 _log(f"[builder] Checkpointing results before revert...")
-                subprocess.run(["git", "add", "-A"], cwd=_root_dir, check=True)
+                # Only stage files we explicitly modified for this function.
+                # Using git add -A would accidentally stage unrelated work-in-progress
+                # files from other functions that happen to be dirty.
+                files_to_stage = [source_path, header_path, externs_path] + list(struct_files_modified)
+                for f in files_to_stage:
+                    if f and os.path.exists(f):
+                        subprocess.run(["git", "add", f], cwd=_root_dir, check=True)
                 commit_msg = f"decomp {func_name}: {score*100.0:.1f}% match ({mismatch_count} mismatches)"
                 subprocess.run(["git", "commit", "-m", commit_msg], cwd=_root_dir, check=True)
         except Exception as e:
@@ -1802,13 +1810,14 @@ def committer_node(state):
     if success:
         # Apply struct modifications permanently
         struct_updates = state.get("struct_updates", [])
+        struct_files_committed = set()
         if struct_updates:
             for update in struct_updates:
                 type_name = update.get("type_name")
                 actions = update.get("actions", [])
                 if not type_name or not actions:
                     continue
-                
+
                 print(f"[committer] Permanently applying struct modifications for {type_name}")
                 filepath = _find_struct_file(type_name, source_path=source_path)
                 if filepath:
@@ -1821,6 +1830,7 @@ def committer_node(state):
                         new_content = content.replace(old_struct_def, new_struct_def)
                         with open(filepath, "w") as f:
                             f.write(new_content)
+                        struct_files_committed.add(filepath)
                         print(f"[committer] Updated {type_name} in {filepath}")
 
         # Apply header additions
@@ -1859,8 +1869,13 @@ def committer_node(state):
                 tmp_branch = f"decomp/{func_name}"
                 print(f"[committer] Merging only relevant files from {tmp_branch} back to {original_branch}...")
                 
-                # Final commit on temp branch to ensure everything is saved
-                subprocess.run(["git", "add", "-A"], cwd=_root_dir)
+                # Final commit on temp branch to ensure everything is saved.
+                # Stage only the files explicitly modified for this function to
+                # avoid accidentally committing unrelated work-in-progress files.
+                files_to_stage = [source_path, header_path, externs_path] + list(struct_files_committed)
+                for f in files_to_stage:
+                    if f and os.path.exists(f):
+                        subprocess.run(["git", "add", f], cwd=_root_dir)
                 subprocess.run(["git", "commit", "-m", f"final matched {func_name}"], cwd=_root_dir)
                 
                 # Switch back to original branch
