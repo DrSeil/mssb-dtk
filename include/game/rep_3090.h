@@ -13,7 +13,11 @@ typedef struct Struct_DE94_Inner {
     /* 0x018 */ u32 field_0x18;
     /* 0x01C */ u8 _pad1[0x04];
     /* 0x020 */ u32 field_0x20;
-    /* 0x024 */ u8 _pad2[0xF4];
+    /* 0x024 */ u8 _pad2[0x10];
+    /* 0x034 */ void *unk34;
+    /* 0x038 */ u8 _pad2b[0x04];
+    /* 0x03C */ s32 unk3C;
+    /* 0x040 */ u8 _pad2c[0xD8];
     /* 0x118 */ u32 field_0x118;   // 0x118
     /* 0x11C */ u32 field_0x11C;   // 0x11C (Replaced _pad3)
     /* 0x120 */ u8 _pad3[0x04];    // (Adjusted padding)
@@ -46,7 +50,12 @@ void fn_3_FC448(void);
 void fn_3_FC938(void);
 void fn_3_FCE38(void);
 void fn_3_FCEAC(void);
-void fn_3_FCEB0(void);
+s32 fn_3_FCEB0(f32 arg0);
+
+typedef struct {
+    u8 _pad[0x3C];
+    f32 value; /* 0x3C */
+} DE94ArrayElement;
 void fn_3_FCF20(void);
 void fn_3_FCF24(void);
 void fn_3_FD408(void);

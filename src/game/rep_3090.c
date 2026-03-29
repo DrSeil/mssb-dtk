@@ -24,8 +24,19 @@ void fn_3_FCEAC(void) {
 }
 
 // .text:0x000FCEB0 size:0x70 mapped:0x8073BF44
-void fn_3_FCEB0(void) {
-    return;
+extern f64 lbl_3_rodata_3100;
+
+s32 fn_3_FCEB0(f32 arg0) {
+    s32 i = 0;
+    Struct_DE94_Inner *p = lbl_3_common_bss_DE94;
+    if (arg0 < lbl_3_rodata_3100) {
+        return -1;
+    }
+    for (; i < p->unk3C && arg0 > ((DE94ArrayElement *)p->unk34)[i].value; i++) {}
+    if (i < p->unk3C) {
+        return i;
+    }
+    return -1;
 }
 
 // .text:0x000FCF20 size:0x4 mapped:0x8073BFB4

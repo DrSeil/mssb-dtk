@@ -117,56 +117,48 @@ COMPLETED fn_3_1158B0
 COMPLETED fn_3_115BDC
 COMPLETED fn_3_598D0
 COMPLETED fn_3_6A25C
-fn_3_59BCC                                   96    4.2% game       game/game/gap_5985C
-fn_3_9E7D4                                   96    4.2% game       game/game/gap_9CD90
+COMPLETED fn_3_59BCC
+COMPLETED fn_3_9E7D4
 COMPLETED fn_3_B3B70
-fn_3_107CD0                                 100    4.0% game       game/game/gap_106DFC
-fn_3_111250                                 100    4.0% game       game/game/rep_31F0
-fn_3_1354BC                                 100    4.0% game       game/game/rep_3520
-fn_3_13A048                                 100    4.0% game       game/game/rep_3520
-fn_3_13E670                                 100    4.0% game       game/game/rep_36D8
-fn_3_159590                                 100    4.0% game       game/game/gap_157DB8
-fn_3_164A8                                  100    4.0% game       game/game/rep_720
-fn_3_2EA24                                  100    4.0% game       game/game/rep_AC8
-fn_3_90AB0                                  100    4.0% game       game/game/gap_90754
-fn_3_95568                                  100    4.0% game       game/game/rep_16B8
-fn_3_B116C                                  100    4.0% game       game/game/gap_AC9F8
-fn_3_ED244                                  100    4.0% game       game/game/gap_EA340
-fn_3_14E920                                 104    3.8% game       game/game/rep_3880
-fn_3_14E988                                 104    3.8% game       game/game/rep_3880
-fn_3_153F0                                  104    3.8% game       game/game/rep_720
-fn_3_1581FC                                 104    3.8% game       game/game/gap_157DB8
-fn_3_675B8                                  104    3.8% game       game/game/rep_EA0
-fn_3_7C194                                  104    3.8% game       game/game/gap_7976C
-fn_3_909B0                                  104    3.8% game       game/game/gap_90754
-fn_3_91A60                                  104    3.8% game       game/game/rep_16B8
-fn_3_C99F8                                  104    3.8% game       game/game/sta_c0
-fn_3_C9A60                                  104    3.8% game       game/game/sta_c0
-fn_3_CB344                                  104    0.0% game       game/auto_00_000CB344_text
-fn_3_E45F0                                  104    3.8% game       game/game/rep_2998
-fn_3_E59B4                                  104    3.8% game       game/game/sta_c6
-fn_3_E5A1C                                  104    3.8% game       game/game/sta_c6
-playSoundEffect                             104    0.0% game       game/game/m_sound
-fn_3_114FC0                                 108    3.7% game       game/game/gap_114FC0
-fn_3_138448                                 108    3.7% game       game/game/rep_3520
-fn_3_1527C                                  108    3.7% game       game/game/rep_720
-fn_3_15458                                  108    3.7% game       game/game/rep_720
-fn_3_16E338                                 108    0.0% game       game/game/rep_4138
-fn_3_85C44                                  108    3.7% game       game/game/rep_13B8
-fn_3_9D594                                  108    3.7% game       game/game/gap_9CD90
-fn_3_9E18                                   108    3.7% game       game/game/rep_540
-fn_3_B7D6C                                  108    3.7% game       game/game/rep_1CB8
-fn_3_ED490                                  108    3.7% game       game/game/gap_EA340
-fn_3_10FB74                                 112    3.6% game       game/game/gap_106DFC
-fn_3_112070                                 112    3.6% game       game/game/rep_31F0
-fn_3_125850                                 112    3.6% game       game/game/rep_3448
-fn_3_13D578                                 112    3.6% game       game/game/rep_36D8
-fn_3_157DB8                                 112    3.6% game       game/game/gap_157DB8
-fn_3_690FC                                  112    3.6% game       game/game/rep_EA0
-fn_3_9538C                                  112    3.6% game       game/game/rep_16B8
-fn_3_A36BC                                  112    3.6% game       game/game/rep_18E8
-fn_3_C39C8                                  112    3.6% game       game/game/rep_1FD8
-fn_3_CE8E4                                  112    3.6% game       game/game/sta_c2
+COMPLETED fn_3_107CD0
+COMPLETED fn_3_111250
+NONMATCHING fn_3_1354BC
+COMPLETED fn_3_13A048
+COMPLETED fn_3_13E670
+NONMATCHING fn_3_159590
+COMPLETED fn_3_164A8
+COMPLETED fn_3_2EA24
+NONMATCHING fn_3_90AB0
+COMPLETED fn_3_95568
+COMPLETED fn_3_B116C
+COMPLETED fn_3_ED244
+COMPLETED fn_3_14E920
+COMPLETED fn_3_14E988
+COMPLETED fn_3_153F0
+COMPLETED fn_3_1581FC
+COMPLETED fn_3_675B8
+fn_3_E45F0                                  104    3.8% game       game/game/rep_2998        NONMATCHING
+fn_3_E59B4                                  104    3.8% game       game/game/sta_c6          COMPLETED
+fn_3_E5A1C                                  104    3.8% game       game/game/sta_c6          COMPLETED
+fn_3_114FC0                                 108    3.7% game       game/game/gap_114FC0      NONMATCHING
+fn_3_138448                                 108    3.7% game       game/game/rep_3520         COMPLETED
+fn_3_1527C                                  108    3.7% game       game/game/rep_720          COMPLETED
+fn_3_15458                                  108    3.7% game       game/game/rep_720          COMPLETED
+fn_3_85C44                                  108    3.7% game       game/game/rep_13B8         COMPLETED
+fn_3_9D594                                  108    3.7% game       game/game/gap_9CD90        COMPLETED
+fn_3_9E18                                   108    3.7% game       game/game/rep_540          COMPLETED
+fn_3_B7D6C                                  108    3.7% game       game/game/rep_1CB8         COMPLETED
+NONMATCHING fn_3_ED490
+NONMATCHING fn_3_10FB74
+NONMATCHING fn_3_112070
+NONMATCHING fn_3_125850
+COMPLETED fn_3_13D578
+COMPLETED fn_3_157DB8
+COMPLETED fn_3_690FC
+COMPLETED fn_3_9538C
+NONMATCHING fn_3_A36BC
+COMPLETED fn_3_C39C8
+COMPLETED fn_3_CE8E4
 fn_3_FCEB0                                  112    3.6% game       game/game/rep_3090
 fn_3_1149B8                                 116    3.4% game       game/game/rep_3290
 fn_3_119C34                                 116    3.4% game       game/game/rep_3310

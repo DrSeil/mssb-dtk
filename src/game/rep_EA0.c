@@ -55,7 +55,18 @@ void fn_3_68BB4(void) {
 
 // .text:0x000690FC size:0x70 mapped:0x806A8190
 void fn_3_690FC(void) {
-    return;
+    g_hugeAnimStruct.starAnimRelated->_pad0[0x26] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad0[0x4E] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad0[0x76] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad0[0x9E] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x27] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x4F] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x77] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x9F] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0xC7] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0xEF] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x13F] = 0;
+    g_hugeAnimStruct.starAnimRelated->_pad1[0x167] = 0;
 }
 
 // .text:0x0006916C size:0x18 mapped:0x806A8200

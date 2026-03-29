@@ -36,3 +36,5 @@ To find the next function: look for the first plain entry (not prefixed with COM
 | fn_3_EBFD4 | nonmatching |
 | fn_3_107C40 | nonmatching |
 | fn_3_107C88 | nonmatching |
+| fn_3_7AEEC | CW running-pointer on bss struct (addi r6,r6,2 then +1) not reproducible from C struct field access |
+| fn_3_7AF68 | same pattern as fn_3_7AEEC |

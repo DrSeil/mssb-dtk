@@ -1111,8 +1111,10 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                     pending_lines = []
                     if not block:
                         continue
-                    # Extern lines get type-aware update logic
-                    match = re.match(r'^extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
+                    # Extern lines get type-aware update logic.
+                    # \s*\**\s* before the identifier handles both "Type *name" and "Type* name"
+                    # and "Type*name" (no space between * and identifier, common from m2c output).
+                    match = re.match(r'^extern\s+([\w\s\*]+?)\s*\**\s*(\w+)(\[.*?\])?\s*;', block)
                     if match:
                         type_str = match.group(1).strip()
                         symbol_name = match.group(2).strip()
@@ -1295,22 +1297,21 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
             prefix_msgs = struct_mod_failures + extern_autofix_msgs
             if prefix_msgs:
                 filtered = "\n".join(prefix_msgs) + "\n\n" + filtered
-            # Detect shared-header corruption: errors originating from a shared
-            # include file (not just the target source) indicate that an extern
-            # declaration written to that header is syntactically broken and will
-            # fail every compilation unit until fixed.  Annotate clearly so the
-            # LLM understands what went wrong (the raw CW error is cryptic).
+            # Detect shared-header corruption: only fire when the shared header
+            # itself is the direct source of a syntax error (appears in an "In:"
+            # error line), NOT just mentioned in cascading errors from other files.
+            # A redeclaration (identifier X redeclared) is a different error class
+            # and should not be attributed to shared-header corruption.
+            import re as _re
             shared_headers = ["UnknownHeaders.h", "UnknownHomes_Game.h", "mssbTypes.h"]
             for sh in shared_headers:
-                if f"In: include" in combined and sh in combined:
+                if _re.search(rf'In:\s+include[/\\][^\n]*{_re.escape(sh)}', combined):
                     filtered = (
-                        f"[SHARED HEADER CORRUPTION] A syntax error in {sh} is breaking ALL "
-                        f"compilation units (not just the target file).  This was caused by an "
-                        f"invalid declaration in extern_declarations that was written to the shared "
-                        f"header.  Common cause: 'extern struct {{ ... }} name;' is NOT valid in "
-                        f"Metrowerks CodeWarrior C mode.  Fix: use a named typedef "
-                        f"('typedef struct {{ ... }} TypeName; extern TypeName name;') or a plain "
-                        f"scalar/array extern.  The header has been reverted automatically.\n\n"
+                        f"[SHARED HEADER CORRUPTION] A syntax error was introduced directly "
+                        f"into {sh}, breaking ALL compilation units.  Common cause: "
+                        f"'extern struct {{ ... }} name;' is NOT valid in Metrowerks CodeWarrior "
+                        f"C mode — use a named typedef instead.  The header has been reverted "
+                        f"automatically.\n\n"
                         + filtered
                     )
                     break
@@ -1640,8 +1641,9 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
 
     blocks_to_add = []
     for block in blocks:
-        # Detect extern redefinitions
-        extern_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s+(\w+)(\[.*?\])?\s*;', block)
+        # Detect extern redefinitions.
+        # \s*\**\s* before the identifier handles "Type *name", "Type* name", "Type*name".
+        extern_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s*\**\s*(\w+)(\[.*?\])?\s*;', block)
         if extern_match:
             new_type = extern_match.group(1).strip()
             symbol_name = extern_match.group(2).strip()
@@ -1652,7 +1654,7 @@ def _append_to_file_if_missing(file_path, content_to_add, backups=None, _log=pri
                 existing_line = existing_match.group(0)
                 if existing_line.strip() == block:
                     continue
-                existing_type_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s+\w+', existing_line)
+                existing_type_match = re.match(r'^[ \t]*extern\s+([\w\s\*]+?)\s*\**\s*\w+', existing_line)
                 if existing_type_match:
                     existing_type = existing_type_match.group(1).strip()
                     if existing_type not in ['u32', '?', 'void'] and new_type in ['u32', '?', 'void']:
