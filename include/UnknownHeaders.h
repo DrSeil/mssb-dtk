@@ -610,6 +610,8 @@ typedef struct CommonBss_35154 {
 extern CommonBss_35154 lbl_3_common_bss_35154;
 extern void fn_80034CEC(u32);
 extern void minigamesSetSomePointers(void);
+extern void minigamesGXStuff(void);
+extern void minigamesSetSomePointers2(void);
 typedef struct UnknownBss_803C6CF8 {
     u8 _pad[0x715];
     s8 allowLoad;
@@ -742,6 +744,8 @@ typedef struct CommonBss_32724 {
     /* 0xCD */ u8 _pad6[0x05];   // Pad to 0xD3 (0xD3 - 0xCD = 0x06)
     /* 0xD3 */ u8 unk_D3;
     /* 0xD4 */ u8 someFlag;
+    /* 0xD5 */ u8 _padD5[3];
+    /* 0xD8 */ u8 unkD8;
 } CommonBss_32724;
 
 extern CommonBss_32724 lbl_3_common_bss_32724;
