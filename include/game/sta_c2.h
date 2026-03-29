@@ -45,7 +45,7 @@ void fn_3_CD968(void);
 void fn_3_CDB48(void);
 void fn_3_CDD90(void);
 void fn_3_CDFA4(void);
-void fn_3_CE56C(void);
+void fn_3_CE56C(void *arg0, u8 arg1);
 void fn_3_CE8E4(void);
 void fn_3_CE954(void);
 void fn_3_CEBBC(void);

@@ -96,13 +96,20 @@ void fn_3_CDFA4(void) {
 }
 
 // .text:0x000CE56C size:0x378 mapped:0x8070D600
-void fn_3_CE56C(void) {
+void fn_3_CE56C(void *arg0, u8 arg1) {
     return;
 }
 
 // .text:0x000CE8E4 size:0x70 mapped:0x8070D978
 void fn_3_CE8E4(void) {
-    return;
+    u32 i = 0;
+    do {
+        void *obj = (void *)fn_80033A24(fn_3_CDFA4, 0x80, 0, 0x15, 1, 0);
+        if (obj != 0) {
+            fn_3_CE56C(obj, (u8)i);
+        }
+        i++;
+    } while (i < 4);
 }
 
 // .text:0x000CE954 size:0x268 mapped:0x8070D9E8
