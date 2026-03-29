@@ -25,7 +25,7 @@ void fn_3_C2AA0(void);
 void fn_3_C2C80(void);
 void fn_3_C2EDC(void);
 void fn_3_C30F0(void);
-void fn_3_C366C(void);
+void fn_3_C366C(void *arg0, u8 arg1);
 void fn_3_C39C8(void);
 void fn_3_C3A38(void);
 void fn_3_C3C2C(void);

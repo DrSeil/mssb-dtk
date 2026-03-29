@@ -82,13 +82,20 @@ void fn_3_C30F0(void) {
 }
 
 // .text:0x000C366C size:0x35C mapped:0x80702700
-void fn_3_C366C(void) {
+void fn_3_C366C(void *arg0, u8 arg1) {
     return;
 }
 
 // .text:0x000C39C8 size:0x70 mapped:0x80702A5C
 void fn_3_C39C8(void) {
-    return;
+    u32 i = 0;
+    do {
+        void *obj = (void *)fn_80033A24(fn_3_C30F0, 0x80, 0, 0x15, 1, 0);
+        if (obj != 0) {
+            fn_3_C366C(obj, (u8)i);
+        }
+        i++;
+    } while (i < 6);
 }
 
 // .text:0x000C3A38 size:0x1F4 mapped:0x80702ACC
