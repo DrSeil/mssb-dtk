@@ -1,8 +1,15 @@
 #include "game/gap_157DB8.h"
 
 // .text:0x00157DB8 size:0x70 mapped:0x80796E4C
-void fn_3_157DB8(void) {
-    return;
+void fn_3_157DB8(void *arg0) {
+    extern void fn_3_157AC4(void);
+    Fn157DB8Struct *temp_r3 = (Fn157DB8Struct *)fn_80033A24(fn_3_157AC4, 0x80, 0, 1, 1, 0x16);
+    if (temp_r3 != 0) {
+        temp_r3->unk18 = 0;
+        temp_r3->unk1C = arg0;
+        temp_r3->unkC->unk4D = 0;
+        temp_r3->unkC->unk40 = -1;
+    }
 }
 
 // .text:0x00157E28 size:0x284 mapped:0x80796EBC

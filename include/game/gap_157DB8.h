@@ -10,7 +10,22 @@ extern s16 lbl_3_data_FC1C;
 extern int lbl_3_data_B3F4;
 extern s32 lbl_3_data_BD50;
 
-void fn_3_157DB8(void);
+typedef struct {
+    u8 _pad0[0x40];
+    s32 unk40;      /* 0x40 */
+    u8 _pad44[0x09];
+    u8 unk4D;       /* 0x4D */
+} Fn157DB8SubStruct;
+
+typedef struct {
+    u8 _pad0[0x0C];
+    Fn157DB8SubStruct *unkC; /* 0x0C */
+    u8 _pad10[0x08];
+    s32 unk18;      /* 0x18 */
+    void *unk1C;    /* 0x1C */
+} Fn157DB8Struct;
+
+void fn_3_157DB8(void *arg0);
 void fn_3_157E28(void);
 void fn_3_1580AC(void);
 void fn_3_15810C(void);
