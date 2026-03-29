@@ -83,8 +83,15 @@ void fn_3_A3374(void) {
 }
 
 // .text:0x000A36BC size:0x70 mapped:0x806E2750
-void fn_3_A36BC(void) {
-    return;
+s32 fn_3_A36BC(void) {
+    if (g_Ball.AtBat_Contact_BallPos.z < lbl_3_rodata_1A0C &&
+        g_Ball.AtBat_Contact_BallPos.z > lbl_3_rodata_1A10 &&
+        g_Ball.AtBat_Contact_BallPos.z < lbl_3_rodata_198C + g_Ball.AtBat_Contact_BallPos.x &&
+        g_Ball.AtBat_Contact_BallPos.z > g_Ball.AtBat_Contact_BallPos.x - lbl_3_rodata_198C &&
+        g_Ball.AtBat_Contact_BallPos.x > g_Runners[0].position.x) {
+        return 1;
+    }
+    return 0;
 }
 
 // .text:0x000A372C size:0x3C mapped:0x806E27C0

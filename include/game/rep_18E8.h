@@ -19,7 +19,7 @@ void fn_3_A2FD8(void);
 void fn_3_A31E8(void);
 void fn_3_A32B8(void);
 void fn_3_A3374(void);
-void fn_3_A36BC(void);
+s32 fn_3_A36BC(void);
 s32 fn_3_A372C(void);
 s32 fn_3_A3768(void);
 void fn_3_A37BC(void);
@@ -67,5 +67,8 @@ void fn_3_AB5B0(void);
 void fn_3_ABDD0(void);
 
 extern f32 lbl_3_rodata_19B8;
+extern f32 lbl_3_rodata_198C;
+extern f32 lbl_3_rodata_1A0C;
+extern f32 lbl_3_rodata_1A10;
 
 #endif // !__GAME_rep_18E8_H_
