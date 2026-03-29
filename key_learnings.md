@@ -3,10 +3,13 @@
 ## Syntax & Compliance
 - **C89 strict**: Declare all variables at the top of each scope. Arrays are never lvalues (`array += 1` is illegal — use `u8 *p = array; p++;`). Implicit pointer conversions are often disallowed.
 - **-requireprotos**: All functions need prototypes before use. Update headers before building.
+- **Anonymous Structs**: NEVER use anonymous structs for pointer casting (e.g., `(struct { ... }*)`). MWCC 2.6 treats every anonymous struct definition as a unique type, leading to 'illegal implicit conversion' errors. Always use a named `typedef`.
+- **Header Ordering**: When defining new types, ensure the `typedef` precedes any `extern` declarations or function prototypes that use that type. Failure to do so causes 'Shared Header Corruption' in `UnknownHeaders.h`.
 - **Encoding**: Shift JIS bytes in source files cause build failures. Check for non-ASCII if the compiler chokes on a clean-looking file.
 - **On syntax errors**: `not an lvalue`, `illegal operand`, `syntax error` are fundamental violations. Stop and reconsider — don't tweak a broken pattern.
 
 ## Codegen & Scheduling
+- **Register Anchoring**: If the assembly uses a specific register (like `r6`) as a base for multiple struct accesses, use a local pointer variable (`StructType *p = &GlobalSymbol;`) to force the compiler to allocate a register for the base address and match the lis/addi sequence.
 - **No temp variables by default**: Write clean direct expressions first. Only add temps if the diff reveals a specific register allocation problem — unnecessary temps cause extra registers and wrong scheduling.
 - **Instruction interleaving**: MWCC moves loads and address calculations early to hide pipeline stalls. If logic is correct but ordering differs, reorder C statements or use a targeted temp to guide the scheduler.
 - **`register` and `asm()` ignored**: The optimizer overrides these. Focus on code structure.

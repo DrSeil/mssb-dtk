@@ -1,3 +1,4 @@
+#!/home/michael/Desktop/mssb-dtk/.venv/bin/python3
 """CLI entry point for the LangGraph decompilation loop.
 
 Usage:

@@ -16,17 +16,5 @@ void fn_3_16E1A0(void);
 void fn_3_16E1EC(void);
 void fn_3_16E2FC(u16 *ptr, s32 index);
 void fn_3_16E328(void);
-void fn_3_16E338(u16 *arg0, s32 arg1);
-
-typedef struct {
-    u8 _pad0[0x4];
-    s32 unk4;
-    s32 unk8;
-    u8 unkC;
-    u8 _padD[0x3];
-} D6E0_Struct;
-
-
-extern D6E0_Struct lbl_3_bss_D6E0;
-
+void fn_3_16E338(void);
 #endif // !__GAME_rep_4138_H_

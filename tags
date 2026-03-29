@@ -4650,7 +4650,7 @@ fn_3_C0F8C	src/game/rep_1F58.c	/^void fn_3_C0F8C(void) {$/;"	f	typeref:typename:
 fn_3_C1004	src/game/rep_1F58.c	/^void fn_3_C1004(void) {$/;"	f	typeref:typename:void
 fn_3_C11CC	src/game/rep_1F58.c	/^void fn_3_C11CC(s32 arg0, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_C1344	src/game/rep_1F58.c	/^void fn_3_C1344(void) {$/;"	f	typeref:typename:void
-fn_3_C1770	src/game/rep_1F58.c	/^void fn_3_C1770(void) {$/;"	f	typeref:typename:void
+fn_3_C1770	src/game/rep_1F58.c	/^void fn_3_C1770(int arg0) {$/;"	f	typeref:typename:void
 fn_3_C1930	src/game/gap_C1930.c	/^s32 fn_3_C1930(s32 arg0) {$/;"	f	typeref:typename:s32
 fn_3_C1964	src/game/rep_1FD8.c	/^void fn_3_C1964(void) {$/;"	f	typeref:typename:void
 fn_3_C1974	src/game/rep_1FD8.c	/^void fn_3_C1974(u8 *arg0) {$/;"	f	typeref:typename:void
@@ -4719,7 +4719,7 @@ fn_3_CAF9C	src/game/rep_2308.c	/^void fn_3_CAF9C(void) {$/;"	f	typeref:typename:
 fn_3_CB1B0	src/game/rep_2308.c	/^void fn_3_CB1B0(void) {$/;"	f	typeref:typename:void
 fn_3_CB234	src/game/rep_2308.c	/^void fn_3_CB234(s32 arg0, s32 arg1) {$/;"	f	typeref:typename:void
 fn_3_CB284	src/game/rep_2308.c	/^void fn_3_CB284(void) {$/;"	f	typeref:typename:void
-fn_3_CB344	src/game/auto_00_000CB344_text.c	/^void fn_3_CB344(void) {$/;"	f	typeref:typename:void
+fn_3_CB344	src/game/auto_00_000CB344_text.c	/^void fn_3_CB344(int arg0, u8 arg1) {$/;"	f	typeref:typename:void
 fn_3_CB3AC	src/game/rep_2390.c	/^void fn_3_CB3AC(void) {$/;"	f	typeref:typename:void
 fn_3_CB538	src/game/rep_2390.c	/^void fn_3_CB538(void) {$/;"	f	typeref:typename:void
 fn_3_CB6B4	src/game/gap_CB6B4.c	/^void fn_3_CB6B4(u32* arg0) {$/;"	f	typeref:typename:void
@@ -5605,7 +5605,7 @@ pio4_hi	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_asin.c	/^ 
 pio4lo	src/Dolphin/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_tan.c	/^    pio4lo           = 3.06161699786838301793e-17, \/* 0x3C81A626, 0x33145C07 *\/$/;"	v	typeref:typename:const f64	file:
 pitch	src/Musyx/snd3d.c	/^    f32 pitch;               \/\/ offset 0x14, size 0x4$/;"	m	struct:START_LIST	typeref:typename:f32	file:
 pitchLoV	src/Musyx/chorus_fx.c	/^#define pitchLoV /;"	d	file:
-playSoundEffect	src/game/m_sound.c	/^void playSoundEffect(int arg0) {$/;"	f	typeref:typename:void
+playSoundEffect	src/game/m_sound.c	/^SND_VOICEID playSoundEffect(int arg0) {$/;"	f	typeref:typename:SND_VOICEID
 pool_options	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^typedef struct pool_options {$/;"	s	file:
 pool_options	src/Dolphin/MSL_C/MSL_Common/alloc.c	/^} pool_options;$/;"	t	typeref:struct:pool_options	file:
 posHiV	src/Musyx/chorus_fx.c	/^#define posHiV /;"	d	file:

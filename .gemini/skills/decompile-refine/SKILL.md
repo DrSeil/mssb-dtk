@@ -31,7 +31,13 @@ If you cannot achieve a match after 10 iterations, skip the function to move on 
 
 ## Key Refinement Principles
 
-### 1. Struct Access Over Pointer Arithmetic
+### 1. MWCC 2.6 Patterns & Constraints
+- **CRITICAL**: NEVER use anonymous structs for pointer casting (e.g., `(struct { ... }*)`). MWCC 2.6 treats every anonymous struct definition as a unique type, leading to 'illegal implicit conversion' errors. Always use a named `typedef`.
+- **Header Ordering**: When defining new types, ensure the `typedef` precedes any `extern` declarations or function prototypes that use that type. Failure to do so causes 'Shared Header Corruption' in `UnknownHeaders.h`.
+- **Register Anchoring**: If the assembly uses a specific register (like `r6`) as a base for multiple struct accesses, use a local pointer variable (`StructType *p = &GlobalSymbol;`) to force the compiler to allocate a register for the base address and match the lis/addi sequence.
+- **C89 strict**: Declare all variables at the top of each scope. Arrays are never lvalues (e.g., `array += 1` is illegal).
+
+### 2. Struct Access Over Pointer Arithmetic
 - **RULE**: NEVER use manual offsets like `*(u32*)((u8*)ptr + 0x94)`.
 - **FIX**: Define a struct in `include/game/UnknownHomes_Game.h` and use `ptr->field`.
 

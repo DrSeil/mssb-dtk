@@ -1199,9 +1199,10 @@ def _run_build_and_score(func_name, unit_name, c_code, externs, headers, state=N
                             typedef_block = f"typedef {keyword} {{\n    {body}\n}} {type_name};"
                             extern_block = f"extern {type_name} {sym_name};"
                             autofix_note = (
-                                f"[builder] Auto-fixed anonymous struct extern for '{sym_name}': "
+                                f"[builder] CRITICAL: MWCC 2.6 rejects anonymous struct pointer casting. "
+                                f"Auto-fixed anonymous struct extern for '{sym_name}': "
                                 f"synthesized 'typedef {keyword} {{ ... }} {type_name}; "
-                                f"extern {type_name} {sym_name};' — use this pattern directly."
+                                f"extern {type_name} {sym_name};' — YOU MUST USE THIS PATTERN DIRECTLY."
                             )
                             _log(autofix_note)
                             extern_autofix_msgs.append(autofix_note)

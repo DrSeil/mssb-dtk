@@ -724,6 +724,15 @@ def build_refactor_prompt(state: dict, escalate: bool = False) -> str:
         sections.append("## SDA Mapping (r13/r2 bases)\n")
         sections.append(f"```\n{sda_map.strip()}\n```\n")
 
+    # MWCC 2.6 Patterns & Constraints
+    sections.append(
+        "## MWCC 2.6 Patterns & Constraints\n"
+        "- **Anonymous Structs**: NEVER use anonymous structs for pointer casting (e.g., `(struct { ... }*)`). MWCC 2.6 treats every anonymous struct definition as a unique type, leading to 'illegal implicit conversion' errors. Always use a named `typedef`.\n"
+        "- **Header Ordering**: When defining new types, ensure the `typedef` precedes any `extern` declarations or function prototypes that use that type. Failure to do so causes 'Shared Header Corruption' in `UnknownHeaders.h`.\n"
+        "- **Register Anchoring**: If the assembly uses a specific register (like `r6`) as a base for multiple struct accesses, use a local pointer variable (`StructType *p = &GlobalSymbol;`) to force the compiler to allocate a register for the base address and match the lis/addi sequence.\n"
+        "- **C89 strict**: Declare all variables at the top of each scope. Arrays are never lvalues (e.g., `array += 1` is illegal).\n"
+    )
+
     # Previous attempts with feedback
     attempts = state.get("attempts", [])
     if attempts:
