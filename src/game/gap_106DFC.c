@@ -407,7 +407,13 @@ void fn_3_10F91C(void) {
 
 // .text:0x0010FB74 size:0x70 mapped:0x8074EC08
 void fn_3_10FB74(void) {
-    return;
+    if ((s32)g_GameLogic._125 == 0) {
+        lbl_3_common_bss_32724.unkD8 = 0;
+        lbl_3_common_bss_34C58._2C = 0;
+        g_GameLogic._125 += 1;
+    }
+    g_hugeAnimStruct.field269_0x307a = 0;
+    fn_3_5A6D4(0x1D);
 }
 
 // .text:0x0010FBE4 size:0x1E4 mapped:0x8074EC78
