@@ -16,5 +16,5 @@ void fn_3_16E1A0(void);
 void fn_3_16E1EC(void);
 void fn_3_16E2FC(u16 *ptr, s32 index);
 void fn_3_16E328(void);
-void fn_3_16E338(void);
+void fn_3_16E338(u16 *arg0, s32 arg1);
 #endif // !__GAME_rep_4138_H_

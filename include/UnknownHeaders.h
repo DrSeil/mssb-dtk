@@ -909,4 +909,11 @@ extern GameControlsStruct g_GameLogic;
 
 extern Strikes g_Strikes;
 
+
+typedef struct {
+    s32 unk4; s32 unk8; u8 unkC;
+} lbl_3_bss_D6E0_struct;
+
+extern lbl_3_bss_D6E0_struct lbl_3_bss_D6E0;
+
 #endif
