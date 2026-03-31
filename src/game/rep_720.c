@@ -189,8 +189,25 @@ void fn_3_152E8(void) {
 }
 
 // .text:0x0001537C size:0x74 mapped:0x80654410
-void fn_3_1537C(void) {
-    return;
+void fn_3_1537C(s32 arg0) {
+    s16* temp_r4;
+
+    if (g_Batter.hitTrajectory != 0) {
+        temp_r4 = (s16*)&g_pCamera->_pad1d[2];
+        *temp_r4 = *temp_r4 + 1;
+    }
+    temp_r4 = (s16*)&g_pCamera->_pad1d[2];
+    if (*temp_r4 <= 0x28) {
+        return;
+    }
+    if (arg0 == 0) {
+        g_pCamera->_pad4d[0] = 1;
+        return;
+    }
+    temp_r4 = (s16*)&g_pCamera->_pad1d[0];
+    if (*temp_r4 == 0) {
+        *temp_r4 = g_Stats.unk24;
+    }
 }
 
 // .text:0x000153F0 size:0x68 mapped:0x80654484
