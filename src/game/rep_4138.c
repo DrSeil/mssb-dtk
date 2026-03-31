@@ -1,6 +1,8 @@
 #include "game/rep_4138.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "stl/mem.h"
+#include "game/rep_3E58.h"
 
 // .text:0x0016D810 size:0x1A0 mapped:0x807AC8A4
 void fn_3_16D810(void) {
@@ -81,6 +83,21 @@ void fn_3_16E328(void) {
 }
 
 // .text:0x0016E338 size:0x6C mapped:0x807AD3CC
-void fn_3_16E338(void) {
-    return;
+void fn_3_16E338(u16 *ptr, s32 index) {
+    Rep4138Bss *bss = &lbl_3_bss_D6E0;
+    u8 zero = 0;
+
+    if (ptr == NULL) {
+        return;
+    }
+
+    if ((s32)(ptr[0] - 1) < index) {
+        return;
+    }
+
+    bss->ptr = ptr;
+    bss->index = index;
+    bss->flag = zero;
+    memset(bss->unk10, zero, sizeof(bss->unk10));
+    fn_800B0A5C_insertQueue(fn_3_16E1EC, 5);
 }

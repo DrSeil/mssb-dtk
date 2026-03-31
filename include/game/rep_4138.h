@@ -4,6 +4,16 @@
 #include "mssbTypes.h"
 #include "static/UnknownHomes_Static.h"
 
+typedef struct Rep4138Bss {
+    s32 unk0;
+    u16 *ptr;
+    s32 index;
+    u8 flag;
+    u8 padD[3];
+    u8 unk10[0x18];
+} Rep4138Bss;
+
+extern Rep4138Bss lbl_3_bss_D6E0;
 extern u16 *lbl_3_bss_D6E4;
 extern s32 lbl_3_bss_D6E8;
 extern u8 lbl_3_bss_D6EC;
@@ -16,5 +26,5 @@ void fn_3_16E1A0(void);
 void fn_3_16E1EC(void);
 void fn_3_16E2FC(u16 *ptr, s32 index);
 void fn_3_16E328(void);
-void fn_3_16E338(void);
+void fn_3_16E338(u16 *ptr, s32 index);
 #endif // !__GAME_rep_4138_H_
