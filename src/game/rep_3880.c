@@ -140,13 +140,18 @@ void fn_3_14B3F4(void) {
 }
 
 // .text:0x0014B53C size:0x3F0 mapped:0x8078A5D0
-void fn_3_14B53C(void) {
+void fn_3_14B53C(void* arg0, void* arg1, void* arg2) {
     return;
 }
 
 // .text:0x0014B92C size:0x74 mapped:0x8078A9C0
 void fn_3_14B92C(void* arg0, void* arg1) {
-    return;
+    void* temp_r3;
+
+    temp_r3 = (void*)fn_80033A24(fn_3_14AC40, 0x80, 0, lbl_3_data_26E24.unk8, 1, 0x23);
+    if (temp_r3 != NULL) {
+        fn_3_14B53C(temp_r3, arg0, arg1);
+    }
 }
 
 // .text:0x0014B9A0 size:0x50 mapped:0x8078AA34

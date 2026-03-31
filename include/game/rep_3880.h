@@ -40,6 +40,15 @@ typedef struct {
     u16 field_0x4A; // 0x4A
     u8 field_0x4C;  // 0x4C
 } UnknownStruct_14CA98;
+
+typedef struct {
+    u8 _pad[0x8];
+    s32 unk8;
+    u8 _pad2[0x10];
+} Struct_26E24;
+
+extern Struct_26E24 lbl_3_data_26E24;
+
 void pitchingMachinePitching(s32 param);
 
 void fn_3_14737C(void);
@@ -68,7 +77,7 @@ void fn_3_14AC1C(void);
 void fn_3_14AC40(void);
 void fn_3_14B248(void);
 void fn_3_14B3F4(void);
-void fn_3_14B53C(void);
+void fn_3_14B53C(void* arg0, void* arg1, void* arg2);
 void fn_3_14B92C(void* arg0, void* arg1);
 void fn_3_14B9A0(void* arg0, void* arg1);
 void fn_3_14B9F0(void);
