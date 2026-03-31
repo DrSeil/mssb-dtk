@@ -64,8 +64,20 @@ void fn_3_114384(void) {
 }
 
 // .text:0x001149B8 size:0x74 mapped:0x80753A4C
-void fn_3_1149B8(void) {
-    return;
+s32 fn_3_1149B8(u8* arg0, u8* arg1) {
+    u8 temp_r5;
+    WallBallPlayerSortInfo* player0Info = &g_Minigame.wallBallSortInfoOverlay.wallBallPlayerSortInfo[*arg0];
+    WallBallPlayerSortInfo* player1Info = &g_Minigame.wallBallSortInfoOverlay.wallBallPlayerSortInfo[*arg1];
+
+    temp_r5 = player0Info->_28;
+
+    if (temp_r5 == 3 && player1Info->_28 != 3) {
+        return -1;
+    }
+    if (temp_r5 != 3 && player1Info->_28 == 3) {
+        return 1;
+    }
+    return player0Info->_2A - player1Info->_2A;
 }
 
 // .text:0x00114A2C size:0x5C mapped:0x80753AC0
