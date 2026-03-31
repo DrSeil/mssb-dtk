@@ -5,6 +5,8 @@
 #include "game/rep_37A8.h"
 
 extern f32 lbl_3_data_2262C;
+extern f32 lbl_3_rodata_33AC;
+extern f32 lbl_3_rodata_33E0;
 extern u8 lbl_3_data_226BC[];
 extern f32 lbl_3_data_22650[];
 extern u8 lbl_3_data_2265C[];

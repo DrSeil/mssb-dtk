@@ -172,11 +172,25 @@ typedef struct HugeAnimEntry2D94 {
     /* 0x27 */ u8 _pad27;
 } HugeAnimEntry2D94; // size: 0x28
 typedef struct HugeAnimEntry68 {
-    AnimLevel1* field_0x0;  // offset 0x0
-    AnimLevel1* field_0x4;  // offset 0x4
+    union {
+        /* 0x00 */ AnimLevel1* field_0x0;
+        /* 0x00 */ f32 unk0;
+    };
+    union {
+        /* 0x04 */ AnimLevel1* field_0x4;
+        /* 0x04 */ f32 unk4;
+    };
     u8 _pad1[0x2C];         // 0x08-0x33
     AnimLevel1* unk34;      // offset 0x34, matches lwz r3, 0x34(r3)
-    u8 _pad2[0x58]; // (0x90 - 0x38) u8s to make the struct size exactly 0x90
+    /* 0x38 */ s32 unk38;
+    /* 0x3C */ u8 _pad3C[0x6];
+    /* 0x42 */ s16 unk42;
+    /* 0x44 */ u8 _pad44[0x44];
+    /* 0x88 */ f32 unk88;
+    /* 0x8C */ u8 unk8C;
+    /* 0x8D */ u8 unk8D;
+    /* 0x8E */ u8 unk8E;
+    /* 0x8F */ u8 unk8F;
 } HugeAnimEntry68;
 
 typedef struct ActRelatedSub {
@@ -725,7 +739,9 @@ s32 field10;                     // 0x10
 typedef struct CommonBss_32724 {
     /* 0x00 */ u8 _pad0[0x6C];
     /* 0x6C */ s32 field6C;      // From fn_3_14D6D4
-    /* 0x70 */ u8 _pad1[0x20];   // Pad to 0x90
+    /* 0x70 */ u8 _pad1[0x4];
+    /* 0x74 */ s32 unk74;
+    /* 0x78 */ u8 _pad2_to_90[0x18];
     /* 0x90 */ s16 unk_90;
     /* 0x92 */ s16 unk_92;
     /* 0x94 */ u8 _pad2[0x2];

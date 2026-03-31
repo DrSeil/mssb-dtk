@@ -282,7 +282,12 @@ def main():
     print(f"Starting permuter in {perm_dir}...")
     permuter_path = Path("tools/decomp-permuter/permuter.py").absolute()
     
-    cmd = [sys.executable, str(permuter_path), ".", "-j", str(args.jobs), "-n", str(args.iterations)] + unknown
+    # This local decomp-permuter checkout does not support a native iteration cap.
+    # Keep the wrapper's flag for compatibility, but do not forward it downstream.
+    if args.iterations != 100:
+        print(f"Note: local decomp-permuter has no -n flag; ignoring iteration cap ({args.iterations}).")
+
+    cmd = [sys.executable, str(permuter_path), ".", "-j", str(args.jobs)] + unknown
     subprocess.run(cmd, cwd=perm_dir)
 
 if __name__ == "__main__":
