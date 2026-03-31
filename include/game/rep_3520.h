@@ -14,6 +14,7 @@ typedef struct {
     s16 _2;
 } StarDashTimingEntry;
 extern StarDashTimingEntry lbl_3_data_21A3C[2];
+extern s16 lbl_3_data_21A44;
 
 void fn_3_133200(void);
 void fn_3_133320(void);

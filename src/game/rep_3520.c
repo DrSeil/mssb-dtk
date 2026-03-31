@@ -1,4 +1,5 @@
 #include "game/rep_3520.h"
+#include "game/rep_1838.h"
 #include "UnknownHeaders.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
@@ -195,7 +196,14 @@ void fn_3_135FF4(void) {
 
 // .text:0x00136048 size:0x74 mapped:0x807750DC
 void fn_3_136048(void) {
-    return;
+    s32 i;
+
+    i = 0;
+    do {
+        g_Minigame.starDashAngles[i] += lbl_3_data_21A44;
+        g_Minigame.starDashAngles[i] = fn_3_9FE6C_normalizeAngle(g_Minigame.starDashAngles[i ]);
+        i++;
+    } while (i < 4);
 }
 
 // .text:0x001360BC size:0x164 mapped:0x80775150
