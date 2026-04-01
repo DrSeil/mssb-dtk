@@ -77,7 +77,16 @@ typedef struct Camera {
     /* 0xAC5 */ u8 cameraFlag;
     /* 0xAC6 */ u8 _pad5[0xAD8 - 0xAC6];
     /* 0xAD8 */ u8 cameraFlag2;
-    /* 0xAD9 */ u8 _pad6[0x2840 - 0xAD9];
+    /* 0xAD9 */ u8 _pad6[0x2828 - 0xAD9];
+    /* 0x2828 */ f32 unk2828;
+    /* 0x282C */ f32 unk282C;
+    /* 0x2830 */ f32 unk2830;
+    /* 0x2834 */ u8 _pad6a[0x2838 - 0x2834];
+    /* 0x2838 */ s16 unk2838;
+    /* 0x283A */ u8 _pad6b[0x283C - 0x283A];
+    /* 0x283C */ s16 unk283C;
+    /* 0x283E */ u8 unk283E;
+    /* 0x283F */ u8 unk283F;
     /* 0x2840 */ f32 unk2840;
     /* 0x2844 */ f32 unk2844;
     /* 0x2848 */ f32 unk2848;

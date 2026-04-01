@@ -1,8 +1,27 @@
 #include "game/gap_5985C.h"
 
 // .text:0x0005985C size:0x74 mapped:0x806988F0
-void fn_3_5985C(void) {
-    return;
+void fn_3_5985C(s32 idx, s32 arg1) {
+    s32 offset = idx * 0x268;
+    u8* temp_r7 = (u8*)g_Fielders + offset;
+    s32 temp_r6;
+
+    if (idx == -1) {
+        return;
+    }
+    ((Fielder*)temp_r7)->unk1D3 = arg1;
+    temp_r6 = *(s32*)((u8*)&lbl_3_data_3C40 + (arg1 * 8));
+    if (temp_r6 >= 0) {
+        g_FieldingLogic.unk_F8[idx] = (u8)temp_r6;
+    }
+    ((Fielder*)temp_r7)->unk1D5 = 0;
+    ((Fielder*)temp_r7)->unk1D6 = 0;
+    ((Fielder*)temp_r7)->unk1A4 = 0;
+    ((Fielder*)temp_r7)->unk1AC = 0;
+    ((Fielder*)temp_r7)->unk1FF = 0;
+    if (arg1 == 0x18) {
+        g_FieldingLogic.unkBC = idx;
+    }
 }
 
 // .text:0x000598D0 size:0x48 mapped:0x80698964
@@ -341,4 +360,3 @@ void fn_3_5FF10(void) {
 void fn_3_6011C(void) {
     return;
 }
-

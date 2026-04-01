@@ -518,8 +518,20 @@ void fn_3_19FA4(void) {
 }
 
 // .text:0x0001AE44 size:0x74 mapped:0x80659ED8
-void fn_3_1AE44(void) {
-    return;
+void fn_3_1AE44(u8 arg0, s16 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    if (g_Stats.unk36 != 0) {
+        return;
+    }
+    if (g_d_GameSettings.GameModeSelected == 6) {
+        return;
+    }
+    g_pCamera->unk2828 = arg2;
+    g_pCamera->unk282C = arg3;
+    g_pCamera->unk2830 = arg4;
+    g_pCamera->unk2838 = 0;
+    g_pCamera->unk283C = arg1;
+    g_pCamera->unk283E = 1;
+    g_pCamera->unk283F = arg0;
 }
 
 // .text:0x0001AEB8 size:0x2C4 mapped:0x80659F4C
