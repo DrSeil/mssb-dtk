@@ -4,7 +4,7 @@
 **Source of truth:** Always follow `queue.log`. If this file disagrees with `queue.log`, `queue.log` wins.
 **Strategy:** Work through functions listed in `queue.log` (plain entries at the bottom, after all COMPLETED/NONMATCHING lines)
 **Queue file:** `queue.log`
-**Next function to attempt:** fn_3_167CC4 (line 187 of queue.log)
+**Next function to attempt:** fn_3_76C78 (line 188 of queue.log)
 
 To find the next function: look for the first plain entry (not prefixed with COMPLETED/NONMATCHING/SKIPPED) in `queue.log` that hasn't been committed yet.
 
@@ -24,6 +24,7 @@ To find the next function: look for the first plain entry (not prefixed with COM
 | fn_3_DCED0 | matched |
 | fn_3_F8B34 | matched |
 | fn_3_112558 | matched |
+| fn_3_167CC4 | matched (new gap_167CC4.c) |
 
 ---
 
