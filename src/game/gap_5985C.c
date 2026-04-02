@@ -3,8 +3,8 @@
 // .text:0x0005985C size:0x74 mapped:0x806988F0
 void fn_3_5985C(s32 idx, s32 arg1) {
     s32 offset = idx * 0x268;
-    u8* temp_r7 = (u8*)g_Fielders + offset;
     s32 temp_r6;
+    u8* temp_r7 = (u8*)g_Fielders + offset;
 
     if (idx == -1) {
         return;

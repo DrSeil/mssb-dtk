@@ -131,7 +131,19 @@ void fn_3_8F21C(void) {
 
 // .text:0x0008FC0C size:0x74 mapped:0x806CECA0
 void fn_3_8FC0C(void) {
-    return;
+    Struct34C58* ptr = &lbl_3_common_bss_34C58;
+
+    ptr->_26 = 0;
+    if (ptr->_10 != (u32)-1) {
+        sndFXKeyOff(ptr->_10);
+        ptr->_10 = -1;
+    }
+
+    ptr = &lbl_3_common_bss_34C58;
+    if (ptr->_14 != (u32)-1) {
+        sndFXKeyOff(ptr->_14);
+        ptr->_14 = -1;
+    }
 }
 
 // .text:0x0008FC80 size:0x298 mapped:0x806CED14

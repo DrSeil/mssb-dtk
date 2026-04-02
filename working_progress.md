@@ -1,20 +1,24 @@
 # Working Progress
 
 ## Current Focus
+**Source of truth:** Always follow `queue.log`. If this file disagrees with `queue.log`, `queue.log` wins.
 **Strategy:** Work through functions listed in `queue.log` (plain entries at the bottom, after all COMPLETED/NONMATCHING lines)
 **Queue file:** `queue.log`
-**Next function to attempt:** fn_3_107CD0 (line 123 of queue.log)
+**Next function to attempt:** fn_3_90220 (line 172 of queue.log)
 
-To find the next function: look for the first plain entry (not prefixed with COMPLETED/NONMATCHING/SKIPPED) in queue.log that hasn't been committed yet.
+To find the next function: look for the first plain entry (not prefixed with COMPLETED/NONMATCHING/SKIPPED) in `queue.log` that hasn't been committed yet.
 
 ---
 
 ## Recently Completed (from queue.log)
 | Function | Notes |
 |---|---|
+| fn_3_8FC0C | matched |
+| fn_3_6620 | already matched; queue entry updated |
+| fn_3_5985C | matched |
+| fn_3_1AE44 | already matched; queue entry updated |
 | fn_3_59BCC | matched |
 | fn_3_9E7D4 | matched |
-| fn_3_B3B70 | matched |
 
 ---
 
@@ -36,5 +40,6 @@ To find the next function: look for the first plain entry (not prefixed with COM
 | fn_3_EBFD4 | nonmatching |
 | fn_3_107C40 | nonmatching |
 | fn_3_107C88 | nonmatching |
+| fn_3_8A5A4 | persistent register swap: `g_Runners` base in `r5` and `-1` in `r6`, target wants `r6`/`r5` |
 | fn_3_7AEEC | CW running-pointer on bss struct (addi r6,r6,2 then +1) not reproducible from C struct field access |
 | fn_3_7AF68 | same pattern as fn_3_7AEEC |

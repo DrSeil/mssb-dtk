@@ -164,11 +164,11 @@ fn_3_136048    Matched
 COMPLETED fn_3_14B92C
 COMPLETED fn_3_14CAB4
 COMPLETED fn_3_1537C
-fn_3_1AE44                                  116    3.4% game       game/game/rep_720
-fn_3_5985C                                  116    3.4% game       game/game/gap_5985C
-fn_3_6620                                   116    3.4% game       game/game/rep_540
-fn_3_8A5A4                                  116    3.4% game       game/game/rep_13B8
-fn_3_8FC0C                                  116    3.4% game       game/game/m_sound
+COMPLETED fn_3_1AE44
+COMPLETED fn_3_5985C
+COMPLETED fn_3_6620
+NONMATCHING fn_3_8A5A4
+COMPLETED fn_3_8FC0C
 fn_3_90220                                  116    0.0% game       game/game/m_sound
 fn_3_99C88                                  116    3.4% game       game/game/rep_1770
 fn_3_B03F0                                  116    3.4% game       game/game/gap_AC9F8
