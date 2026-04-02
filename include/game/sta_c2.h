@@ -29,6 +29,11 @@ typedef struct ActorObject {
     u8 field_0xca;              // Offset 0xca
 } ActorObject;
 
+typedef struct StaC2D24E8Arg {
+    u8 _pad0[0xA0];
+    Vec field_0xA0;
+} StaC2D24E8Arg;
+
 void fn_3_CB8A8(void);
 void fn_3_CBA9C(ActorObject* arg0);
 void fn_3_CBAFC(void);
@@ -90,7 +95,7 @@ void fn_3_D1F2C(void);
 void fn_3_D2220(void);
 void fn_3_D233C(void);
 int fn_3_D249C(Struct_800D249C_Arg0 *param_1);
-void fn_3_D24E8(void);
+void fn_3_D24E8(StaC2D24E8Arg* arg0, s32 arg1);
 void fn_3_D255C(void);
 void fn_3_D2684(void);
 void fn_3_D278C(void);

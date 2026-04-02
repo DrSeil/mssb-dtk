@@ -14,8 +14,44 @@ void fn_3_FC938(void) {
 }
 
 // .text:0x000FCE38 size:0x74 mapped:0x8073BECC
-void fn_3_FCE38(void) {
-    return;
+s32 fn_3_FCE38(s32 arg0, f32 arg1) {
+    Struct_DE94_Inner* p = lbl_3_common_bss_DE94;
+    s32 offset = arg0 << 6;
+    s32 backOffset;
+    s32 count = p->unk3C;
+
+    goto check_forward;
+
+forward_loop:
+    offset += 0x40;
+    arg0++;
+
+check_forward:
+    if (arg0 >= count) {
+        goto reset_offset;
+    }
+    if (arg1 > *(f32*)((u8*)p->unk34 + offset + 0x3C)) {
+        goto forward_loop;
+    }
+    goto check_backward;
+
+backward_loop:
+    backOffset -= 0x40;
+    arg0--;
+
+check_backward:
+    if (arg0 <= 0) {
+        return arg0;
+    }
+    if (arg1 <= *(f32*)((u8*)p->unk34 + backOffset - 4)) {
+        goto backward_loop;
+    }
+
+    return arg0;
+
+reset_offset:
+    backOffset = arg0 << 6;
+    goto check_backward;
 }
 
 // .text:0x000FCEAC size:0x4 mapped:0x8073BF40

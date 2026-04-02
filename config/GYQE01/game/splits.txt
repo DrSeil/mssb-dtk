@@ -96,6 +96,9 @@ game/rep_A00.c:
 game/rep_A78.c:
 	.rodata     start:0x00000A78 end:0x00000AC8
 
+game/gap_249E8.c:
+	.text       start:0x000249E8 end:0x000251E4
+
 game/rep_AC8.c:
 	.text       start:0x000251E4 end:0x0005985C
 	.rodata     start:0x00000AC8 end:0x00000CC8

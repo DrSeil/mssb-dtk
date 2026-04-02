@@ -143,6 +143,6 @@ void fn_3_67130(void) {
 }
 
 // .text:0x0006714C size:0x394 mapped:0x806A61E0
-void fn_3_6714C(void) {
+void fn_3_6714C(s32 arg0) {
     return;
 }

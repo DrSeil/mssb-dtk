@@ -4,7 +4,7 @@
 **Source of truth:** Always follow `queue.log`. If this file disagrees with `queue.log`, `queue.log` wins.
 **Strategy:** Work through functions listed in `queue.log` (plain entries at the bottom, after all COMPLETED/NONMATCHING lines)
 **Queue file:** `queue.log`
-**Next function to attempt:** fn_3_90220 (line 172 of queue.log)
+**Next function to attempt:** fn_3_E0758 (line 185 of queue.log)
 
 To find the next function: look for the first plain entry (not prefixed with COMPLETED/NONMATCHING/SKIPPED) in `queue.log` that hasn't been committed yet.
 
@@ -19,6 +19,11 @@ To find the next function: look for the first plain entry (not prefixed with COM
 | fn_3_1AE44 | already matched; queue entry updated |
 | fn_3_59BCC | matched |
 | fn_3_9E7D4 | matched |
+| fn_3_B03F0 | matched |
+| fn_3_D24E8 | matched |
+| fn_3_DCED0 | matched |
+| fn_3_F8B34 | matched |
+| fn_3_112558 | matched |
 
 ---
 
@@ -43,3 +48,9 @@ To find the next function: look for the first plain entry (not prefixed with COM
 | fn_3_8A5A4 | persistent register swap: `g_Runners` base in `r5` and `-1` in `r6`, target wants `r6`/`r5` |
 | fn_3_7AEEC | CW running-pointer on bss struct (addi r6,r6,2 then +1) not reproducible from C struct field access |
 | fn_3_7AF68 | same pattern as fn_3_7AEEC |
+| fn_3_90220 | table-address shaping in `m_sound`: current code folds `lbl_3_data_8530 + arg1` too early and keeps `lhzx` result in `r0` instead of target `r3` |
+| fn_3_99C88 | single remaining `rlwimi` form mismatch: current code emits equivalent `rlwimi r4, r0, 0, 0, 23` / `stw r4` instead of target `rlwimi r0, r4, 0, 24, 31` / `stw r0` |
+| fn_3_FCE38 | branch-layout artifact in `rep_3090`: MWCC shortcuts the non-`bgt` path directly into the backward check instead of branching to the bottom `slwi` reset block first |
+| fn_3_10C7A4 | register-allocation artifact in `gap_106DFC`: target wants `r29 = &g_Minigame` and `r28 = loop index`, current code keeps swapping base/index through an extra temp |
+| fn_3_11741 | boolean materialization and register-allocation mismatch in `rep_3310`: current code stays on `or/not/rlwinm/extsh` with swapped base regs instead of target `subi/subfic/nor/srawi/andc` flow |
+| fn_3_117494 | `rep_3310` setup/order mismatch: MWCC keeps `g_Minigame` live in `r3` too long, delays `r30 = &g_Minigame`, and lowers the `_CCC` guard through the wrong even/odd test shape |

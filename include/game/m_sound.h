@@ -52,7 +52,7 @@ void sndRemoveListener(void* listener);
 
 
 void sndVolume(u8 volume, u16 time, u8 volGroup);
-void fn_3_90220(void);
+u32 fn_3_90220(s32 arg0, s32 arg1);
 u32 playSoundEffect(int arg0);
 void fn_3_902FC(void);
 void fn_3_90328(void);

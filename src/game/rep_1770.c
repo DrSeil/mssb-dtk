@@ -1,4 +1,6 @@
 #include "game/rep_1770.h"
+#include "game/rep_3448.h"
+#include "UnknownHeaders.h"
 #include "header_rep_data.h"
 
 // .text:0x000993A8 size:0x3C4 mapped:0x806D843C
@@ -23,7 +25,17 @@ void fn_3_99BDC(void) {
 
 // .text:0x00099C88 size:0x74 mapped:0x806D8D1C
 void fn_3_99C88(void) {
-    return;
+    DrawingSceneStruct* scene = lbl_803CC1B8;
+
+    if (lbl_3_common_bss_32724.someStatusInd == 0 && lbl_3_common_bss_32724.unk_A7 != 0) {
+        Struct_80371C30_Inner* obj = lbl_80371C30[scene->unkIndex].obj;
+        u32 temp = obj->field_0x58 & 0xFFFFFF00;
+        temp |= lbl_3_common_bss_32724.unk_A7;
+        obj->field_0x58 = temp;
+    } else {
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x00099CFC size:0x114 mapped:0x806D8D90
@@ -70,4 +82,3 @@ void fn_3_9C014(void) {
 void fn_3_9C28C(void) {
     return;
 }
-

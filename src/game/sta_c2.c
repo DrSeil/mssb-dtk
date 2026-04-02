@@ -1,6 +1,10 @@
 #include "game/sta_c2.h"
+#include "game/rep_1838.h"
+#include "game/rep_AC8.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+
+extern f32 lbl_3_rodata_2664;
 
 // .text:0x000CB8A8 size:0x1F4 mapped:0x8070A93C
 void fn_3_CB8A8(void) {
@@ -357,8 +361,15 @@ int fn_3_D249C(Struct_800D249C_Arg0 *param_1) {
 }
 
 // .text:0x000D24E8 size:0x74 mapped:0x8071157C
-void fn_3_D24E8(void) {
-    return;
+void fn_3_D24E8(StaC2D24E8Arg* arg0, s32 arg1) {
+    Vec sp8;
+    s8 fielderIndex;
+
+    fielderIndex = arg1;
+    PSVECSubtract((Vec*)((u8*)g_Fielders + (fielderIndex * sizeof(Fielder))), &arg0->field_0xA0, &sp8);
+    sp8.y = lbl_3_rodata_2664;
+    PSVECNormalize(&sp8, &sp8);
+    fn_3_253A4(fielderIndex, (s16)fn_3_9FB8C(sp8.x, sp8.z));
 }
 
 // .text:0x000D255C size:0x128 mapped:0x807115F0

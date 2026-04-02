@@ -1,5 +1,6 @@
 #include "game/rep_31F0.h"
 #include "UnknownHeaders.h"
+#include "game/gap_106DFC.h"
 #include "game/UnknownHomes_Game.h"
 #include "header_rep_data.h"
 #include "stl/mem.h"
@@ -160,7 +161,23 @@ void fn_3_112450(void) {
 
 // .text:0x00112558 size:0x78 mapped:0x807515EC
 void fn_3_112558(void) {
-    return;
+    s32 score;
+
+    score = g_Scores.highscore + 1;
+    g_Minigame.turnNumberWithinRound = 0;
+    g_Scores.highscore = score;
+
+    if ((u8)g_Minigame.multiPlayerInd == 0) {
+        fn_3_5A6D4(7);
+        return;
+    }
+
+    if (score == 1) {
+        fn_3_10AD48();
+    }
+
+    fn_3_5A6D4(7);
+    fn_3_10F550(4, 0);
 }
 
 // .text:0x001125D0 size:0x40 mapped:0x80751664

@@ -59,6 +59,12 @@ def main():
         metavar="PCT",
         help="Only show functions with match%% at or below this value (e.g. 50 for <=50%%)",
     )
+    parser.add_argument(
+        "--sort",
+        choices=["size", "match-desc", "match-asc"],
+        default="size",
+        help="Sort results by size, match percentage descending, or match percentage ascending (default: size)",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.report):
@@ -180,8 +186,13 @@ def main():
                 }
             )
 
-    # Sort by size (smallest first), then by name
-    candidates.sort(key=lambda x: (x["size"], x["name"]))
+    if args.sort == "match-desc":
+        candidates.sort(key=lambda x: (-x["match_pct"], x["size"], x["name"]))
+    elif args.sort == "match-asc":
+        candidates.sort(key=lambda x: (x["match_pct"], x["size"], x["name"]))
+    else:
+        # Sort by size (smallest first), then by name
+        candidates.sort(key=lambda x: (x["size"], x["name"]))
 
     if not candidates:
         print("No unmatched functions found matching criteria.")

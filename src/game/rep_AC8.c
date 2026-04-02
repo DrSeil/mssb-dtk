@@ -8,7 +8,7 @@ void fn_3_251E4(void) {
 }
 
 // .text:0x000253A4 size:0x2A4 mapped:0x80664438
-void fn_3_253A4(void) {
+void fn_3_253A4(s8 arg0, s32 arg1) {
     return;
 }
 

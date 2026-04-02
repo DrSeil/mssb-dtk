@@ -170,7 +170,7 @@ void fn_3_12536C(void) {
 // .text:0x00125424 size:0x5C mapped:0x807644B8
 BOOL fn_3_125424(Struct_125424_Arg* arg0, u32 arg1, u32 arg2) {
     Struct_80371C30_Inner* obj = lbl_80371C30[arg0->field_0x14 + arg1].obj;
-    u32 val = obj->field_0x5C >> 16;
+    u32 val = obj->field_0x58 >> 16;
     if (val < arg2) {
         obj->field_0x68 = 1;
         return FALSE;

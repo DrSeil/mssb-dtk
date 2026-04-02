@@ -169,13 +169,65 @@ COMPLETED fn_3_5985C
 COMPLETED fn_3_6620
 NONMATCHING fn_3_8A5A4
 COMPLETED fn_3_8FC0C
-fn_3_90220                                  116    0.0% game       game/game/m_sound
-fn_3_99C88                                  116    3.4% game       game/game/rep_1770
-fn_3_B03F0                                  116    3.4% game       game/game/gap_AC9F8
-fn_3_D24E8                                  116    3.4% game       game/game/sta_c2
-fn_3_DCED0                                  116    3.4% game       game/game/rep_28A8
-fn_3_F8B34                                  116    3.4% game       game/game/sta_c4
-fn_3_FCE38                                  116    3.4% game       game/game/rep_3090
-fn_3_10C7A4                                 120    3.3% game       game/game/gap_106DFC
-fn_3_112558                                 120    3.3% game       game/game/rep_31F0
-fn_3_11741
+NONMATCHING fn_3_90220
+NONMATCHING fn_3_99C88
+COMPLETED fn_3_B03F0
+COMPLETED fn_3_D24E8
+COMPLETED fn_3_DCED0
+COMPLETED fn_3_F8B34
+NONMATCHING fn_3_FCE38
+NONMATCHING fn_3_10C7A4
+COMPLETED fn_3_112558
+NONMATCHING fn_3_11741
+NONMATCHING fn_3_117494
+NONMATCHING fn_3_117588
+NONMATCHING fn_3_24EA0
+fn_3_E0758
+fn_3_E1964
+fn_3_167CC4
+fn_3_76C78
+fn_3_E5924
+fn_3_6B5D8
+fn_3_E1C60
+fn_3_E587C
+fn_3_DF820
+fn_3_E1D00
+fn_3_1665E4
+fn_3_DF608
+fn_3_24DBC
+fn_3_6C854
+fn_3_9143C
+fn_3_250FC
+fn_3_E0668
+fn_3_249E8
+fn_3_6B4C8
+fn_3_16C410
+fn_3_6BD6C
+fn_3_DF6D4
+fn_3_DF8D4
+fn_3_6CC30
+fn_3_1682AC
+fn_3_DF25C
+fn_3_DFA20
+fn_3_167F14
+fn_3_8B094
+fn_3_15C230
+fn_3_167D4C
+fn_3_D9868
+fn_3_1680D4
+fn_3_24F24
+fn_3_76A9C
+fn_3_6F4E8
+fn_3_6B870
+fn_3_6B674
+fn_3_141A30
+fn_3_9C578
+fn_3_DF3D8
+fn_3_DF00C
+fn_3_E19E8
+fn_3_D8A10
+fn_3_24ADC
+fn_3_6C938
+minigamesSetSomePointers2
+fn_3_6BA64
+minigamesSetSomePointers

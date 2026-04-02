@@ -1,7 +1,12 @@
+#include "Dolphin/GX/GXBump.h"
 #include "Dolphin/GX/GXPixel.h"
+#include "Dolphin/GX/GXTexture.h"
 #include "UnknownHeaders.h"
+#include "game/rep_1D58.h"
 #include "game/sta_c4.h"
 #include "header_rep_data.h"
+
+extern GXTexObj lbl_3_bss_B640;
 
 // .text:0x000F8444 size:0x10 mapped:0x807374D8
 void fn_3_F8444(void) {
@@ -49,7 +54,12 @@ void fn_3_F8B30(void) {
 
 // .text:0x000F8B34 size:0x74 mapped:0x80737BC8
 void fn_3_F8B34(void) {
-    return;
+    fn_3_B9510(0);
+    GXLoadTexObj(&lbl_3_bss_B640, GX_TEXMAP7);
+    GXSetIndTexOrder(GX_IND_TEX_STAGE_0, GX_TEXCOORD0, GX_TEXMAP7);
+    GXSetNumIndStages(1);
+    GXSetIndTexCoordScale(GX_IND_TEX_STAGE_0, GX_ITS_1, GX_ITS_1);
+    GXSetTevIndWarp(GX_TEVSTAGE0, GX_IND_TEX_STAGE_0, GX_FALSE, GX_FALSE, GX_ITM_0);
 }
 
 // .text:0x000F8BA8 size:0x158 mapped:0x80737C3C

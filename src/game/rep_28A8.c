@@ -1,5 +1,9 @@
 #include "game/rep_28A8.h"
+#include "game/gap_AC9F8.h"
+#include "game/rep_AC8.h"
 #include "header_rep_data.h"
+
+extern u8 lbl_803CBC3C;
 
 // .text:0x000D9EA0 size:0x7A0 mapped:0x80718F34
 void fn_3_D9EA0(void) {
@@ -48,7 +52,20 @@ void fn_3_DCC80(void) {
 
 // .text:0x000DCED0 size:0x74 mapped:0x8071BF64
 void fn_3_DCED0(void) {
-    return;
+    if (lbl_3_common_bss_34C90.field_0x0C < 0x7FFE) {
+        lbl_3_common_bss_34C90.field_0x0C++;
+    } else {
+        lbl_3_common_bss_34C90.field_0x0C = 0x7FFF;
+    }
+
+    lbl_803CBC3C = 1;
+    if (lbl_3_common_bss_34C90.field_0x0C > 0x3C) {
+        fn_3_AFD80(1);
+        fn_3_5A6D4(0xB);
+        return;
+    }
+
+    fn_3_2EA24();
 }
 
 // .text:0x000DCF44 size:0xBC mapped:0x8071BFD8
@@ -115,4 +132,3 @@ void fn_3_DE610(void) {
 void fn_3_DE744(void) {
     return;
 }
-

@@ -21,4 +21,3 @@ void fn_3_21C7C(s32 arg0, u8 arg1) {
     u8* base = (u8*)lbl_3_common_bss_1323C;
     *(base + arg0 + 0x261) = arg1;
 }
-

@@ -1,4 +1,8 @@
 #include "game/gap_AC9F8.h"
+#include "game/gap_1E154.h"
+#include "game/rep_540.h"
+#include "game/rep_1038.h"
+#include "game/rep_E08.h"
 
 // .text:0x000AC9F8 size:0x100 mapped:0x806EBA8C
 void fn_3_AC9F8(void) {
@@ -164,7 +168,21 @@ void fn_3_B02A8(void) {
 
 // .text:0x000B03F0 size:0x74 mapped:0x806EF484
 void fn_3_B03F0(void) {
-    return;
+    fn_3_F578();
+    fn_3_753E8(0);
+    setBatterContactConstants();
+    fn_3_8A1D8();
+    fn_3_58E50();
+    fn_3_1E154();
+    fn_3_59A90();
+    fn_3_6C108();
+    g_Strikes.strikes = 0;
+    g_Strikes.balls = 0;
+    g_GameLogic._125 = 1;
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    fn_3_B02A8();
+    fn_3_6714C(0);
 }
 
 // .text:0x000B0464 size:0x108 mapped:0x806EF4F8
@@ -406,4 +424,3 @@ void fn_3_B3A28(void) {
     lbl_3_common_bss_34C90.field_0x1D2 = 0;
     lbl_3_common_bss_34C90.field_0x1DA = 0;
 }
-

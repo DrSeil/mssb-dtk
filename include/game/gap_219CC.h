@@ -8,7 +8,7 @@ typedef struct {
     u8 field_0x261;
 } Bss1323CItem;
 
-extern s32 lbl_3_common_bss_1323C;
+extern Bss1323CItem* lbl_3_common_bss_1323C;
 
 void fn_3_219CC(void);
 void fn_3_21AA8(void);

@@ -3,7 +3,9 @@
 #include "header_rep_data.h"
 #include "musyx/musyx.h"
 
+extern u16 lbl_3_data_8168[];
 extern u8 lbl_3_data_8338[];
+extern u8 lbl_3_data_8530[];
 
 extern void fn_3_8B094(void);
 static QueueEntry* lbl_3_bss_1768;
@@ -190,8 +192,14 @@ void fn_3_90150(void) {
 }
 
 // .text:0x00090220 size:0x74 mapped:0x806CF2B4
-void fn_3_90220(void) {
-    return;
+u32 fn_3_90220(s32 arg0, s32 arg1) {
+    u8* table = lbl_3_data_8530;
+    u8* entry = table + arg1;
+    u16 soundId = lbl_3_data_8168[arg0];
+    SND_VOICEID vid = sndFXStartEx((u16)(arg1 + soundId), table[arg1], 0x3F, 0);
+
+    sndFXCtrl(vid, 0x5B, entry[0x180]);
+    return vid;
 }
 
 // .text:0x00090294 size:0x64 mapped:0x806CF328

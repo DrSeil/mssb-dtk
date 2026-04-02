@@ -1,6 +1,69 @@
+#include "Dolphin/GX/GXFifo.h"
+#include "Dolphin/GX/GXGeometry.h"
+#include "Dolphin/GX/GXLight.h"
+#include "Dolphin/GX/GXPixel.h"
+#include "Dolphin/GX/GXTev.h"
+#include "Dolphin/GX/GXTransform.h"
 #include "game/rep_3310.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/rep_1E08.h"
+
+typedef struct Rep3310Item {
+    u8 _pad0[0x14];
+    AnimLevel2* field_0x14;
+} Rep3310Item;
+
+typedef struct Rep3310List {
+    u8 _pad0[0x06];
+    u16 count;
+    u8 _pad1[0x10];
+    Rep3310Item** items;
+} Rep3310List;
+
+typedef struct Rep3310Entry2D94Ext {
+    u8 _padPreFCC[0xFCC];
+    f32 field_0xFCC;
+    f32 field_0xFD0;
+    f32 field_0xFD4;
+    u8 _pad0[0xFEE - 0xFD8];
+    u8 field_0xFEE;
+    u8 _pad1[0x2508 - 0xFEF];
+    void (*field_0x2508)(s32);
+    f32 field_0x250C;
+    f32 field_0x2510;
+    f32 field_0x2514;
+    u8 _pad2[0x252E - 0x2518];
+    u8 field_0x252E;
+} Rep3310Entry2D94Ext;
+
+typedef struct Rep3310Entry2D94Pos {
+    u8 _pad0[0x04];
+    f32 field_0x04;
+    f32 field_0x08;
+    f32 field_0x0C;
+} Rep3310Entry2D94Pos;
+
+typedef struct Rep3310MiniPos {
+    f32 field_0x00;
+    u8 _pad0[0x04];
+    f32 field_0x08;
+    u8 _pad1[0x31];
+    u8 field_0x3D;
+} Rep3310MiniPos;
+
+static const f32 lbl_3_rodata_338C[8] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
+
+extern void fn_8001D0D0();
+extern s32 fn_8005268C(void);
+extern void fn_80033B58(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+extern f32 lbl_3_rodata_33C0;
+extern f32 lbl_3_rodata_33C4;
+extern f32 lbl_3_rodata_33C8;
+extern f32 lbl_3_rodata_33E4;
+extern f32 lbl_3_rodata_33E8;
+extern f32 lbl_3_rodata_33EC;
+extern f32 lbl_3_data_21A64;
 
 // .text:0x00116840 size:0x190 mapped:0x807558D4
 void fn_3_116840(void) {
@@ -31,18 +94,165 @@ void fn_3_116B74(void) {
 }
 
 // .text:0x0011741C size:0x78 mapped:0x807564B0
-void fn_3_11741C(void) {
-    return;
+void fn_3_11741C(s32 index) {
+    Rep3310List* list;
+    s32 cmpA;
+    s32 cmpB;
+    s32 i;
+    s16 state;
+    u8 temp;
+
+    temp = g_Minigame._CCE[0];
+    cmpA = temp - 1;
+    cmpB = 1 - temp;
+    state = 2 & ~((~(cmpA | cmpB)) >> 0x1F);
+
+    list = (Rep3310List*)g_hugeAnimStruct.entries_68[index].unk34;
+    for (i = 0; i < list->count; i++) {
+        list->items[i]->field_0x14->ptr08->ptr0C->field_0x20 = state;
+    }
 }
 
 // .text:0x00117494 size:0xF4 mapped:0x80756528
 void fn_3_117494(void) {
-    return;
+    Rep3310Entry2D94Ext* entry;
+    s16 temp0;
+    f32 temp1;
+    f32 temp2;
+    f32 temp3;
+    MiniGameStruct* minigame;
+
+    minigame = &g_Minigame;
+    entry = (Rep3310Entry2D94Ext*)g_hugeAnimStruct.entries_2D94;
+    entry->field_0x252E = 0;
+    entry->field_0xFEE = 0;
+    entry->field_0x2508 = NULL;
+
+    if ((u8)minigame->_CCE[0] != 0) {
+        temp0 = minigame->_CCC;
+        if ((temp0 > 0x3C) || ((temp0 & 1) != 0)) {
+            entry->field_0x252E = 1;
+            entry->field_0x2508 = fn_3_11741C;
+            temp1 = minigame->_CB0;
+            entry->field_0x250C = temp1;
+            entry->field_0x2510 = -minigame->_CB4;
+            temp2 = minigame->_CB8;
+            entry->field_0x2514 = temp2;
+            fn_8001D0D0(0xED, lbl_3_rodata_33C0);
+            entry->field_0xFEE = 1;
+            temp3 = lbl_3_rodata_33C4;
+            entry->field_0xFCC = temp1;
+            entry->field_0xFD0 = temp3;
+            entry->field_0xFD4 = temp2;
+            fn_8001D0D0(0x65, lbl_3_rodata_33C8, temp1);
+        }
+    }
 }
 
 // .text:0x00117588 size:0x464 mapped:0x8075661C
-void fn_3_117588(void) {
-    return;
+void fn_3_117588(s32 index) {
+    Rep3310Entry2D94Pos* entry;
+    Rep3310List* list;
+    Rep3310MiniPos* minigamePos;
+    Fn52768Result* camera;
+    f32 scale;
+    f32 texCoords[8];
+    f32 vertices[4][3];
+    u32 color;
+    s32 state;
+    s32 i;
+
+    entry = (Rep3310Entry2D94Pos*)&g_hugeAnimStruct.entries_2D94[index];
+    minigamePos = (Rep3310MiniPos*)&g_Minigame.unkBB0[index - 0xE9];
+
+    scale = lbl_3_rodata_33C0 *
+            (lbl_3_rodata_33E0 - ((-entry->field_0x08 * lbl_3_rodata_33E4) / lbl_3_data_21A64));
+
+    texCoords[0] = lbl_3_rodata_338C[0];
+    texCoords[1] = lbl_3_rodata_338C[1];
+    texCoords[2] = lbl_3_rodata_338C[2];
+    texCoords[3] = lbl_3_rodata_338C[3];
+    texCoords[4] = lbl_3_rodata_338C[4];
+    texCoords[5] = lbl_3_rodata_338C[5];
+    texCoords[6] = lbl_3_rodata_338C[6];
+    texCoords[7] = lbl_3_rodata_338C[7];
+
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+    GXSetChanCtrl(GX_COLOR0A0, 0, 1, 1, 0, 0, 2);
+    GXSetNumChans(1);
+    GXSetNumTexGens(1);
+    GXSetNumTevStages(1);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_RASC, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_RASA, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+
+    color = 0x9B;
+
+    vertices[0][0] = minigamePos->field_0x00 - ((lbl_3_rodata_33E8 * scale) * lbl_3_rodata_33E4);
+    vertices[0][1] = lbl_3_rodata_33EC;
+    vertices[0][2] = entry->field_0x0C + ((lbl_3_rodata_33C0 * scale) * lbl_3_rodata_33E4);
+    vertices[1][0] = minigamePos->field_0x00 + ((lbl_3_rodata_33E8 * scale) * lbl_3_rodata_33E4);
+    vertices[1][1] = lbl_3_rodata_33EC;
+    vertices[1][2] = entry->field_0x0C + ((lbl_3_rodata_33C0 * scale) * lbl_3_rodata_33E4);
+    vertices[2][0] = minigamePos->field_0x00 + ((lbl_3_rodata_33E8 * scale) * lbl_3_rodata_33E4);
+    vertices[2][1] = lbl_3_rodata_33EC;
+    vertices[2][2] = entry->field_0x0C - ((lbl_3_rodata_33C0 * scale) * lbl_3_rodata_33E4);
+    vertices[3][0] = minigamePos->field_0x00 - ((lbl_3_rodata_33E8 * scale) * lbl_3_rodata_33E4);
+    vertices[3][1] = lbl_3_rodata_33EC;
+    vertices[3][2] = entry->field_0x0C - ((lbl_3_rodata_33C0 * scale) * lbl_3_rodata_33E4);
+
+    camera = fn_80052768(fn_8005268C());
+    GXLoadPosMtxImm(camera->mtx, 0);
+    GXSetCurrentMtx(0);
+    camera = fn_80052768(fn_8005268C());
+    GXSetProjection(*(Mtx44*)camera, GX_PERSPECTIVE);
+    fn_80033B58(lbl_3_common_bss_32724.field6C, 0x13, 0, 0);
+
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GX_WRITE_F32(vertices[0][0]);
+    GX_WRITE_F32(vertices[0][1]);
+    GX_WRITE_F32(vertices[0][2]);
+    GX_WRITE_U32(color);
+    GX_WRITE_F32(texCoords[0]);
+    GX_WRITE_F32(texCoords[1]);
+    GX_WRITE_F32(vertices[1][0]);
+    GX_WRITE_F32(vertices[1][1]);
+    GX_WRITE_F32(vertices[1][2]);
+    GX_WRITE_U32(color);
+    GX_WRITE_F32(texCoords[2]);
+    GX_WRITE_F32(texCoords[3]);
+    GX_WRITE_F32(vertices[2][0]);
+    GX_WRITE_F32(vertices[2][1]);
+    GX_WRITE_F32(vertices[2][2]);
+    GX_WRITE_U32(color);
+    GX_WRITE_F32(texCoords[4]);
+    GX_WRITE_F32(texCoords[5]);
+    GX_WRITE_F32(vertices[3][0]);
+    GX_WRITE_F32(vertices[3][1]);
+    GX_WRITE_F32(vertices[3][2]);
+    GX_WRITE_U32(color);
+    GX_WRITE_F32(texCoords[6]);
+    GX_WRITE_F32(texCoords[7]);
+
+    list = (Rep3310List*)g_hugeAnimStruct.entries_68[index].unk34;
+    state = 1;
+    if ((minigamePos->field_0x3D == 1) || (minigamePos->field_0x3D == 5)) {
+        state = 0;
+    }
+
+    for (i = 0; i < list->count; i++) {
+        list->items[i]->field_0x14->ptr08->ptr0C->field_0x20 = state;
+    }
 }
 
 // .text:0x001179EC size:0xF8 mapped:0x80756A80

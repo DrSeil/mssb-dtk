@@ -48,7 +48,7 @@ typedef struct SourceObj_104B20 {
 void fn_3_FBDAC(s32 param);
 void fn_3_FC448(void);
 void fn_3_FC938(void);
-void fn_3_FCE38(void);
+s32 fn_3_FCE38(s32 arg0, f32 arg1);
 void fn_3_FCEAC(void);
 s32 fn_3_FCEB0(f32 arg0);
 
