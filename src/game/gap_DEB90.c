@@ -5,6 +5,7 @@
 
 extern void fn_8001D0D0();
 extern f32 lbl_3_data_18D98[];
+extern void fn_3_10C81C(void);
 
 typedef struct GapDEB90Entry2D94 {
     u8 _pad0[0x14];
@@ -43,7 +44,17 @@ void fn_3_DF6D4(void) {
 
 // .text:0x000DF820 size:0xB4 mapped:0x8071E8B4
 void fn_3_DF820(void) {
-    return;
+    s32 count;
+    s32 i;
+    fn_3_10C81C();
+    count = 0;
+    for (i = 0; i < 4; i++) {
+        if ((s8)g_Minigame.teamEntries[i].fieldA != (s8)g_Minigame.teamEntries[i].fieldB) break;
+        count++;
+    }
+    if (count >= 4) {
+        fn_3_5A6D4(0x1d);
+    }
 }
 
 // .text:0x000DF8D4 size:0x14C mapped:0x8071E968
