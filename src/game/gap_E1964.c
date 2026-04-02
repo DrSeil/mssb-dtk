@@ -2,6 +2,7 @@
 
 #include "UnknownHeaders.h"
 #include "game/rep_1838.h"
+#include "Dolphin/GX/GXTev.h"
 
 extern void fn_8001D0D0();
 extern f32 lbl_3_data_18D98[];
@@ -43,7 +44,12 @@ void fn_3_E19E8(void) {
 
 // .text:0x000E1C60 size:0xA0
 void fn_3_E1C60(void) {
-    return;
+    GXSetNumTevStages(1);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevColorIn(0, 0xF, 0xF, 7, 0xA);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 7, 7, 7, 4);
+    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
 }
 
 // .text:0x000E1D00 size:0xB8
