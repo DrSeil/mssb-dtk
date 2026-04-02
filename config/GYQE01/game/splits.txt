@@ -349,9 +349,15 @@ game/rep_28A8.c:
 	.rodata     start:0x000028A8 end:0x00002940
 	.data       start:0x00018C48 end:0x00018CD8
 
+game/gap_DEB90.c:
+	.text       start:0x000DEB90 end:0x000E11E0
+
 game/rep_2940.c:
 	.text       start:0x000E11E0 end:0x000E1964
 	.rodata     start:0x00002940 end:0x00002998
+
+game/gap_E1964.c:
+	.text       start:0x000E1964 end:0x000E1DB8
 
 game/rep_2998.c:
 	.text       start:0x000E1DB8 end:0x000E587C
