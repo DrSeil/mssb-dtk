@@ -495,9 +495,13 @@ void fn_800BD8C4(HugeAnimCtrlObj* obj, s32 arg);
 extern f32 lbl_3_rodata_1414;
 
 typedef struct StadiumObjectElem {
-    u8 _pad[0x80];
+    u8 _pad[0x74];                    /* 0x00 */
+    void** unk74;                     /* 0x74 */
+    u8 _pad_0x78[0x80 - 0x78];       /* 0x78 */
     BALL_COLLISION_TYPE (*fnPtr)(u32, BALL_COLLISION_TYPE, CollisionStruct*);  /* 0x80 */
-    u8 _pad2[0xE8 - 0x84];
+    u8 _pad_0x84[0x93 - 0x84];       /* 0x84 */
+    u8 unk93;                         /* 0x93 */
+    u8 _pad_0x94[0xE8 - 0x94];       /* 0x94 */
 } StadiumObjectElem;
 
 typedef struct UnknownStruct_350E4 {

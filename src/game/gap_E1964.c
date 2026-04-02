@@ -2,10 +2,29 @@
 
 #include "UnknownHeaders.h"
 #include "game/rep_1838.h"
+#include "game/rep_1D58.h"
 #include "Dolphin/GX/GXTev.h"
 
 extern void fn_8001D0D0();
 extern f32 lbl_3_data_18D98[];
+extern void fn_800BF058(void (*fn)(void));
+extern void fn_8003A548(void (*fn)(void));
+extern void fn_800BDF70(void** ptr);
+extern void fn_3_B8184(void);
+
+typedef struct {
+    void* _0;
+    u8 _4[0x94];
+    u8 unk98;   /* 0x98 */
+} E1D00Inner;
+
+typedef struct {
+    u8 _pad[0x10];
+    u8 flag;    /* 0x10 */
+    u8 _pad2[0x1c - 0x11];
+} E1D00Entry;
+
+extern E1D00Entry lbl_3_data_18ED0[];
 
 typedef struct GapE1964Entry {
     u8 _pad0[0x14];
@@ -54,5 +73,22 @@ void fn_3_E1C60(void) {
 
 // .text:0x000E1D00 size:0xB8
 void fn_3_E1D00(void) {
-    return;
+    StadiumObjectElem* obj;
+    s32 i;
+
+    fn_800BF058(fn_3_B8184);
+    fn_8003A548(fn_3_E1C60);
+    i = 0;
+    while (i < (s32)lbl_3_common_bss_350E4[0].memcpyCount) {
+        if (lbl_3_data_18ED0[i].flag == 2) break;
+        obj = &lbl_3_common_bss_350E4[0].src[i];
+        fn_3_B828C((StadiumObject*)obj);
+        if (obj->unk74 != NULL) {
+            E1D00Inner* inner = (E1D00Inner*)*obj->unk74;
+            inner->unk98 = obj->unk93 | 6;
+            fn_800BDF70(obj->unk74);
+        }
+        i++;
+    }
+    fn_8003A548(NULL);
 }
