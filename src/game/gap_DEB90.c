@@ -2,6 +2,12 @@
 
 #include "UnknownHeaders.h"
 #include "game/rep_1838.h"
+#include "game/gap_E1964.h"
+#include "game/gap_5985C.h"
+extern s32 fn_3_90DD8(void);
+#include "game/rep_3090.h"
+extern void fn_3_FBD58(void);
+extern void fn_3_FBD70(void);
 #include "static/UnknownHomes_Static.h"
 
 extern void fn_8001D0D0();
@@ -9,6 +15,19 @@ extern f32 lbl_3_data_18D98[];
 extern void fn_3_10C81C(void);
 extern u8 lbl_3_data_18980[];
 extern u8 lbl_3_data_18944[];
+extern u8 lbl_3_data_189A4[];
+extern void fn_3_E8AC8(void);
+extern s32 fn_800203E0(s32, s32);
+extern s32 fn_80016F7C(void);
+extern s32 fn_3_6C938(s32, s32);
+extern void changeScene(s32, s32);
+
+typedef struct {
+    u8 _pad[0x12];
+    u8 _12;
+    u8 _13;
+} Lbl8037169C;
+extern Lbl8037169C lbl_8037169C;
 
 typedef struct GapDEB90Entry2D94 {
     u8 _pad0[0x14];
@@ -32,7 +51,71 @@ void fn_3_DF25C(void) {
 
 // .text:0x000DF3D8 size:0x230 mapped:0x8071E46C
 void fn_3_DF3D8(void) {
-    return;
+    switch (g_GameLogic._125) {
+    case 0:
+        fn_3_E8AC8();
+        fn_800203E0(7, 0);
+        g_Minigame.toyField_selectedTurns = (s16)lbl_3_data_189A4[g_Minigame._1A24[0]];
+        if (g_d_GameSettings.exhibitionMatchInd == 0) {
+            g_Minigame.toyField_selectedTurns = (s16)lbl_3_data_189A4[5];
+        }
+        g_hugeAnimStruct.renderStadiumFlag = 1;
+        g_hugeAnimStruct.field209_0x2d8e = 0;
+        g_hugeAnimStruct.field269_0x307a = 3;
+        if (g_Minigame._190A != 0) {
+            g_GameLogic._125 = 1;
+            return;
+        }
+        fn_3_59B20();
+        g_GameLogic._125 = 2;
+        break;
+    case 1:
+        fn_3_10C81C();
+        if ((s8)g_Minigame._1A0F >= 0) {
+            return;
+        }
+        fn_3_59B20();
+        g_GameLogic._125 = 2;
+        break;
+    case 2:
+        if (fn_3_59AE4() == 0) return;
+        g_GameLogic._125 = 3;
+        if (fn_80016F7C() == 0) return;
+        if (g_Minigame._1A38 != 0) {
+            g_GameLogic._125 = 6;
+        } else {
+            g_GameLogic._125 = 4;
+        }
+        lbl_3_common_bss_34C58._2C = 0;
+        break;
+    case 3:
+        if (fn_3_90DD8() == 0) return;
+        g_GameLogic._125 = 6;
+        break;
+    case 4:
+        if (lbl_8037169C._12 == 0) return;
+        if (g_GameLogic.FrameCountOfCurrentPitch < 0xF0) {
+            if (fn_3_FD9FC() == 0) return;
+        }
+        if (fn_3_6C938(1, 0x1300) == 0) return;
+        g_GameLogic._125 = 7;
+        break;
+    case 6:
+        changeScene(3, 6);
+        if (lbl_8037169C._13 == 0) return;
+        fn_3_FBD70();
+        fn_3_FBD58();
+        g_GameLogic._125 = 8;
+        break;
+    case 7:
+    case 8:
+        fn_3_E1964();
+        g_Minigame._1A38 = 0;
+        g_Minigame._19A2 = 0;
+        g_hugeAnimStruct.field269_0x307a = 1;
+        fn_3_5A6D4(6);
+        break;
+    }
 }
 
 // .text:0x000DF608 size:0xCC mapped:0x8071E69C
