@@ -175,6 +175,9 @@ game/rep_1200.c:
 	.data       start:0x00008088 end:0x000080A8
 	.bss        start:0x00001728 end:0x00001748
 
+game/gap_759BC.c:
+	.text       start:0x000759BC end:0x00077914
+
 game/rep_12D0.c:
 	.text       start:0x00077914 end:0x0007976C
 	.rodata     start:0x000012D0 end:0x00001330
