@@ -2,10 +2,13 @@
 
 #include "UnknownHeaders.h"
 #include "game/rep_1838.h"
+#include "static/UnknownHomes_Static.h"
 
 extern void fn_8001D0D0();
 extern f32 lbl_3_data_18D98[];
 extern void fn_3_10C81C(void);
+extern u8 lbl_3_data_18980[];
+extern u8 lbl_3_data_18944[];
 
 typedef struct GapDEB90Entry2D94 {
     u8 _pad0[0x14];
@@ -34,7 +37,32 @@ void fn_3_DF3D8(void) {
 
 // .text:0x000DF608 size:0xCC mapped:0x8071E69C
 void fn_3_DF608(void) {
-    return;
+    MiniGameStruct* mg;
+    u8* p;
+    u8 idx;
+    idx = g_d_GameSettings._35;
+    (&g_Minigame._19DA)[idx] = 0;
+    mg = &g_Minigame;
+    p = lbl_3_data_18980;
+    if (idx != 0) {
+        mg->minigameControlStruct[0].aIStrength[0] = *p;
+        p++;
+    }
+    if (idx != 1) {
+        mg->minigameControlStruct[0].aIStrength[1] = *p;
+        p++;
+    }
+    if (idx != 2) {
+        mg->minigameControlStruct[0].aIStrength[2] = *p;
+        p++;
+    }
+    if (idx != 3) {
+        mg->minigameControlStruct[0].aIStrength[3] = *p;
+    }
+    mg->_1907 = 1;
+    mg->multiPlayerInd = 1;
+    mg->miniGameNumberOfParticipants = lbl_3_data_18944[mg->GameMode_MiniGame] + 1;
+    g_Scores.threshold = 1;
 }
 
 // .text:0x000DF6D4 size:0x14C mapped:0x8071E768
