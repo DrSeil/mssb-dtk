@@ -739,6 +739,7 @@ config.libs = [
             Object(NonMatching, "game/m_sound.c"),
             Object(NonMatching, "game/gap_90754.c"),
             Object(NonMatching, "game/rep_1610.c"),
+            Object(NonMatching, "game/gap_9143C.c"),
             Object(NonMatching, "game/rep_1668.c"),
             Object(NonMatching, "game/rep_16B8.c"),
             Object(NonMatching, "game/rep_1720.c"),

@@ -216,6 +216,9 @@ game/rep_1610.c:
 game/rep_1668.c:
 	.rodata     start:0x00001668 end:0x000016B8
 
+game/gap_9143C.c:
+	.text       start:0x0009143C end:0x00091520
+
 game/rep_16B8.c:
 	.text       start:0x00091520 end:0x00097144
 	.rodata     start:0x000016B8 end:0x00001720
