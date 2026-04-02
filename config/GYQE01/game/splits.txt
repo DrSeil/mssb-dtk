@@ -527,6 +527,9 @@ game/rep_3E58.c:
 	.rodata     start:0x00003E58 end:0x00003F60
 	.bss        start:0x0000B9E0 end:0x0000BA00
 
+game/gap_167CC4.c:
+	.text       start:0x00167CC4 end:0x00168414
+
 game/rep_3F60.c:
 	.text       start:0x00168414 end:0x001690C0
 	.rodata     start:0x00003F60 end:0x00003FD8
