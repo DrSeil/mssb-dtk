@@ -12,6 +12,7 @@ extern ChainChompSprintEntry lbl_3_data_21884[4];
 typedef struct {
     u8 _pad0[0x58];
     u32 field_0x58;
+    u32 field_0x5C;
     u8 _pad1[0x08];
     u8 field_0x68;
     u8 field_0x69;
@@ -56,7 +57,7 @@ void fn_3_124738(void);
 void fn_3_124CE0(void);
 void fn_3_12536C(void);
 BOOL fn_3_125424(Struct_125424_Arg* arg0, u32 arg1, u32 arg2);
-void fn_3_125480(void);
+BOOL fn_3_125480(Struct_125424_Arg* arg0);
 void fn_3_1254F8(void);
 void fn_3_125604(void);
 void fn_3_125850(void);

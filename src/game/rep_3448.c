@@ -184,8 +184,25 @@ BOOL fn_3_125424(Struct_125424_Arg* arg0, u32 arg1, u32 arg2) {
 }
 
 // .text:0x00125480 size:0x78 mapped:0x80764514
-void fn_3_125480(void) {
-    return;
+BOOL fn_3_125480(Struct_125424_Arg* arg0) {
+    Struct_80371C30_Inner* obj;
+    u32 i;
+
+    for (i = 0; i < arg0->field_0x16; i++) {
+        obj = lbl_80371C30[arg0->field_0x14 + i].obj;
+
+        if (obj->field_0x68 == 1) {
+            if (obj->field_0x69 != 2) {
+                return TRUE;
+            }
+        } else if (obj->field_0x68 == 4) {
+            if ((obj->field_0x5C >> 16) != 0) {
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 // .text:0x001254F8 size:0x10C mapped:0x8076458C
