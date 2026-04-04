@@ -19,11 +19,12 @@ void fn_3_6C42C(void) {
 // .text:0x0006C454 size:0x78 mapped:0x806AB4E8
 void fn_3_6C454(void) {
     AnimationStruct** ptr = &g_hugeAnimStruct.AnimationStructPtrs[9];
-    u8 zero = 0;
-    if (ptr[0] != NULL) ptr[0]->unk_25D = zero;
-    if (ptr[1] != NULL) ptr[1]->unk_25D = zero;
-    if (ptr[2] != NULL) ptr[2]->unk_25D = zero;
-    if (ptr[3] != NULL) ptr[3]->unk_25D = zero;
+    s32 i;
+    for (i = 0; i < 4; i++, ptr++) {
+        if (*ptr != NULL) {
+            (*ptr)->unk_25D = 0;
+        }
+    }
     fn_3_6A25C();
     fn_3_6A250();
 }
@@ -32,4 +33,3 @@ void fn_3_6C454(void) {
 void fn_3_6C4CC(void) {
     return;
 }
-
