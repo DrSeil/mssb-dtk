@@ -25,7 +25,14 @@ typedef struct _CollisionBox {
 
 typedef struct _UNK_StadiumCollision {
     void* _00;
-    artificial_padding(0, 0x76c, void*);
+    artificial_padding(0, 0x714, void*);
+    union {
+        u32 unk_714;         // 0x714
+        struct { u8 _unk714_pad[3]; u8 unk_717; }; // 0x717
+    };
+    f32 unk_718;         // 0x718
+    f32 unk_71C;         // 0x71C
+    u8 _pad_720[0x76c - 0x720];
     GXColor clearColor; // 0x76c
     u8 _pad_770[0x778 - 0x770];
     CollisionBox* pCollisionBoxes; // 0x778

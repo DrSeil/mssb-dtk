@@ -14,6 +14,9 @@ typedef struct Fn3_5BCCArg {
 } Fn3_5BCCArg;
 
 extern u8 lbl_803CBBC0;
+extern f32 lbl_3_rodata_520;
+extern f32 lbl_3_rodata_538;
+void SetFog(u8 type, u32* color, f32 startZ, f32 endZ, f32 nearScale, f32 farScale);
 extern struct LBL_3_DATA_A10* lbl_3_data_A10[2];
 extern void fn_80052694(struct Fn_80052694_Arg*);
 

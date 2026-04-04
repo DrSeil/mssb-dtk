@@ -102,7 +102,21 @@ void fn_3_5BCC(Fn3_5BCCArg* arg0) {
 
 // .text:0x00005BF0 size:0x78 mapped:0x80644C84
 void fn_3_5BF0(void) {
-    return;
+    UNK_StadiumCollision* details = &g_UNK_StadiumDetails;
+    u32 sp8;
+
+    if (lbl_3_bss_18[0] != NULL) {
+        ((void (*)(void))lbl_3_bss_18[0])();
+    }
+    sp8 = details->unk_714;
+    SetFog(
+        details->unk_717,
+        &sp8,
+        details->unk_718,
+        details->unk_71C,
+        lbl_3_rodata_520,
+        lbl_3_rodata_538
+    );
 }
 
 // .text:0x00005C68 size:0x1F8 mapped:0x80644CFC
