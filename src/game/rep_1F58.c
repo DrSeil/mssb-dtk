@@ -1,6 +1,11 @@
 #include "game/rep_1F58.h"
 #include "game/rep_1E08.h"
 #include "header_rep_data.h"
+#include "Dolphin/GX/GXTexture.h"
+
+extern GXTexObj lbl_3_bss_9D20;
+extern u8 lbl_3_bss_9D40[0x40];
+extern const f32 lbl_3_rodata_1FA8;
 
 // .text:0x000C0854 size:0x108 mapped:0x806FF8E8
 void fn_3_C0854(void) {
@@ -46,7 +51,8 @@ void fn_3_C0DD8(void) {
 
 // .text:0x000C0F8C size:0x78 mapped:0x80700020
 void fn_3_C0F8C(void) {
-    return;
+    GXInitTexObj(&lbl_3_bss_9D20, lbl_3_bss_9D40, 4, 4, 6, 0, 0, 0);
+    GXInitTexObjLOD(&lbl_3_bss_9D20, 1, 1, lbl_3_rodata_1FA8, lbl_3_rodata_1FA8, lbl_3_rodata_1FA8, 0, 0, 0);
 }
 
 // .text:0x000C1004 size:0x1C8 mapped:0x80700098
