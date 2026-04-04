@@ -1,5 +1,6 @@
 #include "game/gap_249E8.h"
 #include "game/gap_219CC.h"
+#include "game/rep_E08.h"
 
 #include <string.h>
 
@@ -14,8 +15,26 @@ void fn_3_24ADC(s32 arg0, s32 arg1) {
 }
 
 // .text:0x00024DBC size:0x80 mapped:0x80663E50
-void fn_3_24DBC(void) {
-    return;
+void fn_3_24DBC(s32 arg0) {
+    s32 i;
+
+    for (i = 0; i < 13; i++) {
+        lbl_3_common_bss_1323C->unk240[i] = -1;
+        memset(&lbl_3_common_bss_1323C->unk0[i], 0, 0x2C);
+        lbl_3_common_bss_1323C->unk261[i] = 0;
+    }
+
+    fn_3_6714C(0);
+
+    lbl_3_common_bss_1323C->unk25C = 1;
+    lbl_3_common_bss_1323C->unk23C = 0;
+    lbl_3_common_bss_1323C->unk27C = 0;
+    lbl_3_common_bss_1323C->unk25D = (u8)arg0;
+    lbl_3_common_bss_1323C->unk25F = 1;
+    lbl_3_common_bss_1323C->unk27D = 0;
+    lbl_3_common_bss_1323C->unk27E = 0;
+    lbl_3_common_bss_1323C->unk25A = 0;
+    lbl_3_common_bss_1323C->unk280 = 1;
 }
 
 // .text:0x00024EA0 size:0x80 mapped:0x80663F34
