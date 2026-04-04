@@ -494,7 +494,25 @@ void fn_3_195BC(void) {
 
 // .text:0x00019770 size:0x78 mapped:0x80658804
 void fn_3_19770(void) {
-    return;
+    Camera* cam;
+    Data1348Entry* entry;
+    f32 val;
+
+    cam = g_pCamera;
+    val = lbl_3_rodata_788;
+    entry = &lbl_3_data_1348[cam->unk11C];
+
+    cam->unkE4 = entry->unk00;
+    cam->unkF0 = entry->unk0C;
+    cam->unk108 = val;
+    cam->unkE8 = entry->unk04;
+    cam->unkF4 = entry->unk10;
+    cam->unk10C = val;
+    cam->unkEC = entry->unk08;
+    cam->unkF8 = entry->unk14;
+    cam->unk110 = val;
+    cam->unk114 = entry->unk18;
+    cam->unk11A = 1;
 }
 
 // .text:0x000197E8 size:0x354 mapped:0x8065887C

@@ -85,6 +85,20 @@ void fn_3_1CBCC(void);
 void fn_3_1CCC8(void);
 void fn_3_1CE90(void);
 
+typedef struct {
+    f32 unk00;
+    f32 unk04;
+    f32 unk08;
+    f32 unk0C;
+    f32 unk10;
+    f32 unk14;
+    f32 unk18;
+    u8 _pad[0x30 - 0x1C];
+} Data1348Entry;
+
+extern Data1348Entry lbl_3_data_1348[];
+extern f32 lbl_3_rodata_788;
+
 extern s32 lbl_3_bss_44;
 typedef struct Stats {
     u8 _pad[0x24];

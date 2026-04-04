@@ -49,7 +49,22 @@ typedef struct _GameInitVariables {
 extern GameInitVariables g_d_GameSettings;
 
 typedef struct Camera {
-    /* 0x000 */ u8 _pad0[0xA50];
+    /* 0x000 */ u8 _pad0[0xE4];
+    /* 0x0E4 */ f32 unkE4;
+    /* 0x0E8 */ f32 unkE8;
+    /* 0x0EC */ f32 unkEC;
+    /* 0x0F0 */ f32 unkF0;
+    /* 0x0F4 */ f32 unkF4;
+    /* 0x0F8 */ f32 unkF8;
+    /* 0x0FC */ u8 _padFC[0x108 - 0xFC];
+    /* 0x108 */ f32 unk108;
+    /* 0x10C */ f32 unk10C;
+    /* 0x110 */ f32 unk110;
+    /* 0x114 */ f32 unk114;
+    /* 0x118 */ u8 _pad118[0x11A - 0x118];
+    /* 0x11A */ s16 unk11A;
+    /* 0x11C */ u8 unk11C;
+    /* 0x11D */ u8 _pad11D[0xA50 - 0x11D];
     /* 0xA50 */ s32 unk_A50;
     /* 0xA54 */ u8 _pad1[0xA74 - 0xA54];
     /* 0xA74 */ s16 unkA74;
