@@ -135,7 +135,12 @@ void fn_3_94760(void) {
 
 // .text:0x000948B8 size:0x78 mapped:0x806D394C
 void fn_3_948B8(void) {
-    return;
+    DrawingSceneStruct *scene = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 || g_GameLogic.gameStatus != 0x17 ||
+        lbl_80371C30[scene->unkIndex].obj->field_0x69 == 2) {
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x00094930 size:0x4C mapped:0x806D39C4
