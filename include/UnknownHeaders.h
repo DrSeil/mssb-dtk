@@ -76,7 +76,9 @@ typedef struct starAnimationRelated {
 typedef struct AnimationStruct {
     u8 _pad[0x5C];
     void* funcPtr_0x5c; /* 0x5C - function pointer */
-    u8 _rest[0x21C];
+    u8 _rest[0x1FD];
+    u8 unk_25D; /* 0x25D */
+    u8 _rest2[0x1E];
 } AnimationStruct; /* size: 0x27C */
 
 /* EOSPad - 2-u8 struct used for alignment padding */

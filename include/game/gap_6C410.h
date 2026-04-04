@@ -4,6 +4,7 @@
 #include "mssbTypes.h"
 #include "UnknownHeaders.h"
 #include "game/gap_6AEC0.h"
+#include "game/gap_6A160.h"
 
 void fn_3_6C410(void);
 void fn_3_6C428(void);
