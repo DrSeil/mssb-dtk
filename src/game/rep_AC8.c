@@ -582,8 +582,21 @@ void fn_3_3BE50(void) {
 }
 
 // .text:0x0003C1A8 size:0x78 mapped:0x8067B23C
-void fn_3_3C1A8(void) {
-    return;
+void fn_3_3C1A8(s32 index) {
+    Fielder* fielder = &g_Fielders[index];
+
+    if (fielder->unk1EC != 0) {
+        return;
+    }
+    if (fn_3_53130(index) != 0) {
+        return;
+    }
+
+    fielder->unk50 = lbl_3_rodata_B20;
+    fielder->unk1E3 = 1;
+    fielder->unk1D5 = 0;
+    fielder->prevPos[0] = fielder->pos[0];
+    fielder->prevPos[2] = fielder->pos[2];
 }
 
 // .text:0x0003C220 size:0x50 mapped:0x8067B2B4

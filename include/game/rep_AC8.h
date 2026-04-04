@@ -114,7 +114,7 @@ void fn_3_3B764(void);
 void fn_3_3B99C(void);
 void fn_3_3B9E4(void);
 void fn_3_3BE50(void);
-void fn_3_3C1A8(void);
+void fn_3_3C1A8(s32 index);
 void fn_3_3C220(s32 index);
 void fn_3_3C270(void);
 void fn_3_3C484(void);
