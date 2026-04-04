@@ -2,6 +2,7 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 #include "game/rep_3448.h"
+#include "game/gap_EA340.h"
 
 // .text:0x00091520 size:0x540 mapped:0x806D05B4
 void fn_3_91520(void) {
@@ -267,7 +268,16 @@ void fn_3_9669C(void) {
 
 // .text:0x00096914 size:0x78 mapped:0x806D59A8
 void fn_3_96914(void) {
-    return;
+    if (lbl_3_common_bss_32724.unk_C7 != 0) {
+        return;
+    }
+    if (g_GameLogic.hudElementLoadingInd == 0) {
+        return;
+    }
+    fn_800B0A5C_insertQueue(fn_3_9669C, 2);
+    if (g_d_GameSettings.GameModeSelected == 6) {
+        fn_800B0A5C_insertQueue(fn_3_ED574, 2);
+    }
 }
 
 // .text:0x0009698C size:0x318 mapped:0x806D5A20
