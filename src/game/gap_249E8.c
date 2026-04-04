@@ -39,29 +39,13 @@ void fn_3_24DBC(s32 arg0) {
 
 // .text:0x00024EA0 size:0x80 mapped:0x80663F34
 void fn_3_24EA0(void) {
-    register s32 halfOffset;
-    register s32 byteOffset;
-    register s32 index;
-    s32 flagOffset;
-    register s32 zero;
-    register s16 minusOne;
-    register Bss1323CItem* volatile* basePtr;
+    s32 i;
 
-    halfOffset = 0;
-    byteOffset = halfOffset;
-    index = 0;
-    zero = halfOffset;
-    minusOne = -1;
-    basePtr = &lbl_3_common_bss_1323C;
-    do {
-        *(s16*)((u8*)(*basePtr) + halfOffset + 0x240) = minusOne;
-        memset((u8*)(*basePtr) + byteOffset, 0, 0x2C);
-        flagOffset = index + 0x261;
-        ((u8*)(*basePtr))[flagOffset] = zero;
-        index++;
-        halfOffset += 2;
-        byteOffset += 0x2C;
-    } while (index < 0xD);
+    for (i = 0; i < 13; i++) {
+        lbl_3_common_bss_1323C->unk240[i] = -1;
+        memset(&lbl_3_common_bss_1323C->unk0[i], 0, 0x2C);
+        lbl_3_common_bss_1323C->unk261[i] = 0;
+    }
 }
 
 // .text:0x00024F20 size:0x4 mapped:0x80663FB4
