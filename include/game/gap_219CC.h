@@ -19,7 +19,8 @@ typedef struct {
     u8 unk25F;         // 0x25F
     u8 _pad260;
     u8 unk261[13];     // 0x261
-    u8 _pad26E[0xE];
+    u8 _pad26E[0xD];
+    u8 unk27B;         // 0x27B
     u8 unk27C;         // 0x27C
     u8 unk27D;         // 0x27D
     u8 unk27E;         // 0x27E

@@ -58,5 +58,14 @@ void fn_3_24F24(void) {
 
 // .text:0x000250FC size:0xE8 mapped:0x80664190
 void fn_3_250FC(void) {
-    return;
+    s32 i;
+    lbl_3_common_bss_1323C->unk25C = 0;
+
+    for (i=0; i < 0x21; i++) {
+        lbl_3_data_2398[i].unk34 = 0;
+        lbl_3_data_2398[i].unk38 = 0;
+        lbl_3_data_2398[i].unk3C = 0;
+    }
+
+    lbl_3_common_bss_1323C->unk27B = 0;
 }
