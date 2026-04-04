@@ -7,7 +7,21 @@ extern f32 lbl_3_rodata_590;
 
 // .text:0x00006530 size:0x78 mapped:0x806455C4
 void fn_3_6530(void) {
-    return;
+    g_Ball.someCollisionInd = 1;
+
+    if (g_Ball.ballState == 2) {
+        g_Ball.ballState = 1;
+    }
+
+    g_Ball.someCollisionInd = 1;
+    g_Ball.currentStarSwing = 0;
+    g_Ball.inAirOrBefore2ndBounceOrLowBallEnergy = 0;
+    g_Ball.warioWaluGarlicIsActive = 0;
+    g_Ball.autoFielderAvoidDropSpotForPeachesStarHit = 0;
+    g_Ball.physicsSubstruct.acceleration.x = lbl_3_rodata_590;
+    g_Ball.physicsSubstruct.acceleration.y = lbl_3_rodata_590;
+    g_Ball.physicsSubstruct.acceleration.z = lbl_3_rodata_590;
+    fn_3_27648();
 }
 
 // .text:0x000065A8 size:0x20 mapped:0x8064563C
