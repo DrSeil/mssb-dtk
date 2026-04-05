@@ -148,7 +148,19 @@ void fn_3_B003C(void) {
 
 // .text:0x000B01E0 size:0x7C mapped:0x806EF274
 void fn_3_B01E0(void) {
-    return;
+    ballPhysica();
+    fn_3_598D0();
+
+    if (g_Ball.framesSinceHit == 0x3C) {
+        g_Fielders[0].pos[0] = g_Pitcher.pitcherCoord.x;
+        g_Fielders[0].pos[2] = g_Pitcher.pitcherCoord.z;
+    }
+
+    fn_3_AFE0C();
+
+    if (g_Practice.instructionNumber < 0 && g_Practice.guidedPracticeCompletionRelated2 == 0) {
+        fn_3_B003C();
+    }
 }
 
 // .text:0x000B025C size:0x4C mapped:0x806EF2F0
