@@ -4,6 +4,9 @@
 #include "game/UnknownHomes_Game.h"
 
 extern f32 lbl_3_rodata_590;
+extern f32 lbl_3_rodata_59C;
+extern f32 lbl_3_rodata_5F8;
+extern f64 lbl_3_rodata_600;
 
 // .text:0x00006530 size:0x78 mapped:0x806455C4
 void fn_3_6530(void) {
@@ -209,7 +212,12 @@ void fn_3_D9EC(void) {
 
 // .text:0x0000DBD0 size:0x78 mapped:0x8064CC64
 void fn_3_DBD0(void) {
-    return;
+    f32 factor;
+
+    factor = lbl_3_rodata_59C - ((f32)g_Ball.airResistance / lbl_3_rodata_5F8);
+    g_Ball.physicsSubstruct.velocity.x *= factor;
+    g_Ball.physicsSubstruct.velocity.y *= factor;
+    g_Ball.physicsSubstruct.velocity.z *= factor;
 }
 
 // .text:0x0000DC48 size:0x68C mapped:0x8064CCDC
