@@ -2,6 +2,8 @@
 #include "header_rep_data.h"
 #include "UnknownHeaders.h"
 
+extern f32 lbl_3_rodata_21F0;
+
 // .text:0x000C1964 size:0x10 mapped:0x807009F8
 void fn_3_C1964(void) {
     lbl_3_bss_9D9C = 1;
@@ -272,8 +274,15 @@ void fn_3_C805C(void) {
 }
 
 // .text:0x000C823C size:0x78 mapped:0x807072D0
-void fn_3_C823C(void) {
-    return;
+void* fn_3_C823C(s32 arg0, Mtx m) {
+    StadiumObjectElem* obj;
+
+    obj = &lbl_3_common_bss_350E4[0].src[arg0];
+    CTRLBuildMatrix((Control*)obj, m);
+    if (obj->unk_A9 == 5) {
+        m[1][3] = lbl_3_rodata_21F0;
+    }
+    return lbl_3_common_bss_350E4[0].src[arg0].unk_78;
 }
 
 // .text:0x000C82B4 size:0x39C mapped:0x80707348

@@ -499,11 +499,14 @@ extern f32 lbl_3_rodata_1414;
 typedef struct StadiumObjectElem {
     u8 _pad[0x74];                    /* 0x00 */
     void** unk74;                     /* 0x74 */
-    u8 _pad_0x78[0x80 - 0x78];       /* 0x78 */
+    void* unk_78;                     /* 0x78 */
+    u8 _pad_0x7c[0x80 - 0x7C];       /* 0x7C */
     BALL_COLLISION_TYPE (*fnPtr)(u32, BALL_COLLISION_TYPE, CollisionStruct*);  /* 0x80 */
     u8 _pad_0x84[0x93 - 0x84];       /* 0x84 */
     u8 unk93;                         /* 0x93 */
-    u8 _pad_0x94[0xE8 - 0x94];       /* 0x94 */
+    u8 _pad_0x94[0xA9 - 0x94];       /* 0x94 */
+    u8 unk_A9;                        /* 0xA9 */
+    u8 _pad_0xaa[0xE8 - 0xAA];       /* 0xAA */
 } StadiumObjectElem;
 
 typedef struct UnknownStruct_350E4 {
@@ -522,6 +525,11 @@ typedef struct UnknownStruct_350E4 {
     /* 0x068 */ s16 unk68;
     /* 0x06A */ u8 _pad_0x6a[0x2];
     /* 0x06C */ u8 unk6C;
+    /* 0x06D */ u8 _pad_0x6d[0x78 - 0x6D];
+    /* 0x078 */ void* unk_78;
+    /* 0x07C */ u8 _pad_0x7c[0xA9 - 0x7C];
+    /* 0x0A9 */ u8 unk_A9;
+    /* 0x0AA */ u8 _pad_0xaa[0xE8 - 0xAA];
 } UnknownStruct_350E4;
 
 extern UnknownStruct_350E4 lbl_3_common_bss_350E4[];

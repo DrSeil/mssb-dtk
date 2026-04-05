@@ -56,7 +56,7 @@ void fn_3_C75B8(void);
 void fn_3_C77AC(void);
 void fn_3_C7A0C(void);
 void fn_3_C805C(void);
-void fn_3_C823C(void);
+void* fn_3_C823C(s32 arg0, Mtx m);
 void fn_3_C82B4(void);
 void fn_3_C8650(void);
 
