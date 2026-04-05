@@ -1,5 +1,20 @@
 #include "game/gap_114FC0.h"
 #include "UnknownHeaders.h"
+#include "stl/mem.h"
+#include "game/rep_1188.h"
+#include "game/rep_540.h"
+#include "game/rep_1200.h"
+#include "game/rep_AC8.h"
+
+typedef struct {
+    u8 _pad0[0x5];
+    u8 unk5;
+    u8 unk6;
+    u8 _pad7[0x5];
+} UnkSimulation31AC0;
+
+extern UnkSimulation31AC0 g_UnkSimulation_31AC0;
+extern void Set_803cb848(s32 arg0);
 
 // .text:0x00114FC0 size:0x6C mapped:0x80754054
 void fn_3_114FC0(void) {
@@ -51,7 +66,17 @@ void fn_3_1158B0(void) {
 
 // .text:0x001158F8 size:0x80 mapped:0x8075498C
 void fn_3_1158F8(void) {
-    return;
+    fn_3_6EBB4((s8)g_Minigame.minigamePlayerSelectedOrder);
+    fn_3_F1DC();
+    fn_3_751B4();
+    fn_3_58870();
+    
+    memset(g_Minigame._1D7C, 0, 0x78);
+    Set_803cb848(1);
+    
+    g_FieldingLogic.unkAE = 0;
+    g_UnkSimulation_31AC0.unk5 = 0;
+    g_UnkSimulation_31AC0.unk6 = 4;
 }
 
 // .text:0x00115978 size:0x13C mapped:0x80754A0C
@@ -108,4 +133,3 @@ void fn_3_1166CC(void) {
 void fn_3_11678C(void) {
     return;
 }
-
