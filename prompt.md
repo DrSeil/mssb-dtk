@@ -1,4 +1,4 @@
-# Decompile: `fn_3_E12F8`
+# Decompile: `fn_3_ED4FC`
 
 ## Project Background
 
@@ -191,129 +191,154 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_E12F8`
-- **Address**: `0xe12f8`
+- **Name**: `fn_3_ED4FC`
+- **Address**: `0xed4fc`
 - **Module**: `game`
-- **Source file**: `src/game/rep_2940.c`
+- **Source file**: `src/game/gap_EA340.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_E12F8, global
-/* 000E12F8 000E13CC  94 21 FF F0 */	stwu r1, -0x10(r1)
-/* 000E12FC 000E13D0  7C 08 02 A6 */	mflr r0
-/* 000E1300 000E13D4  3C 60 00 00 */	lis r3, g_hugeAnimStruct@ha
-/* 000E1304 000E13D8  90 01 00 14 */	stw r0, 0x14(r1)
-/* 000E1308 000E13DC  38 63 00 00 */	addi r3, r3, g_hugeAnimStruct@l
-/* 000E130C 000E13E0  38 00 00 00 */	li r0, 0x0
-/* 000E1310 000E13E4  80 83 2C 50 */	lwz r4, 0x2c50(r3)
-/* 000E1314 000E13E8  28 04 00 00 */	cmplwi r4, 0x0
-/* 000E1318 000E13EC  41 82 00 08 */	beq .L_000E1320
-/* 000E131C 000E13F0  98 04 02 5D */	stb r0, 0x25d(r4)
-.L_000E1320:
-/* 000E1320 000E13F4  38 63 00 04 */	addi r3, r3, 0x4
-/* 000E1324 000E13F8  80 83 2C 50 */	lwz r4, 0x2c50(r3)
-/* 000E1328 000E13FC  28 04 00 00 */	cmplwi r4, 0x0
-/* 000E132C 000E1400  41 82 00 08 */	beq .L_000E1334
-/* 000E1330 000E1404  98 04 02 5D */	stb r0, 0x25d(r4)
-.L_000E1334:
-/* 000E1334 000E1408  80 83 2C 54 */	lwz r4, 0x2c54(r3)
-/* 000E1338 000E140C  38 63 00 04 */	addi r3, r3, 0x4
-/* 000E133C 000E1410  28 04 00 00 */	cmplwi r4, 0x0
-/* 000E1340 000E1414  41 82 00 08 */	beq .L_000E1348
-/* 000E1344 000E1418  98 04 02 5D */	stb r0, 0x25d(r4)
-.L_000E1348:
-/* 000E1348 000E141C  80 83 2C 54 */	lwz r4, 0x2c54(r3)
-/* 000E134C 000E1420  28 04 00 00 */	cmplwi r4, 0x0
-/* 000E1350 000E1424  41 82 00 08 */	beq .L_000E1358
-/* 000E1354 000E1428  98 04 02 5D */	stb r0, 0x25d(r4)
-.L_000E1358:
-/* 000E1358 000E142C  4B F8 8F 05 */	bl fn_3_6A25C
-/* 000E135C 000E1430  4B F8 8E F5 */	bl fn_3_6A250
-/* 000E1360 000E1434  80 01 00 14 */	lwz r0, 0x14(r1)
-/* 000E1364 000E1438  7C 08 03 A6 */	mtlr r0
-/* 000E1368 000E143C  38 21 00 10 */	addi r1, r1, 0x10
-/* 000E136C 000E1440  4E 80 00 20 */	blr
-.endfn fn_3_E12F8
+.fn fn_3_ED4FC, global
+/* 000ED4FC 000ED5D0  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 000ED500 000ED5D4  7C 08 02 A6 */	mflr r0
+/* 000ED504 000ED5D8  3C 60 00 00 */	lis r3, lbl_3_common_bss_32724@ha
+/* 000ED508 000ED5DC  3C 80 00 00 */	lis r4, lbl_803CC1B8@ha
+/* 000ED50C 000ED5E0  90 01 00 14 */	stw r0, 0x14(r1)
+/* 000ED510 000ED5E4  38 63 00 00 */	addi r3, r3, lbl_3_common_bss_32724@l
+/* 000ED514 000ED5E8  88 03 00 96 */	lbz r0, 0x96(r3)
+/* 000ED518 000ED5EC  38 64 00 00 */	addi r3, r4, lbl_803CC1B8@l
+/* 000ED51C 000ED5F0  80 63 00 00 */	lwz r3, 0x0(r3)
+/* 000ED520 000ED5F4  28 00 00 00 */	cmplwi r0, 0x0
+/* 000ED524 000ED5F8  40 82 00 38 */	bne .L_000ED55C
+/* 000ED528 000ED5FC  3C 80 00 00 */	lis r4, g_GameLogic@ha
+/* 000ED52C 000ED600  38 84 00 00 */	addi r4, r4, g_GameLogic@l
+/* 000ED530 000ED604  88 04 01 2E */	lbz r0, 0x12e(r4)
+/* 000ED534 000ED608  28 00 00 00 */	cmplwi r0, 0x0
+/* 000ED538 000ED60C  40 82 00 24 */	bne .L_000ED55C
+/* 000ED53C 000ED610  88 04 01 1E */	lbz r0, 0x11e(r4)
+/* 000ED540 000ED614  28 00 00 03 */	cmplwi r0, 0x3
+/* 000ED544 000ED618  41 82 00 18 */	beq .L_000ED55C
+/* 000ED548 000ED61C  28 00 00 0E */	cmplwi r0, 0xe
+/* 000ED54C 000ED620  41 82 00 10 */	beq .L_000ED55C
+/* 000ED550 000ED624  88 04 01 21 */	lbz r0, 0x121(r4)
+/* 000ED554 000ED628  28 00 00 0A */	cmplwi r0, 0xa
+/* 000ED558 000ED62C  40 82 00 0C */	bne .L_000ED564
+.L_000ED55C:
+/* 000ED55C 000ED630  48 00 00 01 */	bl fn_80034CEC
+/* 000ED560 000ED634  48 00 00 01 */	bl fn_800B0A14_removeQueue
+.L_000ED564:
+/* 000ED564 000ED638  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 000ED568 000ED63C  7C 08 03 A6 */	mtlr r0
+/* 000ED56C 000ED640  38 21 00 10 */	addi r1, r1, 0x10
+/* 000ED570 000ED644  4E 80 00 20 */	blr
+.endfn fn_3_ED4FC
 ```
 
 ## Dependencies (bl calls)
 
-- `fn_3_6A250`: `/home/michael/Desktop/mssb-dtk/include/game/gap_6A160.h:void fn_3_6A250(void);`
-- `fn_3_6A25C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_6A160.h:void fn_3_6A25C(void);`
+- `fn_80034CEC`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:extern void fn_80034CEC(u32);`
+- `fn_800B0A14_removeQueue`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:extern void fn_800B0A14_removeQueue(void);`
 
 ## Referenced Symbols
 
-- `g_hugeAnimStruct`
-  - Section: .bss, Address: 0x8036E548, Type: object, Size: 0x3154 bytes
-  - Declared as: `extern hugeAnimStruct g_hugeAnimStruct;` (in `include/UnknownHeaders.h`)
-  - Accessed fields of `hugeAnimStruct`:
-  +0x2C50:
-    /* 0x0B94 */ void* field96_0xb94;
-    /* 0x0B98 */ u8 field97_0xb98[108];
-    /* 0x0C04 */ AnimationStruct fielderStructs[13]; /* [0-9]: fielders/pitcher, [10-11]: runners, [12]: extra */
-    /* 0x2C50 */ AnimationStruct* AnimationStructPtrs[13]; ◄
-    /* 0x2C84 */ struct ActLayout** actLayoutPtr;
-    /* 0x2C88 */ struct AnimBank* animBankPtr;
-    /* 0x2C8C */ void* modelDataPtr;
+- `g_GameLogic`
+  - Section: .bss, Address: 0x000318AC, Type: object, Size: 0x158 bytes
+  - Declared as: `extern GameControlsStruct g_GameLogic;` (in `include/game/UnknownHomes_Game.h`)
+  - Accessed fields of `GameControlsStruct`:
+  +0x11E:
+    /*0x118*/ s16 _118;
+    /*0x11A*/ s16 _11A;
+    /*0x11C*/ s16 _11C;
+    /*0x11E*/ E(u8, GAME_STATUS) gameStatus; ◄
+    /*0x11F*/ E(u8, GAME_STATUS) gameStatus_prev;
+    /*0x120*/ E(u8, SCENE_ID) sceneID;
+    /*0x121*/ E(u8, SECONDARY_GAME_MODE) secondaryGameMode;
+  +0x121:
+    /*0x122*/ u8 framesOfExitingToMenu;
+    /*0x123*/ u8 _123;
+    /*0x124*/ u8 _124;
+  +0x12E:
+    /*0x12B*/ u8 pre_PostMiniGameInd;        // unsure
+    /*0x12C*/ u8 minigameLastTurnSuccessInd; // unsure
+    /*0x12D*/ u8 hudElementLoadingInd;
+    /*0x12E*/ u8 hudLoadingRelated; // unsure ◄
+    /*0x12F*/ u8 _12F;
+    /*0x130*/ E(u8, WIN_TYPE) winType;
+    artificial_padding(0x130, 0x135, u8);
+- `lbl_3_common_bss_32724`
+  - Section: .bss, Address: 0x00032724, Type: object, Size: 0x124 bytes
+  - Declared as: `extern CommonBss_32724 lbl_3_common_bss_32724;` (in `include/UnknownHeaders.h`)
+  - Accessed fields of `CommonBss_32724`:
+  +0x96:
+    /* 0x90 */ s16 unk_90;
+    /* 0x92 */ s16 unk_92;
+    /* 0x94 */ u8 _pad2[0x2];
+    /* 0x96 */ u8 someStatusInd; ◄
+    /* 0x97 */ u8 _pad3a[0x3];
+    /* 0x9A */ u8 unk9A;
+    /* 0x9B */ u8 _pad3c[0xC];
+- `lbl_803CC1B8`
+  - Section: .sbss, Address: 0x803CC1B8, Type: object, Size: 0x8 bytes
+  - Declared as: `extern DrawingSceneStruct *lbl_803CC1B8;` (in `include/UnknownHeaders.h`)
 
 ## Current Diff (compiled vs target)
 
 ```
-Feedback for fn_3_E12F8 in game/game/rep_2940:
+Feedback for fn_3_ED4FC in game/game/gap_EA340:
 ----------------------------------------
 Line 0: Missing instruction in your code.
   Target: stwu r1, -0x10(r1)
 Line 1: Missing instruction in your code.
   Target: mflr r0
 Line 2: Missing instruction in your code.
-  Target: lis r3, g_hugeAnimStruct@ha
+  Target: lis r3, lbl_3_common_bss_32724@ha
 Line 3: Missing instruction in your code.
-  Target: stw r0, 0x14(r1)
+  Target: lis r4, lbl_803CC1B8@ha
 Line 4: Missing instruction in your code.
-  Target: addi r3, r3, g_hugeAnimStruct@l
+  Target: stw r0, 0x14(r1)
 Line 5: Missing instruction in your code.
-  Target: li r0, 0x0
+  Target: addi r3, r3, lbl_3_common_bss_32724@l
 Line 6: Missing instruction in your code.
-  Target: lwz r4, 0x2c50(r3)
+  Target: lbz r0, 0x96(r3)
 Line 7: Missing instruction in your code.
-  Target: cmplwi r4, 0x0
+  Target: addi r3, r4, lbl_803CC1B8@l
 Line 8: Missing instruction in your code.
-  Target: beq 0x140
+  Target: lwz r3, 0x0(r3)
 Line 9: Missing instruction in your code.
-  Target: stb r0, 0x25d(r4)
+  Target: cmplwi r0, 0x0
 Line 10: Missing instruction in your code.
-  Target: addi r3, r3, 0x4
+  Target: bne 0x321c
 Line 11: Missing instruction in your code.
-  Target: lwz r4, 0x2c50(r3)
+  Target: lis r4, g_GameLogic@ha
 Line 12: Missing instruction in your code.
-  Target: cmplwi r4, 0x0
+  Target: addi r4, r4, g_GameLogic@l
 Line 13: Missing instruction in your code.
-  Target: beq 0x154
+  Target: lbz r0, 0x12e(r4)
 Line 14: Missing instruction in your code.
-  Target: stb r0, 0x25d(r4)
+  Target: cmplwi r0, 0x0
 Line 15: Missing instruction in your code.
-  Target: lwz r4, 0x2c54(r3)
+  Target: bne 0x321c
 Line 16: Missing instruction in your code.
-  Target: addi r3, r3, 0x4
+  Target: lbz r0, 0x11e(r4)
 Line 17: Missing instruction in your code.
-  Target: cmplwi r4, 0x0
+  Target: cmplwi r0, 0x3
 Line 18: Missing instruction in your code.
-  Target: beq 0x168
+  Target: beq 0x321c
 Line 19: Missing instruction in your code.
-  Target: stb r0, 0x25d(r4)
+  Target: cmplwi r0, 0xe
 Line 20: Missing instruction in your code.
-  Target: lwz r4, 0x2c54(r3)
+  Target: beq 0x321c
 Line 21: Missing instruction in your code.
-  Target: cmplwi r4, 0x0
+  Target: lbz r0, 0x121(r4)
 Line 22: Missing instruction in your code.
-  Target: beq 0x178
+  Target: cmplwi r0, 0xa
 Line 23: Missing instruction in your code.
-  Target: stb r0, 0x25d(r4)
+  Target: bne 0x3224
 Line 24: Missing instruction in your code.
-  Target: bl fn_3_6A25C
+  Target: bl fn_80034CEC
 Line 25: Missing instruction in your code.
-  Target: bl fn_3_6A250
+  Target: bl fn_800B0A14_removeQueue
 Line 26: Missing instruction in your code.
   Target: lwz r0, 0x14(r1)
 Line 27: Missing instruction in your code.
@@ -325,110 +350,226 @@ Line 28: Missing instruction in your code.
 ## Approximate Decompilation (from m2c)
 
 ```c
-? fn_3_6A250();                                     /* extern */
-? fn_3_6A25C();                                     /* extern */
-extern ? g_hugeAnimStruct;
-
-void fn_3_E12F8(void) {
-    void *temp_r3;
-    void *temp_r4;
-    void *temp_r4_2;
-    void *temp_r4_3;
-
-    if ((void *) g_hugeAnimStruct.unk2C50 != NULL) {
-        g_hugeAnimStruct.unk2C50->unk25D = 0;
+void fn_3_ED4FC(void) {
+    if (((u8) lbl_3_common_bss_32724.someStatusInd != 0) || ((u8) g_GameLogic.hudLoadingRelated != 0) || ((u8) g_GameLogic.gameStatus == 3) || ((u8) g_GameLogic.gameStatus == 0xE) || ((u8) g_GameLogic.secondaryGameMode == 0xA)) {
+        fn_80034CEC((u32) lbl_803CC1B8);
+        fn_800B0A14_removeQueue();
     }
-    temp_r3 = &g_hugeAnimStruct + 4;
-    temp_r4 = temp_r3->unk2C50;
-    if (temp_r4 != NULL) {
-        temp_r4->unk25D = 0;
-    }
-    temp_r4_2 = temp_r3->unk2C54;
-    if (temp_r4_2 != NULL) {
-        temp_r4_2->unk25D = 0;
-    }
-    temp_r4_3 = (temp_r3 + 4)->unk2C54;
-    if (temp_r4_3 != NULL) {
-        temp_r4_3->unk25D = 0;
-    }
-    fn_3_6A25C();
-    fn_3_6A250();
 }
 ```
 
 ## Ghidra Decompilation (from in_game.c)
 
 ```c
-void FUN_8072038c(void)
+void FUN_8072c590(void)
 
 {
   int local_res4;
   int local_10;
   
-  if (hugeAnimStruct.AnimationStructPtrs[0] != (AnimationStruct *)0x0) {
-    hugeAnimStruct.AnimationStructPtrs[0]->controlFlag = 0;
+  if ((((animRelated.someStatusInd != 0) || (gameControls.hudLoadingRelated != 0)) ||
+      (gameControls.GameStatus == InningTransition)) ||
+     ((gameControls.GameStatus == Mvp/EndGameScreen ||
+      (gameControls.SecondaryGameMode == PracticeMenu)))) {
+    FUN_80034cec  /* fn_80034CEC */(currentDrawingItem);
+    removeCurrentDrawingItem();
   }
-  if (hugeAnimStruct.AnimationStructPtrs[1] != (AnimationStruct *)0x0) {
-    hugeAnimStruct.AnimationStructPtrs[1]->controlFlag = 0;
-  }
-  if (hugeAnimStruct.AnimationStructPtrs[2] != (AnimationStruct *)0x0) {
-    hugeAnimStruct.AnimationStructPtrs[2]->controlFlag = 0;
-  }
-  if (hugeAnimStruct.AnimationStructPtrs[3] != (AnimationStruct *)0x0) {
-    hugeAnimStruct.AnimationStructPtrs[3]->controlFlag = 0;
-  }
-  resetAnimationRelatedPointers();
-  AnimBlr();
   return;
 }
 ```
 
-## Header: `include/game/rep_2940.h`
+## Header: `include/game/gap_EA340.h`
 
 ```c
-#ifndef __GAME_rep_2940_H_
-#define __GAME_rep_2940_H_
+#ifndef __GAME_gap_EA340_H_
+#define __GAME_gap_EA340_H_
 
 #include "mssbTypes.h"
+#include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 
-void fn_3_E11E0(void);
-void fn_3_E12F8(void);
-void fn_3_E1370(void);
-void fn_3_E1478(void);
+extern s32 lbl_3_data_8FCC;
+extern s32 lbl_3_data_8F24;
 
-#endif // !__GAME_rep_2940_H_
+void fn_3_EA340(void);
+void fn_3_EA454(void);
+void fn_3_EA8FC(void);
+void fn_3_EAEF4(void);
+s32 fn_3_EB684(void);
+void fn_3_EB6E0(void);
+s32 fn_3_EBFD4(void);
+void fn_3_EC014(void);
+void fn_3_EC804(void);
+void fn_3_ECBB0(void);
+void fn_3_ECD48(void);
+void fn_3_ED058(void);
+void fn_3_ED0F4(void);
+void fn_3_ED244(void);
+void fn_3_ED2A8(void);
+void fn_3_ED2F4(void);
+void fn_3_ED490(void);
+void fn_3_ED4FC(void);
+void fn_3_ED574(void);
+void fn_3_ED6E0(void);
+void fn_3_ED784(void);
+void fn_3_ED818(void);
+void fn_3_EDA3C(void);
+void fn_3_EDD10(void);
+
+#endif // !__GAME_gap_EA340_H_
 ```
 
-## Source File: `src/game/rep_2940.c`
+## Source File: `src/game/gap_EA340.c`
 
 ```c
-#include "game/rep_2940.h"
-#include "header_rep_data.h"
+#include "game/gap_EA340.h"
+#include "game/rep_3448.h"
 
-// .text:0x000E11E0 size:0x118 mapped:0x80720274
-void fn_3_E11E0(void) {
+// .text:0x000EA340 size:0x114 mapped:0x807293D4
+void fn_3_EA340(void) {
     return;
 }
 
-// .text:0x000E12F8 size:0x78 mapped:0x8072038C
-void fn_3_E12F8(void) {
+// .text:0x000EA454 size:0x4A8 mapped:0x807294E8
+void fn_3_EA454(void) {
     return;
 }
 
-// .text:0x000E1370 size:0x108 mapped:0x80720404
-void fn_3_E1370(void) {
+// .text:0x000EA8FC size:0x5F8 mapped:0x80729990
+void fn_3_EA8FC(void) {
     return;
 }
 
-// .text:0x000E1478 size:0x4EC mapped:0x8072050C
-void fn_3_E1478(void) {
+// .text:0x000EAEF4 size:0x790 mapped:0x80729F88
+void fn_3_EAEF4(void) {
+    return;
+}
+
+// .text:0x000EB684 size:0x5C mapped:0x8072A718
+
+s32 fn_3_EB684(void) {
+    if (((u8) lbl_3_common_bss_32724.someStatusInd != 0) || ((u8) lbl_3_common_bss_32724._pad5[1] != 0)) {
+        return 1;
+    }
+    if (((u8) g_GameLogic.gameStatus == 1) || ((u8) g_GameLogic.gameStatus == 2) || ((u8) g_GameLogic.gameStatus == 0xB)) {
+        return 1;
+    }
+    return 0;
+}
+
+// .text:0x000EB6E0 size:0x8F4 mapped:0x8072A774
+void fn_3_EB6E0(void) {
+    return;
+}
+
+// .text:0x000EBFD4 size:0x40 mapped:0x8072B068
+s32 fn_3_EBFD4(void) {
+    if (lbl_3_common_bss_32724.someStatusInd == 0
+        && g_GameLogic.gameStatus != GAME_STATUS_LIVE_BALL
+        && g_GameLogic.gameStatus != GAME_STATUS_TRANSITION)
+        return 0;
+    return 1;
+}
+
+// .text:0x000EC014 size:0x7F0 mapped:0x8072B0A8
+void fn_3_EC014(void) {
+    return;
+}
+
+// .text:0x000EC804 size:0x3AC mapped:0x8072B898
+void fn_3_EC804(void) {
+    return;
+}
+
+// .text:0x000ECBB0 size:0x198 mapped:0x8072BC44
+void fn_3_ECBB0(void) {
+    return;
+}
+
+// .text:0x000ECD48 size:0x310 mapped:0x8072BDDC
+void fn_3_ECD48(void) {
+    return;
+}
+
+// .text:0x000ED058 size:0x9C mapped:0x8072C0EC
+void fn_3_ED058(void) {
+    return;
+}
+
+// .text:0x000ED0F4 size:0x150 mapped:0x8072C188
+void fn_3_ED0F4(void) {
+    return;
+}
+
+// .text:0x000ED244 size:0x64 mapped:0x8072C2D8
+void fn_3_ED244(void) {
+    DrawingSceneStruct *scene = lbl_803CC1B8;
+    if (lbl_3_common_bss_32724.someStatusInd != 0 ||
+        lbl_80371C30[scene->unkIndex].obj->field_0x69 == 2) {
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
+}
+
+// .text:0x000ED2A8 size:0x4C mapped:0x8072C33C
+void fn_3_ED2A8(void) {
+    fn_80034E20((void(*)(void))lbl_803CC1B8, (int*)&lbl_3_data_8FCC, (void**)&lbl_803CC1B8);
+    lbl_803CC1B8->aFunctionPointer = fn_3_ED244;
+}
+
+// .text:0x000ED2F4 size:0x19C mapped:0x8072C388
+void fn_3_ED2F4(void) {
+    return;
+}
+
+// .text:0x000ED490 size:0x6C mapped:0x8072C524
+void fn_3_ED490(void) {
+    DrawingSceneStruct *r31 = lbl_803CC1B8;
+    fn_80034E20((void(*)(void))r31, (int*)&lbl_3_data_8F24, (void**)&lbl_803CC1B8);
+    g_Minigame.toyfield_waitFor_CoinsX2_AnimationToEnd = 1;
+    r31->eventID = 0;
+    lbl_803CC1B8->aFunctionPointer = fn_3_ED2F4;
+}
+
+// .text:0x000ED4FC size:0x78 mapped:0x8072C590
+void fn_3_ED4FC(void) {
+    return;
+}
+
+// .text:0x000ED574 size:0x16C mapped:0x8072C608
+void fn_3_ED574(void) {
+    return;
+}
+
+// .text:0x000ED6E0 size:0xA4 mapped:0x8072C774
+void fn_3_ED6E0(void) {
+    return;
+}
+
+// .text:0x000ED784 size:0x94 mapped:0x8072C818
+void fn_3_ED784(void) {
+    return;
+}
+
+// .text:0x000ED818 size:0x224 mapped:0x8072C8AC
+void fn_3_ED818(void) {
+    return;
+}
+
+// .text:0x000EDA3C size:0x2D4 mapped:0x8072CAD0
+void fn_3_EDA3C(void) {
+    return;
+}
+
+// .text:0x000EDD10 size:0x29C mapped:0x8072CDA4
+void fn_3_EDD10(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_E12F8` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_ED4FC` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.

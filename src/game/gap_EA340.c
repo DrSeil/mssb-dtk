@@ -109,7 +109,17 @@ void fn_3_ED490(void) {
 
 // .text:0x000ED4FC size:0x78 mapped:0x8072C590
 void fn_3_ED4FC(void) {
-    return;
+    DrawingSceneStruct *scene = lbl_803CC1B8;
+
+    if (lbl_3_common_bss_32724.someStatusInd != 0 ||
+        g_GameLogic.hudLoadingRelated != 0 ||
+        g_GameLogic.gameStatus == 3 ||
+        g_GameLogic.gameStatus == 0xE ||
+        g_GameLogic.secondaryGameMode == 0xA) {
+
+        fn_80034CEC((u32)scene);
+        fn_800B0A14_removeQueue();
+    }
 }
 
 // .text:0x000ED574 size:0x16C mapped:0x8072C608
