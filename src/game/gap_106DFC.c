@@ -1,10 +1,15 @@
 #include "game/gap_106DFC.h"
 #include "game/UnknownHomes_Game.h"
 #include "game/rep_1C0.h"
+#include "game/gap_5985C.h"
+#include "game/gap_90754.h"
+#include "game/rep_1D58.h"
 
 extern void fn_800246D4(s32 (*compareFn)(u8*, u8*), u8* out, u8* in, u32 elemSize, u8 count);
 extern void fn_8001CA40(s32 arg0);
 extern void fn_80011BE4(s32 arg0);
+extern void fn_80035B50(s32 arg0);
+extern void fn_80018B38(void);
 
 extern u8 lbl_3_data_18910[];
 extern u8 lbl_3_data_228[];
@@ -311,7 +316,20 @@ void fn_3_10AEF0(void) {
 
 // .text:0x0010B200 size:0x7C mapped:0x8074A294
 void fn_3_10B200(void) {
-    return;
+    if (g_d_GameSettings.GameModeSelected != 6) {
+        g_hugeAnimStruct.field268_0x3078 = 0;
+    }
+
+    fn_80035B50(0xD);
+    fn_3_B95EC();
+    fn_3_5E60();
+    fn_80018B38();
+    fn_3_909B0();
+    fn_3_9081C();
+    fn_80035B50(0x11);
+
+    g_Minigame._19DF = 0x1E;
+    fn_3_5A6D4(0x1D);
 }
 
 // .text:0x0010B27C size:0x654 mapped:0x8074A310
