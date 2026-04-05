@@ -472,8 +472,26 @@ u32 fn_3_11A350(s32 index) {
 }
 
 // .text:0x0011A38C size:0x7C mapped:0x80759420
-void fn_3_11A38C(void) {
-    return;
+void fn_3_11A38C(s32 index, s16 arg1) {
+    HugeAnimEntry68* entries = g_hugeAnimStruct.entries_68;
+    s32 unk70 = lbl_3_common_bss_32724.unk70;
+    f32 new_var;
+    u32 temp_r4;
+
+    entries[index].unk38 = unk70;
+    entries[index].unk42 = arg1;
+    new_var = lbl_3_rodata_33AC;
+    temp_r4 = (u32)(-unk70 | unk70) >> 31;
+    entries[index + 1].unk0 = new_var;
+    entries[index].unk8C = 1;
+    entries[index].unk8D = temp_r4;
+    entries[index].unk8E = temp_r4;
+    entries[index + 1].unk4 = new_var;
+    entries[index].unk88 = lbl_3_rodata_33E0;
+    entries[index].unk8E = 1;
+    entries[index + 1].unk0 = new_var;
+    entries[index].unk8D = 1;
+    entries[index].unk8F = 2;
 }
 
 // .text:0x0011A408 size:0x524 mapped:0x8075949C
