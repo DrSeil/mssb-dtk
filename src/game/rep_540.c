@@ -2,6 +2,7 @@
 #include "header_rep_data.h"
 
 #include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 
 extern f32 lbl_3_rodata_590;
 extern f32 lbl_3_rodata_59C;
@@ -137,7 +138,20 @@ void fn_3_9E84(void) {
 
 // .text:0x00009FA4 size:0x7C mapped:0x80649038
 void fn_3_9FA4(void) {
-    return;
+    if (g_Ball.deadBallReason == 0) {
+        g_Ball.deadballLastLoc.x = g_Ball.AtBat_Contact_BallPos.x;
+        g_Ball.deadballLastLoc.y = g_Ball.AtBat_Contact_BallPos.y;
+        g_Ball.deadballLastLoc.z = g_Ball.AtBat_Contact_BallPos.z;
+
+        g_Ball.deadBallReason = 1;
+        g_Ball.matchFramesAndBallAngle.ballOverWallFrames = 1;
+        g_Ball.AtBat_ContactResult = 1;
+        g_Ball.ballInitialHitDoneInd = 1;
+
+        if (g_d_GameSettings.GameModeSelected != 6) {
+            fn_3_59918(0xF, 0);
+        }
+    }
 }
 
 // .text:0x0000A020 size:0xD0 mapped:0x806490B4

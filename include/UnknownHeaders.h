@@ -655,7 +655,10 @@ typedef struct DrawingSceneItem {
 } DrawingSceneItem;
 
 typedef struct DrawingSceneStruct {
-    void* aFunctionPointer;
+    union {
+        void (*unk_00)(void);
+        void (*aFunctionPointer)(void);
+    };
     struct {
         struct DrawingSceneStruct *Prev;
         struct DrawingSceneStruct *Next;
@@ -672,9 +675,18 @@ typedef struct DrawingSceneStruct {
     };
     s16 unk18;
     s16 unk1a;
-    u16 eventID;
-    u16 fielderIndex;
-    s16 unk20;
+    union {
+        s16 unk_1C;
+        u16 eventID;
+    };
+    union {
+        s16 unk_1E;
+        u16 fielderIndex;
+    };
+    union {
+        s16 unk_20;
+        s16 unk20;
+    };
     short drawingState;
     u8 field14_0x24[4];
     u8 field15_0x28;
@@ -770,7 +782,9 @@ typedef struct CommonBss_32724 {
     /* 0xB5 */ u8 unk_B5;
     /* 0xB6 */ u8 _pad5;
     /* 0xB7 */ u8 unk_B7;
-    /* 0xB8 */ u8 _padB8[0x0F]; // Pad to 0xC7
+    /* 0xB8 */ u8 _padB8[0x0B]; // Pad to 0xC3
+    /* 0xC3 */ u8 unk_C3;
+    /* 0xC4 */ u8 _padC4[0x03]; // Pad to 0xC7
     /* 0xC7 */ u8 unk_C7;
     /* 0xC8 */ u8 field_0xC8;
     /* 0xC9 */ u8 field_0xC9;
@@ -883,7 +897,7 @@ extern Scores g_Scores;
 extern VecXZ lbl_3_data_446C;
 extern int lbl_3_data_F350;
 // r3 = value, r4 = address, r5 = address
-void fn_80034E20(void (*first_arg)(void), int *second_arg, void **third_arg);
+void fn_80034E20();
 extern int lbl_3_data_E120;
 extern int lbl_3_data_C1EC;
 // Identified as Vec3f_807d2604 in Ghidra

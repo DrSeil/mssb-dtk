@@ -32,9 +32,13 @@ typedef struct {
     u8 field_0x1DA;      /* 0x1DA */
     u8 _pad5[0x2B];      /* 0x1DB-0x205 */
     s8 field_0x206;      /* 0x206 */
+    u8 _pad207[0x1A];    /* 0x207 */
+    u8 unk_221;          /* 0x221 */
+    u8 _pad222[0x42];    /* 0x222 */
 } Bss34C90Item; // size: 0x264
 
 extern Bss34C90Item lbl_3_common_bss_34C90;
+extern int lbl_3_data_D9E4[];
 
 void fn_3_AC9F8(void);
 void fn_3_ACAF8(void);

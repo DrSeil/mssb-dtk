@@ -1,4 +1,6 @@
 #include "game/gap_97144.h"
+#include "UnknownHeaders.h"
+#include "game/gap_AC9F8.h"
 
 // .text:0x00097144 size:0x15C mapped:0x806D61D8
 void fn_3_97144(void) {
@@ -42,7 +44,15 @@ void fn_3_98028(void) {
 
 // .text:0x000983B8 size:0x7C mapped:0x806D744C
 void fn_3_983B8(void) {
-    return;
+    DrawingSceneStruct* scene;
+
+    scene = lbl_803CC1B8;
+    fn_80034E20(scene, lbl_3_data_D9E4);
+    lbl_3_common_bss_32724.unk_C3 = 0;
+    scene->unk_1C = 0;
+    scene->unk_1E = lbl_3_common_bss_34C90.unk_221;
+    scene->unk_20 = 0;
+    lbl_803CC1B8->unk_00 = fn_3_98028;
 }
 
 // .text:0x00098434 size:0x518 mapped:0x806D74C8
