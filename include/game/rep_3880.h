@@ -50,6 +50,16 @@ typedef struct {
 
 extern Struct_26E24 lbl_3_data_26E24;
 
+typedef struct {
+    u8 _pad0[0x4];    // 0x00
+    s32 unk_04;        // 0x04
+    u8 _pad1[0x1C];   // 0x08
+    s32 unk_24;        // 0x24
+    u8 _pad2[0x30];   // 0x28
+} Struct_26C3C;
+
+extern Struct_26C3C lbl_3_data_26C3C;
+
 void pitchingMachinePitching(s32 param);
 
 void fn_3_14737C(void);
@@ -153,7 +163,7 @@ void fn_3_1504EC(void);
 void fn_3_150940(void);
 void fn_3_150D84(void);
 void fn_3_151068(void);
-void fn_3_151204(void);
+void fn_3_151204(void* obj, void* arg1, void* arg2);
 void fn_3_151694(void* arg0, void* arg1);
 void fn_3_151710(void* arg0, void* arg1);
 void fn_3_151760(void);

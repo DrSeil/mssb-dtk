@@ -534,13 +534,18 @@ void fn_3_151068(void) {
 }
 
 // .text:0x00151204 size:0x490 mapped:0x80790298
-void fn_3_151204(void) {
+void fn_3_151204(void* obj, void* arg1, void* arg2) {
     return;
 }
 
 // .text:0x00151694 size:0x7C mapped:0x80790728
 void fn_3_151694(void* arg0, void* arg1) {
-    return;
+    void* obj;
+
+    obj = (void*)fn_80033A24(fn_3_150940, 0x80, 0, lbl_3_data_26C3C.unk_04 + lbl_3_data_26C3C.unk_24, 1, 0x1D);
+    if (obj != NULL) {
+        fn_3_151204(obj, arg0, arg1);
+    }
 }
 
 // .text:0x00151710 size:0x50 mapped:0x807907A4
