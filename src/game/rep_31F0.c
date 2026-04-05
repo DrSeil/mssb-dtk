@@ -139,9 +139,20 @@ void fn_3_1120E0(void) {
     
 }
 
-// .text:0x00112128 size:0x7C mapped:0x807511BC
+/// .text:0x00112128 size:0x7C mapped:0x807511BC
 void fn_3_112128(void) {
-    return;
+    u8 nextTurn = g_Minigame.turnNumberWithinRound + 1;
+    g_Minigame.turnNumberWithinRound = nextTurn;
+
+    if (g_Minigame.multiPlayerInd == 0) {
+        fn_3_5A6D4(0xF);
+    } else if (nextTurn >= g_Minigame.miniGameNumberOfParticipants) {
+        fn_3_5A6D4(0x19);
+    } else {
+        fn_3_5A6D4(0x7);
+    }
+
+    lbl_3_common_bss_32724.unk_B7 = 1;
 }
 
 // .text:0x001121A4 size:0x8C mapped:0x80751238
