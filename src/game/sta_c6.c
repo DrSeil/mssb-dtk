@@ -100,8 +100,15 @@ void fn_3_E6684(void) {
 }
 
 // .text:0x000E671C size:0x7C mapped:0x807257B0
-void fn_3_E671C(void) {
-    return;
+void fn_3_E671C(Arg0_E6798* arg0) {
+    NodeArray_E6798* nodeArr = arg0->unk74->unk0;
+    nodeArr->unk18[0]->unk14 = nodeArr->unk18[0]->unk18;
+    nodeArr->unk18[1]->unk14 = nodeArr->unk18[1]->unk18;
+    nodeArr->unk18[2]->unk14 = nodeArr->unk18[2]->unk18;
+    nodeArr->unk18[3]->unk14 = nodeArr->unk18[3]->unk18;
+    nodeArr->unk18[4]->unk14 = nodeArr->unk18[4]->unk18;
+    nodeArr->unk18[5]->unk14 = nodeArr->unk18[5]->unk18;
+    nodeArr->unk18[6]->unk14 = nodeArr->unk18[6]->unk18;
 }
 
 // .text:0x000E6798 size:0x5C mapped:0x8072582C

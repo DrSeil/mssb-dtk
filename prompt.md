@@ -1,4 +1,4 @@
-# Decompile: `fn_3_B01E0`
+# Decompile: `fn_3_E671C`
 
 ## Project Background
 
@@ -191,731 +191,472 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_B01E0`
-- **Address**: `0xb01e0`
+- **Name**: `fn_3_E671C`
+- **Address**: `0xe671c`
 - **Module**: `game`
-- **Source file**: `src/game/gap_AC9F8.c`
+- **Source file**: `src/game/sta_c6.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_B01E0, global
-/* 000B01E0 000B02B4  94 21 FF F0 */	stwu r1, -0x10(r1)
-/* 000B01E4 000B02B8  7C 08 02 A6 */	mflr r0
-/* 000B01E8 000B02BC  90 01 00 14 */	stw r0, 0x14(r1)
-/* 000B01EC 000B02C0  4B F5 FF 61 */	bl ballPhysica
-/* 000B01F0 000B02C4  4B FA 96 E1 */	bl fn_3_598D0
-/* 000B01F4 000B02C8  3C 60 00 00 */	lis r3, g_Ball@ha
-/* 000B01F8 000B02CC  38 63 00 00 */	addi r3, r3, g_Ball@l
-/* 000B01FC 000B02D0  A8 03 1B 66 */	lha r0, 0x1b66(r3)
-/* 000B0200 000B02D4  2C 00 00 3C */	cmpwi r0, 0x3c
-/* 000B0204 000B02D8  40 82 00 20 */	bne .L_000B0224
-/* 000B0208 000B02DC  3C 80 00 00 */	lis r4, g_Pitcher@ha
-/* 000B020C 000B02E0  3C 60 00 00 */	lis r3, g_Fielders@ha
-/* 000B0210 000B02E4  38 84 00 00 */	addi r4, r4, g_Pitcher@l
-/* 000B0214 000B02E8  C0 24 00 6C */	lfs f1, 0x6c(r4)
-/* 000B0218 000B02EC  C0 04 00 70 */	lfs f0, 0x70(r4)
-/* 000B021C 000B02F0  D4 23 00 00 */	stfsu f1, g_Fielders@l(r3)
-/* 000B0220 000B02F4  D0 03 00 08 */	stfs f0, 0x8(r3)
-.L_000B0224:
-/* 000B0224 000B02F8  4B FF FB E9 */	bl fn_3_AFE0C
-/* 000B0228 000B02FC  3C 60 00 00 */	lis r3, g_Practice@ha
-/* 000B022C 000B0300  38 63 00 00 */	addi r3, r3, g_Practice@l
-/* 000B0230 000B0304  88 03 01 C2 */	lbz r0, 0x1c2(r3)
-/* 000B0234 000B0308  7C 00 07 75 */	extsb. r0, r0
-/* 000B0238 000B030C  40 80 00 14 */	bge .L_000B024C
-/* 000B023C 000B0310  88 03 01 C9 */	lbz r0, 0x1c9(r3)
-/* 000B0240 000B0314  28 00 00 00 */	cmplwi r0, 0x0
-/* 000B0244 000B0318  40 82 00 08 */	bne .L_000B024C
-/* 000B0248 000B031C  4B FF FD F5 */	bl fn_3_B003C
-.L_000B024C:
-/* 000B024C 000B0320  80 01 00 14 */	lwz r0, 0x14(r1)
-/* 000B0250 000B0324  7C 08 03 A6 */	mtlr r0
-/* 000B0254 000B0328  38 21 00 10 */	addi r1, r1, 0x10
-/* 000B0258 000B032C  4E 80 00 20 */	blr
-.endfn fn_3_B01E0
+.fn fn_3_E671C, global
+/* 000E671C 000E67F0  80 63 00 74 */	lwz r3, 0x74(r3)
+/* 000E6720 000E67F4  80 83 00 00 */	lwz r4, 0x0(r3)
+/* 000E6724 000E67F8  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6728 000E67FC  80 63 00 00 */	lwz r3, 0x0(r3)
+/* 000E672C 000E6800  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6730 000E6804  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6734 000E6808  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6738 000E680C  80 63 00 04 */	lwz r3, 0x4(r3)
+/* 000E673C 000E6810  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6740 000E6814  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6744 000E6818  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6748 000E681C  80 63 00 08 */	lwz r3, 0x8(r3)
+/* 000E674C 000E6820  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6750 000E6824  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6754 000E6828  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6758 000E682C  80 63 00 0C */	lwz r3, 0xc(r3)
+/* 000E675C 000E6830  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6760 000E6834  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6764 000E6838  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6768 000E683C  80 63 00 10 */	lwz r3, 0x10(r3)
+/* 000E676C 000E6840  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6770 000E6844  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6774 000E6848  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6778 000E684C  80 63 00 14 */	lwz r3, 0x14(r3)
+/* 000E677C 000E6850  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6780 000E6854  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6784 000E6858  80 64 00 18 */	lwz r3, 0x18(r4)
+/* 000E6788 000E685C  80 63 00 18 */	lwz r3, 0x18(r3)
+/* 000E678C 000E6860  80 03 00 18 */	lwz r0, 0x18(r3)
+/* 000E6790 000E6864  90 03 00 14 */	stw r0, 0x14(r3)
+/* 000E6794 000E6868  4E 80 00 20 */	blr
+.endfn fn_3_E671C
 ```
-
-## Dependencies (bl calls)
-
-- `ballPhysica`: `/home/michael/Desktop/mssb-dtk/include/game/gap_FF4C.h:void ballPhysica(void);`
-- `fn_3_598D0`: `/home/michael/Desktop/mssb-dtk/include/game/gap_5985C.h:void fn_3_598D0(void);`
-- `fn_3_AFE0C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_AC9F8.h:void fn_3_AFE0C(void);`
-- `fn_3_B003C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_AC9F8.h:void fn_3_B003C(void);`
-
-## Referenced Symbols
-
-- `g_Ball`
-  - Section: .bss, Address: 0x0002FA58, Type: object, Size: 0x1BF8 bytes
-  - Declared as: `extern InMemBallType g_Ball;` (in `include/game/UnknownHomes_Game.h`)
-  - Accessed fields of `InMemBallType`:
-  +0x1B66:
-    /*0x1B60*/ s16 framesUntilBallHitsGround;
-    /*0x1B62*/ s16 framesUntilThrowReachesDest;
-    /*0x1B64*/ s16 totalFramesAtPlay;
-    /*0x1B66*/ s16 framesSinceHit; // +100 For Pickoff ◄
-    /*0x1B68*/ s16 pitchHangtimeCounter;
-    /*0x1B6A*/ s16 postPitchResultCounter;
-    /*0x1B6C*/ s16 framesSinceThrowStarted;
-- `g_Fielders`
-  - Section: .bss, Address: 0x0002E288, Type: object, Size: 0x15A8 bytes
-  - Declared as: `extern Fielder g_Fielders[];` (in `include/game/UnknownHomes_Game.h`)
-- `g_Pitcher`
-  - Section: .bss, Address: 0x0002F8E0, Type: object, Size: 0x178 bytes
-  - Declared as: `extern InMemPitcherType g_Pitcher;` (in `include/game/UnknownHomes_Game.h`)
-- `g_Practice`
-  - Section: .bss, Address: 0x00034EF4, Type: object, Size: 0x1F0 bytes
-  - Declared as: `extern PracticeStruct g_Practice;` (in `include/game/UnknownHomes_Game.h`)
-  - Accessed fields of `PracticeStruct`:
-  +0x1C2:
-    artificial_padding(0x1aa, 0x1af, u8);
-    /*0x1AF*/ u8 returnToPracticeMenuState;
-    artificial_padding(0x1af, 0x1c2, u8);
-    /*0x1C2*/ s8 instructionNumber; ◄
-    /*0x1C3*/ u8 readyToMoveToNextInstruction; // unsure
-    /*0x1C4*/ u8 practice_runner_countInputForMashing;
-    /*0x1C5*/ u8 practice_fielding_enableSprinting;
-  +0x1C9:
-    /*0x1C6*/ u8 _1C6;
-    /*0x1C7*/ u8 _1C7;
-    /*0x1C8*/ u8 guidedPracticeCompletionRelated;
-    /*0x1C9*/ u8 guidedPracticeCompletionRelated2; ◄
-    /*0x1CA*/ u8 guidedPracticeCounter;
-    /*0x1CB*/ u8 _1CB;
-    /*0x1CC*/ u8 currentMessageDoneTyping;
 
 ## Current Diff (compiled vs target)
 
 ```
-Feedback for fn_3_B01E0 in game/game/gap_AC9F8:
+Feedback for fn_3_E671C in game/game/sta_c6:
 ----------------------------------------
 Line 0: Missing instruction in your code.
-  Target: stwu r1, -0x10(r1)
+  Target: lwz r3, 0x74(r3)
 Line 1: Missing instruction in your code.
-  Target: mflr r0
+  Target: lwz r4, 0x0(r3)
 Line 2: Missing instruction in your code.
-  Target: stw r0, 0x14(r1)
+  Target: lwz r3, 0x18(r4)
 Line 3: Missing instruction in your code.
-  Target: bl ballPhysica
+  Target: lwz r3, 0x0(r3)
 Line 4: Missing instruction in your code.
-  Target: bl fn_3_598D0
+  Target: lwz r0, 0x18(r3)
 Line 5: Missing instruction in your code.
-  Target: lis r3, g_Ball@ha
+  Target: stw r0, 0x14(r3)
 Line 6: Missing instruction in your code.
-  Target: addi r3, r3, g_Ball@l
+  Target: lwz r3, 0x18(r4)
 Line 7: Missing instruction in your code.
-  Target: lha r0, 0x1b66(r3)
+  Target: lwz r3, 0x4(r3)
 Line 8: Missing instruction in your code.
-  Target: cmpwi r0, 0x3c
+  Target: lwz r0, 0x18(r3)
 Line 9: Missing instruction in your code.
-  Target: bne 0x382c
+  Target: stw r0, 0x14(r3)
 Line 10: Missing instruction in your code.
-  Target: lis r4, g_Pitcher@ha
+  Target: lwz r3, 0x18(r4)
 Line 11: Missing instruction in your code.
-  Target: lis r3, g_Fielders@ha
+  Target: lwz r3, 0x8(r3)
 Line 12: Missing instruction in your code.
-  Target: addi r4, r4, g_Pitcher@l
+  Target: lwz r0, 0x18(r3)
 Line 13: Missing instruction in your code.
-  Target: lfs f1, 0x6c(r4)
+  Target: stw r0, 0x14(r3)
 Line 14: Missing instruction in your code.
-  Target: lfs f0, 0x70(r4)
+  Target: lwz r3, 0x18(r4)
 Line 15: Missing instruction in your code.
-  Target: stfsu f1, g_Fielders@l(r3)
+  Target: lwz r3, 0xc(r3)
 Line 16: Missing instruction in your code.
-  Target: stfs f0, 0x8(r3)
+  Target: lwz r0, 0x18(r3)
 Line 17: Missing instruction in your code.
-  Target: bl fn_3_AFE0C
+  Target: stw r0, 0x14(r3)
 Line 18: Missing instruction in your code.
-  Target: lis r3, g_Practice@ha
+  Target: lwz r3, 0x18(r4)
 Line 19: Missing instruction in your code.
-  Target: addi r3, r3, g_Practice@l
+  Target: lwz r3, 0x10(r3)
 Line 20: Missing instruction in your code.
-  Target: lbz r0, 0x1c2(r3)
+  Target: lwz r0, 0x18(r3)
 Line 21: Missing instruction in your code.
-  Target: extsb. r0, r0
+  Target: stw r0, 0x14(r3)
 Line 22: Missing instruction in your code.
-  Target: bge 0x3854
+  Target: lwz r3, 0x18(r4)
 Line 23: Missing instruction in your code.
-  Target: lbz r0, 0x1c9(r3)
+  Target: lwz r3, 0x14(r3)
 Line 24: Missing instruction in your code.
-  Target: cmplwi r0, 0x0
+  Target: lwz r0, 0x18(r3)
 Line 25: Missing instruction in your code.
-  Target: bne 0x3854
+  Target: stw r0, 0x14(r3)
 Line 26: Missing instruction in your code.
-  Target: bl fn_3_B003C
+  Target: lwz r3, 0x18(r4)
 Line 27: Missing instruction in your code.
-  Target: lwz r0, 0x14(r1)
+  Target: lwz r3, 0x18(r3)
 Line 28: Missing instruction in your code.
-  Target: mtlr r0
+  Target: lwz r0, 0x18(r3)
 Line 29: Missing instruction in your code.
-  Target: addi r1, r1, 0x10
+  Target: stw r0, 0x14(r3)
 ```
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-void fn_3_B01E0(void) {
-    ballPhysica();
-    fn_3_598D0();
-    if ((s16) g_Ball.framesSinceHit == 0x3C) {
-        g_Fielders->pos[0] = g_Pitcher.pitcherCoord.x;
-        g_Fielders->pos[2] = g_Pitcher.pitcherCoord.z;
-    }
-    fn_3_AFE0C();
-    if (((s8) (u8) g_Practice.instructionNumber < 0) && ((u8) g_Practice.guidedPracticeCompletionRelated2 == 0)) {
-        fn_3_B003C();
-    }
+void fn_3_E671C(void) {
+    void *temp_r3;
+    void *temp_r3_2;
+    void *temp_r3_3;
+    void *temp_r3_4;
+    void *temp_r3_5;
+    void *temp_r3_6;
+    void *temp_r3_7;
+    void *temp_r4;
+
+    temp_r4 = *M2C_ERROR(/* Read from unset register $r3 */)->unk74;
+    temp_r3 = temp_r4->unk18->unk0;
+    temp_r3->unk14 = (s32) temp_r3->unk18;
+    temp_r3_2 = temp_r4->unk18->unk4;
+    temp_r3_2->unk14 = (s32) temp_r3_2->unk18;
+    temp_r3_3 = temp_r4->unk18->unk8;
+    temp_r3_3->unk14 = (s32) temp_r3_3->unk18;
+    temp_r3_4 = temp_r4->unk18->unkC;
+    temp_r3_4->unk14 = (s32) temp_r3_4->unk18;
+    temp_r3_5 = temp_r4->unk18->unk10;
+    temp_r3_5->unk14 = (s32) temp_r3_5->unk18;
+    temp_r3_6 = temp_r4->unk18->unk14;
+    temp_r3_6->unk14 = (s32) temp_r3_6->unk18;
+    temp_r3_7 = temp_r4->unk18->unk18;
+    temp_r3_7->unk14 = (s32) temp_r3_7->unk18;
 }
 ```
 
-## Header: `include/game/gap_AC9F8.h`
+> **WARNING — wrong function signature**: m2c found unset register(s) `r3`. This means the function has parameter(s) that are not declared in the current signature. The calling convention passes arguments in r3, r4, r5, ... in order — add the missing parameter(s) to the function signature in **both** the header and source file before implementing the function body.
+
+## Header: `include/game/sta_c6.h`
 
 ```c
-#ifndef __GAME_gap_AC9F8_H_
-#define __GAME_gap_AC9F8_H_
+#ifndef __GAME_sta_c6_H_
+#define __GAME_sta_c6_H_
 
 #include "mssbTypes.h"
-#include "game/UnknownHomes_Game.h"
-#include "game/gap_B3B70.h"
-#include "game/gap_1D86C.h"
-#include "game/rep_1200.h"
-#include "game/gap_FF4C.h"
-#include "game/gap_5985C.h"
-#include "game/rep_AC8.h"
-#include "game/rep_13B8.h"
-#include "game/game_batter.h"
+#include "game/sta_c2.h"
+
+// Structs for fn_3_E6638
+typedef struct OuterPtr_E6798 {
+    struct NodeArray_E6798* unk0;  // +0x00
+} OuterPtr_E6798;
+
+typedef struct ElemNode_E6798 {
+    u8 _pad[0x14];
+    u32 unk14;  // +0x14
+    u32 unk18;  // +0x18
+} ElemNode_E6798;
+
+typedef struct NodeArray_E6798 {
+    u8 _pad[0x18];
+    ElemNode_E6798** unk18;  // +0x18
+} NodeArray_E6798;
+
+typedef struct Arg0_E6798 {
+    u8 _pad[0x74];
+    OuterPtr_E6798* unk74;  // +0x74
+} Arg0_E6798;
+
+typedef struct InnerStruct_E6638 {
+    u8 _pad[0x14];
+    u32 field_0x14;  // 0x14
+    u32 field_0x18;  // 0x18
+} InnerStruct_E6638;
+
+typedef struct MiddleStruct_E6638 {
+    u8 _pad[0x18];
+    InnerStruct_E6638** array;  // 0x18 - array of pointers
+} MiddleStruct_E6638;
+
+typedef struct OuterStruct_E6638 {
+    MiddleStruct_E6638* field_0x00;  // 0x00
+} OuterStruct_E6638;
+
+typedef struct BaseStruct_E6638 {
+    u8 _pad[0x74];
+    OuterStruct_E6638* field_0x74;  // 0x74
+} BaseStruct_E6638;
 
 typedef struct {
-    u8 _pad0[0x04];      /* 0x00 */
-    s16 field_0x04;      /* 0x04 */
-    s16 field_0x06;      /* 0x06 */
-    s16 field_0x08;      /* 0x08 */
-    u8 _pad1[0x02];      /* 0x0A */
-    s16 field_0x0C;      /* 0x0C */
-    s16 field_0x0E;      /* 0x0E */
-    s16 field_0x10;      /* 0x10 */
-    u8 _pad2[0x1BF];     /* 0x12 to 0x1D0 */
-    u8 field_0x1D1;      /* 0x1D1 */
-    u8 field_0x1D2;      /* 0x1D2 */
-    u8 _pad3[0x2];       /* 0x1D3-0x1D4 */
-    u8 field_0x1D5;      /* 0x1D5 */
-    u8 field_0x1D6;      /* 0x1D6 */
-    u8 field_0x1D7;      /* 0x1D7 */
-    u8 _pad4[0x2];       /* 0x1D8-0x1D9 */
-    u8 field_0x1DA;      /* 0x1DA */
-    u8 _pad5[0x2B];      /* 0x1DB-0x205 */
-    s8 field_0x206;      /* 0x206 */
-    u8 _pad207[0x1A];    /* 0x207 */
-    u8 unk_221;          /* 0x221 */
-    u8 _pad222[0x42];    /* 0x222 */
-} Bss34C90Item; // size: 0x264
+    u8 _pad0[0xA4];
+    u32 unkA4;      // 0xA4
+    u8 _pad1[0xC];  // 0xA8..0xB3
+    u8* unkB4;      // 0xB4
+    u8 _pad2[0x4];  // 0xB8..0xBB
+    u8* unkBC;      // 0xBC
+    u8 _pad3[0x2];  // 0xC0..0xC1
+    u8 unkC2;       // 0xC2
+} Struct_E6528;
 
-extern Bss34C90Item lbl_3_common_bss_34C90;
-extern int lbl_3_data_D9E4[];
+typedef struct {
+    u8 _pad0[0x6];
+    u8 unk6;   // +0x06
+} Inner_E5E14;
 
-void fn_3_AC9F8(void);
-void fn_3_ACAF8(void);
-void fn_3_ACD38(void);
-void fn_3_AD164(void);
-void fn_3_AD2A0(void);
-void fn_3_AD3BC(void);
-void fn_3_AD8CC(void);
-void fn_3_ADA3C(void);
-void fn_3_ADEDC(void);
-void fn_3_AE334(void);
-void fn_3_AE770(void);
-void fn_3_AE900(void);
-void fn_3_AEC50(void);
-void fn_3_AEFF8(void);
-void fn_3_AF10C(void);
-void fn_3_AF428(void);
-void fn_3_AF5A4(void);
-void fn_3_AFA64(void);
-void fn_3_AFB64(void);
-s32 fn_3_AFD48(s16 arg0);
-void fn_3_AFD80(u8 arg0);
-void fn_3_AFDA4(void);
-void fn_3_AFDC0(void);
-void fn_3_AFE0C(void);
-void fn_3_B003C(void);
-void fn_3_B01E0(void);
-void fn_3_B025C(void);
-void fn_3_B02A8(void);
-void fn_3_B03F0(void);
-void fn_3_B0464(void);
-void fn_3_B056C(void);
-void fn_3_B0874(void);
-void fn_3_B0A88(void);
-void fn_3_B0AAC(void);
-void fn_3_B0B5C(void);
-s32 fn_3_B0CF4(void);
-void fn_3_B0D2C(void);
-void fn_3_B0D78(void);
-void fn_3_B0D7C(void);
-void fn_3_B0DB0(void);
-void fn_3_B0E00(void);
-void fn_3_B1120(void);
-void fn_3_B116C(void);
-void fn_3_B11D0(void);
-void fn_3_B12F8(void);
-void fn_3_B1470(void);
-void fn_3_B1578(void);
-void fn_3_B1A30(void);
-void fn_3_B1BCC(void);
-void fn_3_B1C14(void);
-void fn_3_B1CB0(void);
-void fn_3_B1DA4(u8 arg0, u8 arg1);
-void fn_3_B1DD0(void);
-void fn_3_B254C(void);
-void fn_3_B2630(void);
-void fn_3_B274C(void);
-void fn_3_B27A4(void);
-void fn_3_B28A8(void);
-void fn_3_B2AA0(void);
-void fn_3_B2E20(void);
-void fn_3_B3288(void);
-s32 fn_3_B32B8(void);
-void fn_3_B3448(void);
-void fn_3_B3620(void);
-void fn_3_B3A28(void);
+typedef struct {
+    u8 _pad0[0x4];
+    Inner_E5E14* unk4;  // +0x04
+} Arg0_E5E14;
 
-#endif // !__GAME_gap_AC9F8_H_
+extern u8 lbl_3_data_196B4;
+extern u8 lbl_3_data_19024;
+extern u8 lbl_3_data_1963F;
+extern u8 lbl_3_data_19640;
+extern f32 lbl_3_rodata_2B90;
+extern f32 lbl_3_rodata_2B94;
+extern f32 lbl_3_rodata_2B98;
+extern f32 lbl_3_rodata_2B9C;
+extern f32 lbl_3_rodata_2BA0;
+f32 fn_800B4C40(void *boneData);
+void fn_800B4CA0(void *boneData, f32 val);
+void fn_3_E59B4(ActorObject *arg0);
+void fn_3_E5A1C(ActorObject *arg0);
+void fn_3_E5A84(void);
+void fn_3_E5CBC(void);
+int fn_3_E5E14(Arg0_E5E14* arg0);
+void fn_3_E5E70(void);
+void fn_3_E5FEC(void);
+void fn_3_E6410(void);
+void fn_3_E64A8(void);
+void fn_3_E6528(Struct_E6528* arg0);
+void fn_3_E6578(void);
+void fn_3_E6638(BaseStruct_E6638* arg0);
+void fn_3_E6684(void);
+void fn_3_E671C(void);
+void fn_3_E6798(Arg0_E6798* arg0);
+void fn_3_E67F4(void);
+void fn_3_E68A8(void);
+void fn_3_E698C(void);
+void fn_3_E6A48(void);
+void fn_3_E6D90(void);
+void fn_3_E7350(void);
+void fn_3_E7364(s32 index);
+void fn_3_E7388(void);
+void fn_3_E7424(void);
+void fn_3_E751C(void);
+void fn_3_E763C(void);
+void fn_3_E7A2C(void);
+u8 fn_3_E7B20(u32 arg0, u32 arg1);
+int fn_3_E8AC8(void);
+void fn_3_E8B24(void);
+void fn_3_E911C(void);
+
+#endif // !__GAME_sta_c6_H_
 ```
 
-## Source File: `src/game/gap_AC9F8.c`
+## Source File: `src/game/sta_c6.c`
 
 ```c
-#include "game/gap_AC9F8.h"
-#include "game/gap_1E154.h"
-#include "game/rep_540.h"
-#include "game/rep_1038.h"
-#include "game/rep_E08.h"
+#include "game/sta_c6.h"
+#include "UnknownHeaders.h"
+#include "static/UnknownHomes_Static.h"
+#include "stl/mem.h"
+#include "header_rep_data.h"
 
-// .text:0x000AC9F8 size:0x100 mapped:0x806EBA8C
-void fn_3_AC9F8(void) {
-    return;
-}
-
-// .text:0x000ACAF8 size:0x240 mapped:0x806EBB8C
-void fn_3_ACAF8(void) {
-    return;
-}
-
-// .text:0x000ACD38 size:0x42C mapped:0x806EBDCC
-void fn_3_ACD38(void) {
-    return;
-}
-
-// .text:0x000AD164 size:0x13C mapped:0x806EC1F8
-void fn_3_AD164(void) {
-    return;
-}
-
-// .text:0x000AD2A0 size:0x11C mapped:0x806EC334
-void fn_3_AD2A0(void) {
-    return;
-}
-
-// .text:0x000AD3BC size:0x510 mapped:0x806EC450
-void fn_3_AD3BC(void) {
-    return;
-}
-
-// .text:0x000AD8CC size:0x170 mapped:0x806EC960
-void fn_3_AD8CC(void) {
-    return;
-}
-
-// .text:0x000ADA3C size:0x4A0 mapped:0x806ECAD0
-void fn_3_ADA3C(void) {
-    return;
-}
-
-// .text:0x000ADEDC size:0x458 mapped:0x806ECF70
-void fn_3_ADEDC(void) {
-    return;
-}
-
-// .text:0x000AE334 size:0x43C mapped:0x806ED3C8
-void fn_3_AE334(void) {
-    return;
-}
-
-// .text:0x000AE770 size:0x190 mapped:0x806ED804
-void fn_3_AE770(void) {
-    return;
-}
-
-// .text:0x000AE900 size:0x350 mapped:0x806ED994
-void fn_3_AE900(void) {
-    return;
-}
-
-// .text:0x000AEC50 size:0x3A8 mapped:0x806EDCE4
-void fn_3_AEC50(void) {
-    return;
-}
-
-// .text:0x000AEFF8 size:0x114 mapped:0x806EE08C
-void fn_3_AEFF8(void) {
-    return;
-}
-
-// .text:0x000AF10C size:0x31C mapped:0x806EE1A0
-void fn_3_AF10C(void) {
-    return;
-}
-
-// .text:0x000AF428 size:0x17C mapped:0x806EE4BC
-void fn_3_AF428(void) {
-    return;
-}
-
-// .text:0x000AF5A4 size:0x4C0 mapped:0x806EE638
-void fn_3_AF5A4(void) {
-    return;
-}
-
-// .text:0x000AFA64 size:0x100 mapped:0x806EEAF8
-void fn_3_AFA64(void) {
-    return;
-}
-
-// .text:0x000AFB64 size:0x1E4 mapped:0x806EEBF8
-void fn_3_AFB64(void) {
-    return;
-}
-
-// .text:0x000AFD48 size:0x38 mapped:0x806EEDDC
-s32 fn_3_AFD48(s16 arg0) {
-    if ((s8) lbl_3_common_bss_34C90.field_0x206 <= 0) {
-        lbl_3_common_bss_34C90.field_0x04 = arg0;
-        lbl_3_common_bss_34C90.field_0x06 = arg0;
-        lbl_3_common_bss_34C90.field_0x08 = arg0;
-        lbl_3_common_bss_34C90.field_0x206 = 0xD;
-        return 1;
+// .text:0x000E59B4 size:0x68 mapped:0x80724A48
+void fn_3_E59B4(ActorObject *arg0) {
+    void *boneData = arg0->wrapper->boneData;
+    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B94) {
+        fn_800B4CA0(boneData, lbl_3_rodata_2B98);
     }
+    AnimateActorBones(boneData);
+}
+
+// .text:0x000E5A1C size:0x68 mapped:0x80724AB0
+void fn_3_E5A1C(ActorObject *arg0) {
+    void *boneData = arg0->wrapper->boneData;
+    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B9C) {
+        fn_800B4CA0(boneData, lbl_3_rodata_2BA0);
+    }
+    AnimateActorBones(boneData);
+}
+
+// .text:0x000E5A84 size:0x238 mapped:0x80724B18
+void fn_3_E5A84(void) {
+    return;
+}
+
+// .text:0x000E5CBC size:0x158 mapped:0x80724D50
+void fn_3_E5CBC(void) {
+    return;
+}
+
+// .text:0x000E5E14 size:0x5C mapped:0x80724EA8
+int fn_3_E5E14(Arg0_E5E14* arg0) {
+    u8 nibble = (u8)(arg0->unk4->unk6 >> 4);
+    switch (nibble) {
+    case 0:
+    case 3:
+        return 2;
+    case 5:
+        return 4;
+    case 1:
+    case 2:
+    case 4:
+        return 3;
+    default:
+        return 0;
+    }
+}
+
+// .text:0x000E5E70 size:0x17C mapped:0x80724F04
+void fn_3_E5E70(void) {
+    return;
+}
+
+// .text:0x000E5FEC size:0x424 mapped:0x80725080
+void fn_3_E5FEC(void) {
+    return;
+}
+
+// .text:0x000E6410 size:0x98 mapped:0x807254A4
+void fn_3_E6410(void) {
+    return;
+}
+
+// .text:0x000E64A8 size:0x80 mapped:0x8072553C
+void fn_3_E64A8(void) {
+    return;
+}
+
+// .text:0x000E6528 size:0x50 mapped:0x807255BC
+void fn_3_E6528(Struct_E6528* arg0) {
+    memcpy(&arg0->unkA4, arg0->unkB4, 4);
+    arg0->unkBC = &lbl_3_data_19024 + 0x64;
+    arg0->unkC2 = 0;
+}
+
+// .text:0x000E6578 size:0xC0 mapped:0x8072560C
+void fn_3_E6578(void) {
+    return;
+}
+
+// .text:0x000E6638 size:0x4C mapped:0x807256CC
+void fn_3_E6638(BaseStruct_E6638* arg0) {
+    arg0->field_0x74->field_0x00->array[0]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[0]->field_0x18;
+
+    arg0->field_0x74->field_0x00->array[1]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[1]->field_0x18;
+
+    arg0->field_0x74->field_0x00->array[2]->field_0x14 =
+        arg0->field_0x74->field_0x00->array[2]->field_0x18;
+}
+
+// .text:0x000E6684 size:0x98 mapped:0x80725718
+void fn_3_E6684(void) {
+    return;
+}
+
+// .text:0x000E671C size:0x7C mapped:0x807257B0
+void fn_3_E671C(void) {
+    return;
+}
+
+// .text:0x000E6798 size:0x5C mapped:0x8072582C
+void fn_3_E6798(Arg0_E6798* arg0) {
+    u8* flags = &lbl_3_data_196B4;
+    int i = 0;
+    NodeArray_E6798* nodeArr = arg0->unk74->unk0;
+    for (; i < 7; i++) {
+        if (*flags != 0) {
+            nodeArr->unk18[i]->unk14 = nodeArr->unk18[i]->unk18;
+        } else {
+            nodeArr->unk18[i]->unk14 = 0;
+        }
+        flags++;
+    }
+}
+
+// .text:0x000E67F4 size:0xB4 mapped:0x80725888
+void fn_3_E67F4(void) {
+    return;
+}
+
+// .text:0x000E68A8 size:0xE4 mapped:0x8072593C
+void fn_3_E68A8(void) {
+    return;
+}
+
+// .text:0x000E698C size:0xBC mapped:0x80725A20
+void fn_3_E698C(void) {
+    return;
+}
+
+// .text:0x000E6A48 size:0x348 mapped:0x80725ADC
+void fn_3_E6A48(void) {
+    return;
+}
+
+// .text:0x000E6D90 size:0x5C0 mapped:0x80725E24
+void fn_3_E6D90(void) {
+    return;
+}
+
+// .text:0x000E7350 size:0x14 mapped:0x807263E4
+void fn_3_E7350(void) {
+    lbl_3_data_1963F = lbl_3_data_19640;
+}
+
+// .text:0x000E7364 size:0x24 mapped:0x807263F8
+void fn_3_E7364(s32 index) {
+    lbl_3_data_19640 = ((u8*)lbl_3_common_bss_350E4)[index * 0xE8 + 0xC0];
+}
+
+// .text:0x000E7388 size:0x9C mapped:0x8072641C
+void fn_3_E7388(void) {
+    return;
+}
+
+// .text:0x000E7424 size:0xF8 mapped:0x807264B8
+void fn_3_E7424(void) {
+    return;
+}
+
+// .text:0x000E751C size:0x120 mapped:0x807265B0
+void fn_3_E751C(void) {
+    return;
+}
+
+// .text:0x000E763C size:0x3F0 mapped:0x807266D0
+void fn_3_E763C(void) {
+    return;
+}
+
+// .text:0x000E7A2C size:0xF4 mapped:0x80726AC0
+void fn_3_E7A2C(void) {
+    return;
+}
+
+// .text:0x000E7B20 size:0xFA8 mapped:0x80726BB4
+u8 fn_3_E7B20(u32 arg0, u32 arg1) {
     return 0;
 }
 
-// .text:0x000AFD80 size:0x24 mapped:0x806EEE14
-void fn_3_AFD80(u8 arg0) {
-    lbl_3_common_bss_34C90.field_0x1D1 = arg0;
-    lbl_3_common_bss_34C90.field_0x1D2 = 0;
-    lbl_3_common_bss_34C90.field_0x0C = 0;
-    lbl_3_common_bss_34C90.field_0x0E = 0;
-    lbl_3_common_bss_34C90.field_0x10 = 0;
-}
-
-// .text:0x000AFDA4 size:0x1C mapped:0x806EEE38
-void fn_3_AFDA4(void) {
-    lbl_3_common_bss_34C90.field_0x1D5 = 0;
-    lbl_3_common_bss_34C90.field_0x1D6 = 0;
-    lbl_3_common_bss_34C90.field_0x1D7 = 0;
-}
-
-// .text:0x000AFDC0 size:0x4C mapped:0x806EEE54
-void fn_3_AFDC0(void) {
-    g_Practice.allowPlayToEndIndicator = 0;
-    g_GameLogic.pre_PostMiniGameInd = 1;
-    g_GameLogic.minigameLastTurnSuccessInd = 1;
-    fn_3_1DD48();
-    fn_3_5A6D4(7);
-}
-
-// .text:0x000AFE0C size:0x230 mapped:0x806EEEA0
-void fn_3_AFE0C(void) {
-    return;
-}
-
-// .text:0x000B003C size:0x1A4 mapped:0x806EF0D0
-void fn_3_B003C(void) {
-    return;
-}
-
-// .text:0x000B01E0 size:0x7C mapped:0x806EF274
-void fn_3_B01E0(void) {
-    return;
-}
-
-// .text:0x000B025C size:0x4C mapped:0x806EF2F0
-void fn_3_B025C(void) {
-    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
-        fn_3_75560();
-        atBat_batter();
-        fn_3_8A958();
-        fn_3_31594();
-    }
-}
-
-// .text:0x000B02A8 size:0x148 mapped:0x806EF33C
-void fn_3_B02A8(void) {
-    return;
-}
-
-// .text:0x000B03F0 size:0x74 mapped:0x806EF484
-void fn_3_B03F0(void) {
-    fn_3_F578();
-    fn_3_753E8(0);
-    setBatterContactConstants();
-    fn_3_8A1D8();
-    fn_3_58E50();
-    fn_3_1E154();
-    fn_3_59A90();
-    fn_3_6C108();
-    g_Strikes.strikes = 0;
-    g_Strikes.balls = 0;
-    g_GameLogic._125 = 1;
-    g_GameLogic.pre_PostMiniGameInd = 1;
-    g_GameLogic.minigameLastTurnSuccessInd = 1;
-    fn_3_B02A8();
-    fn_3_6714C(0);
-}
-
-// .text:0x000B0464 size:0x108 mapped:0x806EF4F8
-void fn_3_B0464(void) {
-    return;
-}
-
-// .text:0x000B056C size:0x308 mapped:0x806EF600
-void fn_3_B056C(void) {
-    return;
-}
-
-// .text:0x000B0874 size:0x214 mapped:0x806EF908
-void fn_3_B0874(void) {
-    return;
-}
-
-// .text:0x000B0A88 size:0x24 mapped:0x806EFB1C
-void fn_3_B0A88(void) {
-    fn_3_B3C78(0);
-}
-
-// .text:0x000B0AAC size:0xB0 mapped:0x806EFB40
-void fn_3_B0AAC(void) {
-    return;
-}
-
-// .text:0x000B0B5C size:0x198 mapped:0x806EFBF0
-void fn_3_B0B5C(void) {
-    return;
-}
-
-// .text:0x000B0CF4 size:0x38 mapped:0x806EFD88
-s32 fn_3_B0CF4(void) {
-    if (g_Practice.aiBuntIndicator == 0) {
+// .text:0x000E8AC8 size:0x5C mapped:0x80727B5C
+int fn_3_E8AC8(void) {
+    if (g_d_GameSettings.StadiumID != 6) {
         return 0;
     }
-    return g_Ball.pitchHangtimeCounter > 0;
+    return (u8)fn_3_E7B20(lbl_3_common_bss_350E4[0].unk38, lbl_3_common_bss_350E4[0].unk34) != 0;
 }
 
-// .text:0x000B0D2C size:0x4C mapped:0x806EFDC0
-void fn_3_B0D2C(void) {
-    if (g_Practice.aiBuntIndicator != 0) return;
-    if ((g_Pitcher.framesUntilUnhittable + 1) != swingSoundFrame[0][1]) return;
-    g_AiLogic.batterAISwingInd = 1;
-}
-
-// .text:0x000B0D78 size:0x4 mapped:0x806EFE0C
-void fn_3_B0D78(void) {
+// .text:0x000E8B24 size:0x5F8 mapped:0x80727BB8
+void fn_3_E8B24(void) {
     return;
-}
-
-// .text:0x000B0D7C size:0x34 mapped:0x806EFE10
-void fn_3_B0D7C(void) {
-    g_Pitcher.handedness = g_Fielders[0].unk1C7;
-    g_Pitcher.curveBallSpeed = 0x7D;
-    g_Pitcher.fastBallSpeed = 0x91;
-    g_Pitcher.cursedBallStat = 0x64;
-}
-
-// .text:0x000B0DB0 size:0x50 mapped:0x806EFE44
-void fn_3_B0DB0(void) {
-    g_Practice.allowPlayToEndIndicator = 0;
-    g_GameLogic.pre_PostMiniGameInd = 1;
-    g_GameLogic.minigameLastTurnSuccessInd = 1;
-    g_GameLogic.hudLoadingRelated = 1;
-    fn_3_1DD48();
-    fn_3_5A6D4(7U);
-}
-
-// .text:0x000B0E00 size:0x320 mapped:0x806EFE94
-void fn_3_B0E00(void) {
-    return;
-}
-
-// .text:0x000B1120 size:0x4C mapped:0x806F01B4
-void fn_3_B1120(void) {
-    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
-        ballPhysica();
-        fn_3_598D0();
-        fn_3_8A958();
-        fn_3_B0E00();
-    }
-}
-
-// .text:0x000B116C size:0x64 mapped:0x806F0200
-void fn_3_B116C(void) {
-    if (g_Practice.instructionNumber >= 0 || fn_3_B32B8() == 0) {
-        if ((u8)g_Practice.hitVariablesSetIndicator == 0) {
-            fn_3_B0B5C();
-        }
-        fn_3_75560();
-        atBat_batter();
-        fn_3_8A958();
-        fn_3_31594();
-    }
-}
-
-// .text:0x000B11D0 size:0x128 mapped:0x806F0264
-void fn_3_B11D0(void) {
-    return;
-}
-
-// .text:0x000B12F8 size:0x178 mapped:0x806F038C
-void fn_3_B12F8(void) {
-    return;
-}
-
-// .text:0x000B1470 size:0x108 mapped:0x806F0504
-void fn_3_B1470(void) {
-    return;
-}
-
-// .text:0x000B1578 size:0x4B8 mapped:0x806F060C
-void fn_3_B1578(void) {
-    return;
-}
-
-// .text:0x000B1A30 size:0x19C mapped:0x806F0AC4
-void fn_3_B1A30(void) {
-    return;
-}
-
-// .text:0x000B1BCC size:0x48 mapped:0x806F0C60
-void fn_3_B1BCC(void) {
-    g_Practice.__0x1e1padding[1] = 0;
-    g_Practice.__0x1e1padding[2] = 0;
-    g_Practice.__0x1e1padding[3] = 0;
-    g_Practice.__0x1e1padding[4] = 0;
-    g_Practice._1E2 = 0;
-    g_Practice.maybeCommandData[0] = 0;
-    fn_3_B3C78(0);
-}
-
-// .text:0x000B1C14 size:0x9C mapped:0x806F0CA8
-void fn_3_B1C14(void) {
-    return;
-}
-
-// .text:0x000B1CB0 size:0xF4 mapped:0x806F0D44
-void fn_3_B1CB0(void) {
-    return;
-}
-
-// .text:0x000B1DA4 size:0x2C mapped:0x806F0E38
-void fn_3_B1DA4(u8 arg0, u8 arg1) {
-    g_Practice.loadingGuidedPractice = 1;
-    g_Practice._1D5 = 0;
-    g_Practice.practiceLevel_2 = arg0;
-    g_Practice._1D7 = arg1;
-    g_Practice._1D8 = 0;
-    g_Practice._188 = 0;
-}
-
-// .text:0x000B1DD0 size:0x77C mapped:0x806F0E64
-void fn_3_B1DD0(void) {
-    return;
-}
-
-// .text:0x000B254C size:0xE4 mapped:0x806F15E0
-void fn_3_B254C(void) {
-    return;
-}
-
-// .text:0x000B2630 size:0x11C mapped:0x806F16C4
-void fn_3_B2630(void) {
-    return;
-}
-
-// .text:0x000B274C size:0x58 mapped:0x806F17E0
-void fn_3_B274C(void) {
-    g_Practice.inputs[0].controlStickAngle = -1;
-    g_Practice.inputs[0].controlStickMagnitude = 0;
-    g_Practice.inputs[0].buttonInput = 0;
-    g_Practice.inputs[0].newButtonInput = 0;
-    g_Practice.inputs[0]._08 = 0;
-    g_Practice.inputs[0].right_left = 0;
-    g_Practice.inputs[0].up_down = 0;
-    g_Practice.inputs[0].rightTriggerDistance = 0;
-    g_Practice.inputs[0].leftTriggerDistance = 0;
-    g_Practice.inputs[1].controlStickAngle = -1;
-    g_Practice.inputs[1].controlStickMagnitude = 0;
-    g_Practice.inputs[1].buttonInput = 0;
-    g_Practice.inputs[1].newButtonInput = 0;
-    g_Practice.inputs[1]._08 = 0;
-    g_Practice.inputs[1].right_left = 0;
-    g_Practice.inputs[1].up_down = 0;
-    g_Practice.inputs[1].rightTriggerDistance = 0;
-    g_Practice.inputs[1].leftTriggerDistance = 0;
-}
-
-// .text:0x000B27A4 size:0x104 mapped:0x806F1838
-void fn_3_B27A4(void) {
-    return;
-}
-
-// .text:0x000B28A8 size:0x1F8 mapped:0x806F193C
-void fn_3_B28A8(void) {
-    return;
-}
-
-// .text:0x000B2AA0 size:0x380 mapped:0x806F1B34
-void fn_3_B2AA0(void) {
-    return;
-}
-
-// .text:0x000B2E20 size:0x468 mapped:0x806F1EB4
-void fn_3_B2E20(void) {
-    return;
-}
-
-// .text:0x000B3288 size:0x30 mapped:0x806F231C
-void fn_3_B3288(void) {
-    g_Practice.pauseMenuLoading = 0;
-    g_Practice._19F = 1;
-    g_Practice.frames_onPauseScreen = 0;
-    lbl_3_common_bss_34C90.field_0x1D2 = 0;
-    lbl_3_common_bss_34C90.field_0x1DA = 0;
-}
-
-// .text:0x000B32B8 size:0x190 mapped:0x806F234C
-s32 fn_3_B32B8(void) {
-    return;
-}
-
-// .text:0x000B3448 size:0x1D8 mapped:0x806F24DC
-void fn_3_B3448(void) {
-    return;
-}
-
-// .text:0x000B3620 size:0x408 mapped:0x806F26B4
-void fn_3_B3620(void) {
-    return;
-}
-
-// .text:0x000B3A28 size:0x24 mapped:0x806F2ABC
-void fn_3_B3A28(void) {
-    g_Practice.frames_onPauseScreen = 0;
-    lbl_3_common_bss_34C90.field_0x1D2 = 0;
-    lbl_3_common_bss_34C90.field_0x1DA = 0;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_B01E0` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_E671C` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
