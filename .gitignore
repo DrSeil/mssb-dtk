@@ -40,7 +40,7 @@ attempts/**
 .venv/**
 
 tools/aidecomp/.venv/**
-
+prompt.md
 
 docs/ghidra_annotations.json
 
