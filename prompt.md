@@ -1,4 +1,4 @@
-# Decompile: `fn_3_C823C`
+# Decompile: `fn_3_E12F8`
 
 ## Project Background
 
@@ -30,6 +30,24 @@ typedef double f64;
 ```
 
 ## Compiler Behavior Patterns (Metrowerks CodeWarrior / PowerPC)
+
+### Pointer Globals vs Array Globals
+Two distinct assembly patterns appear for globals — they require different C code:
+
+- `lis rN, SYM@ha` + `addi rDst, rN, SYM@l` → `rDst = &SYM` (symbol IS the data — array or struct in-place)
+- `lis rN, SYM@ha` + `lwz  rDst, SYM@l(rN)` → `rDst = *SYM` (symbol CONTAINS a pointer — dereference it)
+
+If the assembly uses `lwz` with `@l`, the symbol is a **pointer global**: its first field (offset 0x0)
+is a pointer to the actual data array. You must go through that field:
+```c
+// WRONG (addi pattern — symbol is the array):
+elem = &sym[arg0];
+
+// CORRECT (lwz pattern — symbol holds a pointer at offset 0):
+elem = &sym.ptr_field[arg0];
+```
+The `⚠ POINTER-GLOBAL` warning in Referenced Symbols flags this case. When you see it,
+field offsets listed belong to the **pointed-to element type**, not to the declared type of `sym`.
 
 ### Global Address Re-loading
 The compiler re-loads the base address of a global variable (using `lis`/`addi`) even if
@@ -173,472 +191,244 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_C823C`
-- **Address**: `0xc823c`
+- **Name**: `fn_3_E12F8`
+- **Address**: `0xe12f8`
 - **Module**: `game`
-- **Source file**: `src/game/rep_1FD8.c`
+- **Source file**: `src/game/rep_2940.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_C823C, global
-/* 000C823C 000C8310  94 21 FF E0 */	stwu r1, -0x20(r1)
-/* 000C8240 000C8314  7C 08 02 A6 */	mflr r0
-/* 000C8244 000C8318  3C A0 00 00 */	lis r5, lbl_3_common_bss_350E4@ha
-/* 000C8248 000C831C  90 01 00 24 */	stw r0, 0x24(r1)
-/* 000C824C 000C8320  93 E1 00 1C */	stw r31, 0x1c(r1)
-/* 000C8250 000C8324  1F E3 00 E8 */	mulli r31, r3, 0xe8
-/* 000C8254 000C8328  93 C1 00 18 */	stw r30, 0x18(r1)
-/* 000C8258 000C832C  93 A1 00 14 */	stw r29, 0x14(r1)
-/* 000C825C 000C8330  7C 9D 23 78 */	mr r29, r4
-/* 000C8260 000C8334  80 05 00 00 */	lwz r0, lbl_3_common_bss_350E4@l(r5)
-/* 000C8264 000C8338  7F C0 FA 14 */	add r30, r0, r31
-/* 000C8268 000C833C  7F C3 F3 78 */	mr r3, r30
-/* 000C826C 000C8340  48 00 00 01 */	bl CTRLBuildMatrix
-/* 000C8270 000C8344  88 1E 00 A9 */	lbz r0, 0xa9(r30)
-/* 000C8274 000C8348  28 00 00 05 */	cmplwi r0, 0x5
-/* 000C8278 000C834C  40 82 00 10 */	bne .L_000C8288
-/* 000C827C 000C8350  3C 60 00 00 */	lis r3, lbl_3_rodata_21F0@ha
-/* 000C8280 000C8354  C0 03 00 00 */	lfs f0, lbl_3_rodata_21F0@l(r3)
-/* 000C8284 000C8358  D0 1D 00 1C */	stfs f0, 0x1c(r29)
-.L_000C8288:
-/* 000C8288 000C835C  3C 60 00 00 */	lis r3, lbl_3_common_bss_350E4@ha
-/* 000C828C 000C8360  80 03 00 00 */	lwz r0, lbl_3_common_bss_350E4@l(r3)
-/* 000C8290 000C8364  7C 60 FA 14 */	add r3, r0, r31
-/* 000C8294 000C8368  80 01 00 24 */	lwz r0, 0x24(r1)
-/* 000C8298 000C836C  83 E1 00 1C */	lwz r31, 0x1c(r1)
-/* 000C829C 000C8370  83 C1 00 18 */	lwz r30, 0x18(r1)
-/* 000C82A0 000C8374  80 63 00 78 */	lwz r3, 0x78(r3)
-/* 000C82A4 000C8378  83 A1 00 14 */	lwz r29, 0x14(r1)
-/* 000C82A8 000C837C  7C 08 03 A6 */	mtlr r0
-/* 000C82AC 000C8380  38 21 00 20 */	addi r1, r1, 0x20
-/* 000C82B0 000C8384  4E 80 00 20 */	blr
-.endfn fn_3_C823C
+.fn fn_3_E12F8, global
+/* 000E12F8 000E13CC  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 000E12FC 000E13D0  7C 08 02 A6 */	mflr r0
+/* 000E1300 000E13D4  3C 60 00 00 */	lis r3, g_hugeAnimStruct@ha
+/* 000E1304 000E13D8  90 01 00 14 */	stw r0, 0x14(r1)
+/* 000E1308 000E13DC  38 63 00 00 */	addi r3, r3, g_hugeAnimStruct@l
+/* 000E130C 000E13E0  38 00 00 00 */	li r0, 0x0
+/* 000E1310 000E13E4  80 83 2C 50 */	lwz r4, 0x2c50(r3)
+/* 000E1314 000E13E8  28 04 00 00 */	cmplwi r4, 0x0
+/* 000E1318 000E13EC  41 82 00 08 */	beq .L_000E1320
+/* 000E131C 000E13F0  98 04 02 5D */	stb r0, 0x25d(r4)
+.L_000E1320:
+/* 000E1320 000E13F4  38 63 00 04 */	addi r3, r3, 0x4
+/* 000E1324 000E13F8  80 83 2C 50 */	lwz r4, 0x2c50(r3)
+/* 000E1328 000E13FC  28 04 00 00 */	cmplwi r4, 0x0
+/* 000E132C 000E1400  41 82 00 08 */	beq .L_000E1334
+/* 000E1330 000E1404  98 04 02 5D */	stb r0, 0x25d(r4)
+.L_000E1334:
+/* 000E1334 000E1408  80 83 2C 54 */	lwz r4, 0x2c54(r3)
+/* 000E1338 000E140C  38 63 00 04 */	addi r3, r3, 0x4
+/* 000E133C 000E1410  28 04 00 00 */	cmplwi r4, 0x0
+/* 000E1340 000E1414  41 82 00 08 */	beq .L_000E1348
+/* 000E1344 000E1418  98 04 02 5D */	stb r0, 0x25d(r4)
+.L_000E1348:
+/* 000E1348 000E141C  80 83 2C 54 */	lwz r4, 0x2c54(r3)
+/* 000E134C 000E1420  28 04 00 00 */	cmplwi r4, 0x0
+/* 000E1350 000E1424  41 82 00 08 */	beq .L_000E1358
+/* 000E1354 000E1428  98 04 02 5D */	stb r0, 0x25d(r4)
+.L_000E1358:
+/* 000E1358 000E142C  4B F8 8F 05 */	bl fn_3_6A25C
+/* 000E135C 000E1430  4B F8 8E F5 */	bl fn_3_6A250
+/* 000E1360 000E1434  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 000E1364 000E1438  7C 08 03 A6 */	mtlr r0
+/* 000E1368 000E143C  38 21 00 10 */	addi r1, r1, 0x10
+/* 000E136C 000E1440  4E 80 00 20 */	blr
+.endfn fn_3_E12F8
 ```
 
 ## Dependencies (bl calls)
 
-- `CTRLBuildMatrix`: `/home/michael/Desktop/mssb-dtk/include/C3/control.h:void CTRLBuildMatrix(Control *control, Mtx m);`
+- `fn_3_6A250`: `/home/michael/Desktop/mssb-dtk/include/game/gap_6A160.h:void fn_3_6A250(void);`
+- `fn_3_6A25C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_6A160.h:void fn_3_6A25C(void);`
 
 ## Referenced Symbols
 
-- `lbl_3_common_bss_350E4`
-  - Section: .bss, Address: 0x000350E4, Type: object, Size: 0x70 bytes
-  - Declared as: `extern UnknownStruct_350E4 lbl_3_common_bss_350E4[];` (in `include/UnknownHeaders.h`)
-  - ⚠ POINTER-GLOBAL pattern: assembly uses `lwz` through `lbl_3_common_bss_350E4` (not `addi`) — the symbol is a struct whose first field (offset 0x0) is a pointer to an array. Access elements via `lbl_3_common_bss_350E4.field_0x0[index]`, NOT `lbl_3_common_bss_350E4[index]`. Field offsets below belong to the pointed-to element type, not to `UnknownStruct_350E4` itself.
-- `lbl_3_rodata_21F0`
-  - Section: .rodata, Address: 0x000021F0, Type: object, Size: 0x4 bytes
-  - **NOT declared in any header** — add an extern declaration before use
+- `g_hugeAnimStruct`
+  - Section: .bss, Address: 0x8036E548, Type: object, Size: 0x3154 bytes
+  - Declared as: `extern hugeAnimStruct g_hugeAnimStruct;` (in `include/UnknownHeaders.h`)
+  - Accessed fields of `hugeAnimStruct`:
+  +0x2C50:
+    /* 0x0B94 */ void* field96_0xb94;
+    /* 0x0B98 */ u8 field97_0xb98[108];
+    /* 0x0C04 */ AnimationStruct fielderStructs[13]; /* [0-9]: fielders/pitcher, [10-11]: runners, [12]: extra */
+    /* 0x2C50 */ AnimationStruct* AnimationStructPtrs[13]; ◄
+    /* 0x2C84 */ struct ActLayout** actLayoutPtr;
+    /* 0x2C88 */ struct AnimBank* animBankPtr;
+    /* 0x2C8C */ void* modelDataPtr;
+
+## Current Diff (compiled vs target)
+
+```
+Feedback for fn_3_E12F8 in game/game/rep_2940:
+----------------------------------------
+Line 0: Missing instruction in your code.
+  Target: stwu r1, -0x10(r1)
+Line 1: Missing instruction in your code.
+  Target: mflr r0
+Line 2: Missing instruction in your code.
+  Target: lis r3, g_hugeAnimStruct@ha
+Line 3: Missing instruction in your code.
+  Target: stw r0, 0x14(r1)
+Line 4: Missing instruction in your code.
+  Target: addi r3, r3, g_hugeAnimStruct@l
+Line 5: Missing instruction in your code.
+  Target: li r0, 0x0
+Line 6: Missing instruction in your code.
+  Target: lwz r4, 0x2c50(r3)
+Line 7: Missing instruction in your code.
+  Target: cmplwi r4, 0x0
+Line 8: Missing instruction in your code.
+  Target: beq 0x140
+Line 9: Missing instruction in your code.
+  Target: stb r0, 0x25d(r4)
+Line 10: Missing instruction in your code.
+  Target: addi r3, r3, 0x4
+Line 11: Missing instruction in your code.
+  Target: lwz r4, 0x2c50(r3)
+Line 12: Missing instruction in your code.
+  Target: cmplwi r4, 0x0
+Line 13: Missing instruction in your code.
+  Target: beq 0x154
+Line 14: Missing instruction in your code.
+  Target: stb r0, 0x25d(r4)
+Line 15: Missing instruction in your code.
+  Target: lwz r4, 0x2c54(r3)
+Line 16: Missing instruction in your code.
+  Target: addi r3, r3, 0x4
+Line 17: Missing instruction in your code.
+  Target: cmplwi r4, 0x0
+Line 18: Missing instruction in your code.
+  Target: beq 0x168
+Line 19: Missing instruction in your code.
+  Target: stb r0, 0x25d(r4)
+Line 20: Missing instruction in your code.
+  Target: lwz r4, 0x2c54(r3)
+Line 21: Missing instruction in your code.
+  Target: cmplwi r4, 0x0
+Line 22: Missing instruction in your code.
+  Target: beq 0x178
+Line 23: Missing instruction in your code.
+  Target: stb r0, 0x25d(r4)
+Line 24: Missing instruction in your code.
+  Target: bl fn_3_6A25C
+Line 25: Missing instruction in your code.
+  Target: bl fn_3_6A250
+Line 26: Missing instruction in your code.
+  Target: lwz r0, 0x14(r1)
+Line 27: Missing instruction in your code.
+  Target: mtlr r0
+Line 28: Missing instruction in your code.
+  Target: addi r1, r1, 0x10
+```
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-void *fn_3_C823C(s32 arg0, f32 (*m)[4]) {
-    StadiumObjectElem *temp_r30;
+? fn_3_6A250();                                     /* extern */
+? fn_3_6A25C();                                     /* extern */
+extern ? g_hugeAnimStruct;
 
-    temp_r30 = &lbl_3_common_bss_350E4->src[arg0];
-    CTRLBuildMatrix((Control *) temp_r30, m);
-    if ((u8) temp_r30->unk_A9 == 5) {
-        m[1][3] = lbl_3_rodata_21F0;
+void fn_3_E12F8(void) {
+    void *temp_r3;
+    void *temp_r4;
+    void *temp_r4_2;
+    void *temp_r4_3;
+
+    if ((void *) g_hugeAnimStruct.unk2C50 != NULL) {
+        g_hugeAnimStruct.unk2C50->unk25D = 0;
     }
-    return lbl_3_common_bss_350E4->src[arg0].unk_78;
+    temp_r3 = &g_hugeAnimStruct + 4;
+    temp_r4 = temp_r3->unk2C50;
+    if (temp_r4 != NULL) {
+        temp_r4->unk25D = 0;
+    }
+    temp_r4_2 = temp_r3->unk2C54;
+    if (temp_r4_2 != NULL) {
+        temp_r4_2->unk25D = 0;
+    }
+    temp_r4_3 = (temp_r3 + 4)->unk2C54;
+    if (temp_r4_3 != NULL) {
+        temp_r4_3->unk25D = 0;
+    }
+    fn_3_6A25C();
+    fn_3_6A250();
 }
 ```
 
 ## Ghidra Decompilation (from in_game.c)
 
 ```c
-int FUN_807072d0(int offset,Mtx *mtx)
+void FUN_8072038c(void)
 
 {
-  astruct_11 *stadiumObject;
   int local_res4;
-  int local_20;
-  int local_c;
-  int local_8;
-  int local_4;
+  int local_10;
   
-  stadiumObject = (astruct_11 *)(stadiumObjectCollision.objectArrayPointer + offset);
-  CTRLBuildMatrix((CTRLControl *)stadiumObject,mtx);
-  if (stadiumObject->field154_0xa9 == '\x05') {
-    mtx->data[1][3] = const__0_002;
+  if (hugeAnimStruct.AnimationStructPtrs[0] != (AnimationStruct *)0x0) {
+    hugeAnimStruct.AnimationStructPtrs[0]->controlFlag = 0;
   }
-  return stadiumObjectCollision.objectArrayPointer[offset].vertexData;
+  if (hugeAnimStruct.AnimationStructPtrs[1] != (AnimationStruct *)0x0) {
+    hugeAnimStruct.AnimationStructPtrs[1]->controlFlag = 0;
+  }
+  if (hugeAnimStruct.AnimationStructPtrs[2] != (AnimationStruct *)0x0) {
+    hugeAnimStruct.AnimationStructPtrs[2]->controlFlag = 0;
+  }
+  if (hugeAnimStruct.AnimationStructPtrs[3] != (AnimationStruct *)0x0) {
+    hugeAnimStruct.AnimationStructPtrs[3]->controlFlag = 0;
+  }
+  resetAnimationRelatedPointers();
+  AnimBlr();
+  return;
 }
 ```
 
-## Header: `include/game/rep_1FD8.h`
+## Header: `include/game/rep_2940.h`
 
 ```c
-#ifndef __GAME_rep_1FD8_H_
-#define __GAME_rep_1FD8_H_
+#ifndef __GAME_rep_2940_H_
+#define __GAME_rep_2940_H_
 
 #include "mssbTypes.h"
-#include "UnknownHeaders.h"
-#include "game/sta_c2.h"
 
-extern s32 lbl_3_bss_9D9C;
-extern u8 lbl_3_bss_9DE7;
-extern u8 lbl_3_bss_9D82;
-extern u8 *lbl_3_bss_9D98;
+void fn_3_E11E0(void);
+void fn_3_E12F8(void);
+void fn_3_E1370(void);
+void fn_3_E1478(void);
 
-void fn_3_C1964(void);
-void fn_3_C1974(u8 *arg0);
-void fn_3_C19C8(void);
-void fn_3_C1C18(void);
-void fn_3_C2244(void);
-void fn_3_C2310(void);
-void fn_3_C23E0(void);
-void fn_3_C24A0(void);
-void fn_3_C2644(void);
-void fn_3_C2974(void);
-void fn_3_C298C(void);
-void fn_3_C2AA0(void);
-void fn_3_C2C80(void);
-void fn_3_C2EDC(void);
-void fn_3_C30F0(void);
-void fn_3_C366C(void *arg0, u8 arg1);
-void fn_3_C39C8(void);
-void fn_3_C3A38(void);
-void fn_3_C3C2C(void);
-void fn_3_C3E94(void);
-void fn_3_C3F70(void);
-void fn_3_C4068(void);
-void fn_3_C40EC(ActorObject* arg0);
-void fn_3_C414C(void);
-void fn_3_C42A4(void);
-void fn_3_C444C(void);
-void fn_3_C4724(void);
-void fn_3_C48D0(void);
-void fn_3_C4B80(void);
-void fn_3_C4CF4(void);
-void fn_3_C4F00(void);
-void fn_3_C5304(void);
-void fn_3_C54D0(void);
-void fn_3_C56E8(void);
-void fn_3_C597C(void);
-void fn_3_C5CE0(void);
-void fn_3_C5DDC(void);
-void fn_3_C625C(void);
-void fn_3_C63D0(void);
-void fn_3_C71CC(void);
-void fn_3_C7444(ActorObject* arg0);
-void fn_3_C749C(void);
-void fn_3_C75B8(void);
-void fn_3_C77AC(void);
-void fn_3_C7A0C(void);
-void fn_3_C805C(void);
-void* fn_3_C823C(s32 arg0, Mtx m);
-void fn_3_C82B4(void);
-void fn_3_C8650(void);
-
-#endif // !__GAME_rep_1FD8_H_
+#endif // !__GAME_rep_2940_H_
 ```
 
-## Source File: `src/game/rep_1FD8.c`
+## Source File: `src/game/rep_2940.c`
 
 ```c
-#include "game/rep_1FD8.h"
+#include "game/rep_2940.h"
 #include "header_rep_data.h"
-#include "UnknownHeaders.h"
 
-extern f32 lbl_3_rodata_21F0;
-
-// .text:0x000C1964 size:0x10 mapped:0x807009F8
-void fn_3_C1964(void) {
-    lbl_3_bss_9D9C = 1;
-}
-
-// .text:0x000C1974 size:0x54 mapped:0x80700A08
-void fn_3_C1974(u8 *arg0) {
-    QueueEntry *q = fn_800B0A5C_insertQueue(fn_3_C2644, 4);
-    q->unk10 = 0;
-    lbl_3_bss_9D98 = arg0 + 0x3C4;
-    lbl_3_bss_9D9C = 0;
-}
-
-// .text:0x000C19C8 size:0x250 mapped:0x80700A5C
-void fn_3_C19C8(void) {
+// .text:0x000E11E0 size:0x118 mapped:0x80720274
+void fn_3_E11E0(void) {
     return;
 }
 
-// .text:0x000C1C18 size:0x62C mapped:0x80700CAC
-void fn_3_C1C18(void) {
+// .text:0x000E12F8 size:0x78 mapped:0x8072038C
+void fn_3_E12F8(void) {
     return;
 }
 
-// .text:0x000C2244 size:0xCC mapped:0x807012D8
-void fn_3_C2244(void) {
+// .text:0x000E1370 size:0x108 mapped:0x80720404
+void fn_3_E1370(void) {
     return;
 }
 
-// .text:0x000C2310 size:0xD0 mapped:0x807013A4
-void fn_3_C2310(void) {
-    return;
-}
-
-// .text:0x000C23E0 size:0xC0 mapped:0x80701474
-void fn_3_C23E0(void) {
-    return;
-}
-
-// .text:0x000C24A0 size:0x1A4 mapped:0x80701534
-void fn_3_C24A0(void) {
-    return;
-}
-
-// .text:0x000C2644 size:0x330 mapped:0x807016D8
-void fn_3_C2644(void) {
-    return;
-}
-
-// .text:0x000C2974 size:0x18 mapped:0x80701A08
-void fn_3_C2974(void) {
-    lbl_3_bss_9DE7 = TRUE;
-    lbl_3_bss_9D82 = TRUE;
-}
-
-// .text:0x000C298C size:0x114 mapped:0x80701A20
-void fn_3_C298C(void) {
-    return;
-}
-
-// .text:0x000C2AA0 size:0x1E0 mapped:0x80701B34
-void fn_3_C2AA0(void) {
-    return;
-}
-
-// .text:0x000C2C80 size:0x25C mapped:0x80701D14
-void fn_3_C2C80(void) {
-    return;
-}
-
-// .text:0x000C2EDC size:0x214 mapped:0x80701F70
-void fn_3_C2EDC(void) {
-    return;
-}
-
-// .text:0x000C30F0 size:0x57C mapped:0x80702184
-void fn_3_C30F0(void) {
-    return;
-}
-
-// .text:0x000C366C size:0x35C mapped:0x80702700
-void fn_3_C366C(void *arg0, u8 arg1) {
-    return;
-}
-
-// .text:0x000C39C8 size:0x70 mapped:0x80702A5C
-void fn_3_C39C8(void) {
-    u32 i = 0;
-    do {
-        void *obj = (void *)fn_80033A24(fn_3_C30F0, 0x80, 0, 0x15, 1, 0);
-        if (obj != 0) {
-            fn_3_C366C(obj, (u8)i);
-        }
-        i++;
-    } while (i < 6);
-}
-
-// .text:0x000C3A38 size:0x1F4 mapped:0x80702ACC
-void fn_3_C3A38(void) {
-    return;
-}
-
-// .text:0x000C3C2C size:0x268 mapped:0x80702CC0
-void fn_3_C3C2C(void) {
-    return;
-}
-
-// .text:0x000C3E94 size:0xDC mapped:0x80702F28
-void fn_3_C3E94(void) {
-    return;
-}
-
-// .text:0x000C3F70 size:0xF8 mapped:0x80703004
-void fn_3_C3F70(void) {
-    return;
-}
-
-// .text:0x000C4068 size:0x84 mapped:0x807030FC
-void fn_3_C4068(void) {
-    return;
-}
-
-// .text:0x000C40EC size:0x60 mapped:0x80703180
-void fn_3_C40EC(ActorObject* arg0) {
-    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
-    u8 byte_a9 = arg0->field_0xa9;
-    AnimLevel1* level1 = has->entries_18->field_0x4;
-    AnimLevel2* level2 = level1->ptr14;
-    AnimLevel4* level4 = level2->ptr10;
-    AnimObject* obj = level4->ptr04;
-
-    if (byte_a9 != 6) {
-        obj->flags &= ~0x1FFF;
-        obj->flags |= 0x19;
-    } else {
-        obj->flags &= ~0x1FFF;
-        obj->flags |= 0x1a;
-    }
-}
-
-// .text:0x000C414C size:0x158 mapped:0x807031E0
-void fn_3_C414C(void) {
-    return;
-}
-
-// .text:0x000C42A4 size:0x1A8 mapped:0x80703338
-void fn_3_C42A4(void) {
-    return;
-}
-
-// .text:0x000C444C size:0x2D8 mapped:0x807034E0
-void fn_3_C444C(void) {
-    return;
-}
-
-// .text:0x000C4724 size:0x1AC mapped:0x807037B8
-void fn_3_C4724(void) {
-    return;
-}
-
-// .text:0x000C48D0 size:0x2B0 mapped:0x80703964
-void fn_3_C48D0(void) {
-    return;
-}
-
-// .text:0x000C4B80 size:0x174 mapped:0x80703C14
-void fn_3_C4B80(void) {
-    return;
-}
-
-// .text:0x000C4CF4 size:0x20C mapped:0x80703D88
-void fn_3_C4CF4(void) {
-    return;
-}
-
-// .text:0x000C4F00 size:0x404 mapped:0x80703F94
-void fn_3_C4F00(void) {
-    return;
-}
-
-// .text:0x000C5304 size:0x1CC mapped:0x80704398
-void fn_3_C5304(void) {
-    return;
-}
-
-// .text:0x000C54D0 size:0x218 mapped:0x80704564
-void fn_3_C54D0(void) {
-    return;
-}
-
-// .text:0x000C56E8 size:0x294 mapped:0x8070477C
-void fn_3_C56E8(void) {
-    return;
-}
-
-// .text:0x000C597C size:0x364 mapped:0x80704A10
-void fn_3_C597C(void) {
-    return;
-}
-
-// .text:0x000C5CE0 size:0xFC mapped:0x80704D74
-void fn_3_C5CE0(void) {
-    return;
-}
-
-// .text:0x000C5DDC size:0x480 mapped:0x80704E70
-void fn_3_C5DDC(void) {
-    return;
-}
-
-// .text:0x000C625C size:0x174 mapped:0x807052F0
-void fn_3_C625C(void) {
-    return;
-}
-
-// .text:0x000C63D0 size:0xDFC mapped:0x80705464
-void fn_3_C63D0(void) {
-    return;
-}
-
-// .text:0x000C71CC size:0x278 mapped:0x80706260
-void fn_3_C71CC(void) {
-    return;
-}
-
-// .text:0x000C7444 size:0x58 mapped:0x807064D8
-void fn_3_C7444(ActorObject* arg0) {
-    hugeAnimStruct* has = (hugeAnimStruct*)arg0->wrapper->boneData;
-    int state = arg0->state;
-    AnimLevel1* level1 = has->entries_18->unk34;
-    AnimLevel2* level2 = level1->ptr14;
-    AnimLevel4* level4 = level2->ptr10;
-    AnimObject* obj = level4->ptr04;
-
-    if (state == 0) {
-        obj->flags &= ~0x1FFF;
-        obj->flags |= 2;
-        return;
-    } else {
-        obj->flags &= ~0x1FFF;
-        return;
-    }
-    return;
-}
-
-// .text:0x000C749C size:0x11C mapped:0x80706530
-void fn_3_C749C(void) {
-    return;
-}
-
-// .text:0x000C75B8 size:0x1F4 mapped:0x8070664C
-void fn_3_C75B8(void) {
-    return;
-}
-
-// .text:0x000C77AC size:0x260 mapped:0x80706840
-void fn_3_C77AC(void) {
-    return;
-}
-
-// .text:0x000C7A0C size:0x650 mapped:0x80706AA0
-void fn_3_C7A0C(void) {
-    return;
-}
-
-// .text:0x000C805C size:0x1E0 mapped:0x807070F0
-void fn_3_C805C(void) {
-    return;
-}
-
-// .text:0x000C823C size:0x78 mapped:0x807072D0
-void* fn_3_C823C(s32 arg0, Mtx m) {
-    StadiumObjectElem* obj;
-
-    obj = &lbl_3_common_bss_350E4[0].src[arg0];
-    CTRLBuildMatrix((Control*)obj, m);
-    if (obj->unk_A9 == 5) {
-        m[1][3] = lbl_3_rodata_21F0;
-    }
-    return lbl_3_common_bss_350E4[0].src[arg0].unk_78;
-}
-
-// .text:0x000C82B4 size:0x39C mapped:0x80707348
-void fn_3_C82B4(void) {
-    return;
-}
-
-// .text:0x000C8650 size:0xD2C mapped:0x807076E4
-void fn_3_C8650(void) {
+// .text:0x000E1478 size:0x4EC mapped:0x8072050C
+void fn_3_E1478(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_C823C` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_E12F8` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
