@@ -1,6 +1,8 @@
 #include "game/kinoko.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/rep_3E58.h"
+#include "stl/mem.h"
 
 static KinokoState lbl_3_bss_BA00;
 
@@ -60,5 +62,16 @@ void fn_3_16B5B4(void) {
 // .text:0x0016B884 size:0xB10 mapped:0x807AA918
 void fn_3_16B884(void) {
     return;
+}
+
+// .text:0x0016C394 size:0x78 mapped:0x807AB428
+void fn_3_16C394(s8 arg0) {
+    memset(&lbl_3_data_28928, 0, 0x19E0);
+    memset(&lbl_3_bss_BAE0, 0, 0x1BF0);
+    lbl_3_data_28928.unk_19DC = arg0;
+    lbl_3_data_28928.unk_19DD = 1;
+    lbl_3_data_28928.unk_19D4 = 1;
+    fn_3_16B884();
+    fn_800B0A5C_insertQueue(fn_3_16A07C, 0);
 }
 
