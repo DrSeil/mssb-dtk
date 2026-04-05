@@ -1,4 +1,4 @@
-# Decompile: `fn_3_E671C`
+# Decompile: `fn_3_1111D0`
 
 ## Project Background
 
@@ -191,472 +191,421 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_E671C`
-- **Address**: `0xe671c`
+- **Name**: `fn_3_1111D0`
+- **Address**: `0x1111d0`
 - **Module**: `game`
-- **Source file**: `src/game/sta_c6.c`
+- **Source file**: `src/game/rep_31F0.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_E671C, global
-/* 000E671C 000E67F0  80 63 00 74 */	lwz r3, 0x74(r3)
-/* 000E6720 000E67F4  80 83 00 00 */	lwz r4, 0x0(r3)
-/* 000E6724 000E67F8  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6728 000E67FC  80 63 00 00 */	lwz r3, 0x0(r3)
-/* 000E672C 000E6800  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6730 000E6804  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6734 000E6808  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6738 000E680C  80 63 00 04 */	lwz r3, 0x4(r3)
-/* 000E673C 000E6810  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6740 000E6814  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6744 000E6818  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6748 000E681C  80 63 00 08 */	lwz r3, 0x8(r3)
-/* 000E674C 000E6820  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6750 000E6824  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6754 000E6828  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6758 000E682C  80 63 00 0C */	lwz r3, 0xc(r3)
-/* 000E675C 000E6830  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6760 000E6834  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6764 000E6838  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6768 000E683C  80 63 00 10 */	lwz r3, 0x10(r3)
-/* 000E676C 000E6840  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6770 000E6844  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6774 000E6848  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6778 000E684C  80 63 00 14 */	lwz r3, 0x14(r3)
-/* 000E677C 000E6850  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6780 000E6854  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6784 000E6858  80 64 00 18 */	lwz r3, 0x18(r4)
-/* 000E6788 000E685C  80 63 00 18 */	lwz r3, 0x18(r3)
-/* 000E678C 000E6860  80 03 00 18 */	lwz r0, 0x18(r3)
-/* 000E6790 000E6864  90 03 00 14 */	stw r0, 0x14(r3)
-/* 000E6794 000E6868  4E 80 00 20 */	blr
-.endfn fn_3_E671C
+.fn fn_3_1111D0, global
+/* 001111D0 001112A4  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 001111D4 001112A8  7C 08 02 A6 */	mflr r0
+/* 001111D8 001112AC  3C 60 00 00 */	lis r3, lbl_3_common_bss_32220@ha
+/* 001111DC 001112B0  3C 80 00 00 */	lis r4, g_Runners@ha
+/* 001111E0 001112B4  90 01 00 14 */	stw r0, 0x14(r1)
+/* 001111E4 001112B8  38 63 00 00 */	addi r3, r3, lbl_3_common_bss_32220@l
+/* 001111E8 001112BC  93 E1 00 0C */	stw r31, 0xc(r1)
+/* 001111EC 001112C0  3B E4 00 00 */	addi r31, r4, g_Runners@l
+/* 001111F0 001112C4  88 03 00 08 */	lbz r0, 0x8(r3)
+/* 001111F4 001112C8  28 00 00 04 */	cmplwi r0, 0x4
+/* 001111F8 001112CC  40 82 00 44 */	bne .L_0011123C
+/* 001111FC 001112D0  3C 60 00 00 */	lis r3, g_Ball@ha
+/* 00111200 001112D4  38 63 00 00 */	addi r3, r3, g_Ball@l
+/* 00111204 001112D8  A8 03 1B 9C */	lha r0, 0x1b9c(r3)
+/* 00111208 001112DC  2C 00 02 00 */	cmpwi r0, 0x200
+/* 0011120C 001112E0  40 80 00 08 */	bge .L_00111214
+/* 00111210 001112E4  38 00 02 00 */	li r0, 0x200
+.L_00111214:
+/* 00111214 001112E8  2C 00 06 00 */	cmpwi r0, 0x600
+/* 00111218 001112EC  40 81 00 08 */	ble .L_00111220
+/* 0011121C 001112F0  38 00 06 00 */	li r0, 0x600
+.L_00111220:
+/* 00111220 001112F4  7C 03 07 34 */	extsh r3, r0
+/* 00111224 001112F8  4B F8 ED 89 */	bl shortAngleToRad
+/* 00111228 001112FC  3C 60 00 00 */	lis r3, lbl_3_rodata_3268@ha
+/* 0011122C 00111300  FC 20 08 50 */	fneg f1, f1
+/* 00111230 00111304  C0 03 00 00 */	lfs f0, lbl_3_rodata_3268@l(r3)
+/* 00111234 00111308  EC 01 00 28 */	fsubs f0, f1, f0
+/* 00111238 0011130C  D0 1F 00 30 */	stfs f0, 0x30(r31)
+.L_0011123C:
+/* 0011123C 00111310  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 00111240 00111314  83 E1 00 0C */	lwz r31, 0xc(r1)
+/* 00111244 00111318  7C 08 03 A6 */	mtlr r0
+/* 00111248 0011131C  38 21 00 10 */	addi r1, r1, 0x10
+/* 0011124C 00111320  4E 80 00 20 */	blr
+.endfn fn_3_1111D0
 ```
 
-## Current Diff (compiled vs target)
+## Dependencies (bl calls)
 
-```
-Feedback for fn_3_E671C in game/game/sta_c6:
-----------------------------------------
-Line 0: Missing instruction in your code.
-  Target: lwz r3, 0x74(r3)
-Line 1: Missing instruction in your code.
-  Target: lwz r4, 0x0(r3)
-Line 2: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 3: Missing instruction in your code.
-  Target: lwz r3, 0x0(r3)
-Line 4: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 5: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 6: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 7: Missing instruction in your code.
-  Target: lwz r3, 0x4(r3)
-Line 8: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 9: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 10: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 11: Missing instruction in your code.
-  Target: lwz r3, 0x8(r3)
-Line 12: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 13: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 14: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 15: Missing instruction in your code.
-  Target: lwz r3, 0xc(r3)
-Line 16: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 17: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 18: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 19: Missing instruction in your code.
-  Target: lwz r3, 0x10(r3)
-Line 20: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 21: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 22: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 23: Missing instruction in your code.
-  Target: lwz r3, 0x14(r3)
-Line 24: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 25: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-Line 26: Missing instruction in your code.
-  Target: lwz r3, 0x18(r4)
-Line 27: Missing instruction in your code.
-  Target: lwz r3, 0x18(r3)
-Line 28: Missing instruction in your code.
-  Target: lwz r0, 0x18(r3)
-Line 29: Missing instruction in your code.
-  Target: stw r0, 0x14(r3)
-```
+- `shortAngleToRad`: `/home/michael/Desktop/mssb-dtk/include/game/rep_1838.h:f32 shortAngleToRad(s16 ang);`
+
+## Referenced Symbols
+
+- `g_Ball`
+  - Section: .bss, Address: 0x0002FA58, Type: object, Size: 0x1BF8 bytes
+  - Declared as: `extern InMemBallType g_Ball;` (in `include/game/UnknownHomes_Game.h`)
+  - Accessed fields of `InMemBallType`:
+  +0x1B9C:
+    /*0x1B96*/ s16 collisionRelated;
+    /*0x1B98*/ s16 _1B98; // unused_frameHitGetsAboveY=1.3
+    /*0x1B9A*/ sAng Hit_VerticalAngle;
+    /*0x1B9C*/ sAng Hit_HorizontalAngle; ◄
+    /*0x1B9E*/ s16 Hit_HorizontalPower; // bODBasePoints
+    /*0x1BA0*/ matchShorts matchFramesAndBallAngle;
+    /*0x1BBE*/ u8 ballZoneAwayFromHome;
+- `g_Runners`
+  - Section: .bss, Address: 0x0002DD38, Type: object, Size: 0x550 bytes
+  - Declared as: `extern InMemRunnerType g_Runners[4];` (in `include/game/UnknownHomes_Game.h`)
+- `lbl_3_common_bss_32220`
+  - Section: .bss, Address: 0x00032220, Type: object, Size: 0x10 bytes
+  - Declared as: `extern Struct_32220 lbl_3_common_bss_32220;` (in `include/game/rep_E08.h`)
+  - Accessed fields of `Struct_32220`:
+  +0x8:
+    u8 _pad0[0x04];
+    u16 field_0x04; // 0x04
+    u8 _pad1[0x02];
+    u8 field_0x08;  // 0x08 ◄
+    u8 _pad2[0x01];
+    u8 field_0x0a;  // 0x0a
+    u8 field_0x0B;  // 0x0b
+- `lbl_3_rodata_3268`
+  - Section: .rodata, Address: 0x00003268, Type: object, Size: 0x4 bytes
+  - **NOT declared in any header** — add an extern declaration before use
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-void fn_3_E671C(void) {
-    void *temp_r3;
-    void *temp_r3_2;
-    void *temp_r3_3;
-    void *temp_r3_4;
-    void *temp_r3_5;
-    void *temp_r3_6;
-    void *temp_r3_7;
-    void *temp_r4;
+void fn_3_1111D0(void) {
+    s16 var_r0;
 
-    temp_r4 = *M2C_ERROR(/* Read from unset register $r3 */)->unk74;
-    temp_r3 = temp_r4->unk18->unk0;
-    temp_r3->unk14 = (s32) temp_r3->unk18;
-    temp_r3_2 = temp_r4->unk18->unk4;
-    temp_r3_2->unk14 = (s32) temp_r3_2->unk18;
-    temp_r3_3 = temp_r4->unk18->unk8;
-    temp_r3_3->unk14 = (s32) temp_r3_3->unk18;
-    temp_r3_4 = temp_r4->unk18->unkC;
-    temp_r3_4->unk14 = (s32) temp_r3_4->unk18;
-    temp_r3_5 = temp_r4->unk18->unk10;
-    temp_r3_5->unk14 = (s32) temp_r3_5->unk18;
-    temp_r3_6 = temp_r4->unk18->unk14;
-    temp_r3_6->unk14 = (s32) temp_r3_6->unk18;
-    temp_r3_7 = temp_r4->unk18->unk18;
-    temp_r3_7->unk14 = (s32) temp_r3_7->unk18;
+    if ((u8) lbl_3_common_bss_32220.field_0x08 == 4) {
+        var_r0 = g_Ball.Hit_HorizontalAngle;
+        if (var_r0 < 0x200) {
+            var_r0 = 0x200;
+        }
+        if (var_r0 > 0x600) {
+            var_r0 = 0x600;
+        }
+        g_Runners->runningAngle = -shortAngleToRad(var_r0) - lbl_3_rodata_3268;
+    }
 }
 ```
 
-> **WARNING — wrong function signature**: m2c found unset register(s) `r3`. This means the function has parameter(s) that are not declared in the current signature. The calling convention passes arguments in r3, r4, r5, ... in order — add the missing parameter(s) to the function signature in **both** the header and source file before implementing the function body.
-
-## Header: `include/game/sta_c6.h`
+## Ghidra Decompilation (from in_game.c)
 
 ```c
-#ifndef __GAME_sta_c6_H_
-#define __GAME_sta_c6_H_
+void FUN_80750264(void)
+
+{
+  short sVar1;
+  double dVar2;
+  int local_res4;
+  int local_10;
+  int local_4;
+  
+  if (us_80893300.batterAnimationCode_ == 4) {
+    sVar1 = inMemBall.Hit_HorizontalAngle;
+    if (inMemBall.Hit_HorizontalAngle < 0x200) {
+      sVar1 = 0x200;
+    }
+    if (0x600 < sVar1) {
+      sVar1 = 0x600;
+    }
+    dVar2 = (double)normalizeAngle((int)sVar1);
+    inMemRunners[0].runningAngle = (float)(-dVar2 - (double)const_pi_2);
+  }
+  return;
+}
+```
+
+## Header: `include/game/rep_31F0.h`
+
+```c
+#ifndef __GAME_rep_31F0_H_
+#define __GAME_rep_31F0_H_
 
 #include "mssbTypes.h"
-#include "game/sta_c2.h"
+#include "musyx/musyx.h"
 
-// Structs for fn_3_E6638
-typedef struct OuterPtr_E6798 {
-    struct NodeArray_E6798* unk0;  // +0x00
-} OuterPtr_E6798;
+void fn_3_110634(void);
+void fn_3_110A04(void);
+void fn_3_110A38(void);
+void fn_3_110AD4(void);
+void fn_3_111038(void);
+void fn_3_1111D0(void);
+void fn_3_111250(void);
+void fn_3_1112B4(void);
+void fn_3_111738(void);
+void fn_3_1118B4(void);
+void fn_3_111A88(void);
+void fn_3_111AC4(void);
+void fn_3_111C5C(void);
+void fn_3_111F80(void);
+void fn_3_112070(void);
+void fn_3_1120E0(void);
+void fn_3_112128(void);
+void fn_3_1121A4(void);
+void fn_3_112230(void);
+void fn_3_112450(void);
+void fn_3_112558(void);
+void fn_3_1125D0(void);
+void fn_3_112610(void);
+void fn_3_1128E8(void);
+void fn_3_1128EC(void);
+void fn_3_112BD8(void);
 
-typedef struct ElemNode_E6798 {
-    u8 _pad[0x14];
-    u32 unk14;  // +0x14
-    u32 unk18;  // +0x18
-} ElemNode_E6798;
-
-typedef struct NodeArray_E6798 {
-    u8 _pad[0x18];
-    ElemNode_E6798** unk18;  // +0x18
-} NodeArray_E6798;
-
-typedef struct Arg0_E6798 {
-    u8 _pad[0x74];
-    OuterPtr_E6798* unk74;  // +0x74
-} Arg0_E6798;
-
-typedef struct InnerStruct_E6638 {
-    u8 _pad[0x14];
-    u32 field_0x14;  // 0x14
-    u32 field_0x18;  // 0x18
-} InnerStruct_E6638;
-
-typedef struct MiddleStruct_E6638 {
-    u8 _pad[0x18];
-    InnerStruct_E6638** array;  // 0x18 - array of pointers
-} MiddleStruct_E6638;
-
-typedef struct OuterStruct_E6638 {
-    MiddleStruct_E6638* field_0x00;  // 0x00
-} OuterStruct_E6638;
-
-typedef struct BaseStruct_E6638 {
-    u8 _pad[0x74];
-    OuterStruct_E6638* field_0x74;  // 0x74
-} BaseStruct_E6638;
-
-typedef struct {
-    u8 _pad0[0xA4];
-    u32 unkA4;      // 0xA4
-    u8 _pad1[0xC];  // 0xA8..0xB3
-    u8* unkB4;      // 0xB4
-    u8 _pad2[0x4];  // 0xB8..0xBB
-    u8* unkBC;      // 0xBC
-    u8 _pad3[0x2];  // 0xC0..0xC1
-    u8 unkC2;       // 0xC2
-} Struct_E6528;
-
-typedef struct {
-    u8 _pad0[0x6];
-    u8 unk6;   // +0x06
-} Inner_E5E14;
-
-typedef struct {
-    u8 _pad0[0x4];
-    Inner_E5E14* unk4;  // +0x04
-} Arg0_E5E14;
-
-extern u8 lbl_3_data_196B4;
-extern u8 lbl_3_data_19024;
-extern u8 lbl_3_data_1963F;
-extern u8 lbl_3_data_19640;
-extern f32 lbl_3_rodata_2B90;
-extern f32 lbl_3_rodata_2B94;
-extern f32 lbl_3_rodata_2B98;
-extern f32 lbl_3_rodata_2B9C;
-extern f32 lbl_3_rodata_2BA0;
-f32 fn_800B4C40(void *boneData);
-void fn_800B4CA0(void *boneData, f32 val);
-void fn_3_E59B4(ActorObject *arg0);
-void fn_3_E5A1C(ActorObject *arg0);
-void fn_3_E5A84(void);
-void fn_3_E5CBC(void);
-int fn_3_E5E14(Arg0_E5E14* arg0);
-void fn_3_E5E70(void);
-void fn_3_E5FEC(void);
-void fn_3_E6410(void);
-void fn_3_E64A8(void);
-void fn_3_E6528(Struct_E6528* arg0);
-void fn_3_E6578(void);
-void fn_3_E6638(BaseStruct_E6638* arg0);
-void fn_3_E6684(void);
-void fn_3_E671C(void);
-void fn_3_E6798(Arg0_E6798* arg0);
-void fn_3_E67F4(void);
-void fn_3_E68A8(void);
-void fn_3_E698C(void);
-void fn_3_E6A48(void);
-void fn_3_E6D90(void);
-void fn_3_E7350(void);
-void fn_3_E7364(s32 index);
-void fn_3_E7388(void);
-void fn_3_E7424(void);
-void fn_3_E751C(void);
-void fn_3_E763C(void);
-void fn_3_E7A2C(void);
-u8 fn_3_E7B20(u32 arg0, u32 arg1);
-int fn_3_E8AC8(void);
-void fn_3_E8B24(void);
-void fn_3_E911C(void);
-
-#endif // !__GAME_sta_c6_H_
+// No local headers needed.
+#endif // !__GAME_rep_31F0_H_
 ```
 
-## Source File: `src/game/sta_c6.c`
+## Source File: `src/game/rep_31F0.c`
 
 ```c
-#include "game/sta_c6.h"
+#include "game/rep_31F0.h"
 #include "UnknownHeaders.h"
-#include "static/UnknownHomes_Static.h"
-#include "stl/mem.h"
+#include "game/gap_106DFC.h"
+#include "game/UnknownHomes_Game.h"
+#include "game/rep_E08.h"
 #include "header_rep_data.h"
+#include "stl/mem.h"
 
-// .text:0x000E59B4 size:0x68 mapped:0x80724A48
-void fn_3_E59B4(ActorObject *arg0) {
-    void *boneData = arg0->wrapper->boneData;
-    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B94) {
-        fn_800B4CA0(boneData, lbl_3_rodata_2B98);
-    }
-    AnimateActorBones(boneData);
-}
+extern f32 shortAngleToRad(s16 ang);
+extern f32 lbl_3_rodata_3268;
+extern void fn_8003A540(s32 arg0, GameControlsStruct* arg1);
 
-// .text:0x000E5A1C size:0x68 mapped:0x80724AB0
-void fn_3_E5A1C(ActorObject *arg0) {
-    void *boneData = arg0->wrapper->boneData;
-    if (lbl_3_rodata_2B90 + fn_800B4C40(boneData) > lbl_3_rodata_2B9C) {
-        fn_800B4CA0(boneData, lbl_3_rodata_2BA0);
-    }
-    AnimateActorBones(boneData);
-}
-
-// .text:0x000E5A84 size:0x238 mapped:0x80724B18
-void fn_3_E5A84(void) {
+// .text:0x00110634 size:0x3D0 mapped:0x8074F6C8
+void fn_3_110634(void) {
     return;
 }
 
-// .text:0x000E5CBC size:0x158 mapped:0x80724D50
-void fn_3_E5CBC(void) {
+// .text:0x00110A04 size:0x34 mapped:0x8074FA98
+
+void fn_3_110A04(void) {
+    /* * lis r3, g_Minigame@ha
+     * li r4, 0
+     * addi r3, r3, g_Minigame@l
+     * li r5, 0x78
+     * addi r3, r3, 0x1d7c   <-- This offset corresponds to _1D7C
+     * bl memset
+     */
+    memset(g_Minigame._1D7C, 0, 0x78);
+}
+
+// .text:0x00110A38 size:0x9C mapped:0x8074FACC
+void fn_3_110A38(void) {
     return;
 }
 
-// .text:0x000E5E14 size:0x5C mapped:0x80724EA8
-int fn_3_E5E14(Arg0_E5E14* arg0) {
-    u8 nibble = (u8)(arg0->unk4->unk6 >> 4);
-    switch (nibble) {
-    case 0:
-    case 3:
-        return 2;
-    case 5:
-        return 4;
-    case 1:
-    case 2:
-    case 4:
-        return 3;
-    default:
-        return 0;
-    }
-}
-
-// .text:0x000E5E70 size:0x17C mapped:0x80724F04
-void fn_3_E5E70(void) {
+// .text:0x00110AD4 size:0x564 mapped:0x8074FB68
+void fn_3_110AD4(void) {
     return;
 }
 
-// .text:0x000E5FEC size:0x424 mapped:0x80725080
-void fn_3_E5FEC(void) {
+// .text:0x00111038 size:0x198 mapped:0x807500CC
+void fn_3_111038(void) {
     return;
 }
 
-// .text:0x000E6410 size:0x98 mapped:0x807254A4
-void fn_3_E6410(void) {
-    return;
-}
+// .text:0x001111D0 size:0x80 mapped:0x80750264
+void fn_3_1111D0(void) {
+    InMemRunnerType* runners = g_Runners;
+    s32 angle;
 
-// .text:0x000E64A8 size:0x80 mapped:0x8072553C
-void fn_3_E64A8(void) {
-    return;
-}
-
-// .text:0x000E6528 size:0x50 mapped:0x807255BC
-void fn_3_E6528(Struct_E6528* arg0) {
-    memcpy(&arg0->unkA4, arg0->unkB4, 4);
-    arg0->unkBC = &lbl_3_data_19024 + 0x64;
-    arg0->unkC2 = 0;
-}
-
-// .text:0x000E6578 size:0xC0 mapped:0x8072560C
-void fn_3_E6578(void) {
-    return;
-}
-
-// .text:0x000E6638 size:0x4C mapped:0x807256CC
-void fn_3_E6638(BaseStruct_E6638* arg0) {
-    arg0->field_0x74->field_0x00->array[0]->field_0x14 =
-        arg0->field_0x74->field_0x00->array[0]->field_0x18;
-
-    arg0->field_0x74->field_0x00->array[1]->field_0x14 =
-        arg0->field_0x74->field_0x00->array[1]->field_0x18;
-
-    arg0->field_0x74->field_0x00->array[2]->field_0x14 =
-        arg0->field_0x74->field_0x00->array[2]->field_0x18;
-}
-
-// .text:0x000E6684 size:0x98 mapped:0x80725718
-void fn_3_E6684(void) {
-    return;
-}
-
-// .text:0x000E671C size:0x7C mapped:0x807257B0
-void fn_3_E671C(void) {
-    return;
-}
-
-// .text:0x000E6798 size:0x5C mapped:0x8072582C
-void fn_3_E6798(Arg0_E6798* arg0) {
-    u8* flags = &lbl_3_data_196B4;
-    int i = 0;
-    NodeArray_E6798* nodeArr = arg0->unk74->unk0;
-    for (; i < 7; i++) {
-        if (*flags != 0) {
-            nodeArr->unk18[i]->unk14 = nodeArr->unk18[i]->unk18;
-        } else {
-            nodeArr->unk18[i]->unk14 = 0;
+    if (lbl_3_common_bss_32220.field_0x08 == 4) {
+        angle = g_Ball.Hit_HorizontalAngle;
+        
+        if (angle < 0x200) {
+            angle = 0x200;
         }
-        flags++;
+        
+        if (angle > 0x600) {
+            angle = 0x600;
+        }
+        
+        runners[0].runningAngle = -shortAngleToRad(angle) - lbl_3_rodata_3268;
     }
 }
 
-// .text:0x000E67F4 size:0xB4 mapped:0x80725888
-void fn_3_E67F4(void) {
-    return;
-}
-
-// .text:0x000E68A8 size:0xE4 mapped:0x8072593C
-void fn_3_E68A8(void) {
-    return;
-}
-
-// .text:0x000E698C size:0xBC mapped:0x80725A20
-void fn_3_E698C(void) {
-    return;
-}
-
-// .text:0x000E6A48 size:0x348 mapped:0x80725ADC
-void fn_3_E6A48(void) {
-    return;
-}
-
-// .text:0x000E6D90 size:0x5C0 mapped:0x80725E24
-void fn_3_E6D90(void) {
-    return;
-}
-
-// .text:0x000E7350 size:0x14 mapped:0x807263E4
-void fn_3_E7350(void) {
-    lbl_3_data_1963F = lbl_3_data_19640;
-}
-
-// .text:0x000E7364 size:0x24 mapped:0x807263F8
-void fn_3_E7364(s32 index) {
-    lbl_3_data_19640 = ((u8*)lbl_3_common_bss_350E4)[index * 0xE8 + 0xC0];
-}
-
-// .text:0x000E7388 size:0x9C mapped:0x8072641C
-void fn_3_E7388(void) {
-    return;
-}
-
-// .text:0x000E7424 size:0xF8 mapped:0x807264B8
-void fn_3_E7424(void) {
-    return;
-}
-
-// .text:0x000E751C size:0x120 mapped:0x807265B0
-void fn_3_E751C(void) {
-    return;
-}
-
-// .text:0x000E763C size:0x3F0 mapped:0x807266D0
-void fn_3_E763C(void) {
-    return;
-}
-
-// .text:0x000E7A2C size:0xF4 mapped:0x80726AC0
-void fn_3_E7A2C(void) {
-    return;
-}
-
-// .text:0x000E7B20 size:0xFA8 mapped:0x80726BB4
-u8 fn_3_E7B20(u32 arg0, u32 arg1) {
-    return 0;
-}
-
-// .text:0x000E8AC8 size:0x5C mapped:0x80727B5C
-int fn_3_E8AC8(void) {
-    if (g_d_GameSettings.StadiumID != 6) {
-        return 0;
+// .text:0x00111250 size:0x64 mapped:0x807502E4
+void fn_3_111250(void) {
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+    fn_8003A540(0, &g_GameLogic);
+    if ((u8)g_Minigame.pointsTargetReachedInd == 1) {
+        fn_3_5A6D4(8);
+        return;
     }
-    return (u8)fn_3_E7B20(lbl_3_common_bss_350E4[0].unk38, lbl_3_common_bss_350E4[0].unk34) != 0;
+    fn_3_5A6D4(0);
 }
 
-// .text:0x000E8B24 size:0x5F8 mapped:0x80727BB8
-void fn_3_E8B24(void) {
+// .text:0x001112B4 size:0x484 mapped:0x80750348
+void fn_3_1112B4(void) {
+    return;
+}
+
+// .text:0x00111738 size:0x17C mapped:0x807507CC
+void fn_3_111738(void) {
+    return;
+}
+
+// .text:0x001118B4 size:0x1D4 mapped:0x80750948
+void fn_3_1118B4(void) {
+    return;
+}
+
+// .text:0x00111A88 size:0x3C mapped:0x80750B1C
+
+
+void fn_3_111A88(void) {
+    // Note: We access fields directly through the global to force the 
+    // lis/addi g_GameLogic sequence seen in the assembly.
+    
+    g_GameLogic.pre_PostMiniGameInd = 1;
+    g_GameLogic.minigameLastTurnSuccessInd = 1;
+    g_GameLogic.hudLoadingRelated = 1;
+
+    // The compiler will put 0x8 in r3 and the address of g_GameLogic in r4
+    fn_3_5A6D4(8);
+}
+
+// .text:0x00111AC4 size:0x198 mapped:0x80750B58
+void fn_3_111AC4(void) {
+    return;
+}
+
+// .text:0x00111C5C size:0x324 mapped:0x80750CF0
+void fn_3_111C5C(void) {
+    return;
+}
+
+// .text:0x00111F80 size:0xF0 mapped:0x80751014
+void fn_3_111F80(void) {
+    return;
+}
+
+// .text:0x00112070 size:0x70 mapped:0x80751104
+void fn_3_112070(void) {
+    s32 temp_r3;
+    s32 temp_ret;
+    s32 q;
+    extern void fn_3_155288(s32, MiniGameStruct *, u32);
+    extern void fn_3_DE4FC(void);
+
+    fn_3_DE4FC();
+    fn_3_5A6D4(0xE);
+    temp_ret = rand();
+    q = temp_ret / 30;
+    temp_r3 = temp_ret - q * 30;
+    g_Minigame._18A6 = temp_r3 + 0xF;
+    fn_3_155288(temp_r3, &g_Minigame, (u32)q >> 0x1F);
+    minigamesSetSomePointers();
+    minigamesGXStuff();
+    minigamesSetSomePointers2();
+}
+
+// .text:0x001120E0 size:0x48 mapped:0x80751174
+
+void fn_3_1120E0(void) {
+    // stwu r1, -0x10(r1) : Prologue
+    // lis r3, g_Scores@ha / addi r4, r3, g_Scores@l : Load struct base into r4
+    
+    // The comparison: if (highscore < threshold) jump to .L_00112110 (the '6' case)
+    // This is logically: if (highscore >= threshold) call 0xF else call 0x6
+    if (g_Scores.highscore >= g_Scores.threshold) {
+        fn_3_5A6D4(0xF);
+    } else {
+        fn_3_5A6D4(0x6);
+    }
+    
+}
+
+/// .text:0x00112128 size:0x7C mapped:0x807511BC
+void fn_3_112128(void) {
+    u8 nextTurn = g_Minigame.turnNumberWithinRound + 1;
+    g_Minigame.turnNumberWithinRound = nextTurn;
+
+    if (g_Minigame.multiPlayerInd == 0) {
+        fn_3_5A6D4(0xF);
+    } else if (nextTurn >= g_Minigame.miniGameNumberOfParticipants) {
+        fn_3_5A6D4(0x19);
+    } else {
+        fn_3_5A6D4(0x7);
+    }
+
+    lbl_3_common_bss_32724.unk_B7 = 1;
+}
+
+// .text:0x001121A4 size:0x8C mapped:0x80751238
+void fn_3_1121A4(void) {
+    return;
+}
+
+// .text:0x00112230 size:0x220 mapped:0x807512C4
+void fn_3_112230(void) {
+    return;
+}
+
+// .text:0x00112450 size:0x108 mapped:0x807514E4
+void fn_3_112450(void) {
+    return;
+}
+
+// .text:0x00112558 size:0x78 mapped:0x807515EC
+void fn_3_112558(void) {
+    s32 score;
+
+    score = g_Scores.highscore + 1;
+    g_Minigame.turnNumberWithinRound = 0;
+    g_Scores.highscore = score;
+
+    if ((u8)g_Minigame.multiPlayerInd == 0) {
+        fn_3_5A6D4(7);
+        return;
+    }
+
+    if (score == 1) {
+        fn_3_10AD48();
+    }
+
+    fn_3_5A6D4(7);
+    fn_3_10F550(4, 0);
+}
+
+// .text:0x001125D0 size:0x40 mapped:0x80751664
+
+void fn_3_1125D0(void) {
+    sndFXStartEx(0x1BD, lbl_800EFBA4.volume, 0x3F, 0);
+    fn_3_5A6D4(6);
+}
+
+// .text:0x00112610 size:0x2D8 mapped:0x807516A4
+void fn_3_112610(void) {
+    return;
+}
+
+// .text:0x001128E8 size:0x4 mapped:0x8075197C
+void fn_3_1128E8(void) {
+    return;
+}
+
+// .text:0x001128EC size:0x2EC mapped:0x80751980
+void fn_3_1128EC(void) {
+    return;
+}
+
+// .text:0x00112BD8 size:0x7C0 mapped:0x80751C6C
+void fn_3_112BD8(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_E671C` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_1111D0` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.

@@ -2,9 +2,12 @@
 #include "UnknownHeaders.h"
 #include "game/gap_106DFC.h"
 #include "game/UnknownHomes_Game.h"
+#include "game/rep_E08.h"
 #include "header_rep_data.h"
 #include "stl/mem.h"
 
+extern f32 shortAngleToRad(s16 ang);
+extern f32 lbl_3_rodata_3268;
 extern void fn_8003A540(s32 arg0, GameControlsStruct* arg1);
 
 // .text:0x00110634 size:0x3D0 mapped:0x8074F6C8
@@ -42,7 +45,22 @@ void fn_3_111038(void) {
 
 // .text:0x001111D0 size:0x80 mapped:0x80750264
 void fn_3_1111D0(void) {
-    return;
+    InMemRunnerType* runners = g_Runners;
+    s32 angle;
+
+    if (lbl_3_common_bss_32220.field_0x08 == 4) {
+        angle = g_Ball.Hit_HorizontalAngle;
+        
+        if (angle < 0x200) {
+            angle = 0x200;
+        }
+        
+        if (angle > 0x600) {
+            angle = 0x600;
+        }
+        
+        runners[0].runningAngle = -shortAngleToRad(angle) - lbl_3_rodata_3268;
+    }
 }
 
 // .text:0x00111250 size:0x64 mapped:0x807502E4
