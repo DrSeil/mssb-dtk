@@ -1,4 +1,4 @@
-# Decompile: `fn_3_ED4FC`
+# Decompile: `fn_3_151694`
 
 ## Project Background
 
@@ -191,169 +191,137 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_ED4FC`
-- **Address**: `0xed4fc`
+- **Name**: `fn_3_151694`
+- **Address**: `0x151694`
 - **Module**: `game`
-- **Source file**: `src/game/gap_EA340.c`
+- **Source file**: `src/game/rep_3880.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_ED4FC, global
-/* 000ED4FC 000ED5D0  94 21 FF F0 */	stwu r1, -0x10(r1)
-/* 000ED500 000ED5D4  7C 08 02 A6 */	mflr r0
-/* 000ED504 000ED5D8  3C 60 00 00 */	lis r3, lbl_3_common_bss_32724@ha
-/* 000ED508 000ED5DC  3C 80 00 00 */	lis r4, lbl_803CC1B8@ha
-/* 000ED50C 000ED5E0  90 01 00 14 */	stw r0, 0x14(r1)
-/* 000ED510 000ED5E4  38 63 00 00 */	addi r3, r3, lbl_3_common_bss_32724@l
-/* 000ED514 000ED5E8  88 03 00 96 */	lbz r0, 0x96(r3)
-/* 000ED518 000ED5EC  38 64 00 00 */	addi r3, r4, lbl_803CC1B8@l
-/* 000ED51C 000ED5F0  80 63 00 00 */	lwz r3, 0x0(r3)
-/* 000ED520 000ED5F4  28 00 00 00 */	cmplwi r0, 0x0
-/* 000ED524 000ED5F8  40 82 00 38 */	bne .L_000ED55C
-/* 000ED528 000ED5FC  3C 80 00 00 */	lis r4, g_GameLogic@ha
-/* 000ED52C 000ED600  38 84 00 00 */	addi r4, r4, g_GameLogic@l
-/* 000ED530 000ED604  88 04 01 2E */	lbz r0, 0x12e(r4)
-/* 000ED534 000ED608  28 00 00 00 */	cmplwi r0, 0x0
-/* 000ED538 000ED60C  40 82 00 24 */	bne .L_000ED55C
-/* 000ED53C 000ED610  88 04 01 1E */	lbz r0, 0x11e(r4)
-/* 000ED540 000ED614  28 00 00 03 */	cmplwi r0, 0x3
-/* 000ED544 000ED618  41 82 00 18 */	beq .L_000ED55C
-/* 000ED548 000ED61C  28 00 00 0E */	cmplwi r0, 0xe
-/* 000ED54C 000ED620  41 82 00 10 */	beq .L_000ED55C
-/* 000ED550 000ED624  88 04 01 21 */	lbz r0, 0x121(r4)
-/* 000ED554 000ED628  28 00 00 0A */	cmplwi r0, 0xa
-/* 000ED558 000ED62C  40 82 00 0C */	bne .L_000ED564
-.L_000ED55C:
-/* 000ED55C 000ED630  48 00 00 01 */	bl fn_80034CEC
-/* 000ED560 000ED634  48 00 00 01 */	bl fn_800B0A14_removeQueue
-.L_000ED564:
-/* 000ED564 000ED638  80 01 00 14 */	lwz r0, 0x14(r1)
-/* 000ED568 000ED63C  7C 08 03 A6 */	mtlr r0
-/* 000ED56C 000ED640  38 21 00 10 */	addi r1, r1, 0x10
-/* 000ED570 000ED644  4E 80 00 20 */	blr
-.endfn fn_3_ED4FC
+.fn fn_3_151694, global
+/* 00151694 00151768  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 00151698 0015176C  7C 08 02 A6 */	mflr r0
+/* 0015169C 00151770  3C A0 00 00 */	lis r5, lbl_3_data_26C3C@ha
+/* 001516A0 00151774  3C E0 00 00 */	lis r7, fn_3_150940@ha
+/* 001516A4 00151778  90 01 00 14 */	stw r0, 0x14(r1)
+/* 001516A8 0015177C  38 C5 00 00 */	addi r6, r5, lbl_3_data_26C3C@l
+/* 001516AC 00151780  39 00 00 1D */	li r8, 0x1d
+/* 001516B0 00151784  93 E1 00 0C */	stw r31, 0xc(r1)
+/* 001516B4 00151788  7C 9F 23 78 */	mr r31, r4
+/* 001516B8 0015178C  38 87 00 00 */	addi r4, r7, fn_3_150940@l
+/* 001516BC 00151790  38 E0 00 01 */	li r7, 0x1
+/* 001516C0 00151794  93 C1 00 08 */	stw r30, 0x8(r1)
+/* 001516C4 00151798  7C 7E 1B 78 */	mr r30, r3
+/* 001516C8 0015179C  7C 83 23 78 */	mr r3, r4
+/* 001516CC 001517A0  38 80 00 80 */	li r4, 0x80
+/* 001516D0 001517A4  80 A6 00 04 */	lwz r5, 0x4(r6)
+/* 001516D4 001517A8  80 06 00 24 */	lwz r0, 0x24(r6)
+/* 001516D8 001517AC  7C C5 02 14 */	add r6, r5, r0
+/* 001516DC 001517B0  38 A0 00 00 */	li r5, 0x0
+/* 001516E0 001517B4  48 00 00 01 */	bl fn_80033A24
+/* 001516E4 001517B8  28 03 00 00 */	cmplwi r3, 0x0
+/* 001516E8 001517BC  41 82 00 10 */	beq .L_001516F8
+/* 001516EC 001517C0  7F C4 F3 78 */	mr r4, r30
+/* 001516F0 001517C4  7F E5 FB 78 */	mr r5, r31
+/* 001516F4 001517C8  4B FF FB 11 */	bl fn_3_151204
+.L_001516F8:
+/* 001516F8 001517CC  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 001516FC 001517D0  83 E1 00 0C */	lwz r31, 0xc(r1)
+/* 00151700 001517D4  83 C1 00 08 */	lwz r30, 0x8(r1)
+/* 00151704 001517D8  7C 08 03 A6 */	mtlr r0
+/* 00151708 001517DC  38 21 00 10 */	addi r1, r1, 0x10
+/* 0015170C 001517E0  4E 80 00 20 */	blr
+.endfn fn_3_151694
 ```
 
 ## Dependencies (bl calls)
 
-- `fn_80034CEC`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:extern void fn_80034CEC(u32);`
-- `fn_800B0A14_removeQueue`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:extern void fn_800B0A14_removeQueue(void);`
+- `fn_3_151204`: `/home/michael/Desktop/mssb-dtk/include/game/rep_3880.h:void fn_3_151204(void);`
+- `fn_80033A24`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);`
 
 ## Referenced Symbols
 
-- `g_GameLogic`
-  - Section: .bss, Address: 0x000318AC, Type: object, Size: 0x158 bytes
-  - Declared as: `extern GameControlsStruct g_GameLogic;` (in `include/game/UnknownHomes_Game.h`)
-  - Accessed fields of `GameControlsStruct`:
-  +0x11E:
-    /*0x118*/ s16 _118;
-    /*0x11A*/ s16 _11A;
-    /*0x11C*/ s16 _11C;
-    /*0x11E*/ E(u8, GAME_STATUS) gameStatus; ◄
-    /*0x11F*/ E(u8, GAME_STATUS) gameStatus_prev;
-    /*0x120*/ E(u8, SCENE_ID) sceneID;
-    /*0x121*/ E(u8, SECONDARY_GAME_MODE) secondaryGameMode;
-  +0x121:
-    /*0x122*/ u8 framesOfExitingToMenu;
-    /*0x123*/ u8 _123;
-    /*0x124*/ u8 _124;
-  +0x12E:
-    /*0x12B*/ u8 pre_PostMiniGameInd;        // unsure
-    /*0x12C*/ u8 minigameLastTurnSuccessInd; // unsure
-    /*0x12D*/ u8 hudElementLoadingInd;
-    /*0x12E*/ u8 hudLoadingRelated; // unsure ◄
-    /*0x12F*/ u8 _12F;
-    /*0x130*/ E(u8, WIN_TYPE) winType;
-    artificial_padding(0x130, 0x135, u8);
-- `lbl_3_common_bss_32724`
-  - Section: .bss, Address: 0x00032724, Type: object, Size: 0x124 bytes
-  - Declared as: `extern CommonBss_32724 lbl_3_common_bss_32724;` (in `include/UnknownHeaders.h`)
-  - Accessed fields of `CommonBss_32724`:
-  +0x96:
-    /* 0x90 */ s16 unk_90;
-    /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u8 _pad2[0x2];
-    /* 0x96 */ u8 someStatusInd; ◄
-    /* 0x97 */ u8 _pad3a[0x3];
-    /* 0x9A */ u8 unk9A;
-    /* 0x9B */ u8 _pad3c[0xC];
-- `lbl_803CC1B8`
-  - Section: .sbss, Address: 0x803CC1B8, Type: object, Size: 0x8 bytes
-  - Declared as: `extern DrawingSceneStruct *lbl_803CC1B8;` (in `include/UnknownHeaders.h`)
+- `lbl_3_data_26C3C`
+  - Section: .data, Address: 0x00026C3C, Type: object, Size: 0x58 bytes
+  - **NOT declared in any header** — add an extern declaration before use
 
 ## Current Diff (compiled vs target)
 
 ```
-Feedback for fn_3_ED4FC in game/game/gap_EA340:
+Feedback for fn_3_151694 in game/game/rep_3880:
 ----------------------------------------
 Line 0: Missing instruction in your code.
   Target: stwu r1, -0x10(r1)
 Line 1: Missing instruction in your code.
   Target: mflr r0
 Line 2: Missing instruction in your code.
-  Target: lis r3, lbl_3_common_bss_32724@ha
+  Target: lis r5, lbl_3_data_26C3C@ha
 Line 3: Missing instruction in your code.
-  Target: lis r4, lbl_803CC1B8@ha
+  Target: lis r7, fn_3_150940@ha
 Line 4: Missing instruction in your code.
   Target: stw r0, 0x14(r1)
 Line 5: Missing instruction in your code.
-  Target: addi r3, r3, lbl_3_common_bss_32724@l
+  Target: addi r6, r5, lbl_3_data_26C3C@l
 Line 6: Missing instruction in your code.
-  Target: lbz r0, 0x96(r3)
+  Target: li r8, 0x1d
 Line 7: Missing instruction in your code.
-  Target: addi r3, r4, lbl_803CC1B8@l
+  Target: stw r31, 0xc(r1)
 Line 8: Missing instruction in your code.
-  Target: lwz r3, 0x0(r3)
+  Target: mr r31, r4
 Line 9: Missing instruction in your code.
-  Target: cmplwi r0, 0x0
+  Target: addi r4, r7, fn_3_150940@l
 Line 10: Missing instruction in your code.
-  Target: bne 0x321c
+  Target: li r7, 0x1
 Line 11: Missing instruction in your code.
-  Target: lis r4, g_GameLogic@ha
+  Target: stw r30, 0x8(r1)
 Line 12: Missing instruction in your code.
-  Target: addi r4, r4, g_GameLogic@l
+  Target: mr r30, r3
 Line 13: Missing instruction in your code.
-  Target: lbz r0, 0x12e(r4)
+  Target: mr r3, r4
 Line 14: Missing instruction in your code.
-  Target: cmplwi r0, 0x0
+  Target: li r4, 0x80
 Line 15: Missing instruction in your code.
-  Target: bne 0x321c
+  Target: lwz r5, 0x4(r6)
 Line 16: Missing instruction in your code.
-  Target: lbz r0, 0x11e(r4)
+  Target: lwz r0, 0x24(r6)
 Line 17: Missing instruction in your code.
-  Target: cmplwi r0, 0x3
+  Target: add r6, r5, r0
 Line 18: Missing instruction in your code.
-  Target: beq 0x321c
+  Target: li r5, 0x0
 Line 19: Missing instruction in your code.
-  Target: cmplwi r0, 0xe
+  Target: bl fn_80033A24
 Line 20: Missing instruction in your code.
-  Target: beq 0x321c
+  Target: cmplwi r3, 0x0
 Line 21: Missing instruction in your code.
-  Target: lbz r0, 0x121(r4)
+  Target: beq 0xa37c
 Line 22: Missing instruction in your code.
-  Target: cmplwi r0, 0xa
+  Target: mr r4, r30
 Line 23: Missing instruction in your code.
-  Target: bne 0x3224
+  Target: mr r5, r31
 Line 24: Missing instruction in your code.
-  Target: bl fn_80034CEC
+  Target: bl fn_3_151204
 Line 25: Missing instruction in your code.
-  Target: bl fn_800B0A14_removeQueue
-Line 26: Missing instruction in your code.
   Target: lwz r0, 0x14(r1)
+Line 26: Missing instruction in your code.
+  Target: lwz r31, 0xc(r1)
 Line 27: Missing instruction in your code.
-  Target: mtlr r0
+  Target: lwz r30, 0x8(r1)
 Line 28: Missing instruction in your code.
+  Target: mtlr r0
+Line 29: Missing instruction in your code.
   Target: addi r1, r1, 0x10
 ```
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-void fn_3_ED4FC(void) {
-    if (((u8) lbl_3_common_bss_32724.someStatusInd != 0) || ((u8) g_GameLogic.hudLoadingRelated != 0) || ((u8) g_GameLogic.gameStatus == 3) || ((u8) g_GameLogic.gameStatus == 0xE) || ((u8) g_GameLogic.secondaryGameMode == 0xA)) {
-        fn_80034CEC((u32) lbl_803CC1B8);
-        fn_800B0A14_removeQueue();
+Failed to locate static/UnknownHomes_static.h
+extern ? lbl_3_data_26C3C;
+
+void fn_3_151694(void *arg0, void *arg1) {
+    if (fn_80033A24(fn_3_150940, 0x80, 0, lbl_3_data_26C3C.unk4 + lbl_3_data_26C3C.unk24, 1, 0x1D) != 0) {
+        fn_3_151204();
     }
 }
 ```
@@ -361,215 +329,1036 @@ void fn_3_ED4FC(void) {
 ## Ghidra Decompilation (from in_game.c)
 
 ```c
-void FUN_8072c590(void)
+void FUN_80790728(undefined4 param_1,undefined4 param_2)
 
 {
+  int iVar1;
   int local_res4;
   int local_10;
+  int local_8;
+  int local_4;
   
-  if ((((animRelated.someStatusInd != 0) || (gameControls.hudLoadingRelated != 0)) ||
-      (gameControls.GameStatus == InningTransition)) ||
-     ((gameControls.GameStatus == Mvp/EndGameScreen ||
-      (gameControls.SecondaryGameMode == PracticeMenu)))) {
-    FUN_80034cec  /* fn_80034CEC */(currentDrawingItem);
-    removeCurrentDrawingItem();
+  iVar1 = FUN_80033a24  /* fn_80033A24 */(FUN_8078f9d4,0x80,0,INT_807d8240 + INT_807d8260,(castleThwompObj *)0x1,0x1d);
+  if (iVar1 != 0) {
+    FUN_80790298(iVar1,param_1,param_2);
   }
   return;
 }
 ```
 
-## Header: `include/game/gap_EA340.h`
+## Header: `include/game/rep_3880.h`
 
 ```c
-#ifndef __GAME_gap_EA340_H_
-#define __GAME_gap_EA340_H_
+#ifndef __GAME_rep_3880_H_
+#define __GAME_rep_3880_H_
 
 #include "mssbTypes.h"
-#include "game/UnknownHomes_Game.h"
+#include "stl/mem.h"
 #include "UnknownHeaders.h"
+#include "static/UnknownHomes_static.h"
 
-extern s32 lbl_3_data_8FCC;
-extern s32 lbl_3_data_8F24;
+// Linked list node used by fn_3_14B9F0
+typedef struct ListNode_14B9F0 {
+    struct ListNode_14B9F0* next;  // 0x00
+    u8 _pad[0x44];                  // 0x04-0x47
+    u16 field_0x48;                 // 0x48
+    u16 field_0x4A;                 // 0x4A
+    u8 field_0x4C;                  // 0x4C
+    u8 field_0x4D;                  // 0x4D
+    u8 field_0x4E;                  // 0x4E
+    u8 field_0x4F;                  // 0x4F
+} ListNode_14B9F0;
 
-void fn_3_EA340(void);
-void fn_3_EA454(void);
-void fn_3_EA8FC(void);
-void fn_3_EAEF4(void);
-s32 fn_3_EB684(void);
-void fn_3_EB6E0(void);
-s32 fn_3_EBFD4(void);
-void fn_3_EC014(void);
-void fn_3_EC804(void);
-void fn_3_ECBB0(void);
-void fn_3_ECD48(void);
-void fn_3_ED058(void);
-void fn_3_ED0F4(void);
-void fn_3_ED244(void);
-void fn_3_ED2A8(void);
-void fn_3_ED2F4(void);
-void fn_3_ED490(void);
-void fn_3_ED4FC(void);
-void fn_3_ED574(void);
-void fn_3_ED6E0(void);
-void fn_3_ED784(void);
-void fn_3_ED818(void);
-void fn_3_EDA3C(void);
-void fn_3_EDD10(void);
+// Return type from fn_800339F0
+struct Struct_800339F0_Result {
+    u8 _pad[0x0C];                  // 0x00-0x0B
+    ListNode_14B9F0* listHead;      // 0x0C
+    s32 field_0x10;                 // 0x10
+};
 
-#endif // !__GAME_gap_EA340_H_
+typedef struct {
+    u8 _pad[0x18];
+    u8 someFlag; // 0x18
+} UnknownStruct_B850;
+
+extern UnknownStruct_B850* lbl_3_bss_B850;
+
+typedef struct UnknownStruct_14CA98 {
+    struct UnknownStruct_14CA98* next;
+    u8 _pad0[0x40];
+    u8 field_0x44;  // 0x44
+    u8 field_0x45;  // 0x45
+    u8 _pad1[0x4];
+    u16 field_0x4A; // 0x4A
+    u8 field_0x4C;  // 0x4C
+} UnknownStruct_14CA98;
+
+typedef struct {
+    u8 _pad[0x8];
+    s32 unk8;
+    u8 _pad2[0x10];
+} Struct_26E24;
+
+extern Struct_26E24 lbl_3_data_26E24;
+
+void pitchingMachinePitching(s32 param);
+
+void fn_3_14737C(void);
+void fn_3_147778(void);
+void fn_3_147C00(void);
+void fn_3_147CFC(void);
+void fn_3_147DFC(void);
+void fn_3_147E20(void);
+void fn_3_147F94(void);
+void fn_3_1480E0(void);
+void fn_3_148254(void);
+bool fn_3_1483D4(void);
+void fn_3_14841C(void);
+void fn_3_148EF0(void);
+void fn_3_148FD0(void);
+void fn_3_149340(void);
+void fn_3_14975C(void);
+void fn_3_149BA8(void);
+void fn_3_14A070(void);
+void fn_3_14A164(void);
+void fn_3_14A188(void);
+void fn_3_14A37C(void);
+void fn_3_14A62C(void);
+void fn_3_14A90C(void);
+void fn_3_14AC1C(void);
+void fn_3_14AC40(void);
+void fn_3_14B248(void);
+void fn_3_14B3F4(void);
+void fn_3_14B53C(void* arg0, void* arg1, void* arg2);
+void fn_3_14B92C(void* arg0, void* arg1);
+void fn_3_14B9A0(void* arg0, void* arg1);
+void fn_3_14B9F0(void);
+void fn_3_14BA40(void);
+void fn_3_14BCB0(void);
+void fn_3_14BECC(void* arg0, void* arg1);
+void fn_3_14C348(void* arg0, void* arg1);
+void fn_3_14C398(void);
+void fn_3_14C3BC(void);
+void fn_3_14C4C8(void);
+void fn_3_14C79C(void);
+void fn_3_14C830(void);
+void fn_3_14C904(void);
+void fn_3_14CA00(void);
+void fn_3_14CA98(UnknownStruct_14CA98* obj);
+void fn_3_14CAB4(s8 arg0);
+void fn_3_14CB28(void);
+void fn_3_14CBB4(void);
+void fn_3_14CD40(void);
+void fn_3_14CECC(void);
+void fn_3_14D2C0(void);
+void fn_3_14D318(void);
+void fn_3_14D44C(void);
+void fn_3_14D6D4(Struct_14D6D4_Input* in);
+void fn_3_14D710(void);
+void fn_3_14DC80(s32 arg);
+void fn_3_14DCE0(void);
+void fn_3_14DD04(void);
+void fn_3_14DF6C(void);
+void fn_3_14E234(void);
+void fn_3_14E7C0(void* arg0);
+void fn_3_14E810(void);
+void fn_3_14E894(void);
+void fn_3_14E920(s8 arg0);
+void fn_3_14E988(s8 arg0);
+void fn_3_14E9F0(void);
+void fn_3_14EAF4(void);
+void fn_3_14ED24(void);
+void fn_3_14F3CC(void);
+typedef struct {
+    u8 _pad0[0x38];
+    f32 field_0x38;
+    f32 field_0x3C;
+    u8 _pad1[0x3];
+    u8 field_0x43;
+    u8 _pad2[0x6];
+    s16 field_0x4A;
+} Struct_14F544_Arg;
+
+typedef struct {
+    u32 field_0x0;   // 0x0
+    u8 _pad0[0x4];
+    s32 field_0x8;
+    u8 _pad1[0x8];
+    u32 field_0x14;
+    u8 _pad2[0x4];
+    u32 field_0x1C;
+    u8 _pad3[0x4];
+} Struct_26C94;
+extern Struct_26C94 lbl_3_data_26C94;
+extern f32 lbl_3_rodata_3930;
+
+void fn_3_14F544(Struct_14F544_Arg* arg);
+void fn_3_14F5A4(void);
+void fn_3_14F8D0(struct Struct_800339F0_Result* arg);
+void fn_3_14F930(void);
+void fn_3_150010(s32 arg);
+void fn_3_150070(void);
+void fn_3_1500C8(void);
+void fn_3_150120(void);
+void fn_3_1504EC(void);
+void fn_3_150940(void);
+void fn_3_150D84(void);
+void fn_3_151068(void);
+void fn_3_151204(void);
+void fn_3_151694(void* arg0, void* arg1);
+void fn_3_151710(void* arg0, void* arg1);
+void fn_3_151760(void);
+void fn_3_151798(void);
+void fn_3_1517D0(void);
+void fn_3_1519F8(void);
+void fn_3_151BAC(void);
+void fn_3_151D6C(void);
+void fn_3_151F2C(void);
+void fn_3_1524E8(void);
+void fn_3_152794(void);
+void fn_3_152AB4(void);
+void fn_3_1531A4(void);
+void fn_3_1534C0(void);
+void fn_3_1536A8(void);
+void fn_3_153E8C(void);
+void fn_3_153F8C(void);
+void fn_3_1540E4(void* arg0, void* arg1, void* arg2);
+void fn_3_1541C4(void* arg0, void* arg1, void* arg2);
+void fn_3_154214(void);
+void fn_3_154238(void);
+void fn_3_1542F4(void);
+void fn_3_1549F0(void);
+void fn_3_154C7C(u32 unknown);
+void fn_3_15521C(u32 unused, u32 param_2, u32 param_3);
+void fn_3_155264(void);
+void fn_3_155288(void);
+void fn_3_1552AC(void);
+void fn_3_1559E4(void);
+void fn_3_155C28(void);
+void fn_3_155F08(void);
+void fn_3_156218(void);
+void fn_3_156548(void);
+void fn_3_156970(void);
+void fn_3_156D04(void);
+void fn_3_15730C(void);
+void fn_3_1573AC(void);
+void fn_3_157570(void);
+void fn_3_157588(s32 arg);
+void fn_3_1575F0(void);
+void fn_3_15767C(void);
+void fn_3_1578F8(void);
+void fn_3_15791C(void);
+void fn_3_157AC4(void);
+
+// No local headers needed.
+#endif // !__GAME_rep_3880_H_
 ```
 
-## Source File: `src/game/gap_EA340.c`
+## Source File: `src/game/rep_3880.c`
 
 ```c
-#include "game/gap_EA340.h"
-#include "game/rep_3448.h"
+#include "game/rep_3880.h"
+#include "UnknownHeaders.h"
+#include "header_rep_data.h"
 
-// .text:0x000EA340 size:0x114 mapped:0x807293D4
-void fn_3_EA340(void) {
+
+// .text:0x0014737C size:0x3FC mapped:0x80786410
+void fn_3_14737C(void) {
     return;
 }
 
-// .text:0x000EA454 size:0x4A8 mapped:0x807294E8
-void fn_3_EA454(void) {
+// .text:0x00147778 size:0x488 mapped:0x8078680C
+void fn_3_147778(void) {
     return;
 }
 
-// .text:0x000EA8FC size:0x5F8 mapped:0x80729990
-void fn_3_EA8FC(void) {
+// .text:0x00147C00 size:0xFC mapped:0x80786C94
+void fn_3_147C00(void) {
     return;
 }
 
-// .text:0x000EAEF4 size:0x790 mapped:0x80729F88
-void fn_3_EAEF4(void) {
+// .text:0x00147CFC size:0x100 mapped:0x80786D90
+void fn_3_147CFC(void) {
     return;
 }
 
-// .text:0x000EB684 size:0x5C mapped:0x8072A718
+// .text:0x00147DFC size:0x24 mapped:0x80786E90
+void fn_3_147DFC(void) {
+    pitchingMachinePitching(0x25);
+}
 
-s32 fn_3_EB684(void) {
-    if (((u8) lbl_3_common_bss_32724.someStatusInd != 0) || ((u8) lbl_3_common_bss_32724._pad5[1] != 0)) {
-        return 1;
+// .text:0x00147E20 size:0x174 mapped:0x80786EB4
+void fn_3_147E20(void) {
+    return;
+}
+
+// .text:0x00147F94 size:0x14C mapped:0x80787028
+void fn_3_147F94(void) {
+    return;
+}
+
+// .text:0x001480E0 size:0x174 mapped:0x80787174
+void fn_3_1480E0(void) {
+    return;
+}
+
+// .text:0x00148254 size:0x180 mapped:0x807872E8
+void fn_3_148254(void) {
+    return;
+}
+
+// .text:0x001483D4 size:0x48 mapped:0x80787468
+
+bool fn_3_1483D4(void) {
+    // 1. Call rand() and get the result in r3.
+    // 2. Perform modulo 5. 
+    // 3. Compare the result to 0.
+    // 4. Normalize the boolean (val == 0) to an integer 0 or 1.
+    
+  return !(rand() % 5);
+}
+
+// .text:0x0014841C size:0xAD4 mapped:0x807874B0
+void fn_3_14841C(void) {
+    return;
+}
+
+// .text:0x00148EF0 size:0xE0 mapped:0x80787F84
+void fn_3_148EF0(void) {
+    return;
+}
+
+// .text:0x00148FD0 size:0x370 mapped:0x80788064
+void fn_3_148FD0(void) {
+    return;
+}
+
+// .text:0x00149340 size:0x41C mapped:0x807883D4
+void fn_3_149340(void) {
+    return;
+}
+
+// .text:0x0014975C size:0x44C mapped:0x807887F0
+void fn_3_14975C(void) {
+    return;
+}
+
+// .text:0x00149BA8 size:0x4C8 mapped:0x80788C3C
+void fn_3_149BA8(void) {
+    return;
+}
+
+// .text:0x0014A070 size:0xF4 mapped:0x80789104
+void fn_3_14A070(void) {
+    return;
+}
+
+// .text:0x0014A164 size:0x24 mapped:0x807891F8
+void fn_3_14A164(void) {
+    pitchingMachinePitching(0x24);
+}
+
+// .text:0x0014A188 size:0x1F4 mapped:0x8078921C
+void fn_3_14A188(void) {
+    return;
+}
+
+// .text:0x0014A37C size:0x2B0 mapped:0x80789410
+void fn_3_14A37C(void) {
+    return;
+}
+
+// .text:0x0014A62C size:0x2E0 mapped:0x807896C0
+void fn_3_14A62C(void) {
+    return;
+}
+
+// .text:0x0014A90C size:0x310 mapped:0x807899A0
+void fn_3_14A90C(void) {
+    return;
+}
+
+// .text:0x0014AC1C size:0x24 mapped:0x80789CB0
+void fn_3_14AC1C(void) {
+    pitchingMachinePitching(0x23);
+}
+
+// .text:0x0014AC40 size:0x608 mapped:0x80789CD4
+void fn_3_14AC40(void) {
+    return;
+}
+
+// .text:0x0014B248 size:0x1AC mapped:0x8078A2DC
+void fn_3_14B248(void) {
+    return;
+}
+
+// .text:0x0014B3F4 size:0x148 mapped:0x8078A488
+void fn_3_14B3F4(void) {
+    return;
+}
+
+// .text:0x0014B53C size:0x3F0 mapped:0x8078A5D0
+void fn_3_14B53C(void* arg0, void* arg1, void* arg2) {
+    return;
+}
+
+// .text:0x0014B92C size:0x74 mapped:0x8078A9C0
+void fn_3_14B92C(void* arg0, void* arg1) {
+    void* temp_r3;
+
+    temp_r3 = (void*)fn_80033A24(fn_3_14AC40, 0x80, 0, lbl_3_data_26E24.unk8, 1, 0x23);
+    if (temp_r3 != NULL) {
+        fn_3_14B53C(temp_r3, arg0, arg1);
     }
-    if (((u8) g_GameLogic.gameStatus == 1) || ((u8) g_GameLogic.gameStatus == 2) || ((u8) g_GameLogic.gameStatus == 0xB)) {
-        return 1;
-    }
-    return 0;
 }
 
-// .text:0x000EB6E0 size:0x8F4 mapped:0x8072A774
-void fn_3_EB6E0(void) {
-    return;
-}
-
-// .text:0x000EBFD4 size:0x40 mapped:0x8072B068
-s32 fn_3_EBFD4(void) {
-    if (lbl_3_common_bss_32724.someStatusInd == 0
-        && g_GameLogic.gameStatus != GAME_STATUS_LIVE_BALL
-        && g_GameLogic.gameStatus != GAME_STATUS_TRANSITION)
-        return 0;
-    return 1;
-}
-
-// .text:0x000EC014 size:0x7F0 mapped:0x8072B0A8
-void fn_3_EC014(void) {
-    return;
-}
-
-// .text:0x000EC804 size:0x3AC mapped:0x8072B898
-void fn_3_EC804(void) {
-    return;
-}
-
-// .text:0x000ECBB0 size:0x198 mapped:0x8072BC44
-void fn_3_ECBB0(void) {
-    return;
-}
-
-// .text:0x000ECD48 size:0x310 mapped:0x8072BDDC
-void fn_3_ECD48(void) {
-    return;
-}
-
-// .text:0x000ED058 size:0x9C mapped:0x8072C0EC
-void fn_3_ED058(void) {
-    return;
-}
-
-// .text:0x000ED0F4 size:0x150 mapped:0x8072C188
-void fn_3_ED0F4(void) {
-    return;
-}
-
-// .text:0x000ED244 size:0x64 mapped:0x8072C2D8
-void fn_3_ED244(void) {
-    DrawingSceneStruct *scene = lbl_803CC1B8;
-    if (lbl_3_common_bss_32724.someStatusInd != 0 ||
-        lbl_80371C30[scene->unkIndex].obj->field_0x69 == 2) {
-        fn_80034CEC((u32)scene);
-        fn_800B0A14_removeQueue();
+// .text:0x0014B9A0 size:0x50 mapped:0x8078AA34
+void fn_3_14B9A0(void* arg0, void* arg1) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 3 &&
+        arg1 != NULL) {
+        fn_3_14B92C(arg0, arg1);
     }
 }
 
-// .text:0x000ED2A8 size:0x4C mapped:0x8072C33C
-void fn_3_ED2A8(void) {
-    fn_80034E20((void(*)(void))lbl_803CC1B8, (int*)&lbl_3_data_8FCC, (void**)&lbl_803CC1B8);
-    lbl_803CC1B8->aFunctionPointer = fn_3_ED244;
+// .text:0x0014B9F0 size:0x50 mapped:0x8078AA84
+void fn_3_14B9F0(void) {
+    struct Struct_800339F0_Result* result;
+    ListNode_14B9F0* node;
+
+    result = fn_800339F0(0, 0x22);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            node->field_0x4A = 0;
+            node = node->next;
+        } while (node != NULL);
+    }
+    pitchingMachinePitching(0x22);
 }
 
-// .text:0x000ED2F4 size:0x19C mapped:0x8072C388
-void fn_3_ED2F4(void) {
+// .text:0x0014BA40 size:0x270 mapped:0x8078AAD4
+void fn_3_14BA40(void) {
     return;
 }
 
-// .text:0x000ED490 size:0x6C mapped:0x8072C524
-void fn_3_ED490(void) {
-    DrawingSceneStruct *r31 = lbl_803CC1B8;
-    fn_80034E20((void(*)(void))r31, (int*)&lbl_3_data_8F24, (void**)&lbl_803CC1B8);
-    g_Minigame.toyfield_waitFor_CoinsX2_AnimationToEnd = 1;
-    r31->eventID = 0;
-    lbl_803CC1B8->aFunctionPointer = fn_3_ED2F4;
-}
-
-// .text:0x000ED4FC size:0x78 mapped:0x8072C590
-void fn_3_ED4FC(void) {
+// .text:0x0014BCB0 size:0x21C mapped:0x8078AD44
+void fn_3_14BCB0(void) {
     return;
 }
 
-// .text:0x000ED574 size:0x16C mapped:0x8072C608
-void fn_3_ED574(void) {
+// .text:0x0014BECC size:0x47C mapped:0x8078AF60
+void fn_3_14BECC(void* arg0, void* arg1) {
     return;
 }
 
-// .text:0x000ED6E0 size:0xA4 mapped:0x8072C774
-void fn_3_ED6E0(void) {
+// .text:0x0014C348 size:0x50 mapped:0x8078B3DC
+void fn_3_14C348(void* arg0, void* arg1) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 2 &&
+        arg0 != NULL) {
+        fn_3_14BECC(arg0, arg1);
+    }
+}
+
+// .text:0x0014C398 size:0x24 mapped:0x8078B42C
+void fn_3_14C398(void) {
+    pitchingMachinePitching(0x21);
+}
+
+// .text:0x0014C3BC size:0x10C mapped:0x8078B450
+void fn_3_14C3BC(void) {
     return;
 }
 
-// .text:0x000ED784 size:0x94 mapped:0x8072C818
-void fn_3_ED784(void) {
+// .text:0x0014C4C8 size:0x2D4 mapped:0x8078B55C
+void fn_3_14C4C8(void) {
     return;
 }
 
-// .text:0x000ED818 size:0x224 mapped:0x8072C8AC
-void fn_3_ED818(void) {
+// .text:0x0014C79C size:0x94 mapped:0x8078B830
+void fn_3_14C79C(void) {
     return;
 }
 
-// .text:0x000EDA3C size:0x2D4 mapped:0x8072CAD0
-void fn_3_EDA3C(void) {
+// .text:0x0014C830 size:0xD4 mapped:0x8078B8C4
+void fn_3_14C830(void) {
     return;
 }
 
-// .text:0x000EDD10 size:0x29C mapped:0x8072CDA4
-void fn_3_EDD10(void) {
+// .text:0x0014C904 size:0xFC mapped:0x8078B998
+void fn_3_14C904(void) {
+    return;
+}
+
+// .text:0x0014CA00 size:0x98 mapped:0x8078BA94
+void fn_3_14CA00(void) {
+    return;
+}
+
+// .text:0x0014CA98 size:0x1C mapped:0x8078BB2C
+void fn_3_14CA98(UnknownStruct_14CA98* obj) {
+    obj->field_0x44 = 0;
+    obj->field_0x45 = 0xFF;
+    obj->field_0x4A = 0;
+    obj->field_0x4C = 0;
+}
+
+// .text:0x0014CAB4 size:0x74 mapped:0x8078BB48
+void fn_3_14CAB4(s8 arg0) {
+    struct Struct_800339F0_Result* result;
+    UnknownStruct_14CA98* node;
+
+    result = fn_800339F0(0, 0x20);
+    if (result != NULL) {
+        node = (UnknownStruct_14CA98*)result->listHead;
+        do {
+            if (node->field_0x45 == arg0) {
+                node->field_0x44 = 0;
+                node->field_0x45 = 0xFF;
+                node->field_0x4A = 0;
+                node->field_0x4C = 0;
+            }
+            node = node->next;
+        } while (node != NULL);
+    }
+}
+
+// .text:0x0014CB28 size:0x8C mapped:0x8078BBBC
+void fn_3_14CB28(void) {
+    return;
+}
+
+// .text:0x0014CBB4 size:0x18C mapped:0x8078BC48
+void fn_3_14CBB4(void) {
+    return;
+}
+
+// .text:0x0014CD40 size:0x18C mapped:0x8078BDD4
+void fn_3_14CD40(void) {
+    return;
+}
+
+// .text:0x0014CECC size:0x3F4 mapped:0x8078BF60
+void fn_3_14CECC(void) {
+    return;
+}
+
+// .text:0x0014D2C0 size:0x58 mapped:0x8078C354
+void fn_3_14D2C0(void) {
+    return;
+}
+
+// .text:0x0014D318 size:0x134 mapped:0x8078C3AC
+void fn_3_14D318(void) {
+    return;
+}
+
+// .text:0x0014D44C size:0x288 mapped:0x8078C4E0
+void fn_3_14D44C(void) {
+    return;
+}
+
+// .text:0x0014D6D4 size:0x3C mapped:0x8078C768
+
+
+void fn_3_14D6D4(Struct_14D6D4_Input* in) {
+    Struct_14D6D4_Node* node;
+
+    in->field10 = lbl_3_common_bss_32724.field6C;
+    node = in->listHead;
+
+    do {
+        node->unk46 = 0;
+        node->unk45 = 0;
+        node->unk44 = 0;
+        node->unk4A = 0;
+        node->unk4E = 0;
+        node = node->next;
+    } while (node != NULL);
+}
+
+// .text:0x0014D710 size:0x570 mapped:0x8078C7A4
+void fn_3_14D710(void) {
+    return;
+}
+
+// .text:0x0014DC80 size:0x60 mapped:0x8078CD14
+void fn_3_14DC80(s32 arg) {
+    // NONMATCHING: logic correct; target uses bge+b+bl for last check, ours generates blt+bl
+    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
+    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_BARREL_BATTER) return;
+    if ((s8)arg >= 15) return;
+    if ((s8)arg >= 0) fn_3_14D710();
+}
+
+// .text:0x0014DCE0 size:0x24 mapped:0x8078CD74
+void fn_3_14DCE0(void) {
+    pitchingMachinePitching(0x1F);
+}
+
+// .text:0x0014DD04 size:0x268 mapped:0x8078CD98
+void fn_3_14DD04(void) {
+    return;
+}
+
+// .text:0x0014DF6C size:0x2C8 mapped:0x8078D000
+void fn_3_14DF6C(void) {
+    return;
+}
+
+// .text:0x0014E234 size:0x58C mapped:0x8078D2C8
+void fn_3_14E234(void) {
+    return;
+}
+
+// .text:0x0014E7C0 size:0x50 mapped:0x8078D854
+void fn_3_14E7C0(void* arg0) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 6 &&
+        arg0 != NULL) {
+        fn_3_14E234();
+    }
+}
+
+// .text:0x0014E810 size:0x84 mapped:0x8078D8A4
+void fn_3_14E810(void) {
+    return;
+}
+
+// .text:0x0014E894 size:0x8C mapped:0x8078D928
+void fn_3_14E894(void) {
+    return;
+}
+
+// .text:0x0014E920 size:0x68 mapped:0x8078D9B4
+void fn_3_14E920(s8 arg0) {
+    struct Struct_800339F0_Result *result;
+    ListNode_14B9F0 *node;
+    result = fn_800339F0(0, 0x1E);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            if (node->field_0x4C == (s8)arg0 + 1) {
+                node->field_0x4A = 0;
+            }
+            node = node->next;
+        } while (node != NULL);
+    }
+}
+
+// .text:0x0014E988 size:0x68 mapped:0x8078DA1C
+void fn_3_14E988(s8 arg0) {
+    struct Struct_800339F0_Result *result;
+    ListNode_14B9F0 *node;
+    result = fn_800339F0(0, 0x1E);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            if (node->field_0x4C == (s8)arg0 + 1) {
+                node->field_0x4A = 0;
+            }
+            node = node->next;
+        } while (node != NULL);
+    }
+}
+
+// .text:0x0014E9F0 size:0x104 mapped:0x8078DA84
+void fn_3_14E9F0(void) {
+    return;
+}
+
+// .text:0x0014EAF4 size:0x230 mapped:0x8078DB88
+void fn_3_14EAF4(void) {
+    return;
+}
+
+// .text:0x0014ED24 size:0x6A8 mapped:0x8078DDB8
+void fn_3_14ED24(void) {
+    return;
+}
+
+// .text:0x0014F3CC size:0x178 mapped:0x8078E460
+void fn_3_14F3CC(void) {
+    return;
+}
+
+// .text:0x0014F544 size:0x60 mapped:0x8078E5D8
+void fn_3_14F544(Struct_14F544_Arg* arg) {
+    // NONMATCHING: lfd f2 (bias double load) scheduled 2 instructions too early
+    f32 val;
+    arg->field_0x4A = (s16)lbl_3_data_26C94.field_0x1C;
+    arg->field_0x43 = (u8)lbl_3_data_26C94.field_0x14;
+    val = (f32)lbl_3_data_26C94.field_0x8 / lbl_3_rodata_3930;
+    arg->field_0x3C = val;
+    arg->field_0x38 = val;
+}
+
+// .text:0x0014F5A4 size:0x32C mapped:0x8078E638
+void fn_3_14F5A4(void) {
+    return;
+}
+
+// .text:0x0014F8D0 size:0x60 mapped:0x8078E964
+// NONMATCHING: register allocation swap (node<->i in r6/r7, data_26C94<->magic in r4/r5)
+void fn_3_14F8D0(struct Struct_800339F0_Result* arg) {
+    ListNode_14B9F0* node;
+    u32 i = 0;
+    arg->field_0x10 = lbl_3_common_bss_32724.field6C;
+    node = arg->listHead;
+    do {
+        node->field_0x4C = (u8)(i / 18 + 1);
+        node->field_0x4D = (u8)lbl_3_data_26C94.field_0x0;
+        node->field_0x4E = 0;
+        node->field_0x4F = 0;
+        i++;
+        node = node->next;
+    } while (node != NULL);
+}
+
+// .text:0x0014F930 size:0x6E0 mapped:0x8078E9C4
+void fn_3_14F930(void) {
+    return;
+}
+
+// .text:0x00150010 size:0x60 mapped:0x8078F0A4
+// NONMATCHING: bge+b+bl branch layout uncontrollable at -O4 (tried: macro, explicit goto)
+void fn_3_150010(s32 arg) {
+    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
+    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_STAR_DASH) return;
+    if ((s8)arg > 4) return;
+    if ((s8)arg >= 0) fn_3_14F930();
+}
+
+// .text:0x00150070 size:0x58 mapped:0x8078F104
+void fn_3_150070(void) {
+    struct Struct_800339F0_Result* result;
+    ListNode_14B9F0* node;
+
+    result = fn_800339F0(0, 0x1D);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            node->field_0x4A = 0;
+            node->field_0x48 = 0;
+            node->field_0x4C = 0;
+            node = node->next;
+        } while (node != NULL);
+    }
+    pitchingMachinePitching(0x1D);
+}
+
+// .text:0x001500C8 size:0x58 mapped:0x8078F15C
+void fn_3_1500C8(void) {
+    struct Struct_800339F0_Result* result;
+    ListNode_14B9F0* node;
+
+    result = fn_800339F0(0, 0x1D);
+    if (result != NULL) {
+        node = result->listHead;
+        do {
+            node->field_0x4A = 0;
+            node->field_0x48 = 0;
+            node->field_0x4C = 0;
+            node = node->next;
+        } while (node != NULL);
+    }
+    pitchingMachinePitching(0x1D);
+}
+
+// .text:0x00150120 size:0x3CC mapped:0x8078F1B4
+void fn_3_150120(void) {
+    return;
+}
+
+// .text:0x001504EC size:0x454 mapped:0x8078F580
+void fn_3_1504EC(void) {
+    return;
+}
+
+// .text:0x00150940 size:0x444 mapped:0x8078F9D4
+void fn_3_150940(void) {
+    return;
+}
+
+// .text:0x00150D84 size:0x2E4 mapped:0x8078FE18
+void fn_3_150D84(void) {
+    return;
+}
+
+// .text:0x00151068 size:0x19C mapped:0x807900FC
+void fn_3_151068(void) {
+    return;
+}
+
+// .text:0x00151204 size:0x490 mapped:0x80790298
+void fn_3_151204(void) {
+    return;
+}
+
+// .text:0x00151694 size:0x7C mapped:0x80790728
+void fn_3_151694(void* arg0, void* arg1) {
+    return;
+}
+
+// .text:0x00151710 size:0x50 mapped:0x807907A4
+void fn_3_151710(void* arg0, void* arg1) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 2 &&
+        arg0 != NULL) {
+        fn_3_151694(arg0, arg1);
+    }
+}
+
+// .text:0x00151760 size:0x38 mapped:0x807907F4
+
+/**
+ * @address 00151760
+ */
+void fn_3_151760(void) {
+    /* * Target Sequence:
+     * lis r3, lbl@ha -> li r4, 0 -> stw r0, 0x14(r1) -> addi r3, r3, lbl@l
+     * li r5, 0xf -> bl memset
+     */
+    memset(lbl_3_bss_B894, 0, 0xF);
+
+    /* * Target Sequence:
+     * li r3, 0x1c -> bl pitchingMachinePitching
+     */
+    pitchingMachinePitching(0x1C);
+}
+
+// .text:0x00151798 size:0x38 mapped:0x8079082C
+
+
+
+void fn_3_151798(void) {
+    memset(lbl_3_bss_B894, 0, 0xFU);
+    pitchingMachinePitching(0x1C);
+}
+
+// .text:0x001517D0 size:0x228 mapped:0x80790864
+void fn_3_1517D0(void) {
+    return;
+}
+
+// .text:0x001519F8 size:0x1B4 mapped:0x80790A8C
+void fn_3_1519F8(void) {
+    return;
+}
+
+// .text:0x00151BAC size:0x1C0 mapped:0x80790C40
+void fn_3_151BAC(void) {
+    return;
+}
+
+// .text:0x00151D6C size:0x1C0 mapped:0x80790E00
+void fn_3_151D6C(void) {
+    return;
+}
+
+// .text:0x00151F2C size:0x5BC mapped:0x80790FC0
+void fn_3_151F2C(void) {
+    return;
+}
+
+// .text:0x001524E8 size:0x2AC mapped:0x8079157C
+void fn_3_1524E8(void) {
+    return;
+}
+
+// .text:0x00152794 size:0x320 mapped:0x80791828
+void fn_3_152794(void) {
+    return;
+}
+
+// .text:0x00152AB4 size:0x6F0 mapped:0x80791B48
+void fn_3_152AB4(void) {
+    return;
+}
+
+// .text:0x001531A4 size:0x31C mapped:0x80792238
+void fn_3_1531A4(void) {
+    return;
+}
+
+// .text:0x001534C0 size:0x1E8 mapped:0x80792554
+void fn_3_1534C0(void) {
+    return;
+}
+
+// .text:0x001536A8 size:0x7E4 mapped:0x8079273C
+void fn_3_1536A8(void) {
+    return;
+}
+
+// .text:0x00153E8C size:0x100 mapped:0x80792F20
+void fn_3_153E8C(void) {
+    return;
+}
+
+// .text:0x00153F8C size:0x158 mapped:0x80793020
+void fn_3_153F8C(void) {
+    return;
+}
+
+// .text:0x001540E4 size:0xE0 mapped:0x80793178
+void fn_3_1540E4(void* arg0, void* arg1, void* arg2) {
+    return;
+}
+
+// .text:0x001541C4 size:0x50 mapped:0x80793258
+void fn_3_1541C4(void* arg0, void* arg1, void* arg2) {
+    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
+        g_Minigame.GameMode_MiniGame == 4 &&
+        arg2 != NULL) {
+        fn_3_1540E4(arg0, arg1, arg2);
+    }
+}
+
+// .text:0x00154214 size:0x24 mapped:0x807932A8
+void fn_3_154214(void) {
+    pitchingMachinePitching(0x27);
+}
+
+// .text:0x00154238 size:0xBC mapped:0x807932CC
+void fn_3_154238(void) {
+    return;
+}
+
+// .text:0x001542F4 size:0x6FC mapped:0x80793388
+void fn_3_1542F4(void) {
+    return;
+}
+
+// .text:0x001549F0 size:0x28C mapped:0x80793A84
+void fn_3_1549F0(void) {
+    return;
+}
+
+// .text:0x00154C7C size:0x5A0 mapped:0x80793D10
+void fn_3_154C7C(u32 unknown) {
+    return;
+}
+
+// .text:0x0015521C size:0x48 mapped:0x807942B0
+
+
+
+void fn_3_15521C(u32 unused, u32 param_2, u32 param_3) {
+    if (g_d_GameSettings.GameModeSelected != 7) {
+        return;
+    }
+    if (param_2 == 0 || param_3 == 0) {
+        return;
+    }
+    fn_3_154C7C(unused);
+}
+
+// .text:0x00155264 size:0x24 mapped:0x807942F8
+void fn_3_155264(void) {
+    pitchingMachinePitching(0x1B);
+}
+
+// .text:0x00155288 size:0x24 mapped:0x8079431C
+void fn_3_155288(void) {
+    pitchingMachinePitching(0x1B);
+}
+
+// .text:0x001552AC size:0x738 mapped:0x80794340
+void fn_3_1552AC(void) {
+    return;
+}
+
+// .text:0x001559E4 size:0x244 mapped:0x80794A78
+void fn_3_1559E4(void) {
+    return;
+}
+
+// .text:0x00155C28 size:0x2E0 mapped:0x80794CBC
+void fn_3_155C28(void) {
+    return;
+}
+
+// .text:0x00155F08 size:0x310 mapped:0x80794F9C
+void fn_3_155F08(void) {
+    return;
+}
+
+// .text:0x00156218 size:0x330 mapped:0x807952AC
+void fn_3_156218(void) {
+    return;
+}
+
+// .text:0x00156548 size:0x428 mapped:0x807955DC
+void fn_3_156548(void) {
+    return;
+}
+
+// .text:0x00156970 size:0x394 mapped:0x80795A04
+void fn_3_156970(void) {
+    return;
+}
+
+// .text:0x00156D04 size:0x608 mapped:0x80795D98
+void fn_3_156D04(void) {
+    return;
+}
+
+// .text:0x0015730C size:0xA0 mapped:0x807963A0
+void fn_3_15730C(void) {
+    return;
+}
+
+// .text:0x001573AC size:0x1C4 mapped:0x80796440
+void fn_3_1573AC(void) {
+    return;
+}
+
+// .text:0x00157570 size:0x18 mapped:0x80796604
+void fn_3_157570(void) {
+    lbl_3_bss_B850->someFlag = TRUE;
+}
+
+// .text:0x00157588 size:0x68 mapped:0x8079661C
+void fn_3_157588(s32 arg) {
+    UnknownStruct_B850 *temp_r3;
+
+    temp_r3 = (UnknownStruct_B850 *)fn_80033A24(fn_3_15767C, 0x80, 0, (arg + 6) / 7, 1, 0x28);
+    lbl_3_bss_B850 = temp_r3;
+    temp_r3->someFlag = 0;
+}
+
+// .text:0x001575F0 size:0x8C mapped:0x80796684
+void fn_3_1575F0(void) {
+    return;
+}
+
+// .text:0x0015767C size:0x27C mapped:0x80796710
+void fn_3_15767C(void) {
+    return;
+}
+
+// .text:0x001578F8 size:0x24 mapped:0x8079698C
+void fn_3_1578F8(void) {
+    pitchingMachinePitching(0x16);
+}
+
+// .text:0x0015791C size:0x1A8 mapped:0x807969B0
+void fn_3_15791C(void) {
+    return;
+}
+
+// .text:0x00157AC4 size:0x2F4 mapped:0x80796B58
+void fn_3_157AC4(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_ED4FC` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_151694` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
