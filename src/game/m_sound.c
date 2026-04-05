@@ -8,6 +8,9 @@ extern u8 lbl_3_data_8338[];
 extern u8 lbl_3_data_8530[];
 
 extern void fn_3_8B094(void);
+extern u32 sndSeqGetValid(u32);
+extern void sndSeqVolume(u8 volume, u16 time, u32 seqId, u8 mode);
+
 static QueueEntry* lbl_3_bss_1768;
 
 // .text:0x0008B258 size:0x8C mapped:0x806CA2EC
@@ -222,7 +225,13 @@ void fn_3_90328(void) {
 
 // .text:0x000903B8 size:0x7C mapped:0x806CF44C
 void fn_3_903B8(void) {
-    return;
+    if (sndSeqGetValid(lbl_3_common_bss_34C58._04) != 0) {
+        sndSeqVolume(0, 0xA0, lbl_3_common_bss_34C58._04, 1);
+    }
+
+    if (sndSeqGetValid(lbl_3_common_bss_34C58._08) != 0) {
+        sndSeqVolume(0, 0xA0, lbl_3_common_bss_34C58._08, 1);
+    }
 }
 
 // .text:0x00090434 size:0x138 mapped:0x806CF4C8

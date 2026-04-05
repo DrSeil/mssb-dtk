@@ -1,4 +1,4 @@
-# Decompile: `fn_3_6F6CC`
+# Decompile: `fn_3_903B8`
 
 ## Project Background
 
@@ -191,532 +191,504 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_6F6CC`
-- **Address**: `0x6f6cc`
+- **Name**: `fn_3_903B8`
+- **Address**: `0x903b8`
 - **Module**: `game`
-- **Source file**: `src/game/rep_1200.c`
+- **Source file**: `src/game/m_sound.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_6F6CC, global
-/* 0006F6CC 0006F7A0  94 21 FF F0 */	stwu r1, -0x10(r1)
-/* 0006F6D0 0006F7A4  7C 08 02 A6 */	mflr r0
-/* 0006F6D4 0006F7A8  3C 80 00 00 */	lis r4, g_Runners@ha
-/* 0006F6D8 0006F7AC  3C 60 00 00 */	lis r3, lbl_3_rodata_1250@ha
-/* 0006F6DC 0006F7B0  90 01 00 14 */	stw r0, 0x14(r1)
-/* 0006F6E0 0006F7B4  38 84 00 00 */	addi r4, r4, g_Runners@l
-/* 0006F6E4 0006F7B8  38 00 00 03 */	li r0, 0x3
-/* 0006F6E8 0006F7BC  C0 03 00 00 */	lfs f0, lbl_3_rodata_1250@l(r3)
-/* 0006F6EC 0006F7C0  38 84 01 54 */	addi r4, r4, 0x154
-/* 0006F6F0 0006F7C4  7C 09 03 A6 */	mtctr r0
-.L_0006F6F4:
-/* 0006F6F4 0006F7C8  88 04 01 23 */	lbz r0, 0x123(r4)
-/* 0006F6F8 0006F7CC  28 00 00 01 */	cmplwi r0, 0x1
-/* 0006F6FC 0006F7D0  40 82 00 30 */	bne .L_0006F72C
-/* 0006F700 0006F7D4  C0 24 00 68 */	lfs f1, 0x68(r4)
-/* 0006F704 0006F7D8  FC 01 00 40 */	fcmpo cr0, f1, f0
-/* 0006F708 0006F7DC  40 81 00 24 */	ble .L_0006F72C
-/* 0006F70C 0006F7E0  3C 60 00 00 */	lis r3, g_Pitcher@ha
-/* 0006F710 0006F7E4  38 00 00 04 */	li r0, 0x4
-/* 0006F714 0006F7E8  38 83 00 00 */	addi r4, r3, g_Pitcher@l
-/* 0006F718 0006F7EC  38 60 00 00 */	li r3, 0x0
-/* 0006F71C 0006F7F0  B0 04 01 2E */	sth r0, 0x12e(r4)
-/* 0006F720 0006F7F4  4B FE CF 7D */	bl fn_3_5C69C
-/* 0006F724 0006F7F8  38 60 00 01 */	li r3, 0x1
-/* 0006F728 0006F7FC  48 00 00 10 */	b .L_0006F738
-.L_0006F72C:
-/* 0006F72C 0006F800  38 84 01 54 */	addi r4, r4, 0x154
-/* 0006F730 0006F804  42 00 FF C4 */	bdnz .L_0006F6F4
-/* 0006F734 0006F808  38 60 00 00 */	li r3, 0x0
-.L_0006F738:
-/* 0006F738 0006F80C  80 01 00 14 */	lwz r0, 0x14(r1)
-/* 0006F73C 0006F810  7C 08 03 A6 */	mtlr r0
-/* 0006F740 0006F814  38 21 00 10 */	addi r1, r1, 0x10
-/* 0006F744 0006F818  4E 80 00 20 */	blr
-.endfn fn_3_6F6CC
+.fn fn_3_903B8, global
+/* 000903B8 0009048C  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 000903BC 00090490  7C 08 02 A6 */	mflr r0
+/* 000903C0 00090494  3C 60 00 00 */	lis r3, lbl_3_common_bss_34C58@ha
+/* 000903C4 00090498  90 01 00 14 */	stw r0, 0x14(r1)
+/* 000903C8 0009049C  93 E1 00 0C */	stw r31, 0xc(r1)
+/* 000903CC 000904A0  3B E3 00 00 */	addi r31, r3, lbl_3_common_bss_34C58@l
+/* 000903D0 000904A4  80 7F 00 04 */	lwz r3, 0x4(r31)
+/* 000903D4 000904A8  48 00 00 01 */	bl sndSeqGetValid
+/* 000903D8 000904AC  28 03 00 00 */	cmplwi r3, 0x0
+/* 000903DC 000904B0  41 82 00 18 */	beq .L_000903F4
+/* 000903E0 000904B4  80 BF 00 04 */	lwz r5, 0x4(r31)
+/* 000903E4 000904B8  38 60 00 00 */	li r3, 0x0
+/* 000903E8 000904BC  38 80 00 A0 */	li r4, 0xa0
+/* 000903EC 000904C0  38 C0 00 01 */	li r6, 0x1
+/* 000903F0 000904C4  48 00 00 01 */	bl sndSeqVolume
+.L_000903F4:
+/* 000903F4 000904C8  3C 60 00 00 */	lis r3, lbl_3_common_bss_34C58@ha
+/* 000903F8 000904CC  3B E3 00 00 */	addi r31, r3, lbl_3_common_bss_34C58@l
+/* 000903FC 000904D0  80 7F 00 08 */	lwz r3, 0x8(r31)
+/* 00090400 000904D4  48 00 00 01 */	bl sndSeqGetValid
+/* 00090404 000904D8  28 03 00 00 */	cmplwi r3, 0x0
+/* 00090408 000904DC  41 82 00 18 */	beq .L_00090420
+/* 0009040C 000904E0  80 BF 00 08 */	lwz r5, 0x8(r31)
+/* 00090410 000904E4  38 60 00 00 */	li r3, 0x0
+/* 00090414 000904E8  38 80 00 A0 */	li r4, 0xa0
+/* 00090418 000904EC  38 C0 00 01 */	li r6, 0x1
+/* 0009041C 000904F0  48 00 00 01 */	bl sndSeqVolume
+.L_00090420:
+/* 00090420 000904F4  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 00090424 000904F8  83 E1 00 0C */	lwz r31, 0xc(r1)
+/* 00090428 000904FC  7C 08 03 A6 */	mtlr r0
+/* 0009042C 00090500  38 21 00 10 */	addi r1, r1, 0x10
+/* 00090430 00090504  4E 80 00 20 */	blr
+.endfn fn_3_903B8
 ```
 
 ## Dependencies (bl calls)
 
-- `fn_3_5C69C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_5985C.h:void fn_3_5C69C(void);`
+- `sndSeqGetValid` (not in headers; m2c suggests: `u32 sndSeqGetValid(u32);`)
+- `sndSeqVolume`: `/home/michael/Desktop/mssb-dtk/include/musyx/seq.h:void sndSeqVolume(u8 volume, u16 time, u32 seqId, u8 mode);`
 
 ## Referenced Symbols
 
-- `g_Pitcher`
-  - Section: .bss, Address: 0x0002F8E0, Type: object, Size: 0x178 bytes
-  - Declared as: `extern InMemPitcherType g_Pitcher;` (in `include/game/UnknownHomes_Game.h`)
-  - Accessed fields of `InMemPitcherType`:
-  +0x12E:
-    /*0x128*/ s16 pitchWindUpCountDown;
-    /*0x12A*/ s16 curvePitchWindupFrames;
-    /*0x12C*/ s16 _12C;
-    /*0x12E*/ s16 pickOffLoc; // 4noThrow/5Steal; ◄
-    /*0x130*/ s16 framesSinceAtBatEnded;
-    /*0x132*/ s16 framesUntilBallReachesBatterZ;
-    /*0x134*/ s16 framesUntilPitchGetsToBatter;
-- `g_Runners`
-  - Section: .bss, Address: 0x0002DD38, Type: object, Size: 0x550 bytes
-  - Declared as: `extern InMemRunnerType g_Runners[4];` (in `include/game/UnknownHomes_Game.h`)
-- `lbl_3_rodata_1250`
-  - Section: .rodata, Address: 0x00001250, Type: object, Size: 0x4 bytes
-  - **NOT declared in any header** — add an extern declaration before use
+- `lbl_3_common_bss_34C58`
+  - Section: .bss, Address: 0x00034C58, Type: object, Size: 0x38 bytes
+  - Declared as: `extern Struct34C58 lbl_3_common_bss_34C58; // size: 0x38` (in `include/game/UnknownHomes_Game.h`)
+  - Accessed fields of `Struct34C58`:
+  +0x4:
+    {
+    /* 0x00 */ u32 _00;
+    /* 0x04 */ u32 _04; ◄
+    /* 0x08 */ u32 _08;
+    /* 0x08 */ u32 _0C;
+    /* 0x10 */ u32 _10;
+  +0x8:
+    /* 0x14 */ u32 _14;
+    /* 0x18 */ u32 _18;
 
 ## Current Diff (compiled vs target)
 
 ```
-Feedback for fn_3_6F6CC in game/game/rep_1200:
+Feedback for fn_3_903B8 in game/game/m_sound:
 ----------------------------------------
-Line 7: Extra instruction in your code.
-  Current: addi r4, r4, 0x154
-Line 8: Mismatch
-  Target: lfs f0, lbl_3_rodata_1250@l(r3)
-  Current: lfs f1, lbl_3_rodata_1250@l(r3)
-  -> Operand mismatch. Target args: ['f0', "{'reloc': True}", 'r3'], Your args: ['f1', "{'reloc': True}", 'r3']
+Line 0: Missing instruction in your code.
+  Target: stwu r1, -0x10(r1)
+Line 1: Missing instruction in your code.
+  Target: mflr r0
+Line 2: Missing instruction in your code.
+  Target: lis r3, lbl_3_common_bss_34C58@ha
+Line 3: Missing instruction in your code.
+  Target: stw r0, 0x14(r1)
+Line 4: Missing instruction in your code.
+  Target: stw r31, 0xc(r1)
+Line 5: Missing instruction in your code.
+  Target: addi r31, r3, lbl_3_common_bss_34C58@l
+Line 6: Missing instruction in your code.
+  Target: lwz r3, 0x4(r31)
+Line 7: Missing instruction in your code.
+  Target: bl sndSeqGetValid
+Line 8: Missing instruction in your code.
+  Target: cmplwi r3, 0x0
 Line 9: Missing instruction in your code.
-  Target: addi r4, r4, 0x154
-Line 14: Mismatch
-  Target: lfs f1, 0x68(r4)
-  Current: lfs f0, 0x68(r4)
-  -> Operand mismatch. Target args: ['f1', '104', 'r4'], Your args: ['f0', '104', 'r4']
-Line 15: Mismatch
-  Target: fcmpo cr0, f1, f0
-  Current: fcmpo cr0, f0, f1
-  -> Operand mismatch. Target args: ['cr0', 'f1', 'f0'], Your args: ['cr0', 'f0', 'f1']
-Line 20: Missing instruction in your code.
+  Target: beq 0x519c
+Line 10: Missing instruction in your code.
+  Target: lwz r5, 0x4(r31)
+Line 11: Missing instruction in your code.
   Target: li r3, 0x0
-Line 22: Extra instruction in your code.
-  Current: li r3, 0x0
+Line 12: Missing instruction in your code.
+  Target: li r4, 0xa0
+Line 13: Missing instruction in your code.
+  Target: li r6, 0x1
+Line 14: Missing instruction in your code.
+  Target: bl sndSeqVolume
+Line 15: Missing instruction in your code.
+  Target: lis r3, lbl_3_common_bss_34C58@ha
+Line 16: Missing instruction in your code.
+  Target: addi r31, r3, lbl_3_common_bss_34C58@l
+Line 17: Missing instruction in your code.
+  Target: lwz r3, 0x8(r31)
+Line 18: Missing instruction in your code.
+  Target: bl sndSeqGetValid
+Line 19: Missing instruction in your code.
+  Target: cmplwi r3, 0x0
+Line 20: Missing instruction in your code.
+  Target: beq 0x51c8
+Line 21: Missing instruction in your code.
+  Target: lwz r5, 0x8(r31)
+Line 22: Missing instruction in your code.
+  Target: li r3, 0x0
+Line 23: Missing instruction in your code.
+  Target: li r4, 0xa0
+Line 24: Missing instruction in your code.
+  Target: li r6, 0x1
+Line 25: Missing instruction in your code.
+  Target: bl sndSeqVolume
+Line 26: Missing instruction in your code.
+  Target: lwz r0, 0x14(r1)
+Line 27: Missing instruction in your code.
+  Target: lwz r31, 0xc(r1)
+Line 28: Missing instruction in your code.
+  Target: mtlr r0
+Line 29: Missing instruction in your code.
+  Target: addi r1, r1, 0x10
 ```
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-s32 fn_3_6F6CC(void) {
-    InMemRunnerType *var_r4;
-    s32 var_ctr;
+u32 sndSeqGetValid(u32);                            /* extern */
+? sndSeqVolume(?, ?, u32, ?);                       /* extern */
 
-    var_r4 = &g_Runners[1];
-    var_ctr = 3;
-loop_1:
-    if (((u8) var_r4->runnerOnFieldOrOutOrScored == 1) && (var_r4->percentTowardsNextBase > lbl_3_rodata_1250)) {
-        g_Pitcher.pickOffLoc = 4;
-        fn_3_5C69C(NULL, &g_Pitcher);
-        return 1;
+void fn_3_903B8(void) {
+    if (sndSeqGetValid(lbl_3_common_bss_34C58._04) != 0U) {
+        sndSeqVolume(0, 0xA0, lbl_3_common_bss_34C58._04, 1);
     }
-    var_r4 += 0x154;
-    var_ctr -= 1;
-    if (var_ctr == 0) {
-        return 0;
+    if (sndSeqGetValid(lbl_3_common_bss_34C58._08) != 0U) {
+        sndSeqVolume(0, 0xA0, lbl_3_common_bss_34C58._08, 1);
     }
-    goto loop_1;
 }
 ```
 
 ## Ghidra Decompilation (from in_game.c)
 
 ```c
-undefined4 FUN_806ae760(void)
+void FUN_806cf44c(void)
 
 {
   int iVar1;
-  int iVar2;
   int local_res4;
   int local_10;
+  int local_4;
   
-  iVar1 = -0x7f771094;
-  iVar2 = 3;
-  while ((*(char *)(iVar1 + 0x123) != '\x01' || (*(float *)(iVar1 + 0x68) <= const_0_5))) {
-    iVar1 = iVar1 + 0x154;
-    iVar2 = iVar2 + -1;
-    if (iVar2 == 0) {
-      return 0;
-    }
+  iVar1 = musyx::seq_api::sndSeqGetValid(unkGameSoundStruct.field1_0x4);
+  if (iVar1 != 0) {
+    musyx::seq_api::sndSeqVolume(0,0xa0,unkGameSoundStruct.field1_0x4,1);
   }
-  inMemPitcher.pickOffLoc_4noThrow_5Steal_ = 4;
-  transitionToLiveBallWithoutContact(0);
-  return 1;
+  iVar1 = musyx::seq_api::sndSeqGetValid(unkGameSoundStruct.field2_0x8);
+  if (iVar1 != 0) {
+    musyx::seq_api::sndSeqVolume(0,0xa0,unkGameSoundStruct.field2_0x8,1);
+  }
+  return;
 }
 ```
 
-## Header: `include/game/rep_1200.h`
+## Header: `include/game/m_sound.h`
 
 ```c
-#ifndef __GAME_rep_1200_H_
-#define __GAME_rep_1200_H_
+#ifndef __GAME_m_sound_H_
+#define __GAME_m_sound_H_
 
 #include "mssbTypes.h"
-#include "game/UnknownHomes_Game.h"
+#include "UnknownHeaders.h"
 
-s32 fn_3_6F6CC(void);
-void fn_3_6F748(void);
-void fn_3_6FA28(void);
-void fn_3_6FB98(void);
-void fn_3_6FDA0(void);
-void fn_3_6FFC4(void);
-void fn_3_70280(void);
-void fn_3_703EC(void);
-s32 fn_3_70680(f32 value);
-void fn_3_706B8(void);
-void fn_3_70768(void);
-void fn_3_70838(void);
-void fn_3_709B4(void);
-void fn_3_70AEC(void);
-void fn_3_70B94(void);
-void fn_3_70EF4(void);
-void fn_3_71248(void);
-void fn_3_72768(void);
-void fn_3_72CA8(void);
-void fn_3_7310C(void);
-void fn_3_735A8(void);
-void fn_3_736CC(void);
-void fn_3_73718(void);
-void fn_3_7372C(void);
-void fn_3_73850(void);
-void fn_3_738A8(void);
-void fn_3_73DE8(void);
-void fn_3_73F2C(void);
-void fn_3_73FAC(void);
-void fn_3_740D0(void);
-void fn_3_74128(void);
-void fn_3_74AC4(void);
-void fn_3_74D0C(void);
-void fn_3_75090(void);
-void fn_3_750C4(s8 value);
-void fn_3_750DC(void);
-void fn_3_751B4(void);
-void fn_3_753E8(s32 param_1);
-void fn_3_75434(void);
-void fn_3_754B8(void);
-void fn_3_75560(void);
+void fn_3_8B258(void);
+void fn_3_8B2E4(void);
+void fn_3_8B318(void);
+void fn_3_8B718(void);
+void fn_3_8B7DC(void);
+void fn_3_8B804(void);
+void fn_3_8B890(void);
+typedef struct CommonBss32B20 {
+    u8 _pad0[0x8];
+    u32 field_0x8;
+    u8 _pad1[0x2138 - 0xC];
+} CommonBss32B20;
 
-// No local headers needed.
-#endif // !__GAME_rep_1200_H_
+typedef struct Data8D70 {
+    u8 data[0xC];
+} Data8D70;
+
+extern CommonBss32B20 lbl_3_common_bss_32B20;
+extern Data8D70 lbl_3_data_8D70;
+
+void sndUpdateListener(CommonBss32B20* listener, VecXYZ* pos, VecXYZ* vel, VecXYZ* orient, Data8D70* data, u32 unk7F, u32 unk0);
+void fn_3_8B964(VecXYZ* pos, VecXYZ* vel, VecXYZ* orient);
+void fn_3_8B9BC(void);
+void fn_3_8BA60(void);
+void fn_3_8BBC4(void);
+void fn_3_8BDF4(void);
+void fn_3_8BE8C(void);
+void fn_3_8C07C(void);
+void fn_3_8C104(void);
+void fn_3_8C2DC(void);
+void fn_3_8C4F0(void);
+void fn_3_8C5C8(void);
+void fn_3_8CD74(void);
+void fn_3_8D9C0(void);
+void fn_3_8DA80(void);
+void fn_3_8F1C8(void);
+void fn_3_8F21C(void);
+void fn_3_8FC0C(void);
+void fn_3_8FC80(void);
+void fn_3_8FF18(void);
+void fn_3_8FF5C(void);
+void fn_3_90064(void);
+void fn_3_90150(void);
+void sndRemoveListener(void* listener);
+
+
+
+void sndVolume(u8 volume, u16 time, u8 volGroup);
+u32 fn_3_90220(s32 arg0, s32 arg1);
+u32 playSoundEffect(int arg0);
+void fn_3_902FC(void);
+void fn_3_90328(void);
+void fn_3_903B8(void);
+void fn_3_90434(void);
+void fn_3_9056C(void);
+void fn_3_90674(void);
+void fn_3_906FC(void);
+
+extern s32 lbl_3_bss_1780;
+#endif // !__GAME_m_sound_H_
 ```
 
-## Source File: `src/game/rep_1200.c`
+## Source File: `src/game/m_sound.c`
 
 ```c
-#include "game/rep_1200.h"
+#include "game/m_sound.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
-#include "game/UnknownHomes_Game.h"
-#include "static/UnknownHomes_Static.h"
+#include "musyx/musyx.h"
 
-extern f32 lbl_3_rodata_1250;
-extern void fn_3_5C69C(void*, InMemPitcherType*);
+extern u16 lbl_3_data_8168[];
+extern u8 lbl_3_data_8338[];
+extern u8 lbl_3_data_8530[];
 
-// .text:0x0006F6CC size:0x7C mapped:0x806AE760
-s32 fn_3_6F6CC(void) {
-    InMemRunnerType* runner;
-    f32 limit;
-    s32 i;
+extern void fn_3_8B094(void);
+static QueueEntry* lbl_3_bss_1768;
 
-    runner = g_Runners;
-    limit = lbl_3_rodata_1250;
-    runner++;
-    
-    for (i = 0; i < 3; i++) {
-        if (runner->runnerOnFieldOrOutOrScored == 1 && runner->percentTowardsNextBase > limit) {
-            g_Pitcher.pickOffLoc = 4;
-            fn_3_5C69C(0, &g_Pitcher);
-            return 1;
-        }
-        runner++;
-    }
-
-    return 0;
-}
-
-// .text:0x0006F748 size:0x2E0 mapped:0x806AE7DC
-void fn_3_6F748(void) {
+// .text:0x0008B258 size:0x8C mapped:0x806CA2EC
+void fn_3_8B258(void) {
     return;
 }
 
-// .text:0x0006FA28 size:0x170 mapped:0x806AEABC
-void fn_3_6FA28(void) {
+// .text:0x0008B2E4 size:0x34 mapped:0x806CA378
+void fn_3_8B2E4(void) {
+    lbl_3_bss_1768 = fn_800B0A5C_insertQueue(fn_3_8B094, 0);
+}
+
+// .text:0x0008B318 size:0x400 mapped:0x806CA3AC
+void fn_3_8B318(void) {
     return;
 }
 
-// .text:0x0006FB98 size:0x208 mapped:0x806AEC2C
-void fn_3_6FB98(void) {
+// .text:0x0008B718 size:0xC4 mapped:0x806CA7AC
+void fn_3_8B718(void) {
     return;
 }
 
-// .text:0x0006FDA0 size:0x224 mapped:0x806AEE34
-void fn_3_6FDA0(void) {
+// .text:0x0008B7DC size:0x28 mapped:0x806CA870
+void fn_3_8B7DC(void) {
+    sndRemoveListener(&lbl_3_common_bss_32B20);
+}
+
+// .text:0x0008B804 size:0x8C mapped:0x806CA898
+void fn_3_8B804(void) {
     return;
 }
 
-// .text:0x0006FFC4 size:0x2BC mapped:0x806AF058
-void fn_3_6FFC4(void) {
+// .text:0x0008B890 size:0xD4 mapped:0x806CA924
+void fn_3_8B890(void) {
     return;
 }
 
-// .text:0x00070280 size:0x16C mapped:0x806AF314
-void fn_3_70280(void) {
-    return;
-}
-
-// .text:0x000703EC size:0x294 mapped:0x806AF480
-void fn_3_703EC(void) {
-    return;
-}
-
-// .text:0x00070680 size:0x38 mapped:0x806AF714
-
-
-
-/**
- * @address 00070680
- */
-s32 fn_3_70680(f32 value) {
-    /* * Target: lfs f0, 0x7c(r3) -> g_Pitcher.strikeZoneLeft
-     * fcmpo cr0, f1, f0 -> value vs left
-     * cror eq, gt, eq   -> implements >=
-     * bne .L_FAIL       -> if !(value >= left) return 0
-     */
-    if (value >= g_Pitcher.strikeZoneLeft) {
-        /* * Target: lfs f0, 0x80(r3) -> g_Pitcher.strikeZoneRight
-         * fcmpo cr0, f1, f0 -> value vs right
-         * cror eq, lt, eq   -> implements <=
-         * bne .L_FAIL       -> if !(value <= right) return 0
-         */
-        if (value <= g_Pitcher.strikeZoneRight) {
-            /* li r3, 1 -> blr */
-            return 1;
-        }
-    }
-    
-    /* .L_FAIL: li r3, 0 -> blr */
-    return 0;
-}
-
-// .text:0x000706B8 size:0xB0 mapped:0x806AF74C
-void fn_3_706B8(void) {
-    return;
-}
-
-// .text:0x00070768 size:0xD0 mapped:0x806AF7FC
-void fn_3_70768(void) {
-    return;
-}
-
-// .text:0x00070838 size:0x17C mapped:0x806AF8CC
-void fn_3_70838(void) {
-    return;
-}
-
-// .text:0x000709B4 size:0x138 mapped:0x806AFA48
-void fn_3_709B4(void) {
-    return;
-}
-
-// .text:0x00070AEC size:0xA8 mapped:0x806AFB80
-void fn_3_70AEC(void) {
-    return;
-}
-
-// .text:0x00070B94 size:0x360 mapped:0x806AFC28
-void fn_3_70B94(void) {
-    return;
-}
-
-// .text:0x00070EF4 size:0x354 mapped:0x806AFF88
-void fn_3_70EF4(void) {
-    return;
-}
-
-// .text:0x00071248 size:0x1520 mapped:0x806B02DC
-void fn_3_71248(void) {
-    return;
-}
-
-// .text:0x00072768 size:0x540 mapped:0x806B17FC
-void fn_3_72768(void) {
-    return;
-}
-
-// .text:0x00072CA8 size:0x464 mapped:0x806B1D3C
-void fn_3_72CA8(void) {
-    return;
-}
-
-// .text:0x0007310C size:0x49C mapped:0x806B21A0
-void fn_3_7310C(void) {
-    return;
-}
-
-// .text:0x000735A8 size:0x124 mapped:0x806B263C
-void fn_3_735A8(void) {
-    return;
-}
-
-// .text:0x000736CC size:0x4C mapped:0x806B2760
-
-void fn_3_736CC(void) {
-    s32 i;
-    for (i = 0; i < 3; i++) {
-        if (g_Strikes.unk_18[i] == -1) {
-            g_Strikes.unk_18[i] = 0;
-            return;
-        }
+// .text:0x0008B964 size:0x58 mapped:0x806CA9F8
+void fn_3_8B964(VecXYZ* pos, VecXYZ* vel, VecXYZ* orient) {
+    if (lbl_3_common_bss_32B20.field_0x8 != 0) {
+        sndUpdateListener(&lbl_3_common_bss_32B20, pos, vel, orient, &lbl_3_data_8D70, 0x7F, 0);
     }
 }
 
-// .text:0x00073718 size:0x14 mapped:0x806B27AC
-void fn_3_73718(void) {
-    g_Ball.postPitchResultCounter = -1;
-}
-
-// .text:0x0007372C size:0x124 mapped:0x806B27C0
-void fn_3_7372C(void) {
+// .text:0x0008B9BC size:0xA4 mapped:0x806CAA50
+void fn_3_8B9BC(void) {
     return;
 }
 
-// .text:0x00073850 size:0x58 mapped:0x806B28E4
-void fn_3_73850(void) {
-    s32 i;
+// .text:0x0008BA60 size:0x164 mapped:0x806CAAF4
+void fn_3_8BA60(void) {
+    return;
+}
 
-    g_Strikes.outs++;
-    for (i = 0; i < 3; i++) {
-        if (g_Strikes.unk_18[i] == -1) {
-            g_Strikes.unk_18[i] = 0;
-            return;
-        }
+// .text:0x0008BBC4 size:0x230 mapped:0x806CAC58
+void fn_3_8BBC4(void) {
+    return;
+}
+
+// .text:0x0008BDF4 size:0x98 mapped:0x806CAE88
+void fn_3_8BDF4(void) {
+    return;
+}
+
+// .text:0x0008BE8C size:0x1F0 mapped:0x806CAF20
+void fn_3_8BE8C(void) {
+    return;
+}
+
+// .text:0x0008C07C size:0x88 mapped:0x806CB110
+void fn_3_8C07C(void) {
+    return;
+}
+
+// .text:0x0008C104 size:0x1D8 mapped:0x806CB198
+void fn_3_8C104(void) {
+    return;
+}
+
+// .text:0x0008C2DC size:0x214 mapped:0x806CB370
+void fn_3_8C2DC(void) {
+    return;
+}
+
+// .text:0x0008C4F0 size:0xD8 mapped:0x806CB584
+void fn_3_8C4F0(void) {
+    return;
+}
+
+// .text:0x0008C5C8 size:0x7AC mapped:0x806CB65C
+void fn_3_8C5C8(void) {
+    return;
+}
+
+// .text:0x0008CD74 size:0xC4C mapped:0x806CBE08
+void fn_3_8CD74(void) {
+    return;
+}
+
+// .text:0x0008D9C0 size:0xC0 mapped:0x806CCA54
+void fn_3_8D9C0(void) {
+    return;
+}
+
+// .text:0x0008DA80 size:0x1748 mapped:0x806CCB14
+void fn_3_8DA80(void) {
+    return;
+}
+
+// .text:0x0008F1C8 size:0x54 mapped:0x806CE25C
+void fn_3_8F1C8(void) {
+    lbl_3_common_bss_34C58._20 = -1;
+    lbl_3_common_bss_34C58._22 = -1;
+    lbl_3_common_bss_34C58._29 = 0;
+    lbl_3_common_bss_34C58._2A = 0;
+    lbl_3_bss_1768 = fn_800B0A5C_insertQueue(fn_3_8B094, 0);
+}
+
+// .text:0x0008F21C size:0x9F0 mapped:0x806CE2B0
+void fn_3_8F21C(void) {
+    return;
+}
+
+// .text:0x0008FC0C size:0x74 mapped:0x806CECA0
+void fn_3_8FC0C(void) {
+    Struct34C58* ptr = &lbl_3_common_bss_34C58;
+
+    ptr->_26 = 0;
+    if (ptr->_10 != (u32)-1) {
+        sndFXKeyOff(ptr->_10);
+        ptr->_10 = -1;
+    }
+
+    ptr = &lbl_3_common_bss_34C58;
+    if (ptr->_14 != (u32)-1) {
+        sndFXKeyOff(ptr->_14);
+        ptr->_14 = -1;
     }
 }
 
-// .text:0x000738A8 size:0x540 mapped:0x806B293C
-void fn_3_738A8(void) {
+// .text:0x0008FC80 size:0x298 mapped:0x806CED14
+void fn_3_8FC80(void) {
     return;
 }
 
-// .text:0x00073DE8 size:0x144 mapped:0x806B2E7C
-void fn_3_73DE8(void) {
+// .text:0x0008FF18 size:0x44 mapped:0x806CEFAC
+
+
+
+void fn_3_8FF18(void) {
+    Struct34C58* ptr;
+    ptr =   &lbl_3_common_bss_34C58;
+
+    //Not sure why this order, but its needed to match
+    ptr->_0C = -1;
+    lbl_3_bss_1780 = -1;
+
+    ptr->_10 = -1;
+    ptr->_14 = -1;
+    ptr->_18 = -1;
+    ptr->_1C = -1;
+    ptr->_28 = 0;
+    ptr->_04 = -1;
+    ptr->_08 = -1;
+    ptr->_2F = 0;
+    ptr->_33 = 0;
+}
+
+// .text:0x0008FF5C size:0x108 mapped:0x806CEFF0
+void fn_3_8FF5C(void) {
     return;
 }
 
-// .text:0x00073F2C size:0x80 mapped:0x806B2FC0
-void fn_3_73F2C(void) {
+// .text:0x00090064 size:0xEC mapped:0x806CF0F8
+void fn_3_90064(void) {
     return;
 }
 
-// .text:0x00073FAC size:0x124 mapped:0x806B3040
-void fn_3_73FAC(void) {
+// .text:0x00090150 size:0xD0 mapped:0x806CF1E4
+void fn_3_90150(void) {
     return;
 }
 
-// .text:0x000740D0 size:0x58 mapped:0x806B3164
-void fn_3_740D0(void) {
-    g_Pitcher.nonCaptainStarPitchTriggeredType = g_Pitcher.nonCaptainStarPitch;
-    switch (g_Pitcher.nonCaptainStarPitch) {
-        case 1:
-            g_Pitcher.specialPitchTypeCode = 0x10;
-            break;
-        case 2:
-            g_Pitcher.specialPitchTypeCode = 0x11;
-            break;
-        case 3:
-            g_Pitcher.specialPitchTypeCode = 0x12;
-            break;
-    }
+// .text:0x00090220 size:0x74 mapped:0x806CF2B4
+u32 fn_3_90220(s32 arg0, s32 arg1) {
+    u8* table = lbl_3_data_8530;
+    u8* entry = table + arg1;
+    u16 soundId = lbl_3_data_8168[arg0];
+    SND_VOICEID vid = sndFXStartEx((u16)(arg1 + soundId), table[arg1], 0x3F, 0);
+
+    sndFXCtrl(vid, 0x5B, entry[0x180]);
+    return vid;
 }
 
-// .text:0x00074128 size:0x99C mapped:0x806B31BC
-void fn_3_74128(void) {
+// .text:0x00090294 size:0x64 mapped:0x806CF328
+SND_VOICEID playSoundEffect(int arg0) {
+    int off = arg0 * 2;
+    SND_VOICEID vid = sndFXStartEx((u16)arg0, ((u8*)&lbl_3_data_8338 + off)[-0x2a2], 0x3f, 0);
+    sndFXCtrl(vid, 0x5b, ((u8*)&lbl_3_data_8338 + off)[-0x2a1]);
+    return vid;
+}
+
+// .text:0x000902FC size:0x28 mapped:0x806CF390
+void fn_3_902FC(void) {
+    sndVolume(0, 0xA, 0xFF);
+}
+
+// .text:0x00090328 size:0x90 mapped:0x806CF3BC
+void fn_3_90328(void) {
     return;
 }
 
-// .text:0x00074AC4 size:0x248 mapped:0x806B3B58
-void fn_3_74AC4(void) {
+// .text:0x000903B8 size:0x7C mapped:0x806CF44C
+void fn_3_903B8(void) {
     return;
 }
 
-// .text:0x00074D0C size:0x384 mapped:0x806B3DA0
-void fn_3_74D0C(void) {
+// .text:0x00090434 size:0x138 mapped:0x806CF4C8
+void fn_3_90434(void) {
     return;
 }
 
-// .text:0x00075090 size:0x34 mapped:0x806B4124
-
-
-void fn_3_75090(void) {
-
-    g_Pitcher.pitcherActionState = 1;
-    g_Pitcher.currentStateFrameCounter = 0;
-    g_Ball.AtBat_Contact_BallPos.x = g_Pitcher.ballCurrentPosition.x;
-    g_Ball.AtBat_Contact_BallPos.y = g_Pitcher.ballCurrentPosition.y;
-    g_Ball.AtBat_Contact_BallPos.z = g_Pitcher.ballCurrentPosition.z;
-}
-
-// .text:0x000750C4 size:0x18 mapped:0x806B4158
-void fn_3_750C4(s8 value) {
-    g_Pitcher.pitcherActionState = value;
-    g_Pitcher.currentStateFrameCounter = 0;
-}
-
-// .text:0x000750DC size:0xD8 mapped:0x806B4170
-void fn_3_750DC(void) {
+// .text:0x0009056C size:0x108 mapped:0x806CF600
+void fn_3_9056C(void) {
     return;
 }
 
-// .text:0x000751B4 size:0x234 mapped:0x806B4248
-void fn_3_751B4(void) {
+// .text:0x00090674 size:0x88 mapped:0x806CF708
+void fn_3_90674(void) {
     return;
 }
 
-// .text:0x000753E8 size:0x4C mapped:0x806B447C
-
-void fn_3_753E8(s32 param_1) {
-    // 0x000753EC: cmpwi r3, 0x0
-    // The incoming r3 (param_1) is compared to 0.
-    
-    // 0x000753F8: stb r0, 0x13e(r3)
-    g_Pitcher.pitcherActionState = 0;
-    
-    // 0x000753FC: sth r0, 0x120(r3)
-    g_Pitcher.currentStateFrameCounter = 0;
-
-    // 0x00075400: bne .L_0007540C
-    // If param_1 != 0, skip these two assignments.
-    if (param_1 == 0) {
-        // 0x00075404: stb r0, 0x159(r3)
-        g_Pitcher.nPitchesThisAB = 0;
-        // 0x00075408: stb r0, 0x15a(r3)
-        g_Pitcher.nPickoffAttempts = 0;
-    }
-
-    // 0x00075410: lfsu f1, lbl_3_data_446C@l(r4)
-    // 0x0007541C: lfs f0, 0x4(r4)
-    // 0x00075424: stfs f1, 0x8c(r3)
-    // 0x00075428: stfs f0, 0x90(r3)
-    g_Pitcher.pitcher.x = lbl_3_data_446C.x;
-    g_Pitcher.pitcher.z = lbl_3_data_446C.z;
-
-    // 0x0007542C: stb r0, 0x15e(r3)
-    g_Pitcher.pitchDeliveryAnimationPlaying = 0;
-}
-
-// .text:0x00075434 size:0x84 mapped:0x806B44C8
-void fn_3_75434(void) {
-    return;
-}
-
-// .text:0x000754B8 size:0xA8 mapped:0x806B454C
-void fn_3_754B8(void) {
-    return;
-}
-
-// .text:0x00075560 size:0x45C mapped:0x806B45F4
-void fn_3_75560(void) {
+// .text:0x000906FC size:0x58 mapped:0x806CF790
+void fn_3_906FC(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_6F6CC` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_903B8` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
