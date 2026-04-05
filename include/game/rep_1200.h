@@ -4,7 +4,7 @@
 #include "mssbTypes.h"
 #include "game/UnknownHomes_Game.h"
 
-void fn_3_6F6CC(void);
+s32 fn_3_6F6CC(void);
 void fn_3_6F748(void);
 void fn_3_6FA28(void);
 void fn_3_6FB98(void);

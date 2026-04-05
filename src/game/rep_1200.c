@@ -4,10 +4,29 @@
 #include "game/UnknownHomes_Game.h"
 #include "static/UnknownHomes_Static.h"
 
+extern f32 lbl_3_rodata_1250;
+extern void fn_3_5C69C(void*, InMemPitcherType*);
 
 // .text:0x0006F6CC size:0x7C mapped:0x806AE760
-void fn_3_6F6CC(void) {
-    return;
+s32 fn_3_6F6CC(void) {
+        f32 limit;
+    InMemRunnerType* runner;
+
+    s32 i;
+    
+    limit = lbl_3_rodata_1250;
+
+    runner = g_Runners;
+    
+    for (i = 1; i < 4; i++) {
+        if (runner[i].runnerOnFieldOrOutOrScored == 1 && runner[i].percentTowardsNextBase > limit) {
+            g_Pitcher.pickOffLoc = 4;
+            fn_3_5C69C(0, &g_Pitcher);
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 // .text:0x0006F748 size:0x2E0 mapped:0x806AE7DC

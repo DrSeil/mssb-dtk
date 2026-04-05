@@ -1,4 +1,4 @@
-# Decompile: `fn_3_151694`
+# Decompile: `fn_3_6F6CC`
 
 ## Project Background
 
@@ -191,1174 +191,532 @@ shows two separate lis/addi sequences for the same global.
 
 ## Function Info
 
-- **Name**: `fn_3_151694`
-- **Address**: `0x151694`
+- **Name**: `fn_3_6F6CC`
+- **Address**: `0x6f6cc`
 - **Module**: `game`
-- **Source file**: `src/game/rep_3880.c`
+- **Source file**: `src/game/rep_1200.c`
 
 ## Target Assembly
 
 ```asm
-.fn fn_3_151694, global
-/* 00151694 00151768  94 21 FF F0 */	stwu r1, -0x10(r1)
-/* 00151698 0015176C  7C 08 02 A6 */	mflr r0
-/* 0015169C 00151770  3C A0 00 00 */	lis r5, lbl_3_data_26C3C@ha
-/* 001516A0 00151774  3C E0 00 00 */	lis r7, fn_3_150940@ha
-/* 001516A4 00151778  90 01 00 14 */	stw r0, 0x14(r1)
-/* 001516A8 0015177C  38 C5 00 00 */	addi r6, r5, lbl_3_data_26C3C@l
-/* 001516AC 00151780  39 00 00 1D */	li r8, 0x1d
-/* 001516B0 00151784  93 E1 00 0C */	stw r31, 0xc(r1)
-/* 001516B4 00151788  7C 9F 23 78 */	mr r31, r4
-/* 001516B8 0015178C  38 87 00 00 */	addi r4, r7, fn_3_150940@l
-/* 001516BC 00151790  38 E0 00 01 */	li r7, 0x1
-/* 001516C0 00151794  93 C1 00 08 */	stw r30, 0x8(r1)
-/* 001516C4 00151798  7C 7E 1B 78 */	mr r30, r3
-/* 001516C8 0015179C  7C 83 23 78 */	mr r3, r4
-/* 001516CC 001517A0  38 80 00 80 */	li r4, 0x80
-/* 001516D0 001517A4  80 A6 00 04 */	lwz r5, 0x4(r6)
-/* 001516D4 001517A8  80 06 00 24 */	lwz r0, 0x24(r6)
-/* 001516D8 001517AC  7C C5 02 14 */	add r6, r5, r0
-/* 001516DC 001517B0  38 A0 00 00 */	li r5, 0x0
-/* 001516E0 001517B4  48 00 00 01 */	bl fn_80033A24
-/* 001516E4 001517B8  28 03 00 00 */	cmplwi r3, 0x0
-/* 001516E8 001517BC  41 82 00 10 */	beq .L_001516F8
-/* 001516EC 001517C0  7F C4 F3 78 */	mr r4, r30
-/* 001516F0 001517C4  7F E5 FB 78 */	mr r5, r31
-/* 001516F4 001517C8  4B FF FB 11 */	bl fn_3_151204
-.L_001516F8:
-/* 001516F8 001517CC  80 01 00 14 */	lwz r0, 0x14(r1)
-/* 001516FC 001517D0  83 E1 00 0C */	lwz r31, 0xc(r1)
-/* 00151700 001517D4  83 C1 00 08 */	lwz r30, 0x8(r1)
-/* 00151704 001517D8  7C 08 03 A6 */	mtlr r0
-/* 00151708 001517DC  38 21 00 10 */	addi r1, r1, 0x10
-/* 0015170C 001517E0  4E 80 00 20 */	blr
-.endfn fn_3_151694
+.fn fn_3_6F6CC, global
+/* 0006F6CC 0006F7A0  94 21 FF F0 */	stwu r1, -0x10(r1)
+/* 0006F6D0 0006F7A4  7C 08 02 A6 */	mflr r0
+/* 0006F6D4 0006F7A8  3C 80 00 00 */	lis r4, g_Runners@ha
+/* 0006F6D8 0006F7AC  3C 60 00 00 */	lis r3, lbl_3_rodata_1250@ha
+/* 0006F6DC 0006F7B0  90 01 00 14 */	stw r0, 0x14(r1)
+/* 0006F6E0 0006F7B4  38 84 00 00 */	addi r4, r4, g_Runners@l
+/* 0006F6E4 0006F7B8  38 00 00 03 */	li r0, 0x3
+/* 0006F6E8 0006F7BC  C0 03 00 00 */	lfs f0, lbl_3_rodata_1250@l(r3)
+/* 0006F6EC 0006F7C0  38 84 01 54 */	addi r4, r4, 0x154
+/* 0006F6F0 0006F7C4  7C 09 03 A6 */	mtctr r0
+.L_0006F6F4:
+/* 0006F6F4 0006F7C8  88 04 01 23 */	lbz r0, 0x123(r4)
+/* 0006F6F8 0006F7CC  28 00 00 01 */	cmplwi r0, 0x1
+/* 0006F6FC 0006F7D0  40 82 00 30 */	bne .L_0006F72C
+/* 0006F700 0006F7D4  C0 24 00 68 */	lfs f1, 0x68(r4)
+/* 0006F704 0006F7D8  FC 01 00 40 */	fcmpo cr0, f1, f0
+/* 0006F708 0006F7DC  40 81 00 24 */	ble .L_0006F72C
+/* 0006F70C 0006F7E0  3C 60 00 00 */	lis r3, g_Pitcher@ha
+/* 0006F710 0006F7E4  38 00 00 04 */	li r0, 0x4
+/* 0006F714 0006F7E8  38 83 00 00 */	addi r4, r3, g_Pitcher@l
+/* 0006F718 0006F7EC  38 60 00 00 */	li r3, 0x0
+/* 0006F71C 0006F7F0  B0 04 01 2E */	sth r0, 0x12e(r4)
+/* 0006F720 0006F7F4  4B FE CF 7D */	bl fn_3_5C69C
+/* 0006F724 0006F7F8  38 60 00 01 */	li r3, 0x1
+/* 0006F728 0006F7FC  48 00 00 10 */	b .L_0006F738
+.L_0006F72C:
+/* 0006F72C 0006F800  38 84 01 54 */	addi r4, r4, 0x154
+/* 0006F730 0006F804  42 00 FF C4 */	bdnz .L_0006F6F4
+/* 0006F734 0006F808  38 60 00 00 */	li r3, 0x0
+.L_0006F738:
+/* 0006F738 0006F80C  80 01 00 14 */	lwz r0, 0x14(r1)
+/* 0006F73C 0006F810  7C 08 03 A6 */	mtlr r0
+/* 0006F740 0006F814  38 21 00 10 */	addi r1, r1, 0x10
+/* 0006F744 0006F818  4E 80 00 20 */	blr
+.endfn fn_3_6F6CC
 ```
 
 ## Dependencies (bl calls)
 
-- `fn_3_151204`: `/home/michael/Desktop/mssb-dtk/include/game/rep_3880.h:void fn_3_151204(void);`
-- `fn_80033A24`: `/home/michael/Desktop/mssb-dtk/include/UnknownHeaders.h:u32 fn_80033A24(void (*func)(void), s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);`
+- `fn_3_5C69C`: `/home/michael/Desktop/mssb-dtk/include/game/gap_5985C.h:void fn_3_5C69C(void);`
 
 ## Referenced Symbols
 
-- `lbl_3_data_26C3C`
-  - Section: .data, Address: 0x00026C3C, Type: object, Size: 0x58 bytes
+- `g_Pitcher`
+  - Section: .bss, Address: 0x0002F8E0, Type: object, Size: 0x178 bytes
+  - Declared as: `extern InMemPitcherType g_Pitcher;` (in `include/game/UnknownHomes_Game.h`)
+  - Accessed fields of `InMemPitcherType`:
+  +0x12E:
+    /*0x128*/ s16 pitchWindUpCountDown;
+    /*0x12A*/ s16 curvePitchWindupFrames;
+    /*0x12C*/ s16 _12C;
+    /*0x12E*/ s16 pickOffLoc; // 4noThrow/5Steal; ◄
+    /*0x130*/ s16 framesSinceAtBatEnded;
+    /*0x132*/ s16 framesUntilBallReachesBatterZ;
+    /*0x134*/ s16 framesUntilPitchGetsToBatter;
+- `g_Runners`
+  - Section: .bss, Address: 0x0002DD38, Type: object, Size: 0x550 bytes
+  - Declared as: `extern InMemRunnerType g_Runners[4];` (in `include/game/UnknownHomes_Game.h`)
+- `lbl_3_rodata_1250`
+  - Section: .rodata, Address: 0x00001250, Type: object, Size: 0x4 bytes
   - **NOT declared in any header** — add an extern declaration before use
 
 ## Current Diff (compiled vs target)
 
 ```
-Feedback for fn_3_151694 in game/game/rep_3880:
+Feedback for fn_3_6F6CC in game/game/rep_1200:
 ----------------------------------------
-Line 0: Missing instruction in your code.
-  Target: stwu r1, -0x10(r1)
-Line 1: Missing instruction in your code.
-  Target: mflr r0
-Line 2: Missing instruction in your code.
-  Target: lis r5, lbl_3_data_26C3C@ha
-Line 3: Missing instruction in your code.
-  Target: lis r7, fn_3_150940@ha
-Line 4: Missing instruction in your code.
-  Target: stw r0, 0x14(r1)
-Line 5: Missing instruction in your code.
-  Target: addi r6, r5, lbl_3_data_26C3C@l
-Line 6: Missing instruction in your code.
-  Target: li r8, 0x1d
-Line 7: Missing instruction in your code.
-  Target: stw r31, 0xc(r1)
-Line 8: Missing instruction in your code.
-  Target: mr r31, r4
+Line 7: Extra instruction in your code.
+  Current: addi r4, r4, 0x154
+Line 8: Mismatch
+  Target: lfs f0, lbl_3_rodata_1250@l(r3)
+  Current: lfs f1, lbl_3_rodata_1250@l(r3)
+  -> Operand mismatch. Target args: ['f0', "{'reloc': True}", 'r3'], Your args: ['f1', "{'reloc': True}", 'r3']
 Line 9: Missing instruction in your code.
-  Target: addi r4, r7, fn_3_150940@l
-Line 10: Missing instruction in your code.
-  Target: li r7, 0x1
-Line 11: Missing instruction in your code.
-  Target: stw r30, 0x8(r1)
-Line 12: Missing instruction in your code.
-  Target: mr r30, r3
-Line 13: Missing instruction in your code.
-  Target: mr r3, r4
-Line 14: Missing instruction in your code.
-  Target: li r4, 0x80
-Line 15: Missing instruction in your code.
-  Target: lwz r5, 0x4(r6)
-Line 16: Missing instruction in your code.
-  Target: lwz r0, 0x24(r6)
-Line 17: Missing instruction in your code.
-  Target: add r6, r5, r0
-Line 18: Missing instruction in your code.
-  Target: li r5, 0x0
-Line 19: Missing instruction in your code.
-  Target: bl fn_80033A24
+  Target: addi r4, r4, 0x154
+Line 14: Mismatch
+  Target: lfs f1, 0x68(r4)
+  Current: lfs f0, 0x68(r4)
+  -> Operand mismatch. Target args: ['f1', '104', 'r4'], Your args: ['f0', '104', 'r4']
+Line 15: Mismatch
+  Target: fcmpo cr0, f1, f0
+  Current: fcmpo cr0, f0, f1
+  -> Operand mismatch. Target args: ['cr0', 'f1', 'f0'], Your args: ['cr0', 'f0', 'f1']
 Line 20: Missing instruction in your code.
-  Target: cmplwi r3, 0x0
-Line 21: Missing instruction in your code.
-  Target: beq 0xa37c
-Line 22: Missing instruction in your code.
-  Target: mr r4, r30
-Line 23: Missing instruction in your code.
-  Target: mr r5, r31
-Line 24: Missing instruction in your code.
-  Target: bl fn_3_151204
-Line 25: Missing instruction in your code.
-  Target: lwz r0, 0x14(r1)
-Line 26: Missing instruction in your code.
-  Target: lwz r31, 0xc(r1)
-Line 27: Missing instruction in your code.
-  Target: lwz r30, 0x8(r1)
-Line 28: Missing instruction in your code.
-  Target: mtlr r0
-Line 29: Missing instruction in your code.
-  Target: addi r1, r1, 0x10
+  Target: li r3, 0x0
+Line 22: Extra instruction in your code.
+  Current: li r3, 0x0
 ```
 
 ## Approximate Decompilation (from m2c)
 
 ```c
-Failed to locate static/UnknownHomes_static.h
-extern ? lbl_3_data_26C3C;
+s32 fn_3_6F6CC(void) {
+    InMemRunnerType *var_r4;
+    s32 var_ctr;
 
-void fn_3_151694(void *arg0, void *arg1) {
-    if (fn_80033A24(fn_3_150940, 0x80, 0, lbl_3_data_26C3C.unk4 + lbl_3_data_26C3C.unk24, 1, 0x1D) != 0) {
-        fn_3_151204();
+    var_r4 = &g_Runners[1];
+    var_ctr = 3;
+loop_1:
+    if (((u8) var_r4->runnerOnFieldOrOutOrScored == 1) && (var_r4->percentTowardsNextBase > lbl_3_rodata_1250)) {
+        g_Pitcher.pickOffLoc = 4;
+        fn_3_5C69C(NULL, &g_Pitcher);
+        return 1;
     }
+    var_r4 += 0x154;
+    var_ctr -= 1;
+    if (var_ctr == 0) {
+        return 0;
+    }
+    goto loop_1;
 }
 ```
 
 ## Ghidra Decompilation (from in_game.c)
 
 ```c
-void FUN_80790728(undefined4 param_1,undefined4 param_2)
+undefined4 FUN_806ae760(void)
 
 {
   int iVar1;
+  int iVar2;
   int local_res4;
   int local_10;
-  int local_8;
-  int local_4;
   
-  iVar1 = FUN_80033a24  /* fn_80033A24 */(FUN_8078f9d4,0x80,0,INT_807d8240 + INT_807d8260,(castleThwompObj *)0x1,0x1d);
-  if (iVar1 != 0) {
-    FUN_80790298(iVar1,param_1,param_2);
+  iVar1 = -0x7f771094;
+  iVar2 = 3;
+  while ((*(char *)(iVar1 + 0x123) != '\x01' || (*(float *)(iVar1 + 0x68) <= const_0_5))) {
+    iVar1 = iVar1 + 0x154;
+    iVar2 = iVar2 + -1;
+    if (iVar2 == 0) {
+      return 0;
+    }
   }
-  return;
+  inMemPitcher.pickOffLoc_4noThrow_5Steal_ = 4;
+  transitionToLiveBallWithoutContact(0);
+  return 1;
 }
 ```
 
-## Header: `include/game/rep_3880.h`
+## Header: `include/game/rep_1200.h`
 
 ```c
-#ifndef __GAME_rep_3880_H_
-#define __GAME_rep_3880_H_
+#ifndef __GAME_rep_1200_H_
+#define __GAME_rep_1200_H_
 
 #include "mssbTypes.h"
-#include "stl/mem.h"
-#include "UnknownHeaders.h"
-#include "static/UnknownHomes_static.h"
+#include "game/UnknownHomes_Game.h"
 
-// Linked list node used by fn_3_14B9F0
-typedef struct ListNode_14B9F0 {
-    struct ListNode_14B9F0* next;  // 0x00
-    u8 _pad[0x44];                  // 0x04-0x47
-    u16 field_0x48;                 // 0x48
-    u16 field_0x4A;                 // 0x4A
-    u8 field_0x4C;                  // 0x4C
-    u8 field_0x4D;                  // 0x4D
-    u8 field_0x4E;                  // 0x4E
-    u8 field_0x4F;                  // 0x4F
-} ListNode_14B9F0;
-
-// Return type from fn_800339F0
-struct Struct_800339F0_Result {
-    u8 _pad[0x0C];                  // 0x00-0x0B
-    ListNode_14B9F0* listHead;      // 0x0C
-    s32 field_0x10;                 // 0x10
-};
-
-typedef struct {
-    u8 _pad[0x18];
-    u8 someFlag; // 0x18
-} UnknownStruct_B850;
-
-extern UnknownStruct_B850* lbl_3_bss_B850;
-
-typedef struct UnknownStruct_14CA98 {
-    struct UnknownStruct_14CA98* next;
-    u8 _pad0[0x40];
-    u8 field_0x44;  // 0x44
-    u8 field_0x45;  // 0x45
-    u8 _pad1[0x4];
-    u16 field_0x4A; // 0x4A
-    u8 field_0x4C;  // 0x4C
-} UnknownStruct_14CA98;
-
-typedef struct {
-    u8 _pad[0x8];
-    s32 unk8;
-    u8 _pad2[0x10];
-} Struct_26E24;
-
-extern Struct_26E24 lbl_3_data_26E24;
-
-void pitchingMachinePitching(s32 param);
-
-void fn_3_14737C(void);
-void fn_3_147778(void);
-void fn_3_147C00(void);
-void fn_3_147CFC(void);
-void fn_3_147DFC(void);
-void fn_3_147E20(void);
-void fn_3_147F94(void);
-void fn_3_1480E0(void);
-void fn_3_148254(void);
-bool fn_3_1483D4(void);
-void fn_3_14841C(void);
-void fn_3_148EF0(void);
-void fn_3_148FD0(void);
-void fn_3_149340(void);
-void fn_3_14975C(void);
-void fn_3_149BA8(void);
-void fn_3_14A070(void);
-void fn_3_14A164(void);
-void fn_3_14A188(void);
-void fn_3_14A37C(void);
-void fn_3_14A62C(void);
-void fn_3_14A90C(void);
-void fn_3_14AC1C(void);
-void fn_3_14AC40(void);
-void fn_3_14B248(void);
-void fn_3_14B3F4(void);
-void fn_3_14B53C(void* arg0, void* arg1, void* arg2);
-void fn_3_14B92C(void* arg0, void* arg1);
-void fn_3_14B9A0(void* arg0, void* arg1);
-void fn_3_14B9F0(void);
-void fn_3_14BA40(void);
-void fn_3_14BCB0(void);
-void fn_3_14BECC(void* arg0, void* arg1);
-void fn_3_14C348(void* arg0, void* arg1);
-void fn_3_14C398(void);
-void fn_3_14C3BC(void);
-void fn_3_14C4C8(void);
-void fn_3_14C79C(void);
-void fn_3_14C830(void);
-void fn_3_14C904(void);
-void fn_3_14CA00(void);
-void fn_3_14CA98(UnknownStruct_14CA98* obj);
-void fn_3_14CAB4(s8 arg0);
-void fn_3_14CB28(void);
-void fn_3_14CBB4(void);
-void fn_3_14CD40(void);
-void fn_3_14CECC(void);
-void fn_3_14D2C0(void);
-void fn_3_14D318(void);
-void fn_3_14D44C(void);
-void fn_3_14D6D4(Struct_14D6D4_Input* in);
-void fn_3_14D710(void);
-void fn_3_14DC80(s32 arg);
-void fn_3_14DCE0(void);
-void fn_3_14DD04(void);
-void fn_3_14DF6C(void);
-void fn_3_14E234(void);
-void fn_3_14E7C0(void* arg0);
-void fn_3_14E810(void);
-void fn_3_14E894(void);
-void fn_3_14E920(s8 arg0);
-void fn_3_14E988(s8 arg0);
-void fn_3_14E9F0(void);
-void fn_3_14EAF4(void);
-void fn_3_14ED24(void);
-void fn_3_14F3CC(void);
-typedef struct {
-    u8 _pad0[0x38];
-    f32 field_0x38;
-    f32 field_0x3C;
-    u8 _pad1[0x3];
-    u8 field_0x43;
-    u8 _pad2[0x6];
-    s16 field_0x4A;
-} Struct_14F544_Arg;
-
-typedef struct {
-    u32 field_0x0;   // 0x0
-    u8 _pad0[0x4];
-    s32 field_0x8;
-    u8 _pad1[0x8];
-    u32 field_0x14;
-    u8 _pad2[0x4];
-    u32 field_0x1C;
-    u8 _pad3[0x4];
-} Struct_26C94;
-extern Struct_26C94 lbl_3_data_26C94;
-extern f32 lbl_3_rodata_3930;
-
-void fn_3_14F544(Struct_14F544_Arg* arg);
-void fn_3_14F5A4(void);
-void fn_3_14F8D0(struct Struct_800339F0_Result* arg);
-void fn_3_14F930(void);
-void fn_3_150010(s32 arg);
-void fn_3_150070(void);
-void fn_3_1500C8(void);
-void fn_3_150120(void);
-void fn_3_1504EC(void);
-void fn_3_150940(void);
-void fn_3_150D84(void);
-void fn_3_151068(void);
-void fn_3_151204(void);
-void fn_3_151694(void* arg0, void* arg1);
-void fn_3_151710(void* arg0, void* arg1);
-void fn_3_151760(void);
-void fn_3_151798(void);
-void fn_3_1517D0(void);
-void fn_3_1519F8(void);
-void fn_3_151BAC(void);
-void fn_3_151D6C(void);
-void fn_3_151F2C(void);
-void fn_3_1524E8(void);
-void fn_3_152794(void);
-void fn_3_152AB4(void);
-void fn_3_1531A4(void);
-void fn_3_1534C0(void);
-void fn_3_1536A8(void);
-void fn_3_153E8C(void);
-void fn_3_153F8C(void);
-void fn_3_1540E4(void* arg0, void* arg1, void* arg2);
-void fn_3_1541C4(void* arg0, void* arg1, void* arg2);
-void fn_3_154214(void);
-void fn_3_154238(void);
-void fn_3_1542F4(void);
-void fn_3_1549F0(void);
-void fn_3_154C7C(u32 unknown);
-void fn_3_15521C(u32 unused, u32 param_2, u32 param_3);
-void fn_3_155264(void);
-void fn_3_155288(void);
-void fn_3_1552AC(void);
-void fn_3_1559E4(void);
-void fn_3_155C28(void);
-void fn_3_155F08(void);
-void fn_3_156218(void);
-void fn_3_156548(void);
-void fn_3_156970(void);
-void fn_3_156D04(void);
-void fn_3_15730C(void);
-void fn_3_1573AC(void);
-void fn_3_157570(void);
-void fn_3_157588(s32 arg);
-void fn_3_1575F0(void);
-void fn_3_15767C(void);
-void fn_3_1578F8(void);
-void fn_3_15791C(void);
-void fn_3_157AC4(void);
+s32 fn_3_6F6CC(void);
+void fn_3_6F748(void);
+void fn_3_6FA28(void);
+void fn_3_6FB98(void);
+void fn_3_6FDA0(void);
+void fn_3_6FFC4(void);
+void fn_3_70280(void);
+void fn_3_703EC(void);
+s32 fn_3_70680(f32 value);
+void fn_3_706B8(void);
+void fn_3_70768(void);
+void fn_3_70838(void);
+void fn_3_709B4(void);
+void fn_3_70AEC(void);
+void fn_3_70B94(void);
+void fn_3_70EF4(void);
+void fn_3_71248(void);
+void fn_3_72768(void);
+void fn_3_72CA8(void);
+void fn_3_7310C(void);
+void fn_3_735A8(void);
+void fn_3_736CC(void);
+void fn_3_73718(void);
+void fn_3_7372C(void);
+void fn_3_73850(void);
+void fn_3_738A8(void);
+void fn_3_73DE8(void);
+void fn_3_73F2C(void);
+void fn_3_73FAC(void);
+void fn_3_740D0(void);
+void fn_3_74128(void);
+void fn_3_74AC4(void);
+void fn_3_74D0C(void);
+void fn_3_75090(void);
+void fn_3_750C4(s8 value);
+void fn_3_750DC(void);
+void fn_3_751B4(void);
+void fn_3_753E8(s32 param_1);
+void fn_3_75434(void);
+void fn_3_754B8(void);
+void fn_3_75560(void);
 
 // No local headers needed.
-#endif // !__GAME_rep_3880_H_
+#endif // !__GAME_rep_1200_H_
 ```
 
-## Source File: `src/game/rep_3880.c`
+## Source File: `src/game/rep_1200.c`
 
 ```c
-#include "game/rep_3880.h"
+#include "game/rep_1200.h"
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/UnknownHomes_Game.h"
+#include "static/UnknownHomes_Static.h"
 
+extern f32 lbl_3_rodata_1250;
+extern void fn_3_5C69C(void*, InMemPitcherType*);
 
-// .text:0x0014737C size:0x3FC mapped:0x80786410
-void fn_3_14737C(void) {
-    return;
-}
+// .text:0x0006F6CC size:0x7C mapped:0x806AE760
+s32 fn_3_6F6CC(void) {
+    InMemRunnerType* runner;
+    f32 limit;
+    s32 i;
 
-// .text:0x00147778 size:0x488 mapped:0x8078680C
-void fn_3_147778(void) {
-    return;
-}
-
-// .text:0x00147C00 size:0xFC mapped:0x80786C94
-void fn_3_147C00(void) {
-    return;
-}
-
-// .text:0x00147CFC size:0x100 mapped:0x80786D90
-void fn_3_147CFC(void) {
-    return;
-}
-
-// .text:0x00147DFC size:0x24 mapped:0x80786E90
-void fn_3_147DFC(void) {
-    pitchingMachinePitching(0x25);
-}
-
-// .text:0x00147E20 size:0x174 mapped:0x80786EB4
-void fn_3_147E20(void) {
-    return;
-}
-
-// .text:0x00147F94 size:0x14C mapped:0x80787028
-void fn_3_147F94(void) {
-    return;
-}
-
-// .text:0x001480E0 size:0x174 mapped:0x80787174
-void fn_3_1480E0(void) {
-    return;
-}
-
-// .text:0x00148254 size:0x180 mapped:0x807872E8
-void fn_3_148254(void) {
-    return;
-}
-
-// .text:0x001483D4 size:0x48 mapped:0x80787468
-
-bool fn_3_1483D4(void) {
-    // 1. Call rand() and get the result in r3.
-    // 2. Perform modulo 5. 
-    // 3. Compare the result to 0.
-    // 4. Normalize the boolean (val == 0) to an integer 0 or 1.
+    runner = g_Runners;
+    limit = lbl_3_rodata_1250;
+    runner++;
     
-  return !(rand() % 5);
-}
-
-// .text:0x0014841C size:0xAD4 mapped:0x807874B0
-void fn_3_14841C(void) {
-    return;
-}
-
-// .text:0x00148EF0 size:0xE0 mapped:0x80787F84
-void fn_3_148EF0(void) {
-    return;
-}
-
-// .text:0x00148FD0 size:0x370 mapped:0x80788064
-void fn_3_148FD0(void) {
-    return;
-}
-
-// .text:0x00149340 size:0x41C mapped:0x807883D4
-void fn_3_149340(void) {
-    return;
-}
-
-// .text:0x0014975C size:0x44C mapped:0x807887F0
-void fn_3_14975C(void) {
-    return;
-}
-
-// .text:0x00149BA8 size:0x4C8 mapped:0x80788C3C
-void fn_3_149BA8(void) {
-    return;
-}
-
-// .text:0x0014A070 size:0xF4 mapped:0x80789104
-void fn_3_14A070(void) {
-    return;
-}
-
-// .text:0x0014A164 size:0x24 mapped:0x807891F8
-void fn_3_14A164(void) {
-    pitchingMachinePitching(0x24);
-}
-
-// .text:0x0014A188 size:0x1F4 mapped:0x8078921C
-void fn_3_14A188(void) {
-    return;
-}
-
-// .text:0x0014A37C size:0x2B0 mapped:0x80789410
-void fn_3_14A37C(void) {
-    return;
-}
-
-// .text:0x0014A62C size:0x2E0 mapped:0x807896C0
-void fn_3_14A62C(void) {
-    return;
-}
-
-// .text:0x0014A90C size:0x310 mapped:0x807899A0
-void fn_3_14A90C(void) {
-    return;
-}
-
-// .text:0x0014AC1C size:0x24 mapped:0x80789CB0
-void fn_3_14AC1C(void) {
-    pitchingMachinePitching(0x23);
-}
-
-// .text:0x0014AC40 size:0x608 mapped:0x80789CD4
-void fn_3_14AC40(void) {
-    return;
-}
-
-// .text:0x0014B248 size:0x1AC mapped:0x8078A2DC
-void fn_3_14B248(void) {
-    return;
-}
-
-// .text:0x0014B3F4 size:0x148 mapped:0x8078A488
-void fn_3_14B3F4(void) {
-    return;
-}
-
-// .text:0x0014B53C size:0x3F0 mapped:0x8078A5D0
-void fn_3_14B53C(void* arg0, void* arg1, void* arg2) {
-    return;
-}
-
-// .text:0x0014B92C size:0x74 mapped:0x8078A9C0
-void fn_3_14B92C(void* arg0, void* arg1) {
-    void* temp_r3;
-
-    temp_r3 = (void*)fn_80033A24(fn_3_14AC40, 0x80, 0, lbl_3_data_26E24.unk8, 1, 0x23);
-    if (temp_r3 != NULL) {
-        fn_3_14B53C(temp_r3, arg0, arg1);
+    for (i = 0; i < 3; i++) {
+        if (runner->runnerOnFieldOrOutOrScored == 1 && runner->percentTowardsNextBase > limit) {
+            g_Pitcher.pickOffLoc = 4;
+            fn_3_5C69C(0, &g_Pitcher);
+            return 1;
+        }
+        runner++;
     }
+
+    return 0;
 }
 
-// .text:0x0014B9A0 size:0x50 mapped:0x8078AA34
-void fn_3_14B9A0(void* arg0, void* arg1) {
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
-        g_Minigame.GameMode_MiniGame == 3 &&
-        arg1 != NULL) {
-        fn_3_14B92C(arg0, arg1);
-    }
-}
-
-// .text:0x0014B9F0 size:0x50 mapped:0x8078AA84
-void fn_3_14B9F0(void) {
-    struct Struct_800339F0_Result* result;
-    ListNode_14B9F0* node;
-
-    result = fn_800339F0(0, 0x22);
-    if (result != NULL) {
-        node = result->listHead;
-        do {
-            node->field_0x4A = 0;
-            node = node->next;
-        } while (node != NULL);
-    }
-    pitchingMachinePitching(0x22);
-}
-
-// .text:0x0014BA40 size:0x270 mapped:0x8078AAD4
-void fn_3_14BA40(void) {
+// .text:0x0006F748 size:0x2E0 mapped:0x806AE7DC
+void fn_3_6F748(void) {
     return;
 }
 
-// .text:0x0014BCB0 size:0x21C mapped:0x8078AD44
-void fn_3_14BCB0(void) {
+// .text:0x0006FA28 size:0x170 mapped:0x806AEABC
+void fn_3_6FA28(void) {
     return;
 }
 
-// .text:0x0014BECC size:0x47C mapped:0x8078AF60
-void fn_3_14BECC(void* arg0, void* arg1) {
+// .text:0x0006FB98 size:0x208 mapped:0x806AEC2C
+void fn_3_6FB98(void) {
     return;
 }
 
-// .text:0x0014C348 size:0x50 mapped:0x8078B3DC
-void fn_3_14C348(void* arg0, void* arg1) {
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
-        g_Minigame.GameMode_MiniGame == 2 &&
-        arg0 != NULL) {
-        fn_3_14BECC(arg0, arg1);
-    }
-}
-
-// .text:0x0014C398 size:0x24 mapped:0x8078B42C
-void fn_3_14C398(void) {
-    pitchingMachinePitching(0x21);
-}
-
-// .text:0x0014C3BC size:0x10C mapped:0x8078B450
-void fn_3_14C3BC(void) {
+// .text:0x0006FDA0 size:0x224 mapped:0x806AEE34
+void fn_3_6FDA0(void) {
     return;
 }
 
-// .text:0x0014C4C8 size:0x2D4 mapped:0x8078B55C
-void fn_3_14C4C8(void) {
+// .text:0x0006FFC4 size:0x2BC mapped:0x806AF058
+void fn_3_6FFC4(void) {
     return;
 }
 
-// .text:0x0014C79C size:0x94 mapped:0x8078B830
-void fn_3_14C79C(void) {
+// .text:0x00070280 size:0x16C mapped:0x806AF314
+void fn_3_70280(void) {
     return;
 }
 
-// .text:0x0014C830 size:0xD4 mapped:0x8078B8C4
-void fn_3_14C830(void) {
+// .text:0x000703EC size:0x294 mapped:0x806AF480
+void fn_3_703EC(void) {
     return;
 }
 
-// .text:0x0014C904 size:0xFC mapped:0x8078B998
-void fn_3_14C904(void) {
-    return;
-}
-
-// .text:0x0014CA00 size:0x98 mapped:0x8078BA94
-void fn_3_14CA00(void) {
-    return;
-}
-
-// .text:0x0014CA98 size:0x1C mapped:0x8078BB2C
-void fn_3_14CA98(UnknownStruct_14CA98* obj) {
-    obj->field_0x44 = 0;
-    obj->field_0x45 = 0xFF;
-    obj->field_0x4A = 0;
-    obj->field_0x4C = 0;
-}
-
-// .text:0x0014CAB4 size:0x74 mapped:0x8078BB48
-void fn_3_14CAB4(s8 arg0) {
-    struct Struct_800339F0_Result* result;
-    UnknownStruct_14CA98* node;
-
-    result = fn_800339F0(0, 0x20);
-    if (result != NULL) {
-        node = (UnknownStruct_14CA98*)result->listHead;
-        do {
-            if (node->field_0x45 == arg0) {
-                node->field_0x44 = 0;
-                node->field_0x45 = 0xFF;
-                node->field_0x4A = 0;
-                node->field_0x4C = 0;
-            }
-            node = node->next;
-        } while (node != NULL);
-    }
-}
-
-// .text:0x0014CB28 size:0x8C mapped:0x8078BBBC
-void fn_3_14CB28(void) {
-    return;
-}
-
-// .text:0x0014CBB4 size:0x18C mapped:0x8078BC48
-void fn_3_14CBB4(void) {
-    return;
-}
-
-// .text:0x0014CD40 size:0x18C mapped:0x8078BDD4
-void fn_3_14CD40(void) {
-    return;
-}
-
-// .text:0x0014CECC size:0x3F4 mapped:0x8078BF60
-void fn_3_14CECC(void) {
-    return;
-}
-
-// .text:0x0014D2C0 size:0x58 mapped:0x8078C354
-void fn_3_14D2C0(void) {
-    return;
-}
-
-// .text:0x0014D318 size:0x134 mapped:0x8078C3AC
-void fn_3_14D318(void) {
-    return;
-}
-
-// .text:0x0014D44C size:0x288 mapped:0x8078C4E0
-void fn_3_14D44C(void) {
-    return;
-}
-
-// .text:0x0014D6D4 size:0x3C mapped:0x8078C768
+// .text:0x00070680 size:0x38 mapped:0x806AF714
 
 
-void fn_3_14D6D4(Struct_14D6D4_Input* in) {
-    Struct_14D6D4_Node* node;
-
-    in->field10 = lbl_3_common_bss_32724.field6C;
-    node = in->listHead;
-
-    do {
-        node->unk46 = 0;
-        node->unk45 = 0;
-        node->unk44 = 0;
-        node->unk4A = 0;
-        node->unk4E = 0;
-        node = node->next;
-    } while (node != NULL);
-}
-
-// .text:0x0014D710 size:0x570 mapped:0x8078C7A4
-void fn_3_14D710(void) {
-    return;
-}
-
-// .text:0x0014DC80 size:0x60 mapped:0x8078CD14
-void fn_3_14DC80(s32 arg) {
-    // NONMATCHING: logic correct; target uses bge+b+bl for last check, ours generates blt+bl
-    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
-    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_BARREL_BATTER) return;
-    if ((s8)arg >= 15) return;
-    if ((s8)arg >= 0) fn_3_14D710();
-}
-
-// .text:0x0014DCE0 size:0x24 mapped:0x8078CD74
-void fn_3_14DCE0(void) {
-    pitchingMachinePitching(0x1F);
-}
-
-// .text:0x0014DD04 size:0x268 mapped:0x8078CD98
-void fn_3_14DD04(void) {
-    return;
-}
-
-// .text:0x0014DF6C size:0x2C8 mapped:0x8078D000
-void fn_3_14DF6C(void) {
-    return;
-}
-
-// .text:0x0014E234 size:0x58C mapped:0x8078D2C8
-void fn_3_14E234(void) {
-    return;
-}
-
-// .text:0x0014E7C0 size:0x50 mapped:0x8078D854
-void fn_3_14E7C0(void* arg0) {
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
-        g_Minigame.GameMode_MiniGame == 6 &&
-        arg0 != NULL) {
-        fn_3_14E234();
-    }
-}
-
-// .text:0x0014E810 size:0x84 mapped:0x8078D8A4
-void fn_3_14E810(void) {
-    return;
-}
-
-// .text:0x0014E894 size:0x8C mapped:0x8078D928
-void fn_3_14E894(void) {
-    return;
-}
-
-// .text:0x0014E920 size:0x68 mapped:0x8078D9B4
-void fn_3_14E920(s8 arg0) {
-    struct Struct_800339F0_Result *result;
-    ListNode_14B9F0 *node;
-    result = fn_800339F0(0, 0x1E);
-    if (result != NULL) {
-        node = result->listHead;
-        do {
-            if (node->field_0x4C == (s8)arg0 + 1) {
-                node->field_0x4A = 0;
-            }
-            node = node->next;
-        } while (node != NULL);
-    }
-}
-
-// .text:0x0014E988 size:0x68 mapped:0x8078DA1C
-void fn_3_14E988(s8 arg0) {
-    struct Struct_800339F0_Result *result;
-    ListNode_14B9F0 *node;
-    result = fn_800339F0(0, 0x1E);
-    if (result != NULL) {
-        node = result->listHead;
-        do {
-            if (node->field_0x4C == (s8)arg0 + 1) {
-                node->field_0x4A = 0;
-            }
-            node = node->next;
-        } while (node != NULL);
-    }
-}
-
-// .text:0x0014E9F0 size:0x104 mapped:0x8078DA84
-void fn_3_14E9F0(void) {
-    return;
-}
-
-// .text:0x0014EAF4 size:0x230 mapped:0x8078DB88
-void fn_3_14EAF4(void) {
-    return;
-}
-
-// .text:0x0014ED24 size:0x6A8 mapped:0x8078DDB8
-void fn_3_14ED24(void) {
-    return;
-}
-
-// .text:0x0014F3CC size:0x178 mapped:0x8078E460
-void fn_3_14F3CC(void) {
-    return;
-}
-
-// .text:0x0014F544 size:0x60 mapped:0x8078E5D8
-void fn_3_14F544(Struct_14F544_Arg* arg) {
-    // NONMATCHING: lfd f2 (bias double load) scheduled 2 instructions too early
-    f32 val;
-    arg->field_0x4A = (s16)lbl_3_data_26C94.field_0x1C;
-    arg->field_0x43 = (u8)lbl_3_data_26C94.field_0x14;
-    val = (f32)lbl_3_data_26C94.field_0x8 / lbl_3_rodata_3930;
-    arg->field_0x3C = val;
-    arg->field_0x38 = val;
-}
-
-// .text:0x0014F5A4 size:0x32C mapped:0x8078E638
-void fn_3_14F5A4(void) {
-    return;
-}
-
-// .text:0x0014F8D0 size:0x60 mapped:0x8078E964
-// NONMATCHING: register allocation swap (node<->i in r6/r7, data_26C94<->magic in r4/r5)
-void fn_3_14F8D0(struct Struct_800339F0_Result* arg) {
-    ListNode_14B9F0* node;
-    u32 i = 0;
-    arg->field_0x10 = lbl_3_common_bss_32724.field6C;
-    node = arg->listHead;
-    do {
-        node->field_0x4C = (u8)(i / 18 + 1);
-        node->field_0x4D = (u8)lbl_3_data_26C94.field_0x0;
-        node->field_0x4E = 0;
-        node->field_0x4F = 0;
-        i++;
-        node = node->next;
-    } while (node != NULL);
-}
-
-// .text:0x0014F930 size:0x6E0 mapped:0x8078E9C4
-void fn_3_14F930(void) {
-    return;
-}
-
-// .text:0x00150010 size:0x60 mapped:0x8078F0A4
-// NONMATCHING: bge+b+bl branch layout uncontrollable at -O4 (tried: macro, explicit goto)
-void fn_3_150010(s32 arg) {
-    if (g_d_GameSettings.GameModeSelected != GAME_TYPE_MINIGAMES) return;
-    if (g_Minigame.GameMode_MiniGame != MINI_GAME_ID_STAR_DASH) return;
-    if ((s8)arg > 4) return;
-    if ((s8)arg >= 0) fn_3_14F930();
-}
-
-// .text:0x00150070 size:0x58 mapped:0x8078F104
-void fn_3_150070(void) {
-    struct Struct_800339F0_Result* result;
-    ListNode_14B9F0* node;
-
-    result = fn_800339F0(0, 0x1D);
-    if (result != NULL) {
-        node = result->listHead;
-        do {
-            node->field_0x4A = 0;
-            node->field_0x48 = 0;
-            node->field_0x4C = 0;
-            node = node->next;
-        } while (node != NULL);
-    }
-    pitchingMachinePitching(0x1D);
-}
-
-// .text:0x001500C8 size:0x58 mapped:0x8078F15C
-void fn_3_1500C8(void) {
-    struct Struct_800339F0_Result* result;
-    ListNode_14B9F0* node;
-
-    result = fn_800339F0(0, 0x1D);
-    if (result != NULL) {
-        node = result->listHead;
-        do {
-            node->field_0x4A = 0;
-            node->field_0x48 = 0;
-            node->field_0x4C = 0;
-            node = node->next;
-        } while (node != NULL);
-    }
-    pitchingMachinePitching(0x1D);
-}
-
-// .text:0x00150120 size:0x3CC mapped:0x8078F1B4
-void fn_3_150120(void) {
-    return;
-}
-
-// .text:0x001504EC size:0x454 mapped:0x8078F580
-void fn_3_1504EC(void) {
-    return;
-}
-
-// .text:0x00150940 size:0x444 mapped:0x8078F9D4
-void fn_3_150940(void) {
-    return;
-}
-
-// .text:0x00150D84 size:0x2E4 mapped:0x8078FE18
-void fn_3_150D84(void) {
-    return;
-}
-
-// .text:0x00151068 size:0x19C mapped:0x807900FC
-void fn_3_151068(void) {
-    return;
-}
-
-// .text:0x00151204 size:0x490 mapped:0x80790298
-void fn_3_151204(void) {
-    return;
-}
-
-// .text:0x00151694 size:0x7C mapped:0x80790728
-void fn_3_151694(void* arg0, void* arg1) {
-    return;
-}
-
-// .text:0x00151710 size:0x50 mapped:0x807907A4
-void fn_3_151710(void* arg0, void* arg1) {
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
-        g_Minigame.GameMode_MiniGame == 2 &&
-        arg0 != NULL) {
-        fn_3_151694(arg0, arg1);
-    }
-}
-
-// .text:0x00151760 size:0x38 mapped:0x807907F4
 
 /**
- * @address 00151760
+ * @address 00070680
  */
-void fn_3_151760(void) {
-    /* * Target Sequence:
-     * lis r3, lbl@ha -> li r4, 0 -> stw r0, 0x14(r1) -> addi r3, r3, lbl@l
-     * li r5, 0xf -> bl memset
+s32 fn_3_70680(f32 value) {
+    /* * Target: lfs f0, 0x7c(r3) -> g_Pitcher.strikeZoneLeft
+     * fcmpo cr0, f1, f0 -> value vs left
+     * cror eq, gt, eq   -> implements >=
+     * bne .L_FAIL       -> if !(value >= left) return 0
      */
-    memset(lbl_3_bss_B894, 0, 0xF);
-
-    /* * Target Sequence:
-     * li r3, 0x1c -> bl pitchingMachinePitching
-     */
-    pitchingMachinePitching(0x1C);
+    if (value >= g_Pitcher.strikeZoneLeft) {
+        /* * Target: lfs f0, 0x80(r3) -> g_Pitcher.strikeZoneRight
+         * fcmpo cr0, f1, f0 -> value vs right
+         * cror eq, lt, eq   -> implements <=
+         * bne .L_FAIL       -> if !(value <= right) return 0
+         */
+        if (value <= g_Pitcher.strikeZoneRight) {
+            /* li r3, 1 -> blr */
+            return 1;
+        }
+    }
+    
+    /* .L_FAIL: li r3, 0 -> blr */
+    return 0;
 }
 
-// .text:0x00151798 size:0x38 mapped:0x8079082C
-
-
-
-void fn_3_151798(void) {
-    memset(lbl_3_bss_B894, 0, 0xFU);
-    pitchingMachinePitching(0x1C);
-}
-
-// .text:0x001517D0 size:0x228 mapped:0x80790864
-void fn_3_1517D0(void) {
+// .text:0x000706B8 size:0xB0 mapped:0x806AF74C
+void fn_3_706B8(void) {
     return;
 }
 
-// .text:0x001519F8 size:0x1B4 mapped:0x80790A8C
-void fn_3_1519F8(void) {
+// .text:0x00070768 size:0xD0 mapped:0x806AF7FC
+void fn_3_70768(void) {
     return;
 }
 
-// .text:0x00151BAC size:0x1C0 mapped:0x80790C40
-void fn_3_151BAC(void) {
+// .text:0x00070838 size:0x17C mapped:0x806AF8CC
+void fn_3_70838(void) {
     return;
 }
 
-// .text:0x00151D6C size:0x1C0 mapped:0x80790E00
-void fn_3_151D6C(void) {
+// .text:0x000709B4 size:0x138 mapped:0x806AFA48
+void fn_3_709B4(void) {
     return;
 }
 
-// .text:0x00151F2C size:0x5BC mapped:0x80790FC0
-void fn_3_151F2C(void) {
+// .text:0x00070AEC size:0xA8 mapped:0x806AFB80
+void fn_3_70AEC(void) {
     return;
 }
 
-// .text:0x001524E8 size:0x2AC mapped:0x8079157C
-void fn_3_1524E8(void) {
+// .text:0x00070B94 size:0x360 mapped:0x806AFC28
+void fn_3_70B94(void) {
     return;
 }
 
-// .text:0x00152794 size:0x320 mapped:0x80791828
-void fn_3_152794(void) {
+// .text:0x00070EF4 size:0x354 mapped:0x806AFF88
+void fn_3_70EF4(void) {
     return;
 }
 
-// .text:0x00152AB4 size:0x6F0 mapped:0x80791B48
-void fn_3_152AB4(void) {
+// .text:0x00071248 size:0x1520 mapped:0x806B02DC
+void fn_3_71248(void) {
     return;
 }
 
-// .text:0x001531A4 size:0x31C mapped:0x80792238
-void fn_3_1531A4(void) {
+// .text:0x00072768 size:0x540 mapped:0x806B17FC
+void fn_3_72768(void) {
     return;
 }
 
-// .text:0x001534C0 size:0x1E8 mapped:0x80792554
-void fn_3_1534C0(void) {
+// .text:0x00072CA8 size:0x464 mapped:0x806B1D3C
+void fn_3_72CA8(void) {
     return;
 }
 
-// .text:0x001536A8 size:0x7E4 mapped:0x8079273C
-void fn_3_1536A8(void) {
+// .text:0x0007310C size:0x49C mapped:0x806B21A0
+void fn_3_7310C(void) {
     return;
 }
 
-// .text:0x00153E8C size:0x100 mapped:0x80792F20
-void fn_3_153E8C(void) {
+// .text:0x000735A8 size:0x124 mapped:0x806B263C
+void fn_3_735A8(void) {
     return;
 }
 
-// .text:0x00153F8C size:0x158 mapped:0x80793020
-void fn_3_153F8C(void) {
-    return;
-}
+// .text:0x000736CC size:0x4C mapped:0x806B2760
 
-// .text:0x001540E4 size:0xE0 mapped:0x80793178
-void fn_3_1540E4(void* arg0, void* arg1, void* arg2) {
-    return;
-}
-
-// .text:0x001541C4 size:0x50 mapped:0x80793258
-void fn_3_1541C4(void* arg0, void* arg1, void* arg2) {
-    if (g_d_GameSettings.GameModeSelected == GAME_TYPE_MINIGAMES &&
-        g_Minigame.GameMode_MiniGame == 4 &&
-        arg2 != NULL) {
-        fn_3_1540E4(arg0, arg1, arg2);
+void fn_3_736CC(void) {
+    s32 i;
+    for (i = 0; i < 3; i++) {
+        if (g_Strikes.unk_18[i] == -1) {
+            g_Strikes.unk_18[i] = 0;
+            return;
+        }
     }
 }
 
-// .text:0x00154214 size:0x24 mapped:0x807932A8
-void fn_3_154214(void) {
-    pitchingMachinePitching(0x27);
+// .text:0x00073718 size:0x14 mapped:0x806B27AC
+void fn_3_73718(void) {
+    g_Ball.postPitchResultCounter = -1;
 }
 
-// .text:0x00154238 size:0xBC mapped:0x807932CC
-void fn_3_154238(void) {
+// .text:0x0007372C size:0x124 mapped:0x806B27C0
+void fn_3_7372C(void) {
     return;
 }
 
-// .text:0x001542F4 size:0x6FC mapped:0x80793388
-void fn_3_1542F4(void) {
-    return;
-}
+// .text:0x00073850 size:0x58 mapped:0x806B28E4
+void fn_3_73850(void) {
+    s32 i;
 
-// .text:0x001549F0 size:0x28C mapped:0x80793A84
-void fn_3_1549F0(void) {
-    return;
-}
-
-// .text:0x00154C7C size:0x5A0 mapped:0x80793D10
-void fn_3_154C7C(u32 unknown) {
-    return;
-}
-
-// .text:0x0015521C size:0x48 mapped:0x807942B0
-
-
-
-void fn_3_15521C(u32 unused, u32 param_2, u32 param_3) {
-    if (g_d_GameSettings.GameModeSelected != 7) {
-        return;
+    g_Strikes.outs++;
+    for (i = 0; i < 3; i++) {
+        if (g_Strikes.unk_18[i] == -1) {
+            g_Strikes.unk_18[i] = 0;
+            return;
+        }
     }
-    if (param_2 == 0 || param_3 == 0) {
-        return;
+}
+
+// .text:0x000738A8 size:0x540 mapped:0x806B293C
+void fn_3_738A8(void) {
+    return;
+}
+
+// .text:0x00073DE8 size:0x144 mapped:0x806B2E7C
+void fn_3_73DE8(void) {
+    return;
+}
+
+// .text:0x00073F2C size:0x80 mapped:0x806B2FC0
+void fn_3_73F2C(void) {
+    return;
+}
+
+// .text:0x00073FAC size:0x124 mapped:0x806B3040
+void fn_3_73FAC(void) {
+    return;
+}
+
+// .text:0x000740D0 size:0x58 mapped:0x806B3164
+void fn_3_740D0(void) {
+    g_Pitcher.nonCaptainStarPitchTriggeredType = g_Pitcher.nonCaptainStarPitch;
+    switch (g_Pitcher.nonCaptainStarPitch) {
+        case 1:
+            g_Pitcher.specialPitchTypeCode = 0x10;
+            break;
+        case 2:
+            g_Pitcher.specialPitchTypeCode = 0x11;
+            break;
+        case 3:
+            g_Pitcher.specialPitchTypeCode = 0x12;
+            break;
     }
-    fn_3_154C7C(unused);
 }
 
-// .text:0x00155264 size:0x24 mapped:0x807942F8
-void fn_3_155264(void) {
-    pitchingMachinePitching(0x1B);
-}
-
-// .text:0x00155288 size:0x24 mapped:0x8079431C
-void fn_3_155288(void) {
-    pitchingMachinePitching(0x1B);
-}
-
-// .text:0x001552AC size:0x738 mapped:0x80794340
-void fn_3_1552AC(void) {
+// .text:0x00074128 size:0x99C mapped:0x806B31BC
+void fn_3_74128(void) {
     return;
 }
 
-// .text:0x001559E4 size:0x244 mapped:0x80794A78
-void fn_3_1559E4(void) {
+// .text:0x00074AC4 size:0x248 mapped:0x806B3B58
+void fn_3_74AC4(void) {
     return;
 }
 
-// .text:0x00155C28 size:0x2E0 mapped:0x80794CBC
-void fn_3_155C28(void) {
+// .text:0x00074D0C size:0x384 mapped:0x806B3DA0
+void fn_3_74D0C(void) {
     return;
 }
 
-// .text:0x00155F08 size:0x310 mapped:0x80794F9C
-void fn_3_155F08(void) {
+// .text:0x00075090 size:0x34 mapped:0x806B4124
+
+
+void fn_3_75090(void) {
+
+    g_Pitcher.pitcherActionState = 1;
+    g_Pitcher.currentStateFrameCounter = 0;
+    g_Ball.AtBat_Contact_BallPos.x = g_Pitcher.ballCurrentPosition.x;
+    g_Ball.AtBat_Contact_BallPos.y = g_Pitcher.ballCurrentPosition.y;
+    g_Ball.AtBat_Contact_BallPos.z = g_Pitcher.ballCurrentPosition.z;
+}
+
+// .text:0x000750C4 size:0x18 mapped:0x806B4158
+void fn_3_750C4(s8 value) {
+    g_Pitcher.pitcherActionState = value;
+    g_Pitcher.currentStateFrameCounter = 0;
+}
+
+// .text:0x000750DC size:0xD8 mapped:0x806B4170
+void fn_3_750DC(void) {
     return;
 }
 
-// .text:0x00156218 size:0x330 mapped:0x807952AC
-void fn_3_156218(void) {
+// .text:0x000751B4 size:0x234 mapped:0x806B4248
+void fn_3_751B4(void) {
     return;
 }
 
-// .text:0x00156548 size:0x428 mapped:0x807955DC
-void fn_3_156548(void) {
+// .text:0x000753E8 size:0x4C mapped:0x806B447C
+
+void fn_3_753E8(s32 param_1) {
+    // 0x000753EC: cmpwi r3, 0x0
+    // The incoming r3 (param_1) is compared to 0.
+    
+    // 0x000753F8: stb r0, 0x13e(r3)
+    g_Pitcher.pitcherActionState = 0;
+    
+    // 0x000753FC: sth r0, 0x120(r3)
+    g_Pitcher.currentStateFrameCounter = 0;
+
+    // 0x00075400: bne .L_0007540C
+    // If param_1 != 0, skip these two assignments.
+    if (param_1 == 0) {
+        // 0x00075404: stb r0, 0x159(r3)
+        g_Pitcher.nPitchesThisAB = 0;
+        // 0x00075408: stb r0, 0x15a(r3)
+        g_Pitcher.nPickoffAttempts = 0;
+    }
+
+    // 0x00075410: lfsu f1, lbl_3_data_446C@l(r4)
+    // 0x0007541C: lfs f0, 0x4(r4)
+    // 0x00075424: stfs f1, 0x8c(r3)
+    // 0x00075428: stfs f0, 0x90(r3)
+    g_Pitcher.pitcher.x = lbl_3_data_446C.x;
+    g_Pitcher.pitcher.z = lbl_3_data_446C.z;
+
+    // 0x0007542C: stb r0, 0x15e(r3)
+    g_Pitcher.pitchDeliveryAnimationPlaying = 0;
+}
+
+// .text:0x00075434 size:0x84 mapped:0x806B44C8
+void fn_3_75434(void) {
     return;
 }
 
-// .text:0x00156970 size:0x394 mapped:0x80795A04
-void fn_3_156970(void) {
+// .text:0x000754B8 size:0xA8 mapped:0x806B454C
+void fn_3_754B8(void) {
     return;
 }
 
-// .text:0x00156D04 size:0x608 mapped:0x80795D98
-void fn_3_156D04(void) {
-    return;
-}
-
-// .text:0x0015730C size:0xA0 mapped:0x807963A0
-void fn_3_15730C(void) {
-    return;
-}
-
-// .text:0x001573AC size:0x1C4 mapped:0x80796440
-void fn_3_1573AC(void) {
-    return;
-}
-
-// .text:0x00157570 size:0x18 mapped:0x80796604
-void fn_3_157570(void) {
-    lbl_3_bss_B850->someFlag = TRUE;
-}
-
-// .text:0x00157588 size:0x68 mapped:0x8079661C
-void fn_3_157588(s32 arg) {
-    UnknownStruct_B850 *temp_r3;
-
-    temp_r3 = (UnknownStruct_B850 *)fn_80033A24(fn_3_15767C, 0x80, 0, (arg + 6) / 7, 1, 0x28);
-    lbl_3_bss_B850 = temp_r3;
-    temp_r3->someFlag = 0;
-}
-
-// .text:0x001575F0 size:0x8C mapped:0x80796684
-void fn_3_1575F0(void) {
-    return;
-}
-
-// .text:0x0015767C size:0x27C mapped:0x80796710
-void fn_3_15767C(void) {
-    return;
-}
-
-// .text:0x001578F8 size:0x24 mapped:0x8079698C
-void fn_3_1578F8(void) {
-    pitchingMachinePitching(0x16);
-}
-
-// .text:0x0015791C size:0x1A8 mapped:0x807969B0
-void fn_3_15791C(void) {
-    return;
-}
-
-// .text:0x00157AC4 size:0x2F4 mapped:0x80796B58
-void fn_3_157AC4(void) {
+// .text:0x00075560 size:0x45C mapped:0x806B45F4
+void fn_3_75560(void) {
     return;
 }
 ```
 
 ## Instructions
 
-Give Instructions on how to Implement the function `fn_3_151694` in the source file shown above. Replace the existing
+Give Instructions on how to Implement the function `fn_3_6F6CC` in the source file shown above. Replace the existing
 stub with your implementation.
 
 If you need to define new structs, add them to the appropriate header file.
