@@ -46,6 +46,24 @@ Compiler: Metrowerks CodeWarrior for GameCube, version 1.3.2.
 Language: C (not C++)."""
 
 COMPILER_PATTERNS = """\
+### Pointer Globals vs Array Globals
+Two distinct assembly patterns appear for globals — they require different C code:
+
+- `lis rN, SYM@ha` + `addi rDst, rN, SYM@l` → `rDst = &SYM` (symbol IS the data — array or struct in-place)
+- `lis rN, SYM@ha` + `lwz  rDst, SYM@l(rN)` → `rDst = *SYM` (symbol CONTAINS a pointer — dereference it)
+
+If the assembly uses `lwz` with `@l`, the symbol is a **pointer global**: its first field (offset 0x0)
+is a pointer to the actual data array. You must go through that field:
+```c
+// WRONG (addi pattern — symbol is the array):
+elem = &sym[arg0];
+
+// CORRECT (lwz pattern — symbol holds a pointer at offset 0):
+elem = &sym.ptr_field[arg0];
+```
+The `⚠ POINTER-GLOBAL` warning in Referenced Symbols flags this case. When you see it,
+field offsets listed belong to the **pointed-to element type**, not to the declared type of `sym`.
+
 ### Global Address Re-loading
 The compiler re-loads the base address of a global variable (using `lis`/`addi`) even if
 already in a register. Creating a local pointer (`Type* p = &g_Global;`) causes the
@@ -690,11 +708,18 @@ def extract_symbol_offsets(asm_text, syms):
     then records every immediate offset used in a load/store on that register.
     Invalidates a register when it is self-incremented (pointer advance).
 
-    Returns dict: symbol_name -> set of int offsets accessed.
+    Distinguishes two access patterns:
+      lis rN, SYM@ha  +  addi rDst, rN, SYM@l   → &SYM  (array/struct-in-place)
+      lis rN, SYM@ha  +  lwz  rDst, SYM@l(rN)   → *SYM  (pointer dereference)
+
+    Returns (offsets_dict, pointer_deref_syms):
+      offsets_dict: symbol_name -> set of int offsets accessed on the symbol itself
+      pointer_deref_syms: set of symbol names accessed via pointer dereference (lwz @l)
     """
     lines = asm_text.splitlines()
     reg_sym = {}  # reg -> symbol name
     sym_offsets = {s: set() for s in syms}
+    pointer_deref_syms = set()
 
     for line in lines:
         code = re.sub(r'/\*.*?\*/', '', line).strip()
@@ -707,7 +732,7 @@ def extract_symbol_offsets(asm_text, syms):
                 reg_sym[reg] = sym
             continue
 
-        # addi rDst, rSrc, SYM@l  →  confirm rDst holds &SYM
+        # addi rDst, rSrc, SYM@l  →  confirm rDst holds &SYM (address, not value)
         m = re.match(r'addi\s+(r\d+),\s+(r\d+),\s+(\w+)@l', code)
         if m:
             dst, src, sym = m.group(1), m.group(2), m.group(3)
@@ -715,6 +740,20 @@ def extract_symbol_offsets(asm_text, syms):
                 reg_sym[dst] = sym
                 if src != dst:
                     reg_sym.pop(src, None)
+            continue
+
+        # lwz rDst, SYM@l(rBase)  →  *SYM (pointer-global dereference pattern)
+        # The symbol holds a pointer; rDst gets the pointed-to value.
+        # Do NOT propagate SYM tracking to rDst — field accesses on rDst belong to
+        # the inner type, not to SYM itself.
+        m = re.match(r'lwz\s+(r\d+),\s+(\w+)@l\((r\d+)\)', code)
+        if m:
+            dst, sym, base = m.group(1), m.group(2), m.group(3)
+            if sym in syms and reg_sym.get(base) == sym:
+                pointer_deref_syms.add(sym)
+                reg_sym.pop(base, None)  # consume the lis association
+                # rDst now holds the inner pointer value — clear any old tracking
+                reg_sym.pop(dst, None)
             continue
 
         # mr rDst, rSrc  →  propagate symbol association
@@ -751,7 +790,7 @@ def extract_symbol_offsets(asm_text, syms):
                 elif offset >= 0:
                     sym_offsets[sym].add(offset)
 
-    return sym_offsets
+    return sym_offsets, pointer_deref_syms
 
 
 def find_declaration(symbol, include_dir):
@@ -933,7 +972,7 @@ def annotate_referenced_symbols(syms, asm_text, module=None, indexed_types=None)
     dol_db = load_symbol_db(module=None)
     mod_db = load_symbol_db(module=module) if module else {}
     strides = detect_strides(asm_text, {**dol_db, **mod_db})
-    sym_offsets = extract_symbol_offsets(asm_text, syms)
+    sym_offsets, pointer_deref_syms = extract_symbol_offsets(asm_text, syms)
 
     include_dir = os.path.join(ROOT_DIR, "include")
 
@@ -971,6 +1010,15 @@ def annotate_referenced_symbols(syms, asm_text, module=None, indexed_types=None)
         if decl_line:
             rel_path = os.path.relpath(filepath, ROOT_DIR) if filepath else "?"
             lines.append(f"  - Declared as: `{decl_line}` (in `{rel_path}`)")
+
+            if sym in pointer_deref_syms:
+                lines.append(
+                    f"  - ⚠ POINTER-GLOBAL pattern: assembly uses `lwz` through `{sym}` "
+                    f"(not `addi`) — the symbol is a struct whose first field (offset 0x0) "
+                    f"is a pointer to an array. Access elements via `{sym}.field_0x0[index]`, "
+                    f"NOT `{sym}[index]`. Field offsets below belong to the pointed-to element "
+                    f"type, not to `{type_name}` itself."
+                )
 
             offsets = sym_offsets.get(sym, set())
             if type_name and offsets:
