@@ -98,6 +98,7 @@ typedef struct {
 
 extern Data1348Entry lbl_3_data_1348[];
 extern f32 lbl_3_rodata_788;
+extern f32 lbl_3_rodata_798;
 
 extern s32 lbl_3_bss_44;
 typedef struct Stats {
