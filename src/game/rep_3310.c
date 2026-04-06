@@ -8,6 +8,9 @@
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
 #include "game/rep_1E08.h"
+#include "game/gap_90754.h"
+#include "game/rep_1C0.h"
+#include "game/rep_1D58.h"
 
 typedef struct Rep3310Item {
     u8 _pad0[0x14];
@@ -64,6 +67,12 @@ extern f32 lbl_3_rodata_33E4;
 extern f32 lbl_3_rodata_33E8;
 extern f32 lbl_3_rodata_33EC;
 extern f32 lbl_3_data_21A64;
+
+extern void minigamesGXStuff(void);
+extern void minigamesSetSomePointers(void);
+extern void minigamesSetSomePointers2(void);
+extern void fn_80035B50(s32 arg0);
+extern void fn_80018B38(void);
 
 // .text:0x00116840 size:0x190 mapped:0x807558D4
 void fn_3_116840(void) {
@@ -570,7 +579,23 @@ void fn_3_11CD00(void) {
 
 // .text:0x0011CF04 size:0x80 mapped:0x8075BF98
 void fn_3_11CF04(void) {
-    return;
+    if (g_d_GameSettings.GameModeSelected != 6) {
+        g_hugeAnimStruct.field268_0x3078 = 0;
+    }
+    
+    g_hugeAnimStruct.renderStadiumFlag = 0;
+    
+    minigamesSetSomePointers();
+    minigamesGXStuff();
+    minigamesSetSomePointers2();
+    
+    fn_80035B50(0xD);
+    fn_3_B95EC();
+    fn_3_5E60();
+    fn_80018B38();
+    fn_3_909B0();
+    fn_3_9081C();
+    fn_80035B50(0x11);
 }
 
 // .text:0x0011CF84 size:0x22C mapped:0x8075C018
