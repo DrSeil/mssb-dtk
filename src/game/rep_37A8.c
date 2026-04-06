@@ -97,13 +97,22 @@ void fn_3_143770(void) {
 }
 
 // .text:0x001439EC size:0x5C0 mapped:0x80782A80
-void fn_3_1439EC(void) {
+void fn_3_1439EC(s32 arg0) {
     return;
 }
 
 // .text:0x00143FAC size:0x80 mapped:0x80783040
-void fn_3_143FAC(void) {
-    return;
+void fn_3_143FAC(s32 arg0) {
+    if (g_Minigame._1CA2 == 2) {
+        s32 i;
+        for (i = 0; i < 3; i++) {
+            if (g_Minigame.progressItems[i].field_0x2A == 2) {
+                g_Minigame.progressItems[i].field_0x2A = 3;
+                g_Minigame.progressItems[i].field_0x1A = 0;
+            }
+        }
+    }
+    fn_3_1439EC(arg0);
 }
 
 // .text:0x0014402C size:0x210 mapped:0x807830C0
