@@ -200,7 +200,20 @@ void fn_3_73DE8(void) {
 
 // .text:0x00073F2C size:0x80 mapped:0x806B2FC0
 void fn_3_73F2C(void) {
-    return;
+    if (g_Pitcher.pitchTotalTimeCounter < 0x7FFE) {
+        g_Pitcher.pitchTotalTimeCounter++;
+    } else {
+        g_Pitcher.pitchTotalTimeCounter = 0x7FFF;
+    }
+
+    if (g_Ball.pitchHangtimeCounter < 0x7FFE) {
+        g_Ball.pitchHangtimeCounter++;
+    } else {
+        g_Ball.pitchHangtimeCounter = 0x7FFF;
+    }
+
+    g_Pitcher.warioWaluStarAnimationStage = 0;
+    fn_3_71248();
 }
 
 // .text:0x00073FAC size:0x124 mapped:0x806B3040
