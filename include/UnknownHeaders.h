@@ -197,9 +197,15 @@ typedef struct HugeAnimEntry68 {
 
 typedef struct ActRelatedSub {
     /* +0x00 */ f32 prevFloat;    // (sub+1)->prevFloat = r6+0x5c (next sub's first field)
-    /* +0x04 */ u8 _pad04[0x50];  // 0x04-0x53
+    union {
+        /* +0x04 */ s32 unk38_s32;
+        /* +0x04 */ f32 unk38_f32;
+    };
+    /* +0x08 */ u8 _pad08[6];
+    /* +0x0E */ s16 unk42;
+    /* +0x10 */ u8 _pad10[0x44];
     /* +0x54 */ f32 float54;      // r6+0x54
-    /* +0x58 */ u8 _pad58;
+    /* +0x58 */ u8 unk8C;
     /* +0x59 */ u8 flag59;        // r6+0x59
     /* +0x5a */ u8 flag5a;        // r6+0x5a
     /* +0x5b */ u8 flag5b;        // r6+0x5b

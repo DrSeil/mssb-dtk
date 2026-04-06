@@ -5,6 +5,8 @@
 #include "game/rep_540.h"
 #include "game/rep_1200.h"
 #include "game/rep_AC8.h"
+#include "game/gap_106DFC.h"
+#include "game/gap_5985C.h"
 
 typedef struct {
     u8 _pad0[0x5];
@@ -91,7 +93,18 @@ void fn_3_115AB4(void) {
 
 // .text:0x00115B5C size:0x80 mapped:0x80754BF0
 void fn_3_115B5C(void) {
-    return;
+    s32 score = g_Scores.highscore;
+    g_Scores.highscore = score + 1;
+    g_Minigame.turnNumberWithinRound = 0;
+    
+    fn_3_5A6D4(7);
+
+    if (g_Minigame.multiPlayerInd != 0 || 
+        g_Minigame._1A3C != 0 || 
+        g_Minigame.soloMinigameDifficulty != 3) {
+        
+        fn_3_10F550(4, 0);
+    }
 }
 
 // .text:0x00115BDC size:0x48 mapped:0x80754C70

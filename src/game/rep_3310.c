@@ -416,9 +416,30 @@ void fn_3_119C34(void) {
     entries[31].unk8F = 2;
 }
 
-// .text:0x00119CA8 size:0x80 mapped:0x80758D3C
-void fn_3_119CA8(void) {
-    return;
+// .text:0x00119CA8 size:0x74 mapped:0x80758D3C
+void fn_3_119CA8(s32 index) {
+    ActRelatedEntry* entries = (ActRelatedEntry*)g_hugeAnimStruct.entries_68;
+    ActRelatedSub* sub = &entries[index].sub;
+    s32 unk74 = lbl_3_common_bss_32724.unk74;
+    f32 var1 = lbl_3_rodata_33AC;
+    u32 temp_r4;
+
+    sub->unk38_s32 = unk74;
+    sub->unk42 = 0;
+    
+    // (u32)(-unk74 | unk74) >> 31 generates: neg -> or -> srwi 31
+    temp_r4 = (u32)(-unk74 | unk74) >> 31;
+    
+    (sub + 1)->prevFloat = var1;
+    sub->unk8C = 1;
+    sub->flag59 = temp_r4;
+    sub->flag5a = temp_r4;
+    (sub + 1)->unk38_f32 = var1;
+    sub->float54 = lbl_3_rodata_33E0;
+    sub->flag5a = 1;
+    (sub + 1)->prevFloat = var1;
+    sub->flag59 = 1;
+    sub->flag5b = 2;
 }
 
 // .text:0x00119D28 size:0xC mapped:0x80758DBC
@@ -473,25 +494,28 @@ u32 fn_3_11A350(s32 index) {
 
 // .text:0x0011A38C size:0x7C mapped:0x80759420
 void fn_3_11A38C(s32 index, s16 arg1) {
-    HugeAnimEntry68* entries = g_hugeAnimStruct.entries_68;
+    ActRelatedEntry* entries = (ActRelatedEntry*)g_hugeAnimStruct.entries_68;
+    ActRelatedSub* sub = &entries[index].sub;
     s32 unk70 = lbl_3_common_bss_32724.unk70;
-    f32 new_var;
+    f32 var1 = lbl_3_rodata_33AC;
     u32 temp_r4;
 
-    entries[index].unk38 = unk70;
-    entries[index].unk42 = arg1;
-    new_var = lbl_3_rodata_33AC;
+    sub->unk38_s32 = unk70;
+    sub->unk42 = arg1;
+    
+    // (u32)(-unk70 | unk70) >> 31 generates: neg -> or -> srwi 31
     temp_r4 = (u32)(-unk70 | unk70) >> 31;
-    entries[index + 1].unk0 = new_var;
-    entries[index].unk8C = 1;
-    entries[index].unk8D = temp_r4;
-    entries[index].unk8E = temp_r4;
-    entries[index + 1].unk4 = new_var;
-    entries[index].unk88 = lbl_3_rodata_33E0;
-    entries[index].unk8E = 1;
-    entries[index + 1].unk0 = new_var;
-    entries[index].unk8D = 1;
-    entries[index].unk8F = 2;
+    
+    (sub + 1)->prevFloat = var1;
+    sub->unk8C = 1;
+    sub->flag59 = temp_r4;
+    sub->flag5a = temp_r4;
+    (sub + 1)->unk38_f32 = var1;
+    sub->float54 = lbl_3_rodata_33E0;
+    sub->flag5a = 1;
+    (sub + 1)->prevFloat = var1;
+    sub->flag59 = 1;
+    sub->flag5b = 2;
 }
 
 // .text:0x0011A408 size:0x524 mapped:0x8075949C
