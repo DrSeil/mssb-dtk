@@ -1,6 +1,10 @@
 #include "game/rep_34B0.h"
+
 #include "UnknownHeaders.h"
 #include "header_rep_data.h"
+#include "game/gap_106DFC.h"
+#include "game/gap_5985C.h"
+#include "game/UnknownHomes_Game.h"
 
 // .text:0x0012E8FC size:0x214 mapped:0x8076D990
 void fn_3_12E8FC(void) {
@@ -143,7 +147,21 @@ void fn_3_131EC4(void) {
 
 // .text:0x00131FFC size:0x80 mapped:0x80771090
 void fn_3_131FFC(void) {
-    return;
+    u8 multiPlayerInd;
+
+    g_Scores.highscore++;
+    multiPlayerInd = g_Minigame.multiPlayerInd;
+    g_Minigame.turnNumberWithinRound = 0;
+
+    if (multiPlayerInd == 0) {
+        fn_3_5A6D4(7);
+    } else {
+        fn_3_10F550(4, 0);
+        if (g_Scores.highscore == 1) {
+            fn_3_10AD48();
+        }
+        fn_3_5A6D4(7);
+    }
 }
 
 // .text:0x0013207C size:0x40 mapped:0x80771110
