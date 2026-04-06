@@ -8,6 +8,9 @@
 #include "game/rep_1200.h"
 #include "UnknownHeaders.h"
 #include "game/gap_6AEC0.h"
+#include "game/gap_FF4C.h"
+#include "game/rep_13B8.h"
+#include "game/gap_7976C.h"
 
 void fn_80017D28(s32 arg0);
 void fn_8001AAA4(void);
@@ -45,11 +48,11 @@ void fn_3_5C418(void);
 void fn_3_5C530(void);
 void fn_3_5C5C8(void);
 void fn_3_5C69C(void);
-void fn_3_5C74C(void);
+void fn_3_5C74C(s32 arg0);
 void fn_3_5CD24(void);
 void fn_3_5CDB4(void);
 void fn_3_5CFD0(void);
-void fn_3_5D094(void);
+void fn_3_5D094(s32 arg0);
 void fn_3_5D3FC(void);
 void fn_3_5D51C(void);
 void fn_3_5D5E8(void);

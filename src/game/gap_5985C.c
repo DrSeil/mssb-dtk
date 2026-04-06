@@ -221,7 +221,7 @@ void fn_3_5C69C(void) {
 }
 
 // .text:0x0005C74C size:0x5D8 mapped:0x8069B7E0
-void fn_3_5C74C(void) {
+void fn_3_5C74C(s32 arg0) {
     return;
 }
 
@@ -241,7 +241,7 @@ void fn_3_5CFD0(void) {
 }
 
 // .text:0x0005D094 size:0x368 mapped:0x8069C128
-void fn_3_5D094(void) {
+void fn_3_5D094(s32 arg0) {
     return;
 }
 
@@ -308,7 +308,24 @@ void fn_3_5ED98(void) {
 
 // .text:0x0005EDD8 size:0x80 mapped:0x8069DE6C
 void fn_3_5EDD8(void) {
-    return;
+    ballPhysica();
+    fn_3_598D0();
+    fn_3_8A958();
+
+    if (g_Ball.deadBallReason != 0) {
+        fn_3_5DD30();
+    }
+
+    fn_3_5C74C(0);
+    fn_3_5E2C4();
+
+    if (g_GameLogic.freeFieldingPracticeInd == 0) {
+        fn_3_79ACC();
+
+        if (g_Strikes.outs >= 3) {
+            fn_3_5D094(0);
+        }
+    }
 }
 
 // .text:0x0005EE58 size:0x194 mapped:0x8069DEEC
